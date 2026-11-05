@@ -18529,6 +18529,64 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
     var b = M.worldBox(cyl), nb = M.worldBox(net), top = Math.min(b[1], nb[1]);
     M.objs().push({ id: U.uid('t'), type: 'text', x: b[0], y: top - 130, text: 'Example: a 100 mm pipe section, 120 mm long.\nChange r on the solid or πD on the net and watch both follow.', size: 20, color: 'ink', layer: 'L2', rot: 0 });
   }
+  /* ---------- opening a shared link (#sc=...) ----------
+     A worked solution or an AI helper can link straight to a set of shapes. The link opens them on a new page:
+     nothing already on the canvas is changed. A shape that does not check out is skipped. */
+  function readLink() {
+    var m = /(?:^#|&)sc=([A-Za-z0-9_-]{1,20000})/.exec(W.location.hash || '');
+    if (!m) return null;
+    try {
+      var b = m[1].replace(/-/g, '+').replace(/_/g, '/');
+      var spec = JSON.parse(decodeURIComponent(escape(W.atob(b + '==='.slice((b.length + 3) % 4)))));
+      return spec && spec.v === 1 && Array.isArray(spec.s) ? spec : null;
+    } catch (e) { return null; }
+  }
+  function linkShapes(spec) {
+    var Sh = W.Shapes, out = [];
+    spec.s.slice(0, 12).forEach(function (s) {
+      if (!s || typeof s.i !== 'string') return;
+      var def;
+      try { def = Sh.defaults(s.i); } catch (e) { return; }
+      var p = {}, given = s.p || {};
+      Object.keys(def).forEach(function (k) {
+        var v = given[k];
+        if (typeof def[k] === 'number') p[k] = typeof v === 'number' && isFinite(v) && Math.abs(v) < 1e6 ? v : def[k];
+        else p[k] = typeof v === typeof def[k] && String(v).length < 40 ? v : def[k];
+      });
+      if (Sh.validate(s.i, p)) return;
+      out.push({ id: s.i, p: p, net: !!s.net });
+    });
+    return out;
+  }
+  function importLink() {
+    var spec = readLink();
+    if (!spec) return false;
+    if (W.history && W.history.replaceState) W.history.replaceState(null, '', W.location.pathname + W.location.search);
+    var list = linkShapes(spec);
+    if (!list.length) { P.toast('That link has no shapes this canvas can open.'); return false; }
+    if (U.TO_MM[spec.u] && spec.u !== M.doc.unit) M.setUnit(spec.u, true);
+    M.doc.pages.push({ id: U.uid('p'), name: String(spec.n || 'From a link').slice(0, 60), objs: [], links: [] });
+    M.doc.page = M.doc.pages.length - 1;
+    S.sel = [];
+    /* one scale for every shape from the link, so their sizes compare truthfully; the largest is drawn at the usual size */
+    var made = list.map(function (s) { return { o: M.addShape(s.id, 0, 0, s.p), net: s.net }; });
+    var ppu = Math.min.apply(null, made.map(function (m) { return m.o.ppu; }));
+    var x = 0, top = Infinity, left = Infinity;
+    made.forEach(function (m) {
+      var o = m.o, net = null;
+      o.ppu = ppu;
+      var b0 = M.worldBox(o);
+      o.x += x - b0[0]; o.y -= b0[1];
+      if (m.net) net = M.unfold(o);
+      var b = M.worldBox(o);
+      if (net) { var nb = M.worldBox(net); b = [Math.min(b[0], nb[0]), Math.min(b[1], nb[1]), Math.max(b[2], nb[2]), Math.max(b[3], nb[3])]; }
+      x = b[2] + 180; top = Math.min(top, b[1]); left = Math.min(left, b[0]);
+    });
+    var notes = (Array.isArray(spec.t) ? spec.t : []).slice(0, 6).map(function (t) { return String(t).slice(0, 300); }).filter(Boolean);
+    if (notes.length) M.objs().push({ id: U.uid('t'), type: 'text', x: left, y: top - 40 - 26 * notes.length, text: notes.join('\n'), size: 18, color: 'ink', layer: 'L2', rot: 0 });
+    M.emit('change', {});
+    return true;
+  }
   function afterLoad() {
     $('btn-grid').setAttribute('aria-pressed', String(M.doc.grid));
     $('btn-snap').setAttribute('aria-pressed', String(M.doc.snap));
@@ -18574,8 +18632,11 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
     });
     W.addEventListener('resize', function () { V.applyView(); });
     if (!M.loadSaved()) sample();
+    var linked = importLink();
     M.resetHistory();
     afterLoad();
+    if (linked) { M.saveSoon(); P.toast('Opened the shapes from the link on a new page.'); }
+    W.addEventListener('hashchange', function () { if (importLink()) { SC.I.commit(); afterLoad(); P.toast('Opened the shapes from the link on a new page.'); } });
     setTimeout(function () { V.fit(); }, 120);
   }
   SC.A = { init: init, undo: undo, redo: redo, removeSel: removeSel, duplicate: duplicate, align: align, distribute: distribute, toggleGrid: toggleGrid, toggleSnap: toggleSnap,
