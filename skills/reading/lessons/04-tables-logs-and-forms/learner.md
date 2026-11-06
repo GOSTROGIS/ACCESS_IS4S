@@ -3,8 +3,8 @@ title: Find it in a table, log or form
 summary: Read lists, tables and logs by their titles, headings and notes, find the cell where a row meets a column, and fill in a work form correctly.
 level: 1-3
 time: 75 min
-components: Identify the information, Make connections between different parts of the document(s), Understand and apply the information
-rebuilds: A - Document Use/Understanding Documents  (Welding).doc, A - Document Use/intro to doc use/intro doc use lesson ik.docx, A - Document Use/intro to doc use/intro doc use handout 2 ik.docx, A - Document Use/intro to doc use/intro doc use handout 3 ik.docx, A - Document Use/auto parts exercises/auto parts exercise.docx
+components: Identify the information; Make connections between different parts of the document(s); Understand and apply the information
+rebuilds: A - Document Use/Understanding Documents  (Welding).doc; A - Document Use/intro to doc use/intro doc use lesson ik.docx; A - Document Use/intro to doc use/intro doc use handout 2 ik.docx; A - Document Use/intro to doc use/intro doc use handout 3 ik.docx; A - Document Use/auto parts exercises/auto parts exercise.docx
 ---
 
 # Find it in a table, log or form

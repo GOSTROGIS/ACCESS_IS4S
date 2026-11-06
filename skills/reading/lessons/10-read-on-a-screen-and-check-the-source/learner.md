@@ -3,7 +3,7 @@ title: Read on a screen and check the source
 summary: Find information fast on a phone, and decide whether a web page, post or search summary can be trusted before you act on it.
 level: 1-3
 time: 75 min
-components: Identify the information, Evaluate the document(s), Reflect on the document(s)
+components: Identify the information; Evaluate the document(s); Reflect on the document(s)
 ---
 
 # Read on a screen and check the source

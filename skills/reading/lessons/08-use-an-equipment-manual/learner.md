@@ -3,8 +3,8 @@ title: Use an equipment manual
 summary: Find specifications, safety warnings, troubleshooting steps and part numbers in a tool manual by using its contents page, index and tables.
 level: 1-3
 time: 75 min
-components: Identify the information, Make connections between different parts of the document(s), Understand and apply the information, Evaluate the document(s)
-rebuilds: A - Document Use/electrical lesson ik.docx, A - Document Use/wiring diagram lesson/wiring diagrams lesson.docx, A - Document Use/wiring diagram lesson/wiring diagrams questions.docx, A - Document Use/connecting power tools handout q&a ik.docx, A - Document Use/intro to doc use/intro doc use handout 1 ik.docx
+components: Identify the information; Make connections between different parts of the document(s); Understand and apply the information; Evaluate the document(s)
+rebuilds: A - Document Use/electrical lesson ik.docx; A - Document Use/wiring diagram lesson/wiring diagrams lesson.docx; A - Document Use/wiring diagram lesson/wiring diagrams questions.docx; A - Document Use/connecting power tools handout q&a ik.docx; A - Document Use/intro to doc use/intro doc use handout 1 ik.docx
 ---
 
 # Use an equipment manual

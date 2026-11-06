@@ -3,8 +3,8 @@ title: Follow written instructions step by step
 summary: Read a set of instructions all the way through, find the order, the numbers and the conditions, and carry them out without skipping a step.
 level: 1-2
 time: 60 min
-components: Identify the information, Make connections between different parts of the document(s), Understand and apply the information
-rebuilds: A - Reading/follow instructions/following instructions lesson.docx, A - Reading/ES reading intro/ES reading lesson handout 3 ik.docx, A - Reading/follow instructions/follow instruction - painting - reading comprehension.docx, A - Reading/follow instructions/follow instructions recipe.docx, A - Reading/follow instructions/test of awareness with waiver form handout ik.docx
+components: Identify the information; Make connections between different parts of the document(s); Understand and apply the information
+rebuilds: A - Reading/follow instructions/following instructions lesson.docx; A - Reading/ES reading intro/ES reading lesson handout 3 ik.docx; A - Reading/follow instructions/follow instruction - painting - reading comprehension.docx; A - Reading/follow instructions/follow instructions recipe.docx; A - Reading/follow instructions/test of awareness with waiver form handout ik.docx
 ---
 
 # Follow written instructions step by step

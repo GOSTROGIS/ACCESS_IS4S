@@ -3,8 +3,8 @@ title: Break down the question first
 summary: Use the question word, the key words and the limit words in a question to know exactly what answer to look for.
 level: 1-2
 time: 60 min
-components: Identify the task that requires you to read, Identify the information, Understand and apply the information
-rebuilds: A - Reading/Breaking Down the Question/Breaking Down Questions Cp Rail.doc, A - Reading/ES reading intro/ES reading lesson handout 1 ik.docx, A - Reading/ES reading intro/ES reading lesson handout 4 ik.docx, A - Reading/Reading Skill Builder.pdf, A - Reading/Reading Skill Builder Answer Key.pdf
+components: Identify the task that requires you to read; Identify the information; Understand and apply the information
+rebuilds: A - Reading/Breaking Down the Question/Breaking Down Questions Cp Rail.doc; A - Reading/ES reading intro/ES reading lesson handout 1 ik.docx; A - Reading/ES reading intro/ES reading lesson handout 4 ik.docx; A - Reading/Reading Skill Builder.pdf; A - Reading/Reading Skill Builder Answer Key.pdf
 ---
 
 # Break down the question first

@@ -3,7 +3,7 @@ title: Read a WHMIS label and a safety data sheet
 summary: Find the hazard, the protection and the emergency steps on a WHMIS supplier label and its 16-section safety data sheet, and know when a workplace label is needed.
 level: 1-3
 time: 75 min
-components: Identify the task that requires you to read, Identify the information, Make connections between different parts of the document(s), Understand and apply the information, Evaluate the document(s)
+components: Identify the task that requires you to read; Identify the information; Make connections between different parts of the document(s); Understand and apply the information; Evaluate the document(s)
 ---
 
 # Read a WHMIS label and a safety data sheet

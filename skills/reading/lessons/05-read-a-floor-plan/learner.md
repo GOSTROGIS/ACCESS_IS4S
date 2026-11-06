@@ -1,10 +1,10 @@
 ---
 title: Read a floor plan and its notes
 summary: Use the title block, legend, schedules, notes and detail references on a construction drawing to find what to build and where.
-level: 2-3
+level: 1-3
 time: 90 min
-components: Identify the information, Make connections between different parts of the document(s), Understand and apply the information, Evaluate the document(s)
-rebuilds: A - Document Use/Blueprints and BCBC/blueprint intro ik.docx, A - Document Use/Blueprints and BCBC/Bluprint for tile ik.docx, A - Document Use/Blueprints and BCBC/blueprint reno exercises ik.docx, A - Document Use/Plumbing lesson ik.docx, A - Document Use/Maps Lesson ik.doc
+components: Identify the information; Make connections between different parts of the document(s); Understand and apply the information; Evaluate the document(s)
+rebuilds: A - Document Use/Blueprints and BCBC/blueprint intro ik.docx; A - Document Use/Blueprints and BCBC/Bluprint for tile ik.docx; A - Document Use/Blueprints and BCBC/blueprint reno exercises ik.docx; A - Document Use/Plumbing lesson ik.docx; A - Document Use/Maps Lesson ik.doc
 ---
 
 # Read a floor plan and its notes

@@ -79,6 +79,7 @@ main>*,nav{min-width:0}
 .prose .table-wrap{overflow-x:auto}
 .prose blockquote{margin:12px 0;padding:10px 16px;border-left:4px solid var(--gold);background:var(--gold-tint)}
 .prose code{font-size:.92em}
+.prose pre{max-width:100%;overflow-x:auto}
 .lesson-meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;padding:0;list-style:none;color:var(--muted);font-size:15px}
 .lesson-tabs{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 8px;padding:0;list-style:none;font-weight:600}
 .lesson-tabs [aria-current]{color:var(--ink);text-decoration:none}

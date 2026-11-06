@@ -1,10 +1,10 @@
 ---
 title: Read a workplace policy or agreement
 summary: Use the index, definitions and must, should and may to understand an employee handbook, and check an agreement against BC employment standards before you sign.
-level: 2-3
+level: 1-3
 time: 75 min
-components: Identify the information, Understand and apply the information, Evaluate the document(s), Reflect on the document(s)
-rebuilds: A - Reading/AWD based reading exercises/ATIRA Occupational Health and Safety questions ik.docx, A - Reading/AWD based reading exercises/ATIRA Policies Manual questions ik.docx, A - Reading/AWD based reading exercises/Fortis reading ik.docx, A - Reading/AWD based reading exercises/TD reading 1.docx, A - Reading/AWD based reading exercises/TD reading 2.docx, A - Reading/AWD based reading exercises/TD reading 3.docx, A - Document Use/Ex. 1 General Terms & Conditions-rb.docx, A - Document Use/Ex. 2 General Terms & Conditions-rb.docx, A - Document Use/Ex. 3 General Terms & Conditions-rb.docx, A - Document Use/Ex. 4 General Terms & Conditions-rb.docx, A - Document Use/Ex. 5 General Terms & Conditions-rb.docx, A - Document Use/Ex. 6 General Terms & Conditions-rb.docx, A - Document Use/Ex. 7 General Terms & Conditions-rb.docx, A - Reading/AWD based reading exercises/Residential Tenancy Act ik.docx, A - Reading/follow instructions/test of awareness with waiver form handout ik.docx
+components: Identify the information; Understand and apply the information; Evaluate the document(s); Reflect on the document(s)
+rebuilds: A - Reading/AWD based reading exercises/ATIRA Occupational Health and Safety questions ik.docx; A - Reading/AWD based reading exercises/ATIRA Policies Manual questions ik.docx; A - Reading/AWD based reading exercises/Fortis reading ik.docx; A - Reading/AWD based reading exercises/TD reading 1.docx; A - Reading/AWD based reading exercises/TD reading 2.docx; A - Reading/AWD based reading exercises/TD reading 3.docx; A - Document Use/Ex. 1 General Terms & Conditions-rb.docx; A - Document Use/Ex. 2 General Terms & Conditions-rb.docx; A - Document Use/Ex. 3 General Terms & Conditions-rb.docx; A - Document Use/Ex. 4 General Terms & Conditions-rb.docx; A - Document Use/Ex. 5 General Terms & Conditions-rb.docx; A - Document Use/Ex. 6 General Terms & Conditions-rb.docx; A - Document Use/Ex. 7 General Terms & Conditions-rb.docx; A - Reading/AWD based reading exercises/Residential Tenancy Act ik.docx; A - Reading/follow instructions/test of awareness with waiver form handout ik.docx
 ---
 
 # Read a workplace policy or agreement

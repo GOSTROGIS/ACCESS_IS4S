@@ -1,9 +1,9 @@
 ---
 title: Find a rule in the BC Building Code
 summary: Use the edition, the index and the numbering system of the BC Building Code 2024 to find the exact rule that applies, and read it word by word.
-level: 2-3
+level: 1-3
 time: 90 min
-components: Identify the task that requires you to read, Identify the information, Make connections between different parts of the document(s), Evaluate the document(s)
+components: Identify the task that requires you to read; Identify the information; Make connections between different parts of the document(s); Evaluate the document(s)
 rebuilds: A - Document Use/Blueprints and BCBC/BCBC exercises ik.docx
 ---
 

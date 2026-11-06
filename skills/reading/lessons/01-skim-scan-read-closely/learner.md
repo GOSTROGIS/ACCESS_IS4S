@@ -3,8 +3,8 @@ title: Skim, scan and read closely
 summary: Decide why you are reading, then choose the fastest way to find what you need in a workplace safety document.
 level: 1-2
 time: 60 min
-components: Identify the task that requires you to read, Identify the information
-rebuilds: A - Reading/ES reading intro/ES reading lesson ik.docx, A - Reading/Teachers Guide_Skimming & Scanning to Find Information_Accident Inventigation Guide.doc, A - Reading/Activity_Skimming & Scanning to Find Information_Accident Inventigation Guide.doc, A - Reading/AWD based reading exercises/ES reading lesson with AWD ik.docx, A - Reading/ES reading intro/ES reading lesson handout 5 ik.docx
+components: Identify the task that requires you to read; Identify the information
+rebuilds: A - Reading/ES reading intro/ES reading lesson ik.docx; A - Reading/Teachers Guide_Skimming & Scanning to Find Information_Accident Inventigation Guide.doc; A - Reading/Activity_Skimming & Scanning to Find Information_Accident Inventigation Guide.doc; A - Reading/AWD based reading exercises/ES reading lesson with AWD ik.docx; A - Reading/ES reading intro/ES reading lesson handout 5 ik.docx
 ---
 
 # Skim, scan and read closely
