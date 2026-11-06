@@ -3,7 +3,7 @@ title: Saying no and setting limits at work
 summary: Say no clearly without over-explaining, offer an alternative when you want to, and refuse unsafe work the way BC law sets out.
 level: 2
 time: 60 min
-components: Speak with clarity, Speak with purpose, Adapt to your audience and contexts
+components: Speak with clarity; Speak with purpose; Adapt to your audience and contexts
 rebuilds: A - Oral Communication/Saying No-rb.docx
 ---
 

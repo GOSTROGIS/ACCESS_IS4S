@@ -3,8 +3,8 @@ title: Showing up and managing your time on a job site
 summary: Plan your arrival, tell your supervisor early when plans change, and sort your tasks so the important ones get done.
 level: 1-2
 time: 75 min
-components: Demonstrate responsibility, Plan and prioritize
-rebuilds: A - Coninuous Learning/Emotional Intelligence - EQ/Lesson Plan Time Management & EQ.docx, A - Coninuous Learning/Introduction to personal management.docx, A - Coninuous Learning/Getting Started with ETC - First Day.docx
+components: Demonstrate responsibility; Plan and prioritize
+rebuilds: A - Coninuous Learning/Emotional Intelligence - EQ/Lesson Plan Time Management & EQ.docx; A - Coninuous Learning/Introduction to personal management.docx; A - Coninuous Learning/Getting Started with ETC - First Day.docx
 ---
 
 # Showing up and managing your time on a job site

@@ -3,8 +3,8 @@ title: Write sentences that say who does what
 summary: Build clear sentences with a doer, an action and an object, choose active or passive voice on purpose, and keep pronouns and verb tenses from confusing the reader.
 level: 1-2
 time: 90 min
-components: Use written words and phrases so you can achieve the purpose of the writing task | Choose the appropriate language and style for the writing task | Review and revise your writing
-rebuilds: A - Reading/grammar/parts of a sentence lesson and handouts/parts of a sentence lesson+some handouts ik.docx | A - Reading/grammar/parts of a sentence lesson and handouts/part of a sentence more  handouts ik.docx | A - Reading/grammar/active - passive lesson ik.docx | A - Reading/grammar/kinds of words lesson ik.docx
+components: Use written words and phrases so you can achieve the purpose of the writing task; Choose the appropriate language and style for the writing task; Review and revise your writing
+rebuilds: A - Reading/grammar/parts of a sentence lesson and handouts/parts of a sentence lesson+some handouts ik.docx; A - Reading/grammar/parts of a sentence lesson and handouts/part of a sentence more  handouts ik.docx; A - Reading/grammar/active - passive lesson ik.docx; A - Reading/grammar/kinds of words lesson ik.docx
 ---
 
 # Write sentences that say who does what

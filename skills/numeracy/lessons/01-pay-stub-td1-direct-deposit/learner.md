@@ -3,7 +3,7 @@ title: Checking a pay stub and filling in a TD1
 summary: Check the numbers on a pay stub, total your claim on the TD1 and TD1BC forms, and read the banking numbers on a cheque for direct deposit.
 level: 1-2
 time: 90 min
-components: Identify the task that will require you to use numeracy | Identify the mathematical information | Make connections between related pieces of mathematical information | Apply mathematical operations and tools you will need to answer the question | Interpret and evaluate the information
+components: Identify the task that will require you to use numeracy; Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information
 rebuilds: A - Document Use/tax credits lesson/DD, cheque, TD1 exercise lesson ik.docx
 ---
 

@@ -3,8 +3,8 @@ title: Asking good questions on a new crew
 summary: Introduce yourself, ask open questions to learn and closed questions to confirm, and keep a work conversation going.
 level: 1-2
 time: 60 min
-components: Listen to understand, Speak with purpose
-rebuilds: A - Oral Communication/Powerful Questions-rb.xlsx, A - Oral Communication/Communication Series-rb.docx, A - Writing/A - Thinking Skills/Assertiveness-rb.docx
+components: Listen to understand; Speak with purpose
+rebuilds: A - Oral Communication/Powerful Questions-rb.xlsx; A - Oral Communication/Communication Series-rb.docx; A - Writing/A - Thinking Skills/Assertiveness-rb.docx
 ---
 
 # Asking good questions on a new crew

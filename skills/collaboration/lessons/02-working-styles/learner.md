@@ -3,8 +3,8 @@ title: Working styles and style-stepping
 summary: Talk about how you like to work, notice how others like to work, and adjust your approach so the job goes smoothly.
 level: 1-2
 time: 90 min
-components: Work well with other people, Value diversity and inclusivity of others
-rebuilds: A - Working with Others/personality styles instructions ik.docx, A - Working with Others/perssonality types lesson ik.docx
+components: Work well with other people; Value diversity and inclusivity of others
+rebuilds: A - Working with Others/personality styles instructions ik.docx; A - Working with Others/perssonality types lesson ik.docx
 ---
 
 # Working styles and style-stepping

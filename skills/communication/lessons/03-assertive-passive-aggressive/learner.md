@@ -3,8 +3,8 @@ title: Assertive, passive and aggressive responses
 summary: Tell the three ways people respond under pressure apart, speak up assertively on a crew, and set small goals to practise.
 level: 1-2
 time: 75 min
-components: Speak with purpose, Adapt to your audience and contexts
-rebuilds: A - Writing/A - Thinking Skills/Assertiveness-rb.docx, A - Writing/A - Thinking Skills/Setting Goals-rb.docx, A - Writing/A - Thinking Skills/Action Plans-rb.docx
+components: Speak with purpose; Adapt to your audience and contexts
+rebuilds: A - Writing/A - Thinking Skills/Assertiveness-rb.docx; A - Writing/A - Thinking Skills/Setting Goals-rb.docx; A - Writing/A - Thinking Skills/Action Plans-rb.docx
 ---
 
 # Assertive, passive and aggressive responses

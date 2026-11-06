@@ -3,8 +3,8 @@ title: Owning your work and your mistakes
 summary: Report mistakes early, focus on what you control, and answer criticism without blaming or caving in.
 level: 1-2
 time: 75 min
-components: Demonstrate responsibility, Seek self-improvement
-rebuilds: A - Coninuous Learning/Lesson Plan 2 Personal Accountability & responding to change.docx, A - Writing/A - Thinking Skills/Making Commitments-rb.docx
+components: Demonstrate responsibility; Seek self-improvement
+rebuilds: A - Coninuous Learning/Lesson Plan 2 Personal Accountability & responding to change.docx; A - Writing/A - Thinking Skills/Making Commitments-rb.docx
 ---
 
 # Owning your work and your mistakes

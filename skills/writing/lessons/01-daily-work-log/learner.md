@@ -3,7 +3,7 @@ title: Keep a daily work log
 summary: Write short, factual log entries that tell the next person what was done, when, by whom and what still needs doing.
 level: 1-2
 time: 60 min
-components: Identify the task that requires you to write | Plan the writing task | Use written words and phrases so you can achieve the purpose of the writing task | Review and revise your writing
+components: Identify the task that requires you to write; Plan the writing task; Use written words and phrases so you can achieve the purpose of the writing task; Review and revise your writing
 rebuilds: A - Writing/walk-in scenarios for First Aid and journaling ik.docx
 ---
 

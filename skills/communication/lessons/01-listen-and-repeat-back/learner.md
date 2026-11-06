@@ -3,8 +3,8 @@ title: Listening and repeating back instructions
 summary: Catch every detail of a spoken job-site instruction and say it back so you both know you have it right.
 level: 1-2
 time: 60 min
-components: Listen with intention, Listen to understand
-rebuilds: A - Oral Communication/Learning to Listen-rb.docx, A - Oral Communication/Communication Series-rb.docx
+components: Listen with intention; Listen to understand
+rebuilds: A - Oral Communication/Learning to Listen-rb.docx; A - Oral Communication/Communication Series-rb.docx
 ---
 
 # Listening and repeating back instructions

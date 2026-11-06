@@ -3,7 +3,7 @@ title: Doing your share on a crew
 summary: Know your role, know who depends on you, and build trust by doing what you said you would do.
 level: 1-2
 time: 60 min
-components: Work well with other people, Achieve a common goal with others
+components: Work well with other people; Achieve a common goal with others
 rebuilds: A - Oral Communication/Working with Others-rb.xlsx
 ---
 

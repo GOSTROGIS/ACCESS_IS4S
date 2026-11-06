@@ -13,7 +13,7 @@ Explain that creativity and innovation is one of the two skills that were new wh
 By the end of the session, learners will be able to:
 
 - picture themselves in two or three work settings and ask questions about each (Use your imagination and curiosity)
-- give a peer positive, specific feedback that helps them picture a possibility, and record others' ideas accurately (Facilitate a creative environment for yourself and others)
+- give a peer positive, specific feedback that helps them picture a possibility, and record others' ideas accurately (Facilitate a creative and innovative environment for yourself and others)
 
 Levels: the Government of Canada page names three creativity and innovation levels, Entry, Intermediate and Advanced. These lessons use 1, 2 and 3 for them.
 

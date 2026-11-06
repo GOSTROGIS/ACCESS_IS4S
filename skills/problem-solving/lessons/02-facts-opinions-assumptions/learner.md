@@ -3,8 +3,8 @@ title: Tell facts from opinions and assumptions
 summary: Sort what you know from what you believe or take for granted, and check the assumptions that could hurt the job.
 level: 1-2
 time: 60 min
-components: Gather information to help you address the issue, Analyze the issue
-rebuilds: A - Working with Others/assumption, bias, explicit, implicit/assumption and bias lesson ik.docx, A - Working with Others/assumption, bias, explicit, implicit/explicit vs implicit ik.docx, A - Working with Others/assumption, bias, explicit, implicit/implicit messages ik.pptx
+components: Gather information to help you address the issue; Analyze the issue
+rebuilds: A - Working with Others/assumption, bias, explicit, implicit/assumption and bias lesson ik.docx; A - Working with Others/assumption, bias, explicit, implicit/explicit vs implicit ik.docx; A - Working with Others/assumption, bias, explicit, implicit/implicit messages ik.pptx
 ---
 
 # Tell facts from opinions and assumptions
@@ -49,31 +49,31 @@ It turns out he is the assigned signaller and the radio has died. Her first idea
 
 **Task 1** (level 1) Label each statement **F** (fact), **O** (opinion) or **A** (assumption).
 
-a. The drywall delivery arrived at 9:40 a.m.
-b. That supplier is always late.
-c. The mud will be dry enough to sand by tomorrow morning.
-d. The plan shows the window rough opening at 1220 mm wide.
-e. Our old foreman ran a better crew.
-f. Nobody is in the mechanical room, so it's fine to start cutting.
-g. The thermometer in the trailer reads 4°C.
-h. The new hire won't last a month.
+- a. The drywall delivery arrived at 9:40 a.m.
+- b. That supplier is always late.
+- c. The mud will be dry enough to sand by tomorrow morning.
+- d. The plan shows the window rough opening at 1220 mm wide.
+- e. Our old foreman ran a better crew.
+- f. Nobody is in the mechanical room, so it's fine to start cutting.
+- g. The thermometer in the trailer reads 4°C.
+- h. The new hire won't last a month.
 
 **Task 2** (level 1) Each sentence states something explicitly. Write one thing each one implies.
 
-a. The pump truck is stuck at the gate.
-b. They ran out of 3/8-inch drill bits at the supply store.
-c. The SkyTrain isn't running this morning.
-d. Everybody passed the fall protection quiz.
-e. The forecast says snow overnight.
+- a. The pump truck is stuck at the gate.
+- b. They ran out of 3/8-inch drill bits at the supply store.
+- c. The SkyTrain isn't running this morning.
+- d. Everybody passed the fall protection quiz.
+- e. The forecast says snow overnight.
 
 **Task 3** (level 2) A box of safety glasses on a store shelf says:
 
 > **PRO-SHIELD SPORT.** Industrial strength! Meets or exceeds industry standards. As worn by pro riders.
 
-a. What does the box state explicitly?
-b. What does it want you to believe?
-c. In BC, what must eye protection meet when a worker is required to wear it? Look it up in WorkSafeBC OHS Regulation section 8.14 at https://www.worksafebc.com/en/law-policy/occupational-health-safety/searchable-ohs-regulation/ohs-regulation/part-08-personal-protective-clothing-and-equipment
-d. What would you need to see on this product before you trusted it for grinding?
+- a. What does the box state explicitly?
+- b. What does it want you to believe?
+- c. In BC, what must eye protection meet when a worker is required to wear it? Look it up in WorkSafeBC OHS Regulation section 8.14 at https://www.worksafebc.com/en/law-policy/occupational-health-safety/searchable-ohs-regulation/ohs-regulation/part-08-personal-protective-clothing-and-equipment
+- d. What would you need to see on this product before you trusted it for grinding?
 
 **Task 4** (level 2) Team build. Your instructor gives each team a tray of straws, pins and paper cups with one instruction: "Build the tallest structure you can." After the build, write down every assumption your team made about that instruction. For example: Did you assume it had to stand on its own? That you could only use the tray? That there was a time limit?
 
@@ -81,9 +81,9 @@ d. What would you need to see on this product before you trusted it for grinding
 
 > At Fraser Bend Mechanical (fictional), a run of copper pipe on the second floor started leaking at three joints the day after it was installed. The superintendent said, "It's the new apprentice. The new ones never clean their joints." The new apprentice, Devon, had soldered that run. So had Marco, who has 12 years in the trade. Nobody wrote down which joints each person made.
 
-a. Which part of the superintendent's statement is a fact, and which is an assumption?
-b. What preconception or habit might be behind it?
-c. List two facts you would gather before deciding who or what caused the leaks.
+- a. Which part of the superintendent's statement is a fact, and which is an assumption?
+- b. What preconception or habit might be behind it?
+- c. List two facts you would gather before deciding who or what caused the leaks.
 
 ## Check yourself
 

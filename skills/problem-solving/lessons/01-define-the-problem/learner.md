@@ -3,8 +3,8 @@ title: Define the problem before you fix it
 summary: Sort what you are given from what you need to find, and name the goal before you start the work.
 level: 1-2
 time: 60 min
-components: Identify the issue to address, Analyze the issue
-rebuilds: A - Writing/A - Thinking Skills/Problem Solving-rb.docx, A - Writing/A - Thinking Skills/critical thinking/desert survival kit ik.docx
+components: Identify the issue to address; Analyze the issue
+rebuilds: A - Writing/A - Thinking Skills/Problem Solving-rb.docx; A - Writing/A - Thinking Skills/critical thinking/desert survival kit ik.docx
 ---
 
 # Define the problem before you fix it
@@ -60,14 +60,14 @@ The statement does not say "replace the door." That might turn out to be the fix
 
 **Task 1** (level 1) Label each statement **S** (symptom), **C** (cause) or **F** (fix).
 
-a. The shop heater blows cold air.
-b. The thermostat batteries are dead.
-c. Put new batteries in the thermostat.
-d. Water is dripping through a ceiling tile in the lunchroom.
-e. A roof drain above the lunchroom is plugged with leaves.
-f. Clear the leaves out of the roof drain.
-g. The chop saw cuts are coming out crooked.
-h. The fence on the chop saw has come loose.
+- a. The shop heater blows cold air.
+- b. The thermostat batteries are dead.
+- c. Put new batteries in the thermostat.
+- d. Water is dripping through a ceiling tile in the lunchroom.
+- e. A roof drain above the lunchroom is plugged with leaves.
+- f. Clear the leaves out of the roof drain.
+- g. The chop saw cuts are coming out crooked.
+- h. The fence on the chop saw has come loose.
 
 **Task 2** (level 1) Read this work order. Sort every piece of information into **given**, **not needed** or **goal**, then write what is **required**.
 
@@ -81,10 +81,10 @@ ______________________________________________
 
 **Task 4** (level 2) For each case, decide: is it familiar or new, simple or complex, and who should decide what happens next?
 
-a. The staple gun at your station is empty.
-b. A guardrail on the second-floor deck is loose.
-c. While you install kitchen cabinets, the client asks you to move a wall outlet 300 mm to the left.
-d. Two drawings in the site trailer show different widths for the same door opening.
+- a. The staple gun at your station is empty.
+- b. A guardrail on the second-floor deck is loose.
+- c. While you install kitchen cabinets, the client asks you to move a wall outlet 300 mm to the left.
+- d. Two drawings in the site trailer show different widths for the same door opening.
 
 **Task 5** (level 2) Go back to the Unit 4 closet door. Write two questions you would ask before you buy any parts. For each question, say how the answer could change what you do.
 

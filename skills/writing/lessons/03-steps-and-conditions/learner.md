@@ -3,8 +3,8 @@ title: Write steps and conditions a crew can follow
 summary: Turn a task into numbered steps, put each condition before the action it controls, and use words like if, unless, and, or and all so they mean exactly what you intend.
 level: 2-3
 time: 90 min
-components: Plan the writing task | Use written words and phrases so you can achieve the purpose of the writing task | Choose the appropriate format for the writing task | Review and revise your writing
-rebuilds: A - Reading/grammar/conditional lesson ik.docx | A - Reading/grammar/conditional, shapes handout ik.docx
+components: Plan the writing task; Use written words and phrases so you can achieve the purpose of the writing task; Choose the appropriate format for the writing task; Review and revise your writing
+rebuilds: A - Reading/grammar/conditional lesson ik.docx; A - Reading/grammar/conditional, shapes handout ik.docx
 ---
 
 # Write steps and conditions a crew can follow

@@ -3,7 +3,7 @@ title: Picturing yourself in a trade
 summary: Use your imagination and the views of others to try on work you may not have pictured before you choose a trade.
 level: 1
 time: 60 min
-components: Use your imagination and curiosity, Facilitate a creative environment for yourself and others
+components: Use your imagination and curiosity; Facilitate a creative and innovative environment for yourself and others
 rebuilds: A - Writing/A - Thinking Skills/Developing a Vision-rb.docx
 ---
 

@@ -68,7 +68,8 @@ h2{margin:0 0 16px;font-family:var(--font-display);font-weight:700;font-size:26p
 .files{columns:2 260px;column-gap:28px;margin:0;padding-left:20px}
 .files li{break-inside:avoid;margin-bottom:4px}
 .site-foot{border-top:1px solid var(--line);padding-block:20px 32px;color:var(--muted);font-size:14px}
-.prose{max-width:78ch;display:block}
+.prose{max-width:78ch;display:block;overflow-wrap:anywhere}
+main>*,nav{min-width:0}
 .prose h2{margin:34px 0 12px}
 .prose h3{margin:26px 0 8px;font-family:var(--font-display);font-size:21px;line-height:1.2}
 .prose p,.prose li{max-width:72ch}

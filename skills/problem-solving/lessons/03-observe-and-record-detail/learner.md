@@ -1,0 +1,144 @@
+---
+title: Observe and record what you see
+summary: Scan a work area in order, write down what is really there, and keep what you see apart from what you think it means.
+level: 1-2
+time: 60 min
+components: Gather information to help you address the issue; Analyze the issue
+rebuilds: A - Writing/A - Thinking Skills/finding info/details lessons ik.docx; A - Writing/A - Thinking Skills/finding info/painting exercises ik.docx
+---
+
+# Observe and record what you see
+
+## Why this matters on the job
+
+Good problem solving starts with good information, and much of that information comes from your own eyes. A tradesperson walking into a shop or a site in BC has to notice the cord across the floor, the tag on the machine and the wrong part in the delivery, often in a few seconds. What you write down is what your supervisor, the next shift or an inspector will rely on.
+
+## Key ideas
+
+### Look in an order, not at random
+
+Our eyes jump to whatever is bright or moving. To see everything, scan in a fixed order: left to right, top to bottom, or one zone at a time. Then look again at the floor, because that is where trips and spills hide.
+
+### Write what you see, not what you think
+
+- **Observation:** "There is a dark puddle about one metre wide in front of the exit door."
+- **Interpretation:** "Someone was careless with the oil."
+
+The observation can be checked by anyone. The interpretation might be wrong: it could be water from a leaking roof. Write the observation first. If you add an interpretation, label it as your opinion.
+
+### A useful note answers five questions
+
+**What** is it? **Where** is it? **How many** or how big? **When** did you see it? **Who** did you tell? Measure or count when you can instead of guessing.
+
+### Report what looks unsafe
+
+In BC, anyone who sees what appears to be an unsafe condition or act must report it to a supervisor or the employer as soon as possible (WorkSafeBC OHS Regulation section 3.10). You do not have to be sure. "Appears to be" is enough.
+
+### Worked example
+
+You notice a hose lying across a doorway.
+
+- Weak note: "Hose problem by the door."
+- Strong note: "Green air hose lying across the doorway to bay 2, at 10:20 a.m. Trip hazard. Told Ray (lead hand) at 10:22."
+
+## The shop picture
+
+Coldwater Fabrication (a fictional shop) bay 2 is shown below, split into zones 1 to 4. Your instructor will tell you when to look and when to cover it.
+
+<div class="figure-art">
+<svg viewBox="0 0 800 460" width="100%" role="img" aria-labelledby="ps03-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="ps03-title">Drawing of bay 2 in a fictional fabrication shop, split into four zones. Ask your instructor for a full description.</title>
+<rect x="0" y="0" width="800" height="460" fill="#ffffff"/>
+<rect x="0" y="0" width="800" height="380" fill="#f2efe9"/>
+<rect x="0" y="380" width="800" height="80" fill="#d9d4cc"/>
+<g stroke="#9a948c" stroke-width="2" stroke-dasharray="8 6"><line x1="200" y1="0" x2="200" y2="460"/><line x1="400" y1="0" x2="400" y2="460"/><line x1="600" y1="0" x2="600" y2="460"/></g>
+<g font-size="18" font-weight="bold" text-anchor="middle" fill="#333333"><circle cx="100" cy="26" r="15" fill="#ffffff" stroke="#333333" stroke-width="2"/><text x="100" y="32">1</text><circle cx="300" cy="26" r="15" fill="#ffffff" stroke="#333333" stroke-width="2"/><text x="300" y="32">2</text><circle cx="500" cy="26" r="15" fill="#ffffff" stroke="#333333" stroke-width="2"/><text x="500" y="32">3</text><circle cx="700" cy="26" r="15" fill="#ffffff" stroke="#333333" stroke-width="2"/><text x="700" y="32">4</text></g>
+<rect x="65" y="130" width="70" height="26" fill="#1f7a3a"/>
+<text x="100" y="149" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">EXIT</text>
+<rect x="50" y="170" width="100" height="210" fill="#8a6d4b" stroke="#333333" stroke-width="2"/>
+<circle cx="135" cy="280" r="5" fill="#d8c27a" stroke="#333333"/>
+<ellipse cx="110" cy="405" rx="55" ry="12" fill="#3b3b3b" opacity="0.8"/>
+<rect x="262" y="104" width="76" height="34" fill="#c62828"/>
+<text x="300" y="118" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">FIRE</text>
+<text x="300" y="131" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">EXTINGUISHER</text>
+<rect x="292" y="176" width="16" height="14" fill="#333333"/>
+<path d="M308 182 q16 4 12 26" stroke="#333333" stroke-width="4" fill="none"/>
+<rect x="285" y="188" width="30" height="70" rx="8" fill="#d32f2f"/>
+<g fill="#c9a46a" stroke="#7a5c2e" stroke-width="2"><rect x="260" y="344" width="80" height="36"/><rect x="260" y="308" width="80" height="36"/><rect x="260" y="272" width="80" height="36"/><rect x="260" y="236" width="80" height="36"/><rect x="260" y="200" width="80" height="36"/></g>
+<g stroke="#a88650" stroke-width="2"><line x1="300" y1="344" x2="300" y2="380"/><line x1="300" y1="308" x2="300" y2="344"/><line x1="300" y1="272" x2="300" y2="308"/><line x1="300" y1="236" x2="300" y2="272"/><line x1="300" y1="200" x2="300" y2="236"/></g>
+<circle cx="500" cy="110" r="34" fill="#ffffff" stroke="#333333" stroke-width="3"/>
+<g stroke="#333333" stroke-width="3"><line x1="500" y1="80" x2="500" y2="86"/><line x1="530" y1="110" x2="524" y2="110"/><line x1="500" y1="140" x2="500" y2="134"/><line x1="470" y1="110" x2="476" y2="110"/></g>
+<line x1="500" y1="110" x2="516.6" y2="103.1" stroke="#333333" stroke-width="4" stroke-linecap="round"/>
+<line x1="500" y1="110" x2="527" y2="110" stroke="#333333" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="410" y1="380" x2="410" y2="248" stroke="#444444" stroke-width="4"/>
+<line x1="396" y1="380" x2="424" y2="380" stroke="#444444" stroke-width="4"/>
+<rect x="398" y="232" width="24" height="18" fill="#f2b705" stroke="#333333"/>
+<rect x="420" y="290" width="170" height="14" fill="#6d4c33"/>
+<rect x="428" y="304" width="10" height="76" fill="#6d4c33"/>
+<rect x="572" y="304" width="10" height="76" fill="#6d4c33"/>
+<rect x="440" y="270" width="50" height="20" fill="#555555"/>
+<circle cx="465" cy="262" r="14" fill="#777777"/>
+<circle cx="445" cy="262" r="11" fill="#9e9e9e" stroke="#555555"/>
+<circle cx="485" cy="262" r="11" fill="#9e9e9e" stroke="#555555"/>
+<line x1="478" y1="270" x2="490" y2="232" stroke="#333333" stroke-width="1.5"/>
+<rect x="486" y="214" width="64" height="40" fill="#f9d71c" stroke="#333333" stroke-width="1.5"/>
+<text x="518" y="227" font-size="9" font-weight="bold" fill="#111111" text-anchor="middle">OUT OF</text>
+<text x="518" y="238" font-size="9" font-weight="bold" fill="#111111" text-anchor="middle">SERVICE</text>
+<text x="518" y="249" font-size="8" font-weight="bold" fill="#111111" text-anchor="middle">DO NOT USE</text>
+<rect x="545" y="274" width="26" height="16" fill="#2f5d8a"/>
+<rect x="500" y="282" width="160" height="7" fill="#8c8c8c" stroke="#555555"/>
+<rect x="620" y="90" width="160" height="110" fill="#ffffff" stroke="#555555" stroke-width="4"/>
+<text x="700" y="122" font-size="17" font-weight="bold" fill="#1a4fa0" text-anchor="middle">JOB 4471</text>
+<text x="700" y="150" font-size="15" fill="#1a4fa0" text-anchor="middle">12 BRACKETS</text>
+<text x="700" y="178" font-size="15" fill="#1a4fa0" text-anchor="middle">DUE THU 3 PM</text>
+<g stroke="#7a5c2e" stroke-width="4" fill="none"><line x1="613" y1="330" x2="657" y2="330"/><line x1="620" y1="330" x2="610" y2="380"/><line x1="650" y1="330" x2="660" y2="380"/><line x1="668" y1="330" x2="712" y2="330"/><line x1="675" y1="330" x2="665" y2="380"/><line x1="705" y1="330" x2="715" y2="380"/><line x1="723" y1="330" x2="767" y2="330"/><line x1="730" y1="330" x2="720" y2="380"/><line x1="760" y1="330" x2="770" y2="380"/></g>
+<rect x="778" y="292" width="14" height="20" fill="#ffffff" stroke="#333333"/>
+<path d="M785 312 L785 384 Q784 430 690 428 L520 432 Q430 432 418 384 L412 380" stroke="#ff7a00" stroke-width="4" fill="none"/>
+</svg>
+</div>
+
+## Practice
+
+**Task 1** (level 1) Look at the picture for 60 seconds. Then cover it and answer from memory.
+
+- a. How many boxes are stacked in zone 2?
+- b. What time does the clock show?
+- c. What does the whiteboard say?
+- d. What colour is the extension cord?
+- e. Which machine has a tag on it, and what does the tag say?
+- f. How many sawhorses are there?
+- g. What sign is above the door?
+
+**Task 2** (level 1) Uncover the picture. Scan it one zone at a time, from zone 1 to zone 4. List everything you see in each zone, including the floor. Check your Task 1 answers.
+
+**Task 3** (level 2) Find four things in the picture that appear to be unsafe. For each one, write a report note that answers what, where, and why it could hurt someone. Is the tagged machine one of them? Explain.
+
+**Task 4** (level 2) Rewrite each note so it states only what can be seen. If you want to keep an opinion, label it.
+
+- a. "Some idiot left the oil everywhere."
+- b. "The grinder's broken."
+- c. "Storage in bay 2 is a disaster."
+- d. "The job on the board is going to be late."
+
+**Task 5** (level 2) Detail in documents. Compare the purchase order with the packing slip that came with the delivery. List every difference.
+
+> **Purchase order 30871**, Coldwater Fabrication to Pacific Metals Supply (both fictional)
+>
+> 1. 6 mm × 1220 mm × 2440 mm hot-rolled plate, qty 2
+> 2. 50 mm × 6 mm flat bar, 6 m lengths, qty 10
+> 3. 14 mm cobalt drill bit, qty 2
+> 4. Black enamel spray paint, qty 12
+
+> **Packing slip**, Pacific Metals Supply. Your PO: 30817
+>
+> 1. 6 mm × 1220 mm × 2440 mm hot-rolled plate, qty 2
+> 2. 50 mm × 8 mm flat bar, 6 m lengths, qty 10
+> 3. 14 mm cobalt drill bit, qty 1
+> 4. Black enamel spray paint, qty 12
+
+## Check yourself
+
+1. Why should you scan a work area in a fixed order?
+2. What is the difference between an observation and an interpretation?
+3. What five questions does a useful note answer?
+4. Do you need to be certain something is unsafe before you report it in BC?

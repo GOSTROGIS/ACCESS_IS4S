@@ -3,7 +3,7 @@ title: Spotting a better way on the job site
 summary: Look hard at a routine job-site task, question the habits behind it and find where a change could help.
 level: 1-2
 time: 60 min
-components: Identify opportunities for you to innovate, Use your imagination and curiosity
+components: Identify opportunities for you to innovate; Use your imagination and curiosity
 ---
 
 # Spotting a better way on the job site
