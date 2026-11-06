@@ -30,7 +30,7 @@ Points a good response covers: uses the address to judge the publisher, notices 
 
 ## Task 4 (level 2)
 
-The address is **worksafebc-update.example**, not **worksafebc.com**. Extra words added to a real name are a common trick. It also asks for your password from a link.
+The address is **worksafebc-update.example**, not **worksafebc.com**. It adds an extra word to the real name, and it has a different ending. Both are common tricks. It also asks for your password from a link.
 
 What to do: **do not log in.** Close the page. If you need something from WorkSafeBC, type worksafebc.com yourself or use a bookmark you made earlier. Tell your supervisor if you think a crew is being targeted.
 
