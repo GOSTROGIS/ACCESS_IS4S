@@ -3,8 +3,8 @@ title: Make and give a short presentation
 summary: Build a four-slide PowerPoint about a tool or part from your trade, add speaker notes, check it for accessibility, learn one new feature from the help pages and present it in two minutes.
 level: 1-2
 time: 75 min
-components: Use common digital tools to complete tasks. Use digital information. Update and upgrade digital skills
-rebuilds: A - Computer Use/Power point demo ik.pptx, A - Computer Use/clips for auto ik.docx, A - Computer Use/metal links ik.docx
+components: Use common digital tools to complete tasks; Use digital information; Update and upgrade digital skills
+rebuilds: A - Computer Use/Power point demo ik.pptx; A - Computer Use/clips for auto ik.docx; A - Computer Use/metal links ik.docx
 ---
 
 # Make and give a short presentation

@@ -3,8 +3,8 @@ title: Keyboard, mouse and touch screen
 summary: Sit and type in a way that protects your wrists, use the shortcuts that save the most time, type accented letters and use a touch screen.
 level: 1
 time: 60 min
-components: Use digital devices including computers, tablets, smart phones, and other handheld devices. Use common digital tools to complete tasks. Apply safe and responsible practices online
-rebuilds: A - Computer Use/Computer Lesson 2/Assignment 3-A1 - Bad Typing Habits.doc, A - Computer Use/Computer Lesson 2/Ex 3-5 - Special Characters Practice.doc, A - Computer Use/Mouse Program.docx
+components: Use digital devices including computers, tablets, smart phones, and other handheld devices; Use common digital tools to complete tasks; Apply safe and responsible practices online
+rebuilds: A - Computer Use/Computer Lesson 2/Assignment 3-A1 - Bad Typing Habits.doc; A - Computer Use/Computer Lesson 2/Ex 3-5 - Special Characters Practice.doc; A - Computer Use/Mouse Program.docx
 ---
 
 # Keyboard, mouse and touch screen

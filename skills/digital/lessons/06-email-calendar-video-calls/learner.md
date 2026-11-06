@@ -3,7 +3,7 @@ title: Email, calendar invites and video calls
 summary: Write a clear work email with an attachment, put a meeting in your calendar, answer an invitation and join a Teams video call ready to talk.
 level: 1-2
 time: 75 min
-components: Use online tools and platforms. Apply safe and responsible practices online. Use digital devices including computers, tablets, smart phones, and other handheld devices
+components: Use online tools and platforms; Apply safe and responsible practices online; Use digital devices including computers, tablets, smart phones, and other handheld devices
 rebuilds: A - Computer Use/Computer Lesson Plan/CP Website - Research Practice Exercise.doc
 ---
 

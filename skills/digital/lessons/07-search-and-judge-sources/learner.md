@@ -3,8 +3,8 @@ title: Search and judge online information
 summary: Search with quotes, site and minus to get better results, read a web address to see who really runs the page, and check whether information is current before you rely on it.
 level: 1-2
 time: 60 min
-components: Use digital information. Use online tools and platforms
-rebuilds: A - Computer Use/Computer Lesson Plan/internetpracticeassessment.doc, A - Computer Use/Computer Lesson Plan/CP Website - Research Practice Exercise.doc
+components: Use digital information; Use online tools and platforms
+rebuilds: A - Computer Use/Computer Lesson Plan/internetpracticeassessment.doc; A - Computer Use/Computer Lesson Plan/CP Website - Research Practice Exercise.doc
 ---
 
 # Search and judge online information

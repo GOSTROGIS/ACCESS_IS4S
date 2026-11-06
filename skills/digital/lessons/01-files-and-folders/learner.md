@@ -3,8 +3,8 @@ title: Save, name and find your files
 summary: Make a folder, give a file a name the next person can understand, save it in the right place and find it again.
 level: 1
 time: 60 min
-components: Use digital devices including computers, tablets, smart phones, and other handheld devices. Use digital information
-rebuilds: A - Computer Use/Computer Lesson 2/Windows Review-Student Version.doc, A - Computer Use/Computer Lesson 2/Intro to Computers Power Point.ppt, A - Computer Use/computer basics brainstorm.docx
+components: Use digital devices including computers, tablets, smart phones, and other handheld devices; Use digital information
+rebuilds: A - Computer Use/Computer Lesson 2/Windows Review-Student Version.doc; A - Computer Use/Computer Lesson 2/Intro to Computers Power Point.ppt; A - Computer Use/computer basics brainstorm.docx
 ---
 
 # Save, name and find your files

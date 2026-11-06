@@ -3,7 +3,7 @@ title: Passwords, passkeys and phishing
 summary: Make strong passphrases, use multi-factor authentication and passkeys, spot phishing emails, texts, calls and QR codes, and know where to report a scam.
 level: 1-2
 time: 60 min
-components: Apply safe and responsible practices online. Use online tools and platforms
+components: Apply safe and responsible practices online; Use online tools and platforms
 ---
 
 # Passwords, passkeys and phishing

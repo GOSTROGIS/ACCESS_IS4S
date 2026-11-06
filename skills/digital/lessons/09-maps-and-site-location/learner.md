@@ -3,7 +3,7 @@ title: Find and measure a site on a map
 summary: Find a job site by address and by coordinates, measure a distance, look up property and zoning information in VanMap, and know what an online map cannot tell you before you dig.
 level: 2
 time: 60 min
-components: Use online tools and platforms. Use digital information
+components: Use online tools and platforms; Use digital information
 rebuilds: A - Computer Use/VanMap Lesson.docx
 ---
 

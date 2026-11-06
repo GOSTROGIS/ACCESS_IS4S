@@ -38,7 +38,7 @@ On a BC job site, the SDS, the building code, a WorkSafeBC rule or a tool manual
 
 **Question:** How often must SDSs be checked in BC?
 
-1. A search result from a site called "safetyanswers-bc.net" says every 5 years. The address is not an official one, and it sells binders. Treat it as a lead only.
+1. A search result from a site called "safetyanswers-bc.example" says every 5 years. The address is not an official one, and it sells binders. Treat it as a lead only.
 2. Go to **worksafebc.com** and open the WHMIS 2015 page. Use find on page to search for "three years".
 3. It says: "In British Columbia, SDSs must be checked every three years to ensure they include the most current information."
 4. **Answer: every three years**, from WorkSafeBC.
@@ -52,7 +52,7 @@ On a BC job site, the SDS, the building code, a WorkSafeBC rule or a tool manual
 > "…In British Columbia, SDSs must be checked every three years to ensure they include the most current information…"
 >
 > **2. SDS Sheets EXPIRE After 5 Years, Expert Warns! Is Your Binder Legal?**
-> safetyanswers-bc.net · Sponsored
+> safetyanswers-bc.example · Sponsored
 > "Don't get fined! Order our 2026 SDS Binder Kit today, only $89.99…" No author. No date.
 >
 > **3. TradesTalk Forum: "anyone actually check their SDS sheets??"**
@@ -60,7 +60,7 @@ On a BC job site, the SDS, the building code, a WorkSafeBC rule or a tool manual
 > "never heard of checking them lol, we just keep the ones that came with the stuff"
 >
 > **4. WorkSafeBC: Download your updated SDS pack now. Log in to continue.**
-> worksafebc-update.com
+> worksafebc-update.example
 > "Your account needs updating. Enter your WorkSafeBC password to download."
 
 **Document B: Search summary** (fictional)

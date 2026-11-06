@@ -3,8 +3,8 @@ title: Format a work document in Word
 summary: Use the Home tab, heading styles, line spacing and a title page to turn plain text into a workplace procedure people can read and follow.
 level: 1-2
 time: 90 min
-components: Use common digital tools to complete tasks. Use digital information
-rebuilds: A - Computer Use/Computer Lesson 2/Lesson 1.doc, A - Computer Use/Computer Lesson 2/Ex 2-11 Lesson 1 Study Notes.doc, A - Computer Use/Computer Lesson 2/Ex 5-1 - Spacing.doc, A - Computer Use/Computer Lesson 2/Ex 5-5 - Title Page.doc, A - Computer Use/Computer Lesson 2/Lesson 4 troubleshooting notes.doc, A - Computer Use/Computer Lesson Plan/Directions for Formatting CP Rail Document.doc, A - Computer Use/Computer Lesson Plan/Instructor's Directions for Computer Practice Exercise..doc, A - Computer Use/Computer Lesson Plan/Computer Exercise/Canadian Pacific Document - Formatting Text.doc, A - Computer Use/computer basics brainstorm.docx
+components: Use common digital tools to complete tasks; Use digital information
+rebuilds: A - Computer Use/Computer Lesson 2/Lesson 1.doc; A - Computer Use/Computer Lesson 2/Ex 2-11 Lesson 1 Study Notes.doc; A - Computer Use/Computer Lesson 2/Ex 5-1 - Spacing.doc; A - Computer Use/Computer Lesson 2/Ex 5-5 - Title Page.doc; A - Computer Use/Computer Lesson 2/Lesson 4 troubleshooting notes.doc; A - Computer Use/Computer Lesson Plan/Directions for Formatting CP Rail Document.doc; A - Computer Use/Computer Lesson Plan/Instructor's Directions for Computer Practice Exercise..doc; A - Computer Use/Computer Lesson Plan/Computer Exercise/Canadian Pacific Document - Formatting Text.doc; A - Computer Use/computer basics brainstorm.docx
 ---
 
 # Format a work document in Word

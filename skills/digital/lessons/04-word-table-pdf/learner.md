@@ -3,7 +3,7 @@ title: Build a table in Word and save a PDF
 summary: Put information in a simple Word table with a header row, then save a PDF copy that anyone can open and check it before you send it.
 level: 2
 time: 60 min
-components: Use common digital tools to complete tasks. Use digital information
+components: Use common digital tools to complete tasks; Use digital information
 rebuilds: A - Computer Use/Create a Table.docx
 ---
 

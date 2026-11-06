@@ -3,8 +3,8 @@ title: Build a materials list in Excel
 summary: Enter a job's materials in Excel, work out line totals with formulas, add them with SUM, find an average and watch the totals update when a quantity changes.
 level: 1-2
 time: 90 min
-components: Use common digital tools to complete tasks. Use digital information
-rebuilds: A - Computer Use/Computer Skills/Lesson Plan Computer Skills- Excel part 1.docx, A - Computer Use/Computer Skills/Lesson Plan Computer Skills- Excel part 2.docx, A - Computer Use/Computer Skills/Lesson Plan Computer Skills- Excel part 3.docx
+components: Use common digital tools to complete tasks; Use digital information
+rebuilds: A - Computer Use/Computer Skills/Lesson Plan Computer Skills- Excel part 1.docx; A - Computer Use/Computer Skills/Lesson Plan Computer Skills- Excel part 2.docx; A - Computer Use/Computer Skills/Lesson Plan Computer Skills- Excel part 3.docx
 ---
 
 # Build a materials list in Excel
