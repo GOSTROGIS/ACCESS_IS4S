@@ -1,0 +1,79 @@
+{
+  "source": "https://github.com/GOSTROGIS/Business/tree/main/curriculum/skills-for-success",
+  "business_commit": "917ba2a 2026-10-30",
+  "files": 272,
+  "chapters_per_skill": {
+    "reading": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ],
+    "writing": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ],
+    "numeracy": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ],
+    "digital": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ],
+    "problem-solving": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ],
+    "communication": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ],
+    "collaboration": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ],
+    "adaptability": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ],
+    "creativity-innovation": [
+      "answers.html",
+      "answers.md",
+      "learner.html",
+      "learner.md",
+      "teaching.html",
+      "teaching.md"
+    ]
+  }
+}

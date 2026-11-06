@@ -1,0 +1,74 @@
+{
+  "edition": "4",
+  "date": "2026-10-30",
+  "skills": [
+    "Reading",
+    "Writing",
+    "Numeracy",
+    "Digital",
+    "Problem solving",
+    "Communication",
+    "Collaboration",
+    "Adaptability",
+    "Creativity and innovation"
+  ],
+  "books": [
+    {
+      "name": "learner-textbook",
+      "title": "Nine skills for learning, work and community",
+      "short_title": "Learner textbook",
+      "eyebrow": "Book 1 \u00b7 Learner textbook",
+      "description": "Learn the nine Skills for Success through illustrated explanations, complete practice cases, individual checks and projects for learning, work and community.",
+      "edition_note": "Start with a useful goal and the skills you already bring. Each chapter provides a clear process, worked examples, practice and a fresh task. Choose the entry route you need, keep your own evidence and use feedback to decide what to try next.",
+      "chapters": [
+        "learner/00-start-here.md",
+        "learner/01-reading.md",
+        "learner/02-writing.md",
+        "learner/03-numeracy.md",
+        "learner/04-digital.md",
+        "learner/05-problem-solving.md",
+        "learner/06-communication.md",
+        "learner/07-collaboration.md",
+        "learner/08-adaptability.md",
+        "learner/09-creativity-innovation.md",
+        "learner/10-integrated-projects.md",
+        "learner/11-reference-and-portfolio.md"
+      ]
+    },
+    {
+      "name": "practitioner-guide",
+      "title": "Teaching the nine Skills for Success",
+      "short_title": "Practitioner guide",
+      "eyebrow": "Book 2 \u00b7 Practitioner guide",
+      "description": "Teach the nine Skills for Success with complete cases, visual models, learning routes, lesson plans, observation tools and answer guidance.",
+      "edition_note": "Plan, teach, observe and respond to evidence. This guide brings together teaching routines, complete classroom cases, practice checks, answer guidance and reusable delivery tools. Choose an appropriate starting point and record the task conditions so feedback identifies a useful next step.",
+      "chapters": [
+        "practitioner/01-purpose-and-framework.md",
+        "practitioner/02-teaching-approaches.md",
+        "practitioner/03-reading.md",
+        "practitioner/04-writing.md",
+        "practitioner/05-numeracy.md",
+        "practitioner/06-digital.md",
+        "practitioner/07-problem-solving.md",
+        "practitioner/08-communication.md",
+        "practitioner/09-collaboration.md",
+        "practitioner/10-adaptability.md",
+        "practitioner/11-creativity-innovation.md",
+        "practitioner/12-integrated-lesson-plans.md",
+        "practitioner/13-practitioner-development.md",
+        "practitioner/14-delivery-and-review.md",
+        "answers/01-reading.md",
+        "answers/02-writing.md",
+        "answers/03-numeracy.md",
+        "answers/04-digital.md",
+        "answers/05-problem-solving.md",
+        "answers/06-communication.md",
+        "answers/07-collaboration.md",
+        "answers/08-adaptability.md",
+        "answers/09-creativity-innovation.md",
+        "answers/10-integrated-projects.md"
+      ]
+    }
+  ],
+  "edition_label": "AI literacy and independent practice edition"
+}

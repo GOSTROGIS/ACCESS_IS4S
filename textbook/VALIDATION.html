@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build and content validation | ACCESS IS4S</title><meta name="description" content="">
+<link rel="stylesheet" href="assets/books.css"><link rel="icon" href="assets/is4s-badge.svg" type="image/svg+xml">
+</head><body class="reading"><a class="skip" href="#content">Skip to learning material</a>
+<nav class="toolbar" aria-label="Book resources"><a href="index.html">ACCESS IS4S books</a></nav>
+<header class="reading-mast"><img src="assets/is4s-badge.svg" width="100" height="100" alt="ACCESS Indigenous Skills4Success"><p class="eyebrow">ACCESS IS4S · Learning resources</p></header><main id="content" class="reading-sheet"><h1 id="build-and-content-validation">Build and content validation</h1>
+<p><strong>Edition 4 · 30 October 2026.</strong> These checks cover authored content, generated artifacts, software behaviour and sampled visual presentation. Qualified teaching review, a classroom pilot and local Indigenous community participation remain delivery work; this record does not claim they have occurred.</p>
+<h2 id="delivered-books">Delivered books</h2>
+<p class="table-scroll-hint">If needed, scroll across this table. Keyboard: focus the table, then use the arrow keys.</p><div class="table-wrap table-wide table-compact" tabindex="0" role="region" aria-label="Delivered books — table 1: Artifact, Pages, Contents"><table class="table-wide table-compact">
+<thead>
+<tr>
+<th scope="col">Artifact</th>
+<th scope="col">Pages</th>
+<th scope="col">Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="learner-textbook.pdf">Learner textbook</a></td>
+<td>216</td>
+<td>12 chapters: nine skills, entry teaching, fresh practice, two projects, learning reference and portfolio.</td>
+</tr>
+<tr>
+<td><a href="practitioner-guide.pdf">Practitioner guide</a></td>
+<td>287</td>
+<td>14 teaching and delivery chapters, integrated fresh cases and keys, and 10 core answer sections.</td>
+</tr>
+<tr>
+<td><a href="visual-sampler.pdf">Visual preview</a></td>
+<td>8</td>
+<td>Actual pages selected from the complete books.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Both PDFs contain selectable text, tagged structure, bookmarks and clickable contents. Printed chapter page numbers were checked against the final PDF destinations; both books stabilized after two export passes. Companion-book links resolve to the intended chapter or heading page. No temporary localhost URLs remain in PDF annotations.</p>
+<p>The books teach as standalone ACCESS IS4S documents. Automated checks reject original-guide comparison language in their text. Editorial research and coverage records remain outside both books.</p>
+<h2 id="content-and-activity-checks">Content and activity checks</h2>
+<ul>
+<li>All nine skills and 54 framework components have mapped learning opportunities. The 174 core learner activities retain matching answer guidance: 18 per skill and 12 integrated-project activities.</li>
+<li>The five foundation skills add 38 individually identified practice checks, complete case inputs, separate answer guidance, entry routes and observation criteria. Reading, Writing, Numeracy, Digital and Problem solving each provide changed tasks for a fresh attempt.</li>
+<li>Communication, Collaboration, Adaptability, and Creativity and innovation add complete new cases, role cards or changed conditions, separate keys, evidence criteria and teaching routes. Individual performance is distinguished from group discussion or a proposed action.</li>
+<li>Independent reviews checked fresh-task arithmetic, case totals, changed requirements and key alignment. Fraction regrouping, whole packs, stock updates, transport connections and trial percentages were checked against the actual inputs.</li>
+<li>“Produce and test the shared pack” and its answer accept an evidenced successful reader check without requiring an invented revision. Communication timing permits interpretation, signing, AAC and processing time.</li>
+<li>Delivery tools include sequential observer assignments, fresh-attempt and recovery arrangements, reusable local-review records and task-specific evidence prompts. They contain no prefilled approvals or invented learner results.</li>
+<li>The editorial crosswalk now renders its eight intended headings and a consistent 27-row strategy table. Its structural checks pass; it is excluded from the published books.</li>
+</ul>
+<h2 id="visuals-and-print">Visuals and print</h2>
+<p>The current books contain <strong>105 image placements</strong>: 101 SVG placements and four contextual illustrations. Thirteen new SVGs add one concrete walkthrough for every skill and four AI/file/audit explanations. The canonical visual manifest contains 107 placements, including separate authoring material. Component tables render as readable practice cards, and dense activity-code lists have been replaced with short teaching sequences and numbered routes.</p>
+<p>Reading editions display descriptive task names; authoring identifiers remain only in internal tracking and HTML metadata. All sixteen AI activities appear in both books, with independent case inputs and full teaching/answer guidance. The practitioner book has no repository or asphalt-course dependency. PDF checks confirm the media activities are included.</p>
+<p>New browser checks cover Communication, Digital, instructor Digital and the media player at 390 and 1280 pixels. They found no page-level overflow or failed loaded images. All thirteen new SVGs fit their view boxes. Actual PDF pages were visually inspected for the communication exchange, instructor component guide and audio activity. The updated eight-page sampler includes the communication exchange, file-format guide and AI audit alongside selected core visuals.</p>
+<p>The supplied practice pack contains real DOCX, XLSX formulas, CSV, HTML and PDF files, plus a 58.54-second narrated study video, MP3/WAV audio, seven SVG scenes, SRT/VTT captions, transcript, storyboard and flashcard CSV. The narration uses the local Flite synthetic voice; the example does not claim generation by a named commercial AI platform. Thirty-nine additional checks passed for file opening, calculations, ZIP integrity, audio/video streams, caption timing, browser media metadata and task visibility.</p>
+<p>These checks are bounded presentation reviews, not a full assistive-technology or PDF accessibility certification.</p>
+<h2 id="digital-practice-desk">Digital practice desk</h2>
+<p>The <a href="../skills/digital/practice-desk/index.html">practice desk</a> was exercised in Chromium using fictional records. Checks covered invalid input, calculated totals, removal of the dummy contact column, stale-preview detection, saving two versions, reopening the earlier version, JSON download, persistence after reload, narrow-screen layout and reset. Reset preserved unrelated browser storage. No JavaScript errors or external network requests occurred in the tested workflow.</p>
+<p>Recipient and access choices are explicitly simulated. Real account permissions must be observed in an approved platform when that is the learning objective. A supplied total is not evidence that a learner constructed a spreadsheet formula.</p>
+<h2 id="reproduce-the-checks">Reproduce the checks</h2>
+<pre><code class="language-sh">python -m pip install -r curriculum/skills-for-success/tools/requirements.txt
+python curriculum/skills-for-success/tools/build_books.py
+python curriculum/skills-for-success/tools/verify_books.py --require-generated --report /tmp/is4s-book-verification.json
+</code></pre>
+<p>The current structural run passed with zero errors; the detailed check totals are recorded in the generated verification output. Counts may grow when linked editorial records are added. Checks cover source integrity, coverage inventory, activity/answer IDs, book membership, standalone prose, fresh-practice presence, local links and fragments, contents destinations, companion PDF targets, nonempty PDF pages, figures, alternative descriptions and SVG self-containment. External URLs are outside this offline verifier.</p>
+<p>The previous edition’s installer idempotence check covered 69 authoring and editorial files. The current edition adds AI lesson sources and preserves the same managed-block installation approach. Build tools preserve unmarked prose and replace only their declared managed blocks. Python bytecode is excluded from version control; PDF and ZIP artifacts are tracked as binary files.</p>
+<p>For asphalt-specific validation and remaining technical review, see the <a href="https://github.com/GOSTROGIS/Business/blob/main/curriculum/asphalt-paving/VALIDATION.md">asphalt record</a> and <a href="https://github.com/GOSTROGIS/Business/blob/main/curriculum/asphalt-paving/line-a/technical-handoff.md">Roadbuilding delivery record</a>.</p></main><footer class="site-footer">ACCESS · Indigenous Skills 4 Success · 30 October 2026 · Edition 4 · AI literacy and independent practice edition</footer></body></html>

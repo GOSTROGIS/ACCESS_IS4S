@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page moved · ACCESS IS4S</title>
+<link rel="icon" href="/ACCESS_IS4S/brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/ACCESS_IS4S/brand/site.css">
+<script>
+/* Old addresses from before the nine-skills layout (5 November 2026).
+   GitHub Pages serves this page for any missing path, so one list covers every old file. */
+(function () {
+  var MOVED = [
+    ['carpentry/intake-142/', 'programs/carpentry/intake-142/'],
+    ['bcbc/', 'programs/carpentry/bcbc-part-9/'],
+    ['numeracy-hub/', 'skills/numeracy/hub/'],
+    ['shape-canvas/', 'skills/numeracy/shape-canvas/'],
+    ['calculators/', 'skills/numeracy/calculators/'],
+    ['books/', 'skills/numeracy/books/']
+  ];
+  var path = location.pathname;
+  var m = /^\/access_is4s\//i.exec(path);
+  if (!m) return;
+  var base = m[0];
+  var rest = path.slice(base.length);
+  if (/^(numeracy-hub|shape-canvas|calculators|books|bcbc|carpentry\/intake-142)$/.test(rest)) rest += '/';
+  for (var i = 0; i < MOVED.length; i++) {
+    if (rest.indexOf(MOVED[i][0]) === 0) {
+      location.replace(base + MOVED[i][1] + rest.slice(MOVED[i][0].length) + location.search + location.hash);
+      return;
+    }
+  }
+})();
+</script>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="/ACCESS_IS4S/"><img class="lockup" src="/ACCESS_IS4S/brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="eyebrow">ACCESS Indigenous Skills4Success</p>
+      <h1>Page not found</h1>
+      <p class="lede">This address is not on the site. Start from the 9 Skills hub.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <p><a href="/ACCESS_IS4S/">Go to the 9 Skills hub</a></p>
+</main>
+</body>
+</html>
