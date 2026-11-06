@@ -11682,7 +11682,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
   function notes(c) {
     var s = sums(c), out = []
     s.parts.forEach(function (p, i) { out.push('A' + (i + 1) + ' is the area of ' + M().name(p.o) + (p.sg < 0 ? ', a cut-out' : '') + '.') })
-    out.push('P is measured round the outside of the outline drawn in red. H is the distance round the holes, dashed in red.')
+    out.push('P is measured round the outside of the outline drawn in red. H is the distance round the holes, dashed in red. The cut-outs are filled red.')
     if (s.mismatch) out.push('These shapes overlap, or a cut-out is not inside them, so the sum is not the area inside the outline. The total area shown is the area inside the outline, ' + U.fmt(s.ol.area) + ' ' + U.unitStr(u2(), 2) + '.')
     return out
   }
@@ -11738,7 +11738,72 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       h += '<p class="muted">Select two or more flat shapes and use Make a composite shape, or join one that is on this page.</p>'
       if (others.length) h += '<div class="row">' + others.map(function (q) { return '<button type="button" class="btn btn-small" data-cs="join" data-id="' + q.id + '">Join ' + esc(name(q)) + '</button>' }).join('') + '</div>'
     }
-    return h + '</div>'
+    return h + cutRow(o) + '</div>'
+  }
+  /* shapes inside shapes: a shape cut out of a flat shape. The new shape goes in the middle of the host (the centre of its
+     area), small enough to sit inside it, and the two make a composite with the new shape marked Subtract. The cut-out
+     stays an ordinary shape, so it can be dragged, turned and resized like any other, and the sizes follow. */
+  var CUT_FILL = '#FAE8E9', CUT_EDGE = RED
+  var CUTS = [['square', 'Square'], ['rectangle', 'Rectangle'], ['circle', 'Circle'], ['equilateral-triangle', 'Triangle'], ['hexagon', 'Hexagon']]
+  function cutArt(h) {
+    var C = E().colors
+    return h.split('fill="' + C.flat + '"').join('fill="' + CUT_FILL + '"').split('stroke="' + C.edge + '"').join('stroke="' + CUT_EDGE + '"')
+  }
+  function segDist(p, a, b) {
+    var dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy
+    var t = L ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L)) : 0
+    return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy)
+  }
+  /* a tidy size no larger than v */
+  function tidy(v) {
+    var st = v >= 20 ? 1 : v >= 2 ? 0.5 : 0.1
+    return Math.round(Math.floor(v / st + 1e-9) * st * 10) / 10
+  }
+  /* sizes that keep every corner of the cut-out within 0.6 of the room d around the middle */
+  function cutParams(id, d) {
+    var R = 0.6 * d, p = null
+    if (id === 'square') p = { s: tidy(R * Math.SQRT2) }
+    if (id === 'rectangle') p = { l: tidy(R * 1.6), w: tidy(R * 0.8) }
+    if (id === 'circle') p = { r: tidy(R) }
+    if (id === 'equilateral-triangle') p = { s: tidy(R * Math.sqrt(3)) }
+    if (id === 'hexagon') p = { s: tidy(R) }
+    return p && Object.keys(p).every(function (k) { return p[k] > 0 }) ? p : null
+  }
+  function cutOut(o, id) {
+    if (!isFlat(o) || (o.comp && o.comp.op === 'sub')) return null
+    var ppu = o.ppu, rs = rings(o, ppu), A = 0, cx = 0, cy = 0
+    rs.forEach(function (r) {
+      r.forEach(function (a, i) {
+        var b = r[(i + 1) % r.length], k = a[0] * b[1] - b[0] * a[1]
+        A += k
+        cx += (a[0] + b[0]) * k
+        cy += (a[1] + b[1]) * k
+      })
+    })
+    if (Math.abs(A) < 1e-12) return null
+    var ctr = [cx / (3 * A), cy / (3 * A)]
+    if (!inside(ctr, rs)) return null
+    var d = Infinity
+    rs.forEach(function (r) { r.forEach(function (a, i) { d = Math.min(d, segDist(ctr, a, r[(i + 1) % r.length])) }) })
+    var p = isFinite(d) ? cutParams(id, d) : null
+    if (!p) return null
+    var wx = ctr[0] * ppu, wy = ctr[1] * ppu, q = M().addShape(id, wx, wy, p)
+    q.ppu = ppu
+    q.layer = o.layer
+    var bx = SC.Geo.box(M().drawable(q), ppu)
+    q.x = wx - (bx[0] + bx[2]) / 2
+    q.y = wy - (bx[1] + bx[3]) / 2
+    var c = compOf(o)
+    if (c) join(c, q)
+    else c = make([o, q])
+    if (!c) return null
+    setOp(q, 'sub')
+    return q
+  }
+  function cutRow(o) {
+    if (o.comp && o.comp.op === 'sub') return ''
+    return '<p class="muted">Cut a shape out of this one. It goes in the middle, drawn in red, and you can drag, turn and resize it.</p>' +
+      '<div class="row" role="group" aria-label="Cut out a shape">' + CUTS.map(function (k) { return '<button type="button" class="btn btn-small" data-cs="cut" data-shape="' + k[0] + '">' + esc(k[1]) + '</button>' }).join('') + '</div>'
   }
   function wireShape(pane, o, done) {
     U.qa('[data-cs]', pane).forEach(function (b) {
@@ -11751,11 +11816,20 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
           done() }
         if (a === 'join') { var q = M().obj(b.getAttribute('data-id'))
           if (q && join(q, o)) done() }
+        if (a === 'cut') {
+          var nq = cutOut(o, b.getAttribute('data-shape'))
+          if (!nq) { SC.P.toast('There is no room in the middle of this shape for a cut-out. Drag a shape inside it, select both and use Make a composite shape.', true)
+            return }
+          done()
+          SC.I.select([nq.id])
+          SC.P.toast(M().name(nq) + ' cut out of ' + M().name(o) + '. Drag, turn or resize it: the composite sizes follow.')
+        }
       })
     })
   }
   SC.Co = { members: members, compOf: compOf, isFlat: isFlat, outline: outline, sums: sums, dims: dims, baseDims: baseDims, art: art, box: box, name: name, make: make, join: join, leave: leave, setOp: setOp,
-    breakUp: breakUp, scale: scale, items: items, notes: notes, key: key, valid: valid, aria: aria, pane: pane, wire: wire, shapeSec: shapeSec, wireShape: wireShape, union: union }
+    breakUp: breakUp, scale: scale, items: items, notes: notes, key: key, valid: valid, aria: aria, pane: pane, wire: wire, shapeSec: shapeSec, wireShape: wireShape, union: union,
+    cutOut: cutOut, cutArt: cutArt, CUTS: CUTS }
 })(window)
 </script>
 <script id="js-style">
@@ -15168,8 +15242,8 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       var dr = M.drawable(o);
       if (!dr) return '';
       var h = G.art(dr, o.ppu, { units: M.unit(), labels: labelsOf(o), hl: hlFor(o), labelScale: lsShown, inch: inchFn(), exact: inchFn() ? exactFn(o) : null });
-      /* a cut-out of a composite shows the paper through it */
-      if (o.type === 'shape' && o.comp && o.comp.op === 'sub' && SC.Co && SC.Co.compOf(o)) h = h.split('fill="' + W.Shapes.colors.flat + '"').join('fill="#FFFFFF" fill-opacity="0.9"')
+      /* a cut-out of a composite is drawn in red, as in the exercises: the red tint inside and a red edge */
+      if (o.type === 'shape' && o.comp && o.comp.op === 'sub' && SC.Co && SC.Co.compOf(o)) h = SC.Co.cutArt(h)
       /* hidden values: gone, or blanks to fill in while practising */
       if (SC.Pr) h = SC.Pr.labels(o, h);
       /* the piece's own fill and outline, when it has one */
