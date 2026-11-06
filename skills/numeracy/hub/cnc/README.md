@@ -10,7 +10,7 @@ The manual builder uses a flat end mill or a turning tool and the simulator’s 
 
 The simulator, manual builder, examples, DXF/SVG/CSV and STL imports work locally without a network. Optional DWG and STEP/IGES readers download on demand and need internet access.
 
-The machine models and interface carry the official IS4S artwork from `../../brand/`, using the ACCESS colour palette.
+The machine models and interface carry the official IS4S artwork from `../../../../brand/`, using the ACCESS colour palette.
 
 ## Included components
 

@@ -19,8 +19,8 @@ const ARTICLES = path.join(ROOT, 'articles.json')
 
 let index = null, arts = null, seq = 0
 
-/* the published repo keeps the plates at bcbc/<section>/<Article>.svg (short paths, so the ZIP extracts on Windows) */
-const REPO_PLATES = path.join(__dirname, '..', '..', '..', 'bcbc')
+/* the published repo keeps the plates at programs/carpentry/bcbc-part-9/<section>/<Article>.svg (short paths, so the ZIP extracts on Windows) */
+const REPO_PLATES = path.join(__dirname, '..', '..', '..', 'programs', 'carpentry', 'bcbc-part-9')
 
 function plateIndex() {
   if (index) return index

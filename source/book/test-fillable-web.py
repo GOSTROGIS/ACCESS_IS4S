@@ -29,7 +29,7 @@ def main():
     handler = functools.partial(QuietHandler, directory=str(ROOT))
     server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
-    url = f'http://127.0.0.1:{server.server_port}/books/ACCESS-Trades-Numeracy-Exercise-Book-web.html'
+    url = f'http://127.0.0.1:{server.server_port}/skills/numeracy/books/ACCESS-Trades-Numeracy-Exercise-Book-web.html'
     with sync_playwright() as p:
         browser = p.chromium.launch(executable_path=args.browser, headless=True, args=['--no-sandbox'])
         context = browser.new_context(viewport={'width': 1280, 'height': 900})

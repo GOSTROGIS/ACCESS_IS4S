@@ -169,7 +169,7 @@ def form_font(doc):
     # Reuse the full, licensed DejaVu font already shipped for lecture PDFs.
     # Keeping the full font (not a subset) lets later answers add new glyphs.
     root = Path(__file__).resolve().parents[2]
-    bundle = root / 'carpentry/intake-142/Quizzes/vendor/pdf-resources.js'
+    bundle = root / 'programs/carpentry/intake-142/Quizzes/vendor/pdf-resources.js'
     data = bundle.read_text().split('window.LectureQuizPDFResources=', 1)[1].strip().removesuffix(';')
     font_bytes = base64.b64decode(json.loads(data)['vendor/DejaVuSans.ttf'])
     return doc[0].insert_font(fontname='ExerciseForm', fontbuffer=font_bytes)

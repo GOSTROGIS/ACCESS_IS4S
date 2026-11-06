@@ -20,8 +20,8 @@ root = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('fillable_pdf', Path(__file__).with_name('fillable-pdf.py'))
 forms = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(forms)
-pdf_path = root / 'books/ACCESS-Trades-Numeracy-Exercise-Book.pdf'
-html_path = root / 'books/ACCESS-Trades-Numeracy-Exercise-Book-web.html'
+pdf_path = root / 'skills/numeracy/books/ACCESS-Trades-Numeracy-Exercise-Book.pdf'
+html_path = root / 'skills/numeracy/books/ACCESS-Trades-Numeracy-Exercise-Book-web.html'
 inventory = forms.Inventory(html_path.read_text())
 expected = {forms.field_id(q['section'], q['number'], kind)
             for q in inventory.questions for kind in ('answer', 'working')}

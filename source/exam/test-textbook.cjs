@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
-const html = fs.readFileSync(path.join(root, 'numeracy-hub/index.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'skills/numeracy/hub/index.html'), 'utf8');
 const TI30 = require('../calc2/ti30.js');
 const Shapes = require('../canvas/src/vendor/shapes-engine.js');
 const ctx = { TI30 };
@@ -16,7 +16,7 @@ const coreEnd = html.indexOf('\nvar ANG = ', coreStart);
 assert(keysStart > 0 && coreStart > keysStart && coreEnd > coreStart, 'Hub engine boundaries');
 vm.runInNewContext(html.slice(keysStart, coreEnd), ctx);
 const C = ctx.ExamCore;
-const bank = require('../../numeracy-hub/exam-textbook.js')(C, Shapes, require('../../numeracy-hub/exam-textbook-geometry.js'));
+const bank = require('../../skills/numeracy/hub/exam-textbook.js')(C, Shapes, require('../../skills/numeracy/hub/exam-textbook-geometry.js'));
 assert.deepEqual(bank.chapters.map(c => c.id), [...Array.from({length:13}, (_, i) => String(i+1)), 'A']);
 assert.equal(new Set(bank.tasks.map(t => t.uid)).size, bank.tasks.length);
 for (const ch of bank.chapters) assert(bank.tasks.filter(t => t.module === 'textbook:' + ch.id).length >= 4, ch.label);
@@ -97,7 +97,7 @@ for (let seed = 1; seed <= 1000; seed++) {
 }
 assert(halfCentCases > 50);
 const geometryTasks = {};
-require('../../numeracy-hub/exam-textbook-geometry.js')({
+require('../../skills/numeracy/hub/exam-textbook-geometry.js')({
   add:(ch,id,title,level,make)=>{geometryTasks[id]=make;},
   ri:(r,lo,hi)=>lo+Math.floor(r()*(hi-lo+1)), pick:(r,a)=>a[Math.floor(r()*a.length)],
   n:bank.helpers.n, shape:()=>'', q:(prompt,value)=>({prompt,value})

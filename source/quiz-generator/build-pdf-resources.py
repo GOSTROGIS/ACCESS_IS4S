@@ -12,7 +12,7 @@ def main() -> None:
     parser.add_argument('--font-directory', type=Path, default=Path('/usr/share/fonts/truetype/dejavu'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    quizzes = root / 'carpentry/intake-142/Quizzes'
+    quizzes = root / 'programs/carpentry/intake-142/Quizzes'
     files = {
         'vendor/DejaVuSans.ttf': args.font_directory / 'DejaVuSans.ttf',
         'vendor/DejaVuSans-Bold.ttf': args.font_directory / 'DejaVuSans-Bold.ttf',

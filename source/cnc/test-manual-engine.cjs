@@ -1,6 +1,6 @@
 'use strict';
 const assert = require('node:assert/strict');
-const M = require('../../numeracy-hub/cnc/manual-engine.js');
+const M = require('../../skills/numeracy/hub/cnc/manual-engine.js');
 const near = (a,b) => assert.ok(Math.abs(a-b)<1e-9, `${a} != ${b}`);
 let checks=0;
 function test(name,fn){fn();checks++;console.log('PASS '+name);}

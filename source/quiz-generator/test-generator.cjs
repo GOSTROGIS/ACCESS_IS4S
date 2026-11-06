@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
-const dir=path.resolve(__dirname,'../../carpentry/intake-142/Quizzes');
+const dir=path.resolve(__dirname,'../../programs/carpentry/intake-142/Quizzes');
 const scope={window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(dir,'quiz-data.js'),'utf8'),scope);
 const data=JSON.parse(JSON.stringify(scope.window.QUIZ_DATA));

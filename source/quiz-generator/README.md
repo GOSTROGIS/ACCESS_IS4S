@@ -1,6 +1,6 @@
 # Lecture quiz generator
 
-The browser entry point is `carpentry/intake-142/Quizzes/generator.html`. It shares the existing 1,200 reviewed questions across 50 lectures with the quiz game through `quiz-data.js`. The original game and lecture PDFs remain available.
+The browser entry point is `programs/carpentry/intake-142/Quizzes/generator.html`. It shares the existing 1,200 reviewed questions across 50 lectures with the quiz game through `quiz-data.js`. The original game and lecture PDFs remain available.
 
 - `generator-engine.js` combines reviewed questions and original numerical templates, explicitly mapped to each lecture. It samples without repeated prompts, shuffles choice order, and emits 10–25 questions. The 12-skill readiness lecture includes all skills when the count is at least 12; a smaller count samples that many skills.
 - `generator-app.js` provides the lecture dropdown, count, version rebuilding, learner/key preview, and separate downloads. Changing a lecture or count generates a new version. Version-changing controls are disabled while exporting a PDF.

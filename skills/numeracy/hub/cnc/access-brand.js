@@ -6,7 +6,7 @@
     brand.classList.add('cnc-brand');
     const badge = document.createElement('img');
     badge.className = 'cnc-badge';
-    badge.src = '../../brand/is4s-badge.svg';
+    badge.src = '../../../../brand/is4s-badge.svg';
     badge.alt = 'ACCESS Indigenous Skills4Success';
     badge.width = 120; badge.height = 110;
     const copy = document.createElement('div'); copy.className = 'cnc-brand-copy';
@@ -19,7 +19,7 @@
   document.title = 'CNC workshop · Numeracy Hub';
   if (!document.querySelector('link[rel="icon"]')) {
     const icon = document.createElement('link'); icon.rel = 'icon';
-    icon.href = '../../brand/access-symbol.svg'; icon.type = 'image/svg+xml';
+    icon.href = '../../../../brand/access-symbol.svg'; icon.type = 'image/svg+xml';
     document.head.append(icon);
   }
   const help = document.getElementById('btn-help');

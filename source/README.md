@@ -1,8 +1,8 @@
 # Source for the ACCESS Indigenous Skills4Success Numeracy books and calculators
 
 The finished files are in the folders above this one:
-- `books/`: Textbook, Exercise Book and Answer Key (US Letter PDFs)
-- `calculators/`: offline TI-30Xa, Sharp EL-531XT and HP-15C calculator pages
+- `skills/numeracy/books/`: Textbook, Exercise Book and Answer Key (US Letter PDFs)
+- `skills/numeracy/calculators/`: offline TI-30Xa, Sharp EL-531XT and HP-15C calculator pages
 - `brand/`: ACCESS logo SVG files, the ACCESS Indigenous Skills4Success (IS4S) badge and brand notes
 
 This folder holds what is needed to rebuild them.
@@ -20,7 +20,7 @@ This folder holds what is needed to rebuild them.
 Exercise PDF builds automatically add answer, working, name and date fields and write a `*-forms.json` report. The page content and pagination stay intact. To add fields to an existing exercise PDF, use its matching HTML:
 
 ```sh
-python3 source/book/fillable-pdf.py --pdf books/ACCESS-Trades-Numeracy-Exercise-Book.pdf --html books/ACCESS-Trades-Numeracy-Exercise-Book-web.html
+python3 source/book/fillable-pdf.py --pdf skills/numeracy/books/ACCESS-Trades-Numeracy-Exercise-Book.pdf --html skills/numeracy/books/ACCESS-Trades-Numeracy-Exercise-Book-web.html
 ```
 
 The script preserves existing responses when the complete expected field set is already present. It refuses to overwrite a mismatched form.
@@ -28,10 +28,10 @@ The script preserves existing responses when the complete expected field set is 
 Build the exercise web edition with `node build.js --book exercise --web` from `source/book`. It embeds the response controls, styles and browser storage code in the standalone HTML. To update the interactive layer in the published file without rebuilding its learning content, run:
 
 ```sh
-node source/book/engine/exercise-fillable.js books/ACCESS-Trades-Numeracy-Exercise-Book-web.html
+node source/book/engine/exercise-fillable.js skills/numeracy/books/ACCESS-Trades-Numeracy-Exercise-Book-web.html
 ```
 
-The PDF form fields embed the full DejaVu Sans font already bundled in `carpentry/intake-142/Quizzes/vendor/pdf-resources.js`, so later responses can include mathematical symbols. Its license is in the same folder.
+The PDF form fields embed the full DejaVu Sans font already bundled in `programs/carpentry/intake-142/Quizzes/vendor/pdf-resources.js`, so later responses can include mathematical symbols. Its license is in the same folder.
 
 Check field coverage and placement with `python3 source/book/test-exercise-forms.py`, and fonts and saved-response preservation with `python3 source/book/test-fillable-pdf.py` (both require PyMuPDF). Check browser persistence with `python3 source/book/test-fillable-web.py --browser /usr/bin/chromium` (Python Playwright and Chromium). Tests use temporary copies and fresh browser storage.
 

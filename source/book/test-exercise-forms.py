@@ -15,8 +15,8 @@ import tempfile
 import fitz
 
 ROOT = Path(__file__).resolve().parents[2]
-WEB = ROOT / 'books/ACCESS-Trades-Numeracy-Exercise-Book-web.html'
-PDF = ROOT / 'books/ACCESS-Trades-Numeracy-Exercise-Book.pdf'
+WEB = ROOT / 'skills/numeracy/books/ACCESS-Trades-Numeracy-Exercise-Book-web.html'
+PDF = ROOT / 'skills/numeracy/books/ACCESS-Trades-Numeracy-Exercise-Book.pdf'
 
 
 class ExerciseInventory(HTMLParser):
