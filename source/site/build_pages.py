@@ -5,6 +5,8 @@ File lists come from the folders themselves. Re-run after source/textbook/sync.p
 or after adding decks:  python3 source/site/build_pages.py
 """
 import html, json, re
+
+import markdown
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
@@ -66,6 +68,20 @@ h2{margin:0 0 16px;font-family:var(--font-display);font-weight:700;font-size:26p
 .files{columns:2 260px;column-gap:28px;margin:0;padding-left:20px}
 .files li{break-inside:avoid;margin-bottom:4px}
 .site-foot{border-top:1px solid var(--line);padding-block:20px 32px;color:var(--muted);font-size:14px}
+.prose{max-width:78ch;display:block}
+.prose h2{margin:34px 0 12px}
+.prose h3{margin:26px 0 8px;font-family:var(--font-display);font-size:21px;line-height:1.2}
+.prose p,.prose li{max-width:72ch}
+.prose table{border-collapse:collapse;width:100%;max-width:none;margin:12px 0 20px;background:var(--surface);font-size:15px}
+.prose th,.prose td{border:1px solid var(--line-strong);padding:8px 10px;text-align:left;vertical-align:top}
+.prose th{background:var(--gold-tint);font-family:var(--font-display)}
+.prose .table-wrap{overflow-x:auto}
+.prose blockquote{margin:12px 0;padding:10px 16px;border-left:4px solid var(--gold);background:var(--gold-tint)}
+.prose code{font-size:.92em}
+.lesson-meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;padding:0;list-style:none;color:var(--muted);font-size:15px}
+.lesson-tabs{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 8px;padding:0;list-style:none;font-weight:600}
+.lesson-tabs [aria-current]{color:var(--ink);text-decoration:none}
+@media print{.site-head,.site-foot,.lesson-tabs{display:none}body{background:#fff;color:#000}main{padding:0}}
 .site-foot p{margin:0 0 6px}
 """
 
@@ -186,6 +202,9 @@ def build_hub():
         t, _ = chapter(slug, 'learner')
         items = [('Skill page', f'skills/{slug}/'), ('Learner', f'skills/{slug}/learner.html'),
                  ('Teaching', f'skills/{slug}/teaching.html'), ('Answers', f'skills/{slug}/answers.html')]
+        n = len(lessons(slug))
+        if n:
+            items.insert(1, (f'{n} lesson' + ('s' if n != 1 else ''), f'skills/{slug}/#lessons'))
         if slug == 'numeracy':
             items += [('Numeracy Hub', 'skills/numeracy/hub/'), ('Shape Canvas', 'skills/numeracy/shape-canvas/')]
         if slug == 'digital':
@@ -206,11 +225,77 @@ def build_hub():
          'Adaptability, and Creativity and innovation, each with its learner chapter, teaching chapter, answer guidance and tools.', body)
 
 
+LESSON_ROLES = (('learner', 'Learner'), ('instructor', 'Instructor'), ('answers', 'Answers'))
+
+
+def front(text):
+    """(fields, body) of a Markdown file that may start with a --- block of key: value lines."""
+    if not text.startswith('---\n'):
+        return {}, text
+    head, body = text[4:].split('\n---\n', 1)
+    fields = {}
+    for line in head.splitlines():
+        if ':' in line:
+            k, v = line.split(':', 1)
+            fields[k.strip()] = v.strip()
+    return fields, body
+
+
+def md_html(text):
+    out = markdown.markdown(text, extensions=['tables', 'fenced_code', 'sane_lists', 'attr_list'])
+    return out.replace('<table>', '<div class="table-wrap"><table>').replace('</table>', '</table></div>')
+
+
+def lessons(slug):
+    """Lessons of a skill, in folder order: (folder, front matter)."""
+    d = REPO / f'skills/{slug}/lessons'
+    found = []
+    for f in sorted(p for p in d.glob('[0-9][0-9]-*') if (p / 'learner.md').exists()) if d.exists() else []:
+        fields, _ = front((f / 'learner.md').read_text(encoding='utf-8'))
+        found.append((f.name, fields))
+    return found
+
+
+def build_lessons(slug, name, i):
+    """Render each lesson's Markdown to pages, and return the lesson cards for the skill page."""
+    cards = []
+    for folder, fm in lessons(slug):
+        base = f'skills/{slug}/lessons/{folder}'
+        for role, label in LESSON_ROLES:
+            src = REPO / base / f'{role}.md'
+            if not src.exists():
+                continue
+            _, body = front(src.read_text(encoding='utf-8'))
+            body = re.sub(r'^# .*\n', '', body.lstrip(), count=1)
+            tabs = ''.join(f'<li><a href="{r}.html"' + (' aria-current="page"' if r == role else '') + f'>{l}</a></li>'
+                           for r, l in LESSON_ROLES if (REPO / base / f'{r}.md').exists())
+            meta = ''.join(f'<li>{e(k)}: {e(fm[f])}</li>' for k, f in (('Level', 'level'), ('Time', 'time'), ('Components', 'components')) if fm.get(f))
+            page(f'{base}/{role}.html', f'{fm.get("title", folder)} · {label} · {name}', f'{name} · Lesson {folder[:2]} · {label}',
+                 fm.get('title', folder), e(fm.get('summary', '')),
+                 f'<nav><ul class="lesson-tabs">{tabs}</ul><ul class="lesson-meta">{meta}</ul></nav><article class="prose">{md_html(body)}</article>',
+                 crumb=(f'← {name}', '../../index.html'))
+        items = [(l, f'lessons/{folder}/{r}.html') for r, l in LESSON_ROLES if (REPO / base / f'{r}.md').exists()]
+        lvl = f' · Level {fm["level"]}' if fm.get('level') else ''
+        cards.append(card(f'<span class="num">{int(folder[:2])}</span>{e(fm.get("title", folder))}', f'lessons/{folder}/learner.html',
+                          fm.get('summary', '') + (f' {fm["time"]}{lvl}.' if fm.get('time') else ''), items, 'gold'))
+    return cards
+
+
+def lessons_section(slug, name, i):
+    cards = build_lessons(slug, name, i)
+    if not cards:
+        return ''
+    return (f'<section id="lessons"><h2>Lessons</h2><p class="section-note">{len(cards)} ACCESS lesson' + ('s' if len(cards) != 1 else '') + f' for {e(name.lower())}, '
+            'each with a learner page, an instructor lesson plan and answers.</p>'
+            f'<div class="grid">{"".join(cards)}</div></section>')
+
+
 def build_skill(slug, name, i):
     t, p = chapter(slug, 'learner')
     extra = ''.join(card(e(h), href, txt, items) for h, href, txt, items in EXTRAS.get(slug, []))
     tools = f'<section><h2>Tools for {e(name)}</h2><div class="grid">{extra}</div></section>' if extra else ''
-    body = (f'<section><h2>Chapters</h2><div class="grid">{"".join(chapter_cards(slug))}</div></section>'
+    body = (lessons_section(slug, name, i)
+            + f'<section><h2>Chapters</h2><div class="grid">{"".join(chapter_cards(slug))}</div></section>'
             + tools + books_section('../../'))
     page(f'skills/{slug}/index.html', f'{name} · The 9 Skills', f'Skill {i} of 9', name, e(p), body,
          crumb=('← All 9 skills', '../../index.html'))
@@ -219,8 +304,10 @@ def build_skill(slug, name, i):
 def build_numeracy_section():
     path = REPO / 'skills/numeracy/index.html'
     t = path.read_text(encoding='utf-8')
+    ls = lessons_section('numeracy', 'Numeracy', 3)
+    ls = f'<div class="wrap" style="padding-block:0 32px">{ls}</div>' if ls else ''
     block = (f'{MARK[0]}\n<section class="wrap" style="padding-block:0 32px"><p class="nine-crumb"><a href="../../index.html">← All 9 skills</a></p><h2>Numeracy in the nine-skills books</h2>'
-             f'<div class="grid">{"".join(chapter_cards("numeracy"))}</div></section>\n{MARK[1]}')
+             f'<div class="grid">{"".join(chapter_cards("numeracy"))}</div></section>\n{ls}{MARK[1]}')
     if MARK[0] in t:
         t = re.sub(re.escape(MARK[0]) + '.*?' + re.escape(MARK[1]), lambda _: block, t, flags=re.S)
     else:

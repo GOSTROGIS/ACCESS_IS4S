@@ -49,4 +49,18 @@ h2{margin:0 0 16px;font-family:var(--font-display);font-weight:700;font-size:26p
 .files{columns:2 260px;column-gap:28px;margin:0;padding-left:20px}
 .files li{break-inside:avoid;margin-bottom:4px}
 .site-foot{border-top:1px solid var(--line);padding-block:20px 32px;color:var(--muted);font-size:14px}
+.prose{max-width:78ch;display:block}
+.prose h2{margin:34px 0 12px}
+.prose h3{margin:26px 0 8px;font-family:var(--font-display);font-size:21px;line-height:1.2}
+.prose p,.prose li{max-width:72ch}
+.prose table{border-collapse:collapse;width:100%;max-width:none;margin:12px 0 20px;background:var(--surface);font-size:15px}
+.prose th,.prose td{border:1px solid var(--line-strong);padding:8px 10px;text-align:left;vertical-align:top}
+.prose th{background:var(--gold-tint);font-family:var(--font-display)}
+.prose .table-wrap{overflow-x:auto}
+.prose blockquote{margin:12px 0;padding:10px 16px;border-left:4px solid var(--gold);background:var(--gold-tint)}
+.prose code{font-size:.92em}
+.lesson-meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;padding:0;list-style:none;color:var(--muted);font-size:15px}
+.lesson-tabs{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 8px;padding:0;list-style:none;font-weight:600}
+.lesson-tabs [aria-current]{color:var(--ink);text-decoration:none}
+@media print{.site-head,.site-foot,.lesson-tabs{display:none}body{background:#fff;color:#000}main{padding:0}}
 .site-foot p{margin:0 0 6px}
