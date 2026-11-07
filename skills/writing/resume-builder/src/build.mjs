@@ -27,7 +27,7 @@ const common = {
   bundle: true,
   minify: true,
   format: 'iife',
-  target: ['es2019', 'chrome80', 'firefox78', 'safari13'],
+  target: ['es2020', 'chrome100', 'edge100', 'firefox100', 'safari15'],
   nodePaths: [NM],
   legalComments: 'none',
   define: { 'process.env.NODE_ENV': '"production"' },
@@ -54,7 +54,7 @@ writeFileSync(join(A, 'LICENSES.txt'),
   'Third-party software and fonts bundled with the ACCESS Résumé Builder.\n\n'
   + lic('React and React DOM 18.3.1 (MIT)', join(NM, 'react/LICENSE'))
   + lic('docx 9.5.1 (MIT)', join(NM, 'docx/LICENSE'))
-  + lic('jsPDF 2.5.2 (MIT)', join(NM, 'jspdf/LICENSE'))
+  + lic('jsPDF 4.2.1 (MIT)', join(NM, 'jspdf/LICENSE'))
   + lic('Archivo (SIL Open Font License 1.1)', join(NM, '@fontsource/archivo/LICENSE'))
   + lic('IBM Plex Sans (SIL Open Font License 1.1)', join(NM, '@fontsource/ibm-plex-sans/LICENSE'))
   + lic('Noto Sans, subset (SIL Open Font License 1.1)', join(NM, '@expo-google-fonts/noto-sans/LICENSE_FONT')));

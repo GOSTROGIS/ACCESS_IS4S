@@ -46,10 +46,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-===== jsPDF 2.5.2 (MIT) =====
+===== jsPDF 4.2.1 (MIT) =====
 Copyright
-(c) 2010-2021 James Hall, https://github.com/MrRio/jsPDF
-(c) 2015-2021 yWorks GmbH, https://www.yworks.com/
+(c) 2010-2025 James Hall, https://github.com/MrRio/jsPDF
+(c) 2015-2025 yWorks GmbH, https://www.yworks.com/
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

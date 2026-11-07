@@ -2,7 +2,7 @@
   "name": "access-resume-builder",
   "private": true,
   "version": "2.0.0",
-  "description": "ACCESS IS4S résumé builder. Source for skills/writing/resume-builder.",
+  "description": "ACCESS IS4S r\u00e9sum\u00e9 builder. Source for skills/writing/resume-builder.",
   "scripts": {
     "build": "node build.mjs"
   },
@@ -11,8 +11,8 @@
     "@fontsource/archivo": "5.1.1",
     "@fontsource/ibm-plex-sans": "5.1.1",
     "docx": "9.5.1",
-    "esbuild": "0.24.2",
-    "jspdf": "2.5.2",
+    "esbuild": "0.28.2",
+    "jspdf": "4.2.1",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   }
