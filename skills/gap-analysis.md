@@ -464,6 +464,8 @@ Numeracy money lessons (01 to 05) fit wherever learners start paid work. The tex
 
 This pass goes deeper than the first on five questions: which trades the library serves, how a learner moves through the site, which tools lessons point to, how pages do in an automated accessibility check, and which facts go stale on a known date. It does not repeat the first pass. The library holds 85 lessons (the first pass's summary table adds up to 85, its opening paragraph says 79). The Numeracy trade-math lessons (09 and up), the NOC code directory in `tools/noc/` and the carpentry trade page in `programs/carpentry/` are being built and are not reviewed here.
 
+**Update, 7 November 2026, after this pass:** Numeracy lessons 09 to 16, the NOC code finder in `tools/noc/` and the Carpentry trade page in `programs/carpentry/` are now published. Lessons 09 to 16 cover tape reading, fractions, conversions, order of operations, perimeter and area, volume and concrete with waste allowance, right triangles, and roof slope and stairs. Of the trade-math gaps listed below, slope and grade (lesson 16) and estimating quantities (lessons 13 and 14) now have lessons. Offsets and fall, weights, recipe scaling and electrical math still do not.
+
 ### 1. Trade-by-trade readiness
 
 **Which official source rates the skills.** Red Seal's Skills for Success summaries describe how each trade uses each skill but do not rank them. Each summary says it is "based on the previous model (Essential Skills)". The Government of Canada source that does rate them is OaSIS 2025 (the Occupational and Skills Information System). Each occupational profile has a Skills for Success section that lines up the nine skills with rated OaSIS descriptors. The ratings below come from the OaSIS 2025 open data files (data last updated March 18, 2026), downloaded today, and match the carpenter profile page on the OaSIS site.
@@ -511,7 +513,7 @@ How to read the table: skill descriptors are rated 1 (lowest) to 5 (highest) pro
 2. Check the trade-math lessons being built against the gaps above: offsets and fall, estimating quantities and weights, slope and grade, recipe scaling and electrical math.
 3. Link the BCcampus numeracy book (CC BY 4.0) and Red Seal's per-trade self-assessment tool from the Numeracy and Adaptability skill pages.
 4. Add a Reading lesson on a schematic or fabrication drawing with symbols (welders, electricians, millwrights).
-5. Say on the carpentry trade page being built, and in the NOC directory being built, that the OaSIS 75110 profile covers all labourers and that Heavy Equipment Operator is not a Red Seal trade in BC.
+5. Say on the Carpentry trade page and in the NOC code finder, that the OaSIS 75110 profile covers all labourers and that Heavy Equipment Operator is not a Red Seal trade in BC.
 
 ### 2. Learner journey and assessment
 
@@ -611,7 +613,7 @@ The lessons carry 451 source lines marked "checked 2026-11-06" across 86 files. 
 |---|---|---|---|
 | Numeracy 01, Numeracy 04 | 2026 payroll figures: CPP 5.95% with a $3,500 exemption, EI 1.63% to $68,900, federal basic personal amount $16,452, BC $13,216 | CRA T4032-BC effective January 1, 2026, TD1 and TD1BC 2026 | **January 1, 2027.** EI for 2027 is published: $1.64 per $100 to $70,800 (ESDC, September 14, 2026). CRA's CPP page, modified October 30, 2026, has no 2027 row yet. Re-check when CRA posts the January 2027 tables. |
 | Numeracy 04 | The 2026 return is due April 30, 2027 | CRA filing dates | **April 30, 2027.** After that, roll the case forward one tax year. |
-| Construction Craft Worker (not in lessons yet) | Level 1 technical training goes from 120 to 150 hours, Level 2 stays 120, and the BC name drops "(Labourer)" | SkilledTradesBC OPSN 2026 022, issued September 18, 2026 | **January 1, 2027.** The 2027 Program Profile also lists 3,330 work-based hours where the current trade page shows 4,000. Matters for the trade page and NOC directory being built. SkilledTradesBC has used Red Seal exams aligned to the 2025 standard since July 13, 2026 (OPSN 2026 012). |
+| Construction Craft Worker (not in lessons yet) | Level 1 technical training goes from 120 to 150 hours, Level 2 stays 120, and the BC name drops "(Labourer)" | SkilledTradesBC OPSN 2026 022, issued September 18, 2026 | **January 1, 2027.** The 2027 Program Profile also lists 3,330 work-based hours where the current trade page shows 4,000. Matters for the Carpentry trade page and the NOC code finder. SkilledTradesBC has used Red Seal exams aligned to the 2025 standard since July 13, 2026 (OPSN 2026 012). |
 | Adaptability 07 | Mobile Crane Operator and Tower Crane Operator "become compulsory trades on July 5, 2027" | SkilledTradesBC, Are You Impacted? (re-checked today, unchanged) | **July 5, 2027.** Change to past tense. |
 | Adaptability 07 | Canada Apprentice Loan up to $4,000 per period, WorkBC Outlook 2025 to 2035 job openings | SkilledTradesBC, WorkBC | Each intake. Not re-checked today. |
 | Numeracy 06 | Job Bank BC wages "updated November 19, 2025" | Job Bank, Wages in British Columbia | Still the latest today. Re-check monthly until Job Bank posts a newer date. |
