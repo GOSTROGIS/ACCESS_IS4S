@@ -235,6 +235,14 @@ def build_hub():
         if slug == 'writing' and (REPO / 'skills/writing/resume-builder/index.html').exists():
             items += [('Résumé builder', 'skills/writing/resume-builder/')]
         cards.append(card(f'<span class="num">{i}</span>{e(name)}', f'skills/{slug}/', subtitle(t), items))
+    def tools_section():
+        if not (REPO / 'tools/noc/index.html').exists():
+            return ''
+        return ('<section><h2>Tools</h2><div class="grid">'
+                + card('NOC code finder', 'tools/noc/',
+                       'Type any trade or job title to find its National Occupational Classification code and TEER category, from Statistics Canada.',
+                       [('Search', 'tools/noc/'), ('Carpenter', 'tools/noc/?q=carpenter')])
+                + '</div></section>')
     review = ''
     gap = REPO / 'skills/gap-analysis.md'
     if gap.exists():
@@ -256,7 +264,7 @@ def build_hub():
                         ('Math deck library', 'programs/carpentry/#decks')])
                 + '</div></section>')
     body = (f'<section><h2>The nine skills</h2><div class="grid">{"".join(cards)}</div></section>'
-            + books_section('') + review + programs)
+            + books_section('') + review + tools_section() + programs)
     page('index.html', 'The 9 Skills · ACCESS Indigenous Skills4Success', 'ACCESS Indigenous Skills4Success',
          'The 9 Skills', 'Reading, Writing, Numeracy, Digital, Problem solving, Communication, Collaboration, '
          'Adaptability, and Creativity and innovation, each with its learner chapter, teaching chapter, answer guidance and tools.', body)
@@ -479,7 +487,7 @@ def build_carpentry():
                     f'<div class="grid">{icards}</div>'
                     '<p class="about" style="margin-top:18px">To add the next intake, make a new folder <code>programs/carpentry/intake-NNN/</code> '
                     'with its own schedule that links the shared library above. The steps are in the '
-                    '<a href="README.md">instructor README</a>.</p></section>')
+                    '<a href="https://github.com/GOSTROGIS/ACCESS_IS4S/blob/main/programs/carpentry/README.md">instructor README</a>.</p></section>')
     page(f'{CARP}/index.html', 'Carpentry · ACCESS IS4S', 'Programs · Trade', 'Carpentry',
          'The carpenter trade in BC, the materials every carpentry intake shares, and each intake’s own schedule.',
          about + shared + intakes_html + f'<section id="sources"><h2>Sources</h2>{sources}</section>',

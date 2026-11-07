@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NOC code finder · ACCESS Indigenous Skills4Success</title>
+<meta name="description" content="Type a trade or job title and get the matching National Occupational Classification (NOC) 2021 code, TEER category and official example job titles.">
+<link rel="icon" href="../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../brand/site.css">
+<link rel="stylesheet" href="noc.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../index.html"><img class="lockup" src="../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← All 9 skills</a></p>
+      <p class="eyebrow">Tool · Job codes</p>
+      <h1>NOC code finder</h1>
+      <p class="lede">Type a trade or job title, such as carpenter, framer or early childhood educator, to find its National Occupational Classification (NOC) code, TEER category and the official example job titles.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap noc-main">
+  <section class="noc-search" role="search" aria-label="Find a NOC code">
+    <label for="q">Job title, trade or NOC code</label>
+    <p class="noc-hint" id="q-hint">Results appear as you type. Try a single word, such as weld, or a 5-digit code, such as 72310.</p>
+    <div class="noc-field">
+      <input id="q" name="q" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-describedby="q-hint" aria-controls="results" placeholder="e.g. carpenter">
+      <button type="button" class="btn btn-clear" id="clear" aria-label="Clear the search">Clear</button>
+    </div>
+    <p class="chips-label" id="chips-label">Common trades</p>
+    <ul class="chips" aria-labelledby="chips-label">
+      <li><button type="button" class="chip" data-q="carpenter">Carpenter</button></li>
+      <li><button type="button" class="chip" data-q="electrician">Electrician</button></li>
+      <li><button type="button" class="chip" data-q="plumber">Plumber</button></li>
+      <li><button type="button" class="chip" data-q="welder">Welder</button></li>
+      <li><button type="button" class="chip" data-q="heavy equipment operator">Heavy equipment operator</button></li>
+      <li><button type="button" class="chip" data-q="construction labourer">Construction labourer</button></li>
+      <li><button type="button" class="chip" data-q="millwright">Millwright</button></li>
+      <li><button type="button" class="chip" data-q="cook">Cook</button></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="results-heading">
+    <h2 id="results-heading" class="sr-only">Results</h2>
+    <p class="noc-status" id="status" role="status" aria-live="polite" aria-atomic="true">Loading the NOC list…</p>
+    <div id="empty"></div>
+    <ol class="noc-results" id="results"></ol>
+    <button type="button" class="btn noc-more-results" id="more" hidden>Show more results</button>
+    <noscript><p>This finder needs JavaScript. You can search the same list on the <a href="https://noc.esdc.gc.ca/?GoCTemplateCulture=en-CA">Government of Canada NOC website</a>.</p></noscript>
+  </section>
+
+  <section class="noc-info" aria-labelledby="why-heading">
+    <h2 id="why-heading">What is a NOC code and why it matters</h2>
+    <p>The National Occupational Classification (NOC) is Canada’s list of occupations. Each occupation, called a unit group, has a 5-digit code. Statistics Canada and Employment and Social Development Canada build it together.<sup><a href="#src-1">1</a></sup></p>
+    <ul>
+      <li><strong>Read the code.</strong> The first digit is the broad category, for example 7 for trades, transport and equipment operators. The second digit is the TEER category: the training, education, experience and responsibilities the job needs.<sup><a href="#src-2">2</a></sup></li>
+      <li><strong>Job Bank.</strong> Job Bank shows wages and job outlooks by occupation with the NOC code, for example carpenter (NOC 72310).<sup><a href="#src-3">3</a></sup></li>
+      <li><strong>Immigration.</strong> Express Entry asks you to find the NOC for each job you have held. Skilled work experience must be in TEER 0, 1, 2 or 3, and you choose the NOC whose main duties match what you did, not only the job title.<sup><a href="#src-4">4</a>,<a href="#src-5">5</a></sup></li>
+      <li><strong>Government programs.</strong> Federal programs such as Employment Insurance and the Temporary Foreign Worker Program use the NOC.<sup><a href="#src-2">2</a></sup></li>
+      <li><strong>It changes.</strong> A new version, NOC 2026, is planned for December 2026. Some codes may change, so open the official profile before you put a code on a form.<sup><a href="#src-6">6</a></sup></li>
+    </ul>
+    <div class="noc-sources">
+      <h3>Sources (checked 2026-11-07)</h3>
+      <ol>
+        <li id="src-1"><a href="https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1">Statistics Canada: National Occupational Classification (NOC) 2021 Version 1.0</a></li>
+        <li id="src-2"><a href="https://www.statcan.gc.ca/en/subjects/standard/noc/2021/introductionV1">Statistics Canada: NOC 2021 Version 1.0, Introduction</a></li>
+        <li id="src-3"><a href="https://www.jobbank.gc.ca/wagereport/occupation/6388">Job Bank: Wages for Carpenters</a></li>
+        <li id="src-4"><a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/find-national-occupation-code.html">Immigration, Refugees and Citizenship Canada: Find your National Occupational Classification (NOC)</a></li>
+        <li id="src-5"><a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/who-can-apply.html">Immigration, Refugees and Citizenship Canada: Express Entry, who can apply</a></li>
+        <li id="src-6"><a href="https://www.statcan.gc.ca/en/consultation/2024/noc/results-report">Statistics Canada: Revising NOC 2021 Version 1.0 to NOC 2026 Version 1.0, What we Asked, What we Learned and What we Did</a></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="noc-about" aria-labelledby="teer-heading">
+    <h2 id="teer-heading">TEER categories (second digit)</h2>
+    <p>The plain-language meaning is a short version. The official wording from Statistics Canada is in the right column.</p>
+    <div class="table-wrap">
+      <table class="teer-table" id="teer-table">
+        <caption class="sr-only">TEER categories in NOC 2021 Version 1.0</caption>
+        <thead><tr><th scope="col">TEER</th><th scope="col">Plain meaning</th><th scope="col">Official wording</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="noc-about" aria-labelledby="data-heading">
+    <h2 id="data-heading">About this data</h2>
+    <p id="data-summary">NOC 2021 Version 1.0 from Statistics Canada: 516 unit groups and 27,935 official example job titles, downloaded 2026-11-07. NOC 2021 Version 1.0 is the version in force on that date. All searching happens on this device. Nothing you type is sent anywhere.</p>
+    <ul id="data-sources">
+      <li><a href="https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-classification-structure.csv">NOC 2021 Version 1.0 - Classification structure (CSV)</a></li>
+      <li><a href="https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-elements.csv">NOC 2021 Version 1.0 - Elements (CSV)</a></li>
+      <li><a href="https://www.statcan.gc.ca/fr/sujets/norme/cnp/2021/indexV1/cnp-2021-v1.0-structure-classification.csv">CNP 2021 version 1.0 - Structure de classification (CSV, French titles)</a></li>
+    </ul>
+    <p>Codes, titles, example titles, inclusions and exclusions are copied from these files without changes. Keyboard: press <kbd class="kbd">/</kbd> to jump to the search box, the down arrow to move from the search box into the results, and <kbd class="kbd">Esc</kbd> to clear.</p>
+  </section>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success.</p>
+    <p>Adapted from Statistics Canada, National Occupational Classification (NOC) 2021 Version 1.0, September 28, 2021 (files downloaded 2026-11-07). This does not constitute an endorsement by Statistics Canada of this product. Used under the <a href="https://www.statcan.gc.ca/en/terms-conditions/open-licence">Statistics Canada Open Licence</a>.</p>
+  </div>
+</footer>
+<script src="noc-data.js"></script>
+<script src="noc.js"></script>
+</body>
+</html>
