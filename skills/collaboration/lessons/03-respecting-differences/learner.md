@@ -21,7 +21,7 @@ Everyone has culture, and most people belong to more than one group at once: a f
 
 **Job sites have culture too.** Every crew has unwritten rules: who sits where at lunch, how people joke, whether you can ask a "dumb" question, who gets the good jobs. Some of these rules help everyone. Some leave people out.
 
-**Indigenous peoples are not one group.** The Canadian Constitution recognizes three Indigenous peoples: First Nations, Inuit and Métis. The Government of Canada describes them as distinct peoples with their own histories, languages, cultural practices and spiritual beliefs. In BC alone there are 204 First Nations communities and 34 distinct First Nations languages, according to the First Peoples' Cultural Council. So there is no single "Indigenous way," and no one person can speak for all Indigenous people.
+**Indigenous peoples are not one group.** The Canadian Constitution recognizes three Indigenous peoples: First Nations, Inuit and Métis. The Government of Canada describes them as distinct peoples with their own histories, languages, cultural practices and spiritual beliefs. In BC alone there are 204 First Nations communities and 36 First Nations languages, according to the First Peoples' Cultural Council. So there is no single "Indigenous way," and no one person can speak for all Indigenous people.
 
 **Respect at work, in practice.** The Skills for Success model asks you to:
 

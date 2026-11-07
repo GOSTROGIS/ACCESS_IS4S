@@ -61,7 +61,7 @@ First Nations, Inuit and Métis.
 
 ## Check yourself 3
 
-They are distinct peoples, and in BC alone there are 204 First Nations communities with 34 distinct languages. One person can speak only for themselves, and putting them on the spot treats a whole people as all the same.
+They are distinct peoples, and in BC alone there are 204 First Nations communities with 36 First Nations languages. One person can speak only for themselves, and putting them on the spot treats a whole people as all the same.
 
 ## Check yourself 4
 
