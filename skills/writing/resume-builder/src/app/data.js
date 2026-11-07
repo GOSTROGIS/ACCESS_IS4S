@@ -80,7 +80,7 @@ export const TRADE_GUIDES = [
       'On-the-job training may be provided.',
     ],
     bc: [
-      'The matching BC apprenticeship is Construction Craft Worker. It is a Red Seal trade.',
+      'The related BC apprenticeship is Construction Craft Worker (Labourer). It is a Red Seal trade.',
       'Two levels of technical training, 8 weeks over 2 years.',
       'Work-based training: 4,000 hours in the program in effect until December 31, 2026. The updated program that starts January 1, 2027 lists 3,330 hours.',
       'It is not one of the seven compulsory trades on the SkilledTradesBC Skilled Trades Certification list.',

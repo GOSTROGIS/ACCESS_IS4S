@@ -15,6 +15,8 @@ Before a shop or contractor meets you, they meet your résumé. Job Bank, the Go
 
 ## Key ideas
 
+**Tool:** you can build your résumé and cover letter in the ACCESS [Résumé and cover letter builder](../../resume-builder/). It checks your résumé against a job posting and downloads a Word file or a PDF. What you type stays in your browser.
+
 ### 1. The parts of a résumé
 
 | Part | What goes in it |

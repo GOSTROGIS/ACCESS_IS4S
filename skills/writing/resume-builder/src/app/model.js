@@ -177,6 +177,12 @@ export function buildCover(state, d = new Date()) {
   };
 }
 
+// The line under an entry title: employer and place, then dates. Kept on its own line in
+// every format so the reading order never depends on right-aligned text.
+export function subLine(b) {
+  return [b.sub, b.right].filter(Boolean).join(' | ');
+}
+
 // Plain text in reading order. Used for "Copy as plain text" and in tests.
 export function resumeToText(m) {
   const out = [];
@@ -190,8 +196,8 @@ export function resumeToText(m) {
       if (b.type === 'list') b.items.forEach((x) => out.push(`- ${x}`));
       if (b.type === 'labeled') out.push(`${b.label}: ${b.text}`);
       if (b.type === 'entry') {
-        out.push(b.right ? `${b.title} | ${b.right}` : b.title);
-        if (b.sub) out.push(b.sub);
+        out.push(b.title);
+        if (b.sub || b.right) out.push(subLine(b));
         if (b.note) out.push(b.note);
         b.bullets.forEach((x) => out.push(`- ${x}`));
       }

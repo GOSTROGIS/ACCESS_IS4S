@@ -3,30 +3,27 @@
 // no text boxes, no headers or footers, no images.
 
 import {
-  AlignmentType, BorderStyle, Document, HeadingLevel, LevelFormat, Packer, Paragraph, Tab, TabStopType, TextRun,
+  AlignmentType, BorderStyle, Document, HeadingLevel, LevelFormat, Packer, Paragraph, TextRun,
 } from 'docx';
 
 const FONT = 'Calibri';
 const PAGE = { width: 12240, height: 15840 }; // US Letter in twentieths of a point
 const MARGIN = 1080; // 0.75 in
-const TEXT_W = PAGE.width - MARGIN * 2;
 
 const styles = {
-  default: { document: { run: { font: FONT, size: 21, color: '111111' }, paragraph: { spacing: { after: 40, line: 264 } } } },
-  paragraphStyles: [
-    {
-      id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true,
+  default: {
+    document: { run: { font: FONT, size: 21, color: '111111' }, paragraph: { spacing: { after: 40, line: 264 } } },
+    title: { run: { font: FONT, size: 36, bold: true, color: '111111' }, paragraph: { spacing: { after: 40 } } },
+    heading1: {
       run: { font: FONT, size: 23, bold: true, color: '111111' },
       paragraph: {
         spacing: { before: 220, after: 80 },
         border: { bottom: { color: '111111', space: 1, style: BorderStyle.SINGLE, size: 6 } },
       },
     },
-    {
-      id: 'Title', name: 'Title', basedOn: 'Normal', next: 'Normal', quickFormat: true,
-      run: { font: FONT, size: 36, bold: true, color: '111111' },
-      paragraph: { spacing: { after: 40 } },
-    },
+  },
+  paragraphStyles: [
+    { id: 'Normal', name: 'Normal', quickFormat: true, run: { font: FONT, size: 21, color: '111111' }, paragraph: { spacing: { after: 40, line: 264 } } },
   ],
 };
 
@@ -40,7 +37,7 @@ const numbering = {
   }],
 };
 
-const p = (text, opts = {}) => new Paragraph({ children: [new TextRun({ text, bold: !!opts.bold, size: opts.size })], ...opts.para });
+const p = (text, opts = {}) => new Paragraph({ style: 'Normal', children: [new TextRun({ text, bold: !!opts.bold, size: opts.size })], ...opts.para });
 const bullet = (text) => new Paragraph({ numbering: { reference: 'bullets', level: 0 }, children: [new TextRun(text)], spacing: { after: 30 } });
 
 function sectionsFor(children) {
@@ -61,19 +58,17 @@ export async function resumeDocx(m) {
     s.blocks.forEach((b, i) => {
       if (b.type === 'para') kids.push(p(b.text));
       if (b.type === 'labeled') {
-        kids.push(new Paragraph({ children: [new TextRun({ text: `${b.label}: `, bold: true }), new TextRun(b.text)], spacing: { after: 60 } }));
+        kids.push(new Paragraph({ style: 'Normal', children: [new TextRun({ text: `${b.label}: `, bold: true }), new TextRun(b.text)], spacing: { after: 60 } }));
       }
       if (b.type === 'list') b.items.forEach((it) => kids.push(bullet(it)));
       if (b.type === 'entry') {
-        const head = [new TextRun({ text: b.title, bold: true })];
-        if (b.right) head.push(new TextRun({ children: [new Tab(), b.right] }));
         kids.push(new Paragraph({
-          children: head,
-          tabStops: [{ type: TabStopType.RIGHT, position: TEXT_W }],
+          style: 'Normal',
+          children: [new TextRun({ text: b.title, bold: true })],
           spacing: { before: i === 0 ? 0 : 140, after: 20 },
           keepNext: true,
         }));
-        if (b.sub) kids.push(p(b.sub, { size: 20 }));
+        if (b.sub || b.right) kids.push(p([b.sub, b.right].filter(Boolean).join(' | '), { size: 20 }));
         if (b.note) kids.push(p(b.note, { size: 20 }));
         b.bullets.forEach((it) => kids.push(bullet(it)));
       }
@@ -106,7 +101,7 @@ export async function coverDocx(c) {
     const lines = para.split('\n');
     const runs = [];
     lines.forEach((line, i) => runs.push(new TextRun({ text: line, break: i > 0 ? 1 : 0 })));
-    kids.push(new Paragraph({ children: runs, spacing: { after: 200, line: 300 } }));
+    kids.push(new Paragraph({ style: 'Normal', children: runs, spacing: { after: 200, line: 300 } }));
   });
   const doc = new Document({
     creator: 'ACCESS Résumé Builder',

@@ -1,3 +1,5 @@
+import { subLine } from './model.js';
+
 // Text PDF export with jsPDF and an embedded Noto Sans subset (covers accents and the
 // characters used in many First Nations language spellings). Real, selectable text only.
 
@@ -138,17 +140,8 @@ export function renderResumePdf(m, fonts) {
       }
       if (b.type === 'entry') {
         w.ensure(34);
-        const rightW = b.right ? w.width(b.right, false, 10) : 0;
-        const titleW = w.width(b.title, true, 10.5);
-        if (b.right && titleW + rightW + 14 <= W) {
-          w.font(false, 10);
-          doc.text(b.right, margin + W - rightW, st.y + 0.6, { baseline: 'top' });
-          w.textBlock(b.title, { size: 10.5, bold: true });
-        } else {
-          w.textBlock(b.title, { size: 10.5, bold: true });
-          if (b.right) w.textBlock(b.right, { size: 10 });
-        }
-        if (b.sub) w.textBlock(b.sub, { size: 10 });
+        w.textBlock(b.title, { size: 10.5, bold: true });
+        if (b.sub || b.right) w.textBlock(subLine(b), { size: 10 });
         if (b.note) w.textBlock(b.note, { size: 10 });
         b.bullets.forEach((it) => {
           w.ensure(16);

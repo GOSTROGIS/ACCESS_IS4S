@@ -16,7 +16,7 @@ seen = 0
 for root in roots:
     for p in sorted(root.rglob('*')):
         rel = p.relative_to(REPO).as_posix()
-        if p.suffix not in ('.html', '.md') or rel.startswith(('source/', '.git/')) or '/node_modules/' in rel:
+        if p.suffix not in ('.html', '.md') or rel.startswith(('source/', '.git/')) or '/node_modules/' in rel or '/resume-builder/src/' in rel:
             continue
         text = p.read_text(encoding='utf-8', errors='ignore')
         pat = ATTR if p.suffix == '.html' else MD

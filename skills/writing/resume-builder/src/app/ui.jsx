@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { SectionIcon } from './art.jsx';
+import { subLine } from './model.js';
 
 // ---------- toasts (announced politely to screen readers) ----------
 let toastListener = null;
@@ -11,8 +12,8 @@ export function Toasts() {
   const [items, setItems] = useState([]);
   useEffect(() => {
     toastListener = (t) => {
-      setItems((list) => [...list.slice(-2), t]);
-      setTimeout(() => setItems((list) => list.filter((x) => x.id !== t.id)), 5000);
+      setItems((list) => [...list.slice(-1), t]);
+      setTimeout(() => setItems((list) => list.filter((x) => x.id !== t.id)), 4000);
     };
     return () => { toastListener = null; };
   }, []);
@@ -103,7 +104,7 @@ export function ChipInput({ label, hint, items, onAdd, onRemove, placeholder }) 
       <label htmlFor={id}>{label}</label>
       {hint && <p className="hint" id={`${id}-hint`}>{hint}</p>}
       {items.length > 0 && (
-        <ul className="chips" aria-label={label}>
+        <ul className="chips" aria-label={`${label} you added`}>
           {items.map((it, i) => (
             <li key={`${it}-${i}`} className="chip">
               <span>{it}</span>
@@ -207,8 +208,8 @@ export function ResumeView({ model }) {
             if (b.type === 'list') return <ul key={i} className="r-ul">{b.items.map((x, j) => <li key={j}>{x}</li>)}</ul>;
             return (
               <div key={i} className="r-entry">
-                <p className="r-entry-head"><strong>{b.title}</strong>{b.right && <span className="r-right">{b.right}</span>}</p>
-                {b.sub && <p className="r-sub">{b.sub}</p>}
+                <p className="r-entry-head"><strong>{b.title}</strong></p>
+                {(b.sub || b.right) && <p className="r-sub">{subLine(b)}</p>}
                 {b.note && <p className="r-sub">{b.note}</p>}
                 {b.bullets.length > 0 && <ul className="r-ul">{b.bullets.map((x, j) => <li key={j}>{x}</li>)}</ul>}
               </div>

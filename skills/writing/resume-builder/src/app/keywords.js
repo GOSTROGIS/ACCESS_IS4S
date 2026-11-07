@@ -99,7 +99,7 @@ const TERMS = [
 
 const STOP_EN = 'a about above after again all also am an and any are as at be been before being below between both but by can could did do does doing down during each few for from further had has have having he her here hers him his how i if in into is it its itself just me more most my no nor not now of off on once only or other our ours out over own same she should so some such than that the their them then there these they this those through to too under until up very was we were what when where which while who whom why will with would you your yours us may might must shall also etc per via within without upon including include includes plus well able ability'.split(' ');
 const STOP_FR = 'le la les un une des du de d l et ou en au aux pour par sur dans avec sans est sont etre avoir nous vous votre vos notre nos ce cette ces qui que quoi dont ou il elle ils elles se sa son ses leur leurs pas plus tres tout tous toute toutes comme mais donc ainsi afin entre chez'.split(' ');
-const JD_IGNORE = 'experience experienced years year role position company team work working worker workers candidate candidates required requirements requirement require requires preferred desired asset assets bonus looking seeking opportunity opportunities qualified qualifications qualification responsibilities responsibility responsible duties duty skill skills job jobs apply applicant applicants hiring hire employer employee employees new strong good excellent great day days week weeks hour hours time full part based must need needs needed ensure using use used other others various related include across etc site sites'.split(' ');
+const JD_IGNORE = 'experience experienced years year role position company team work working worker workers candidate candidates required requirements requirement require requires preferred desired asset assets bonus looking seeking opportunity opportunities qualified qualifications qualification responsibilities responsibility responsible duties duty skill skills job jobs apply applicant applicants hiring hire employer employee employees new strong good excellent great day days week weeks hour hours time full part based must need needs needed ensure using use used other others various related include across etc site sites welcome ticket tickets resume resumes cv cover letter email apply posting send call contact salary wage wages benefit benefits shift shifts start immediately asset assets plus valid bc british columbia canada vancouver burnaby surrey richmond coquitlam langley abbotsford chilliwack delta kelowna kamloops victoria nanaimo westminster maple ridge squamish whistler daily busy weekly fast paced keep take make get put set help give want know see look bring hold come'.split(' ');
 const STOP = new Set([...STOP_EN, ...STOP_FR, ...JD_IGNORE]);
 const KEEP_SHORT = new Set(['cpr', 'ppe', 'tig', 'mig', 'awp', 'cad', 'plc', 'hvac', 'ohs', 'cec', 'loto', 'h2s', 'tcp']);
 const PHRASE_STOP = new Set(['we', 'you', 'our', 'the', 'this', 'that', 'if', 'job', 'apply', 'please', 'about', 'what', 'who', 'why', 'how', 'when', 'where', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']);
@@ -127,7 +127,18 @@ export function extractKeywords(posting, limit = 30) {
       seen.add(normalizeText(label));
     }
   }
-  for (const t of out) norm = norm.replace(new RegExp(t.re.source, 'g'), ' ');
+  // Blank out every character covered by a term match (found on the full text, so
+  // overlapping terms such as "concrete" and "concrete forms" are both removed).
+  const mask = new Array(orig.length).fill(false);
+  for (const t of out) {
+    const g = new RegExp(t.re.source, 'g');
+    let mm;
+    while ((mm = g.exec(orig)) !== null) {
+      for (let i = mm.index; i < mm.index + mm[0].length; i += 1) mask[i] = true;
+      if (!mm[0]) g.lastIndex += 1;
+    }
+  }
+  norm = orig.split('').map((ch, i) => (mask[i] ? ' ' : ch)).join('');
 
   // 2. Capitalized multi-word phrases from the original text (e.g. "Concrete Finisher").
   const phraseRe = /\b([A-Z][\p{L}+#.'-]*[\p{L}+#](?:[ \t]+[A-Z][\p{L}+#.'-]*[\p{L}+#]){1,3})\b/gu;
@@ -140,8 +151,16 @@ export function extractKeywords(posting, limit = 30) {
     if (!phrases.has(key)) phrases.set(key, { label: m[1].trim(), n: 0, words });
     phrases.get(key).n += 1;
   }
+  // Words already covered by a trade term, so "Valid Class" is not kept next to "Class 5 licence".
+  const termStems = new Set();
+  for (const t of out) {
+    const g = new RegExp(t.re.source, 'g');
+    let mm;
+    while ((mm = g.exec(orig)) !== null) { tokenize(mm[0]).forEach((w) => termStems.add(stem(w))); if (!mm[0]) g.lastIndex += 1; }
+  }
   const phraseStems = new Set();
   for (const [key, p] of phrases) {
+    if (key.split(' ').some((w) => termStems.has(w))) continue;
     if (seen.has(normalizeText(p.label))) continue;
     if (out.some((t) => t.kind === 'term' && t.re.test(normalizeText(p.label)))) continue;
     out.push({ label: p.label, kind: 'phrase', stems: key.split(' '), weight: 2 + Math.min(p.n, 3) });
