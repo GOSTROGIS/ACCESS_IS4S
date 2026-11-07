@@ -180,6 +180,11 @@ EXTRAS = {
          [('Open the desk', 'practice-desk/index.html'), ('Setup notes', 'practice-desk/setup.html')]),
     ],
 }
+if (REPO / 'skills/writing/resume-builder/index.html').exists():
+    EXTRAS['writing'] = [
+        ('Résumé and cover letter builder', 'resume-builder/',
+         'Build an ATS-safe trades résumé and cover letter, match it to a job posting, and download Word or PDF. Your work stays in your browser.',
+         [('Open the builder', 'resume-builder/')])]
 
 
 def books_section(root):
@@ -211,7 +216,22 @@ def build_hub():
             items += [('Numeracy Hub', 'skills/numeracy/hub/'), ('Shape Canvas', 'skills/numeracy/shape-canvas/')]
         if slug == 'digital':
             items += [('AI lessons', 'skills/digital/ai-literacy/learner.html')]
+        if slug == 'writing' and (REPO / 'skills/writing/resume-builder/index.html').exists():
+            items += [('Résumé builder', 'skills/writing/resume-builder/')]
         cards.append(card(f'<span class="num">{i}</span>{e(name)}', f'skills/{slug}/', subtitle(t), items))
+    review = ''
+    gap = REPO / 'skills/gap-analysis.md'
+    if gap.exists():
+        _, body = front(gap.read_text(encoding='utf-8'))
+        body = re.sub(r'^# .*\n', '', body.lstrip(), count=1)
+        page('skills/gap-analysis.html', 'Gap analysis · The 9 Skills', 'ACCESS Indigenous Skills4Success',
+             'Gap analysis of the 9 skills', 'What each skill covers now, what is missing, and what to build next.',
+             f'<article class="prose">{md_html(body)}</article>', crumb=('← All 9 skills', '../index.html'))
+        review = ('<section><h2>Library review</h2><div class="grid">'
+                  + card('Gap analysis', 'skills/gap-analysis.html',
+                         'Component and level coverage for each skill, trade gaps and the next lessons to build.',
+                         [('Read', 'skills/gap-analysis.html')])
+                  + '</div></section>')
     programs = ('<section><h2>Programs</h2><div class="grid">'
                 + card('Carpentry Foundation · Intake 142', 'programs/carpentry/intake-142/',
                        'KPU cohort: daily math decks, lecture quizzes and the War Against The Poor simulator.',
@@ -221,7 +241,7 @@ def build_hub():
                        [('Open', 'programs/carpentry/bcbc-part-9/index.html')])
                 + '</div></section>')
     body = (f'<section><h2>The nine skills</h2><div class="grid">{"".join(cards)}</div></section>'
-            + books_section('') + programs)
+            + books_section('') + review + programs)
     page('index.html', 'The 9 Skills · ACCESS Indigenous Skills4Success', 'ACCESS Indigenous Skills4Success',
          'The 9 Skills', 'Reading, Writing, Numeracy, Digital, Problem solving, Communication, Collaboration, '
          'Adaptability, and Creativity and innovation, each with its learner chapter, teaching chapter, answer guidance and tools.', body)
