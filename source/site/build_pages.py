@@ -85,6 +85,22 @@ main>*,nav{min-width:0}
 .lesson-tabs [aria-current]{color:var(--ink);text-decoration:none}
 @media print{.site-head,.site-foot,.lesson-tabs{display:none}body{background:#fff;color:#000}main{padding:0}}
 .site-foot p{margin:0 0 6px}
+.decks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.decks li{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr) auto;gap:4px 16px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:var(--radius);padding:10px 14px}
+.decks .day{font-family:var(--font-display);font-weight:700;color:var(--red-text)}
+.decks .topic{color:var(--ink);overflow-wrap:anywhere}
+.decks .get{display:flex;flex-wrap:wrap;gap:4px 12px;font-weight:600;font-size:15px}
+@media (max-width:640px){.decks li{grid-template-columns:minmax(0,1fr)}}
+.facts{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:0;margin:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);max-width:900px}
+.facts dt,.facts dd{margin:0;padding:12px 16px;border-top:1px solid var(--line)}
+.facts dt:first-of-type,.facts dt:first-of-type+dd{border-top:0}
+.facts dt{font-family:var(--font-display);font-weight:700}
+.facts dd{color:var(--slate);overflow-wrap:anywhere}
+.facts sup a{text-decoration:none;font-weight:600}
+@media (max-width:640px){.facts{grid-template-columns:minmax(0,1fr)}.facts dd{border-top:0;padding-top:0}}
+.about{max-width:72ch;margin:0 0 18px;color:var(--slate)}
+.sources{margin:0;padding-left:22px;max-width:78ch;overflow-wrap:anywhere;font-size:15px}
+.sources li{margin-bottom:6px}
 """
 
 
@@ -233,12 +249,11 @@ def build_hub():
                          [('Read', 'skills/gap-analysis.html')])
                   + '</div></section>')
     programs = ('<section><h2>Programs</h2><div class="grid">'
-                + card('Carpentry Foundation · Intake 142', 'programs/carpentry/intake-142/',
-                       'KPU cohort: daily math decks, lecture quizzes and the War Against The Poor simulator.',
-                       [('Open', 'programs/carpentry/intake-142/')])
-                + card('BC Building Code · Part 9 plates', 'programs/carpentry/bcbc-part-9/index.html',
-                       'Drawn plates for the Part 9 Articles, used by the Carpentry tab of the Numeracy Hub.',
-                       [('Open', 'programs/carpentry/bcbc-part-9/index.html')])
+                + card('Carpentry', 'programs/carpentry/',
+                       'The carpenter trade in BC, the shared math deck library, BC Building Code plates and every carpentry intake.',
+                       [('Trade page', 'programs/carpentry/'), ('Intake 142', 'programs/carpentry/intake-142/'),
+                        ('BCBC Part 9 plates', 'programs/carpentry/bcbc-part-9/index.html'),
+                        ('Math deck library', 'programs/carpentry/#decks')])
                 + '</div></section>')
     body = (f'<section><h2>The nine skills</h2><div class="grid">{"".join(cards)}</div></section>'
             + books_section('') + review + programs)
@@ -339,26 +354,140 @@ def build_numeracy_section():
     path.write_text(t, encoding='utf-8')
 
 
-def build_intake():
-    base = 'programs/carpentry/intake-142'
+CARP = 'programs/carpentry'
+CHECKED = '2026-11-07'
+
+
+def carpentry_materials():
+    """Shared deck library and intakes from programs/carpentry/materials.json."""
+    return json.loads((REPO / CARP / 'materials.json').read_text(encoding='utf-8'))
+
+
+def deck_dates(folder):
+    """Sorted ISO dates from the Day-NN_YYYY-MM-DD_Week-N deck names of one intake."""
+    return sorted(m.group(1) for p in (REPO / CARP / folder / 'PDF').glob('*.pdf')
+                  if (m := re.match(r'Day-\d+_(\d{4}-\d\d-\d\d)_', p.name)))
+
+
+def deck_item(label, deck, pdf, pptx):
+    get = f'<a href="{e(pdf)}">PDF</a>' + (f'<a href="{e(pptx)}">PowerPoint</a>' if pptx else '')
+    return (f'<li><span class="day">{label}</span><span class="topic">{e(" · ".join(deck["topics"]))}</span>'
+            f'<span class="get">{get}</span></li>')
+
+
+def build_intake(intake, decks):
+    folder = intake['folder']
+    base = f'{CARP}/{folder}'
     d = REPO / base
+    by_pdf = {Path(k['pdf']).name: k for k in decks}
     pdfs = sorted(p.name for p in (d / 'PDF').glob('*.pdf'))
     pptx = {p.stem for p in (d / 'PowerPoint').glob('*.pptx')}
-    rows = ''.join(f'<li>{e(n[:6].replace("-", " "))} · {e(n[7:17])} · <a href="PDF/{e(n)}">PDF</a>'
-                   + (f' · <a href="PowerPoint/{e(n[:-4])}.pptx">PowerPoint</a>' if n[:-4] in pptx else '') + '</li>'
-                   for n in pdfs)
+    rows = ''
+    for n in pdfs:
+        k = by_pdf.get(n) or {'topics': [n[:-4]]}
+        rows += deck_item(f'{e(n[:6].replace("-", " "))} · {e(n[7:17])}', k, f'PDF/{n}',
+                          f'PowerPoint/{n[:-4]}.pptx' if n[:-4] in pptx else None)
     quizzes = sorted(p.name for p in (d / 'Quizzes/PDF').glob('*.pdf'))
     qrows = ''.join(f'<li><a href="Quizzes/PDF/{e(n)}">{e(n[:-4])}</a></li>' for n in quizzes)
-    body = ('<section><h2>Tools</h2><div class="grid">'
+    body = ('<p class="about">These decks, quizzes and tools belong to the shared carpentry library. '
+            'The <a href="../#shared">Carpentry page</a> lists the <a href="../#decks">math decks by day and topic</a>, '
+            'the BC Building Code plates and the tools every carpentry intake uses.</p>'
+            '<section><h2>Tools</h2><div class="grid">'
             + card('After-lecture quiz game', 'Quizzes/index.html', '50 lecture boards with random questions, worked solutions and team play.', [('Play', 'Quizzes/index.html')])
             + card('Lecture quiz generator', 'Quizzes/generator.html', 'Generate 10–25 questions for any lecture, with a fillable quiz PDF and matching answer key.', [('Open', 'Quizzes/generator.html'), ('Instructor answer key', 'Quizzes/Instructor/Answer-Key.pdf')])
             + card('War Against The Poor', 'war-against-the-poor/', 'Gambling probability simulator on published Canadian lottery and casino odds.', [('Open', 'war-against-the-poor/')])
             + card('Numeracy skill', '../../../skills/numeracy/', 'Numeracy Hub, Shape Canvas, calculators and the Trades Numeracy books.', [('Open', '../../../skills/numeracy/')])
-            + f'</div></section><section><h2>Daily math decks</h2><p class="section-note">{len(pdfs)} days. Each deck has speaker notes in the PowerPoint version.</p><ol class="files">{rows}</ol></section>'
-            + f'<section><h2>Fillable lecture quizzes</h2><p class="section-note">{len(quizzes)} quizzes. Type answers and working, then save a filled copy.</p><ul class="files">{qrows}</ul></section>')
-    page(f'{base}/index.html', 'Carpentry Foundation Intake 142 · ACCESS IS4S', 'Programs · Carpentry Foundation (KPU)',
-         'Intake 142', 'Daily math decks, quizzes and tools for the Carpentry Foundation cohort at KPU.', body,
-         crumb=('← All 9 skills', '../../../index.html'))
+            + f'</div></section><section id="decks"><h2>Daily math decks</h2><p class="section-note">{len(pdfs)} days, each with its date and topics. '
+            'Each deck has speaker notes in the PowerPoint version.</p>'
+            f'<ol class="decks">{rows}</ol></section>'
+            + f'<section id="quizzes"><h2>Fillable lecture quizzes</h2><p class="section-note">{len(quizzes)} quizzes. Type answers and working, then save a filled copy.</p><ul class="files">{qrows}</ul></section>')
+    page(f'{base}/index.html', f'Carpentry Foundation {intake["name"]} · ACCESS IS4S', intake['eyebrow'],
+         intake['name'], e(intake['lede']), body, crumb=('← Carpentry', '../index.html'))
+
+
+def build_carpentry():
+    m = carpentry_materials()
+    decks, intakes = m['decks'], m['intakes']
+    noc = ''
+    if (REPO / 'tools/noc/index.html').exists():
+        noc = ' <a href="../../tools/noc/?q=carpenter">Look up any job’s NOC code</a>.'
+    src = [
+        ('SkilledTradesBC: Carpenter', 'https://skilledtradesbc.ca/carpenter'),
+        ('SkilledTradesBC: Carpenter Program Profile, in effect April 1, 2024', 'https://skilledtradesbc.ca/media/2811/download'),
+        ('SkilledTradesBC: Are You Impacted by Skilled Trades Certification?', 'https://skilledtradesbc.ca/are-you-impacted'),
+        ('Statistics Canada: NOC 2021 Version 1.0, 72310 Carpenters',
+         'https://www23.statcan.gc.ca/imdb/p3VD.pl?Function=getVD&TVD=1322554&CVD=1322870&CPV=72310&CST=01052021&MLV=5&CLV=4'),
+    ]
+
+    def ref(*ns):
+        return ''.join(f'<sup><a href="#src-{i}" aria-label="Source {i}">[{i}]</a></sup>' for i in ns)
+
+    facts = [
+        ('What carpenters do', 'Build, install, renovate, maintain and repair homes and other buildings and structures, '
+         'working with wood, steel, concrete and other materials.' + ref(2, 4)),
+        ('Certification in BC', 'Red Seal trade. Finishing the apprenticeship and passing the interprovincial Red Seal exam '
+         'gives a Certificate of Qualification with a Red Seal endorsement, which is recognized across Canada.' + ref(1, 2, 4)),
+        ('Work-based training', '6,360 hours of training on the job.' + ref(1)),
+        ('Technical training', '28 weeks of classroom training over 4 years: Levels 1 to 4, 210 hours each.' + ref(1, 2)),
+        ('Carpenter Foundation', 'A program for people new to the trade. It generally takes about 720 hours, and finishing it gives credit for '
+         'Level 1 technical training and 450 hours of work-based training.' + ref(2)),
+        ('Compulsory in BC?', 'No. Carpenter is not one of BC’s Skilled Trades Certification (compulsory) trades, so you can work '
+         'in the trade without a certificate. Certification is voluntary everywhere in Canada except Quebec.' + ref(3, 4)),
+        ('NOC 2021 code', '72310 Carpenters, in the Statistics Canada National Occupational Classification. Apprentices are included in this code.'
+         + ref(4) + noc),
+    ]
+    fact_html = '<dl class="facts">' + ''.join(f'<dt>{t}</dt><dd>{dd}</dd>' for t, dd in facts) + '</dl>'
+    sources = ('<ol class="sources">' + ''.join(f'<li id="src-{i}"><a href="{e(u)}">{e(t)}</a>. Checked {CHECKED}.</li>'
+                                                for i, (t, u) in enumerate(src, 1)) + '</ol>')
+    about = ('<section id="about"><h2>About the trade</h2>'
+             '<p class="about">Carpenters build the forms, frames, floors, walls, stairs and finishes that turn a drawing into a building. '
+             'The work takes careful measuring and layout and a lot of math: fractions on a tape, areas and volumes for materials, '
+             'and right angles for work that is square, level and plumb. In BC, carpenters learn the trade through an apprenticeship, '
+             'and a Foundation program is one way to start.</p>' + fact_html + '</section>')
+    rows = ''.join(deck_item(f'Day {k["day"]:02d}', k, k['pdf'], k['pptx']) for k in decks)
+    q = 'intake-142/Quizzes'
+    shared = ('<section id="shared"><h2>Shared carpentry materials</h2>'
+              '<p class="section-note">Every carpentry intake reuses these. Files stay where they were first published, so links already shared with learners keep working.</p>'
+              '<div class="grid">'
+              + card('BC Building Code · Part 9 plates', 'bcbc-part-9/index.html',
+                     'Drawn plates for the Part 9 Articles, used by the Carpentry tab of the Numeracy Hub.',
+                     [('Open', 'bcbc-part-9/index.html')], 'gold')
+              + card('Math deck library', '#decks', f'{len(decks)} daily math decks, listed below by day and topic, each as a PDF and a PowerPoint with speaker notes.',
+                     [('By day and topic', '#decks')], 'gold')
+              + card('Lecture quizzes', f'{q}/index.html',
+                     'After-lecture quiz game, fillable lecture quizzes and a generator that makes a quiz PDF with a matching answer key.',
+                     [('Quiz game', f'{q}/index.html'), ('Generator', f'{q}/generator.html'),
+                      ('Fillable quizzes', 'intake-142/#quizzes'), ('Instructor answer key', f'{q}/Instructor/Answer-Key.pdf')], 'gold')
+              + card('War Against The Poor', 'intake-142/war-against-the-poor/',
+                     'Gambling probability simulator on published Canadian lottery and casino odds.',
+                     [('Open', 'intake-142/war-against-the-poor/')], 'gold')
+              + card('Numeracy Hub · Carpentry tab', '../../skills/numeracy/hub/#carp',
+                     'The math of the trade next to the BC Building Code, with worked examples.',
+                     [('Carpentry tab', '../../skills/numeracy/hub/#carp'), ('Shape Canvas', '../../skills/numeracy/shape-canvas/')], 'gold')
+              + '</div></section>'
+              f'<section id="decks"><h2>Math deck library</h2><p class="section-note">{len(decks)} decks in teaching order. '
+              'Each line gives the day number and the topics printed on the deck.</p>'
+              f'<ol class="decks">{rows}</ol></section>')
+    icards = ''
+    for it in intakes:
+        ds = deck_dates(it['folder'])
+        when = f' {ds[0]} to {ds[-1]}.' if ds else ''
+        icards += card(e(f'{it["name"]} · {it["provider"]} {it["program"]}'), f'{it["folder"]}/',
+                       f'{it["summary"]}{when}', [('Open', f'{it["folder"]}/'), ('Decks', f'{it["folder"]}/#decks'),
+                                                   ('Quizzes', f'{it["folder"]}/#quizzes')])
+    intakes_html = ('<section id="intakes"><h2>Intakes</h2>'
+                    f'<div class="grid">{icards}</div>'
+                    '<p class="about" style="margin-top:18px">To add the next intake, make a new folder <code>programs/carpentry/intake-NNN/</code> '
+                    'with its own schedule that links the shared library above. The steps are in the '
+                    '<a href="README.md">instructor README</a>.</p></section>')
+    page(f'{CARP}/index.html', 'Carpentry · ACCESS IS4S', 'Programs · Trade', 'Carpentry',
+         'The carpenter trade in BC, the materials every carpentry intake shares, and each intake’s own schedule.',
+         about + shared + intakes_html + f'<section id="sources"><h2>Sources</h2>{sources}</section>',
+         crumb=('← All 9 skills', '../../index.html'))
+    for it in intakes:
+        if (REPO / CARP / it['folder'] / 'PDF').exists():
+            build_intake(it, decks)
+    return len(intakes)
 
 
 def main():
@@ -372,8 +501,8 @@ def main():
             build_numeracy_section()
         else:
             build_skill(slug, name, i)
-    build_intake()
-    print('built hub, 8 skill pages, Numeracy chapters, Intake 142')
+    n = build_carpentry()
+    print(f'built hub, 8 skill pages, Numeracy chapters, Carpentry page, {n} carpentry intake(s)')
 
 
 if __name__ == '__main__':

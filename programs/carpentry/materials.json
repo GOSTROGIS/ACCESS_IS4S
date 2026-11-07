@@ -1,0 +1,284 @@
+{
+  "note": "Shared carpentry materials. decks: topics are the block titles printed on page 1 of each deck, paths are relative to programs/carpentry/. intakes: one entry per intake folder. Read by source/site/build_pages.py.",
+  "intakes": [
+    {
+      "folder": "intake-142",
+      "name": "Intake 142",
+      "provider": "KPU",
+      "program": "Carpentry Foundation",
+      "eyebrow": "Programs · Carpentry Foundation (KPU)",
+      "lede": "Daily math decks, quizzes and tools for the Carpentry Foundation cohort at KPU.",
+      "summary": "27 daily math decks, lecture quizzes and tools."
+    }
+  ],
+  "decks": [
+    {
+      "day": 1,
+      "week": 1,
+      "topics": [
+        "Whole numbers and estimation",
+        "Calculator basics and checking"
+      ],
+      "pdf": "intake-142/PDF/Day-01_2026-10-29_Week-1.pdf",
+      "pptx": "intake-142/PowerPoint/Day-01_2026-10-29_Week-1.pptx"
+    },
+    {
+      "day": 2,
+      "week": 1,
+      "topics": [
+        "Quantities, averages and word problems",
+        "Cut-list practice and rounding"
+      ],
+      "pdf": "intake-142/PDF/Day-02_2026-10-30_Week-1.pdf",
+      "pptx": "intake-142/PowerPoint/Day-02_2026-10-30_Week-1.pptx"
+    },
+    {
+      "day": 3,
+      "week": 2,
+      "topics": [
+        "BEDMAS: choosing the correct order",
+        "BEDMAS in cut lists and frames"
+      ],
+      "pdf": "intake-142/PDF/Day-03_2026-11-02_Week-2.pdf",
+      "pptx": "intake-142/PowerPoint/Day-03_2026-11-02_Week-2.pptx"
+    },
+    {
+      "day": 4,
+      "week": 2,
+      "topics": [
+        "Brackets, squares and square roots",
+        "Calculation checking workshop"
+      ],
+      "pdf": "intake-142/PDF/Day-04_2026-11-03_Week-2.pdf",
+      "pptx": "intake-142/PowerPoint/Day-04_2026-11-03_Week-2.pptx"
+    },
+    {
+      "day": 5,
+      "week": 2,
+      "topics": [
+        "Fractions and inch-tape markings",
+        "Tape and rule reading practice"
+      ],
+      "pdf": "intake-142/PDF/Day-05_2026-11-04_Week-2.pdf",
+      "pptx": "intake-142/PowerPoint/Day-05_2026-11-04_Week-2.pptx"
+    },
+    {
+      "day": 6,
+      "week": 2,
+      "topics": [
+        "Equivalent fractions and comparing lengths",
+        "Mixed numbers and fraction calculator entry"
+      ],
+      "pdf": "intake-142/PDF/Day-06_2026-11-05_Week-2.pdf",
+      "pptx": "intake-142/PowerPoint/Day-06_2026-11-05_Week-2.pptx"
+    },
+    {
+      "day": 7,
+      "week": 2,
+      "topics": [
+        "Marking fractional dimensions",
+        "Fraction foundations checkpoint"
+      ],
+      "pdf": "intake-142/PDF/Day-07_2026-11-06_Week-2.pdf",
+      "pptx": "intake-142/PowerPoint/Day-07_2026-11-06_Week-2.pptx"
+    },
+    {
+      "day": 8,
+      "week": 3,
+      "topics": [
+        "Adding fractional lengths",
+        "Subtracting and regrouping fractions"
+      ],
+      "pdf": "intake-142/PDF/Day-08_2026-11-09_Week-3.pdf",
+      "pptx": "intake-142/PowerPoint/Day-08_2026-11-09_Week-3.pptx"
+    },
+    {
+      "day": 9,
+      "week": 3,
+      "topics": [
+        "Repeated pieces and equal groups",
+        "Fraction operations: check and retry"
+      ],
+      "pdf": "intake-142/PDF/Day-09_2026-11-10_Week-3.pdf",
+      "pptx": "intake-142/PowerPoint/Day-09_2026-11-10_Week-3.pptx"
+    },
+    {
+      "day": 10,
+      "week": 3,
+      "topics": [
+        "Fraction operations by hand",
+        "Fractions in shop problems"
+      ],
+      "pdf": "intake-142/PDF/Day-10_2026-11-13_Week-3.pdf",
+      "pptx": "intake-142/PowerPoint/Day-10_2026-11-13_Week-3.pptx"
+    },
+    {
+      "day": 11,
+      "week": 4,
+      "topics": [
+        "Fraction addition and subtraction: job practice",
+        "Fraction cut lists, centre lines and kerf"
+      ],
+      "pdf": "intake-142/PDF/Day-11_2026-11-16_Week-4.pdf",
+      "pptx": "intake-142/PowerPoint/Day-11_2026-11-16_Week-4.pptx"
+    },
+    {
+      "day": 12,
+      "week": 4,
+      "topics": [
+        "Decimals: place value and operations",
+        "Decimals, tape rounding and costs"
+      ],
+      "pdf": "intake-142/PDF/Day-12_2026-11-17_Week-4.pdf",
+      "pptx": "intake-142/PowerPoint/Day-12_2026-11-17_Week-4.pptx"
+    },
+    {
+      "day": 13,
+      "week": 4,
+      "topics": [
+        "Percent: part of a whole",
+        "Waste allowance and purchase quantities"
+      ],
+      "pdf": "intake-142/PDF/Day-13_2026-11-18_Week-4.pdf",
+      "pptx": "intake-142/PowerPoint/Day-13_2026-11-18_Week-4.pptx"
+    },
+    {
+      "day": 14,
+      "week": 4,
+      "topics": [
+        "Ratios, rates and proportions",
+        "Scale drawings and weekly check"
+      ],
+      "pdf": "intake-142/PDF/Day-14_2026-11-19_Week-4.pdf",
+      "pptx": "intake-142/PowerPoint/Day-14_2026-11-19_Week-4.pptx"
+    },
+    {
+      "day": 15,
+      "week": 5,
+      "topics": [
+        "Measurement systems and readable dimensions",
+        "Exact conversion factors and mixed-unit practice"
+      ],
+      "pdf": "intake-142/PDF/Day-15_2026-11-24_Week-5.pdf",
+      "pptx": "intake-142/PowerPoint/Day-15_2026-11-24_Week-5.pptx"
+    },
+    {
+      "day": 16,
+      "week": 5,
+      "topics": [
+        "Reading and substituting into formulas",
+        "Rearranging formulas and checking backwards"
+      ],
+      "pdf": "intake-142/PDF/Day-16_2026-11-25_Week-5.pdf",
+      "pptx": "intake-142/PowerPoint/Day-16_2026-11-25_Week-5.pptx"
+    },
+    {
+      "day": 17,
+      "week": 5,
+      "topics": [
+        "Hidden dimensions: square roots and formula checks"
+      ],
+      "pdf": "intake-142/PDF/Day-17_2026-11-26_Week-5.pdf",
+      "pptx": "intake-142/PowerPoint/Day-17_2026-11-26_Week-5.pptx"
+    },
+    {
+      "day": 18,
+      "week": 5,
+      "topics": [
+        "Perimeter, frame lengths and material totals",
+        "Circumference, arcs and perimeter consolidation"
+      ],
+      "pdf": "intake-142/PDF/Day-18_2026-11-27_Week-5.pdf",
+      "pptx": "intake-142/PowerPoint/Day-18_2026-11-27_Week-5.pptx"
+    },
+    {
+      "day": 19,
+      "week": 6,
+      "topics": [
+        "Area and material coverage",
+        "Composite areas, openings and surface coverage"
+      ],
+      "pdf": "intake-142/PDF/Day-19_2026-11-30_Week-6.pdf",
+      "pptx": "intake-142/PowerPoint/Day-19_2026-11-30_Week-6.pptx"
+    },
+    {
+      "day": 20,
+      "week": 6,
+      "topics": [
+        "Volume of boxes and prisms",
+        "Cylinders, capacity and missing heights"
+      ],
+      "pdf": "intake-142/PDF/Day-20_2026-12-01_Week-6.pdf",
+      "pptx": "intake-142/PowerPoint/Day-20_2026-12-01_Week-6.pptx"
+    },
+    {
+      "day": 21,
+      "week": 6,
+      "topics": [
+        "Angles, triangles and drawing interpretation",
+        "Pythagorean theorem and brace lengths"
+      ],
+      "pdf": "intake-142/PDF/Day-21_2026-12-02_Week-6.pdf",
+      "pptx": "intake-142/PowerPoint/Day-21_2026-12-02_Week-6.pptx"
+    },
+    {
+      "day": 22,
+      "week": 6,
+      "topics": [
+        "Checking square, diagonals and layout",
+        "SOH CAH TOA and missing sides"
+      ],
+      "pdf": "intake-142/PDF/Day-22_2026-12-03_Week-6.pdf",
+      "pptx": "intake-142/PowerPoint/Day-22_2026-12-03_Week-6.pptx"
+    },
+    {
+      "day": 23,
+      "week": 6,
+      "topics": [
+        "Angles, grades and carpentry slope applications"
+      ],
+      "pdf": "intake-142/PDF/Day-23_2026-12-04_Week-6.pdf",
+      "pptx": "intake-142/PowerPoint/Day-23_2026-12-04_Week-6.pptx"
+    },
+    {
+      "day": 24,
+      "week": 7,
+      "topics": [
+        "Carpentry drawing: floor layout and cut list",
+        "Materials practice: sheeting and allowance"
+      ],
+      "pdf": "intake-142/PDF/Day-24_2026-12-07_Week-7.pdf",
+      "pptx": "intake-142/PowerPoint/Day-24_2026-12-07_Week-7.pptx"
+    },
+    {
+      "day": 25,
+      "week": 7,
+      "topics": [
+        "Skill clinics: practise your priority topic",
+        "Mixed-topic calculation practice"
+      ],
+      "pdf": "intake-142/PDF/Day-25_2026-12-10_Week-7.pdf",
+      "pptx": "intake-142/PowerPoint/Day-25_2026-12-10_Week-7.pptx"
+    },
+    {
+      "day": 26,
+      "week": 8,
+      "topics": [
+        "Review: numbers, units and formulas",
+        "Review: geometry and job problems"
+      ],
+      "pdf": "intake-142/PDF/Day-26_2026-12-14_Week-8.pdf",
+      "pptx": "intake-142/PowerPoint/Day-26_2026-12-14_Week-8.pptx"
+    },
+    {
+      "day": 27,
+      "week": 8,
+      "topics": [
+        "Readiness check: 12 core questions",
+        "Corrections and a personal practice plan"
+      ],
+      "pdf": "intake-142/PDF/Day-27_2026-12-16_Week-8.pdf",
+      "pptx": "intake-142/PowerPoint/Day-27_2026-12-16_Week-8.pptx"
+    }
+  ]
+}
