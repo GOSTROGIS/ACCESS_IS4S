@@ -4,7 +4,7 @@ Titles and introductions come from the textbook chapters in skills/<skill>/.
 File lists come from the folders themselves. Re-run after source/textbook/sync.py
 or after adding decks:  python3 source/site/build_pages.py
 """
-import html, json, re
+import html, json, os, re
 
 import markdown
 from pathlib import Path
@@ -101,13 +101,45 @@ main>*,nav{min-width:0}
 .about{max-width:72ch;margin:0 0 18px;color:var(--slate)}
 .sources{margin:0;padding-left:22px;max-width:78ch;overflow-wrap:anywhere;font-size:15px}
 .sources li{margin-bottom:6px}
+.lock{font-size:.85em;margin-left:3px}
+.lesson-steps{justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 """
+
+# Instructor pages: answers, teaching chapters, practitioner guides and teaching tools.
+# apply_gates() adds brand/instructor-gate.js to each one, so it asks for the instructor code.
+GATED = re.compile(r'''^(?:
+    skills/[^/]+/(?:teaching|answers)\.html
+  | skills/[^/]+/lessons/[^/]+/(?:instructor|answers)\.html
+  | skills/digital/ai-literacy/(?:instructor|answers)\.html
+  | skills/numeracy/books/[^/]*Answer-Key[^/]*\.html
+  | textbook/practitioner-guide\.html
+  | textbook/(?:practitioner|answers)/[^/]+\.html
+  | textbook/teaching/foundations/[^/]*practitioner-notes\.html
+  | textbook/teaching/social/(?:instructor-key|teaching-plans|delivery-and-local-review)\.html
+  | programs/carpentry/[^/]+/Quizzes/generator\.html
+)$''', re.X)
+LOCK = '<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span>'
+
+
+def mark_locks(text, path):
+    """Add the lock to every link on the page at path that leads to a GATED page."""
+    here = os.path.dirname(path)
+
+    def sub(m):
+        href = m.group(2).split('#')[0].split('?')[0]
+        if not href or re.match(r'[a-z]+:', href):
+            return m.group(0)
+        target = os.path.normpath(os.path.join(here, href.replace('&amp;', '&')))
+        if href.endswith('/'):
+            target += '/index.html'
+        return m.group(0)[:-4] + LOCK + '</a>' if GATED.match(target) else m.group(0)
+    return re.sub(r'(<a [^>]*?href="([^"]*)"[^>]*>)((?:(?!</a>).)*?)</a>', lambda m: sub(m) if LOCK not in m.group(3) else m.group(0), text)
 
 
 def page(path, title, eyebrow, h1, lede, body, crumb=None):
     root = '../' * (len(Path(path).parts) - 1)
     crumb_html = f'<p class="crumb"><a href="{e(crumb[1])}">{e(crumb[0])}</a></p>' if crumb else ''
-    src = json.loads((REPO / 'textbook/SOURCE.json').read_text())
     out = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -134,14 +166,14 @@ def page(path, title, eyebrow, h1, lede, body, crumb=None):
 </main>
 <footer class="site-foot">
   <div class="wrap">
-    <p>ACCESS Indigenous Skills4Success. The nine-skills books are written in <a href="{e(src['source'])}">GOSTROGIS/Business</a> (published here from commit {e(src['business_commit'])}).</p>
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
   </div>
 </footer>
 </body>
 </html>
 """
     (REPO / path).parent.mkdir(parents=True, exist_ok=True)
-    (REPO / path).write_text(out, encoding='utf-8')
+    (REPO / path).write_text(add_gate(mark_locks(out, path), path), encoding='utf-8')
 
 
 def chapter(slug, role):
@@ -166,7 +198,8 @@ def first_sentence(s):
 
 
 def links(items):
-    return '<ul class="links">' + ''.join(f'<li><a href="{e(h)}">{e(t)}</a></li>' for t, h in items) + '</ul>'
+    return '<ul class="links">' + ''.join(f'<li><a href="{e(h)}">{e(t)}</a></li>'
+                                          for t, h in items) + '</ul>'
 
 
 def card(h3, href, text, items, cls=''):
@@ -243,20 +276,7 @@ def build_hub():
                        'Type any trade or job title to find its National Occupational Classification code and TEER category, from Statistics Canada.',
                        [('Search', 'tools/noc/'), ('Carpenter', 'tools/noc/?q=carpenter')])
                 + '</div></section>')
-    review = ''
-    gap = REPO / 'skills/gap-analysis.md'
-    if gap.exists():
-        _, body = front(gap.read_text(encoding='utf-8'))
-        body = re.sub(r'^# .*\n', '', body.lstrip(), count=1)
-        page('skills/gap-analysis.html', 'Gap analysis · The 9 Skills', 'ACCESS Indigenous Skills4Success',
-             'Gap analysis of the 9 skills', 'What each skill covers now, what is missing, and what to build next.',
-             f'<article class="prose">{md_html(body)}</article>', crumb=('← All 9 skills', '../index.html'))
-        review = ('<section><h2>Library review</h2><div class="grid">'
-                  + card('Gap analysis', 'skills/gap-analysis.html',
-                         'Component and level coverage for each skill, trade gaps and the next lessons to build.',
-                         [('Read', 'skills/gap-analysis.html')])
-                  + '</div></section>')
-    programs = ('<section><h2>Programs</h2><div class="grid">'
+    programs =('<section><h2>Programs</h2><div class="grid">'
                 + card('Carpentry', 'programs/carpentry/',
                        'The carpenter trade in BC, the shared math deck library, BC Building Code plates and every carpentry intake.',
                        [('Trade page', 'programs/carpentry/'), ('Intake 142', 'programs/carpentry/intake-142/'),
@@ -264,7 +284,7 @@ def build_hub():
                         ('Math deck library', 'programs/carpentry/#decks')])
                 + '</div></section>')
     body = (f'<section><h2>The nine skills</h2><div class="grid">{"".join(cards)}</div></section>'
-            + books_section('') + review + tools_section() + programs)
+            + books_section('') + tools_section() + programs)
     page('index.html', 'The 9 Skills · ACCESS Indigenous Skills4Success', 'ACCESS Indigenous Skills4Success',
          'The 9 Skills', 'Reading, Writing, Numeracy, Digital, Problem solving, Communication, Collaboration, '
          'Adaptability, and Creativity and innovation, each with its learner chapter, teaching chapter, answer guidance and tools.', body)
@@ -308,20 +328,31 @@ def lessons(slug):
 def build_lessons(slug, name, i):
     """Render each lesson's Markdown to pages, and return the lesson cards for the skill page."""
     cards = []
-    for folder, fm in lessons(slug):
+    found = lessons(slug)
+    for k, (folder, fm) in enumerate(found):
         base = f'skills/{slug}/lessons/{folder}'
+        prev_l, next_l = (found[k - 1] if k else None), (found[k + 1] if k + 1 < len(found) else None)
         for role, label in LESSON_ROLES:
             src = REPO / base / f'{role}.md'
             if not src.exists():
                 continue
             _, body = front(src.read_text(encoding='utf-8'))
             body = re.sub(r'^# .*\n', '', body.lstrip(), count=1)
-            tabs = ''.join(f'<li><a href="{r}.html"' + (' aria-current="page"' if r == role else '') + f'>{l}</a></li>'
+            tabs = ''.join(f'<li><a href="{r}.html"' + (' aria-current="page"' if r == role else '')
+                           + f'>{l}</a></li>'
                            for r, l in LESSON_ROLES if (REPO / base / f'{r}.md').exists())
             meta = ''.join(f'<li>{e(k)}: {e(fm[f])}</li>' for k, f in (('Level', 'level'), ('Time', 'time'), ('Components', 'components')) if fm.get(f))
+            steps = ''
+            for lesson, arrow in ((prev_l, 'prev'), (next_l, 'next')):
+                if lesson and (REPO / f'skills/{slug}/lessons/{lesson[0]}/{role}.md').exists():
+                    label = f'Lesson {int(lesson[0][:2])}: {lesson[1].get("title", lesson[0])}'
+                    text = f'← {e(label)}' if arrow == 'prev' else f'{e(label)} →'
+                    steps += f'<li><a rel="{arrow}" href="../{lesson[0]}/{role}.html">{text}</a></li>'
+            steps = f'<nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps">{steps}</ul></nav>' if steps else ''
             page(f'{base}/{role}.html', f'{fm.get("title", folder)} · {label} · {name}', f'{name} · Lesson {folder[:2]} · {label}',
                  fm.get('title', folder), e(fm.get('summary', '')),
-                 f'<nav><ul class="lesson-tabs">{tabs}</ul><ul class="lesson-meta">{meta}</ul></nav><article class="prose">{md_html(body)}</article>',
+                 f'<nav aria-label="Lesson pages"><ul class="lesson-tabs">{tabs}</ul><ul class="lesson-meta">{meta}</ul></nav>'
+                 f'<article class="prose">{md_html(body)}</article>{steps}',
                  crumb=(f'← {name}', '../../index.html'))
         items = [(l, f'lessons/{folder}/{r}.html') for r, l in LESSON_ROLES if (REPO / base / f'{r}.md').exists()]
         lvl = f' · Level {fm["level"]}' if fm.get('level') else ''
@@ -363,7 +394,7 @@ def build_numeracy_section():
         assert t.count('<main>') == 1
         t = t.replace('<main>', '<main>\n' + block, 1)
         t = t.replace('</head>', '<link rel="stylesheet" href="../../brand/site-cards.css">\n</head>', 1)
-    path.write_text(t, encoding='utf-8')
+    path.write_text(mark_locks(t, 'skills/numeracy/index.html'), encoding='utf-8')
 
 
 CARP = 'programs/carpentry'
@@ -502,6 +533,34 @@ def build_carpentry():
     return len(intakes)
 
 
+def add_gate(text, path):
+    """Put the instructor code lock in the head of the page at path, if it is an instructor page."""
+    if not GATED.match(path) or 'instructor-gate.js' in text:
+        return text
+    root = '../' * (len(Path(path).parts) - 1)
+    m = re.search(r'<meta charset[^>]*>', text, re.I) or re.search(r'<head[^>]*>', text, re.I)
+    if not m:
+        print(f'no <head> in {path}, not locked')
+        return text
+    return text[:m.end()] + f'<script src="{root}brand/instructor-gate.js" data-gate="page"></script>' + text[m.end():]
+
+
+def apply_gates():
+    """Lock the instructor pages this script does not write itself (sync.py copies, books, tools)."""
+    n = 0
+    for top in ('skills', 'textbook', 'programs'):
+        for f in sorted((REPO / top).rglob('*.html')):
+            rel = f.relative_to(REPO).as_posix()
+            if not GATED.match(rel):
+                continue
+            text = f.read_text(encoding='utf-8')
+            locked = add_gate(text, rel)
+            if locked != text:
+                f.write_text(locked, encoding='utf-8')
+                n += 1
+    return n
+
+
 def main():
     (REPO / 'brand/site.css').write_text(CSS, encoding='utf-8')
     # card styles for the Numeracy page, which keeps its own page styles
@@ -514,7 +573,8 @@ def main():
         else:
             build_skill(slug, name, i)
     n = build_carpentry()
-    print(f'built hub, 8 skill pages, Numeracy chapters, Carpentry page, {n} carpentry intake(s)')
+    g = apply_gates()
+    print(f'built hub, 8 skill pages, Numeracy chapters, Carpentry page, {n} carpentry intake(s), {g} page(s) newly locked')
 
 
 if __name__ == '__main__':

@@ -1,8 +1,8 @@
 # ACCESS IS4S · Skills for Success
 
-[Download the learner textbook](learner-textbook.pdf) · [Download the practitioner guide](practitioner-guide.pdf) · [Preview the visual edition](visual-sampler.pdf)
+[Download the learner textbook](learner-textbook.pdf) · [Download the practitioner guide](practitioner-guide.pdf)
 
-[Read the learner book](learner-textbook.html) · [Read the practitioner book](practitioner-guide.html) · [Explore the diagrams](VISUALS.md)
+[Read the learner book](learner-textbook.html) · [Read the practitioner book](practitioner-guide.html)
 
 **Edition 4 · 30 October 2026**
 
@@ -40,19 +40,3 @@ Learners can work with the supplied fictional cases or choose an appropriate exa
 ## Visuals and reading formats
 
 The books use custom SVG illustrations, technical diagrams, annotated documents and four contextual illustrations. The colours and typography follow the ACCESS Numeracy Hub. Diagrams remain sharp when enlarged; reading pages offer a visual viewer and text descriptions. Printed contents identify chapter destinations, and response pages provide space to write.
-
-GitHub previews the PDFs and Markdown. Serve the repository locally or host its static files to use the HTML reading pages and Digital practice desk.
-
-## Editing and rebuilding
-
-Editable chapters contain the full teaching content. Managed practice blocks come from the authoring files listed in [teaching-manifest.json](teaching-manifest.json); [visuals-manifest.json](assets/visuals-manifest.json) controls figure placement. The builder integrates those blocks before producing the books and reading pages.
-
-```sh
-python -m pip install -r curriculum/skills-for-success/tools/requirements.txt
-python curriculum/skills-for-success/tools/build_books.py
-python curriculum/skills-for-success/tools/verify_books.py --require-generated
-```
-
-Chromium must be installed. Set `IS4S_CHROMIUM_PATH` to another Chromium executable if necessary. `--html-only` builds the reading pages without PDF export. The tools use bundled fonts and a temporary local server; PDF links resolve to repository documents or exact book pages.
-
-[Validation](VALIDATION.md) · [Edition 3 implementation record](IMPLEMENTATION.md) · [Editorial research and provenance](research/online-research.md) · [28 October review](research/book-gap-analysis-2026-10-28.md)

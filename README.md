@@ -86,7 +86,7 @@ The [Exercise Book web edition](skills/numeracy/books/ACCESS-Trades-Numeracy-Exe
 
 ## Updating the site
 
-- **Nine-skills books.** They are written and built in [GOSTROGIS/Business](https://github.com/GOSTROGIS/Business/tree/main/curriculum/skills-for-success). After a rebuild there, clone Business and run `python3 source/textbook/sync.py /path/to/Business`. It copies the books here, splits the chapters into the skill folders and rewrites every link. `textbook/SOURCE.json` records the Business commit.
+- **Nine-skills books.** They are written and built in [GOSTROGIS/Business](https://github.com/GOSTROGIS/Business/tree/main/curriculum/skills-for-success). After a rebuild there, clone Business and run `python3 source/textbook/sync.py /path/to/Business`. It copies the books here, splits the chapters into the skill folders and rewrites every link. `source/textbook/SOURCE.json` records the Business commit. Build, validation and research records stay in Business, so only the curriculum is published here.
 - **Hub and skill pages.** Run `python3 source/site/build_pages.py` after a sync or after adding decks. Titles and introductions come from the chapters, and deck lists from the folders.
 - **Links.** `python3 source/check-links.py` reports any relative link that points at a missing file.
 - **Old addresses.** `404.html` holds the list of moved folders. GitHub Pages shows it for any missing address, and it forwards old links (pages, PDFs and plates) to their new place.

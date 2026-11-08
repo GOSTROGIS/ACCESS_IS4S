@@ -10289,6 +10289,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
     var f = U.TO_MM[from] / U.TO_MM[to]
     if (!(f > 0) || f === 1) return
     if (SC.X && o.mat) SC.X.convert(o, f)
+    if (SC.F && o.fab) SC.F.convert(o, f)
     if (o.type === 'comp') o.ppu = o.ppu / f
     if (o.type !== 'shape') return
     M.plist(o).forEach(function (q) { if (!q.angle && !q.int) o.params[q.k] = o.params[q.k] * f })
@@ -10327,7 +10328,8 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
    Measures Act), 1 lb = 0.453 592 37 kg (Weights and Measures Act).
    Mass: density × volume. Densities from The Engineering ToolBox, Metals and Alloys - Densities (steel 7,850,
    aluminum 2,712, copper 8,940 kg/m³) and Water - Density (1,000 kg/m³ at 4 °C, 999.97 in its table), the same
-   sources units/gen.js cites. A real job uses the supplier's figure.
+   sources units/gen.js cites. A real job uses the supplier's figure. Steel by the shop rule is the Metal Fabrication
+   Formulas sheet 2 figure, 40.8 lb per sq ft per inch thick (489.6 lb/ft³, 1 ft³ = 0.028316846592 m³ exactly).
    Materials (C5): the size a material covers, the coverage of one unit, a waste allowance in percent, the whole units to
    buy and their cost. Sheet sizes, coverage and prices are always typed in by the user, never given as standards.
    Keys: q:L, q:usg, q:ig (capacity), q:kg, q:lb (mass), m:need, m:n, m:cost (materials). */
@@ -10337,9 +10339,10 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
   var U = SC.U
   function M() { return SC.M }
   function E() { return W.Shapes }
-  var L_MM3 = 1e6, USGAL_L = 3.785411784, IMPGAL_L = 4.54609, LB_KG = 0.45359237
+  var L_MM3 = 1e6, USGAL_L = 3.785411784, IMPGAL_L = 4.54609, LB_KG = 0.45359237, FT3_M3 = 0.028316846592
   var DENS = [
     { id: 'steel', name: 'Steel', kgm3: 7850, of: 'solid' },
+    { id: 'steel-shop', name: 'Steel by the shop rule, 40.8 lb per sq ft per inch thick', label: 'Steel by the shop rule, 40.8 lb per sq ft per inch thick (489.6 lb/ft³)', kgm3: 489.6 * LB_KG / FT3_M3, of: 'solid' },
     { id: 'aluminum', name: 'Aluminum', kgm3: 2712, of: 'solid' },
     { id: 'copper', name: 'Copper', kgm3: 8940, of: 'solid' },
     { id: 'water', name: 'Water, filling the inside', kgm3: 1000, of: 'inside' },
@@ -10430,6 +10433,8 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
         }
       }
     }
+    /* metal fab shop sheet rows (js-fab) */
+    if (SC.F) out = out.concat(SC.F.rows(o, bp))
     return out
   }
   function dims(o, p) { return compute(o, p || (o && o.params)) }
@@ -10463,6 +10468,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       if (n) out.push({ key: 'm:n', name: 'Whole units to buy', value: need.value / coverage(o.mat), lines: ['N = Q ÷ coverage', 'N = ' + U.plain(need.value, 6) + ' ÷ ' + U.plain(coverage(o.mat), 6), 'N ≈ ' + U.fmt(need.value / coverage(o.mat)) + ', rounded up to ' + n.value] })
       if (cost) out.push({ key: 'm:cost', name: 'Cost', value: cost.value, lines: ['Cost = N × price', 'Cost = ' + n.value + ' × ' + U.plain(o.mat.price, 4), 'Cost = ' + money(cost.value)] })
     }
+    if (SC.F) out = out.concat(SC.F.items(o))
     return out
   }
 
@@ -10470,14 +10476,14 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
   function esc(s) { return U.esc(s) }
   function lenIn(v) { return isFinite(v) && v > 0 ? U.plain(v, 6) : '' }
   function paneHtml(o) {
-    var h = '', u = M().unit()
+    var h = SC.F ? SC.F.paneHtml(o) : '', u = M().unit()
     if (isSolid(o)) {
       var ms = o.mass || {}, dn = densOf(ms.mat)
       h += '<div class="sec" data-xsec="cap"><h3>Capacity and mass</h3>' +
         '<label class="chk"><input type="checkbox" data-x="cap"' + (o.cap ? ' checked' : '') + '> Show the capacity in litres, US gallons and imperial gallons</label>' +
         '<label class="chk"><input type="checkbox" data-x="mass"' + (o.mass ? ' checked' : '') + '> Show the mass from a density</label>'
       if (o.mass) {
-        h += '<div class="form-grid"><label for="x-mat">Material</label><select id="x-mat" data-x="mat">' + DENS.map(function (d) { return '<option value="' + d.id + '"' + (d.id === dn.id ? ' selected' : '') + '>' + esc(d.name + (d.kgm3 ? ', ' + d.kgm3.toLocaleString('en-CA') + ' kg/m³' : '')) + '</option>' }).join('') + '</select>'
+        h += '<div class="form-grid"><label for="x-mat">Material</label><select id="x-mat" data-x="mat">' + DENS.map(function (d) { return '<option value="' + d.id + '"' + (d.id === dn.id ? ' selected' : '') + '>' + esc(d.label || (d.name + (d.kgm3 ? ', ' + d.kgm3.toLocaleString('en-CA') + ' kg/m³' : ''))) + '</option>' }).join('') + '</select>'
         if (dn.kgm3 == null) {
           h += '<label for="x-rho">Density, kg/m³</label><input id="x-rho" data-x="rho" inputmode="decimal" autocomplete="off" value="' + esc(lenIn(+ms.rho)) + '">' +
             '<label for="x-of">Mass of</label><select id="x-of" data-x="of"><option value="solid"' + (ms.of !== 'inside' ? ' selected' : '') + '>the solid itself (V)</option><option value="inside"' + (ms.of === 'inside' ? ' selected' : '') + '>what fills the inside</option></select>'
@@ -10555,6 +10561,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       done()
     }
     U.qa('[data-x]', pane).forEach(function (el) { el.addEventListener('change', function () { onChange(el) }) })
+    if (SC.F) SC.F.wire(pane, o, done)
   }
   /* changing units with Convert: typed coverage keeps its real size */
   function convert(o, f) {
@@ -10566,6 +10573,367 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
   }
   SC.X = { dims: dims, value: value, items: items, paneHtml: paneHtml, wire: wire, convert: convert, DENS: DENS, KINDS: KINDS, money: money, coverable: coverable,
     factors: { L_MM3: L_MM3, USGAL_L: USGAL_L, IMPGAL_L: IMPGAL_L, LB_KG: LB_KG } }
+})(window)
+</script>
+<script id="js-fab">
+/* Shape Canvas: metal fab shop sheet rows. SC.F
+   The metal fabrication worksheets, worked on the shapes they use. Each row shows in Worked-out sizes and on the
+   Formulas tab, and can be hidden for practice. Settings are kept on the shape in o.fab. Row keys start with q:f.
+   Pipe: the rolled shell on the mean diameter (MD = OD − T, B = π × MD), and the tank fit-up. Corner to corner (CC) and
+     outside flush (OF): shell length A = OAL − 2 × EP, inside length A. Inside flush (IF): A = OAL, inside length
+     OAL − 2 × EP. End caps are sized on the ID or the OD (the answer key uses the ID for CC and IF, the OD for OF).
+   Cylinder: the stretch-out on the mean diameter when it is rolled from plate T thick (MD = D − T).
+   Angle iron: a formed plate with an inside radius IR (Radiused Sections: MR = IR + T ÷ 2, A = a − (IR + T),
+     B = π × MR × 90 ÷ 180, C = b − (IR + T), flat = A + B + C), and the formula sheet 2 rule for 90° parts
+     (up to 3/8 in or 10 mm: add the inside legs, over 7/16 in or 11 mm: add the mean legs, no rule in between).
+   Right triangle: the half truss from Truss Details IT1 (D = A ÷ B × 12, F = B − E, G = F × A ÷ B, I = √(F² + G²),
+     H = C − I), with the run B as b and the rise A as h.
+   Steel by the shop rule on Formulas sheet 2: 40.8 lb per sq ft per inch thick, 7.85 kg per sq m per mm.
+   Gallons: 231 in³ per US gallon, 277.42 in³ per imperial gallon (the worksheet factor), and K × 6.25 gal per cu ft,
+   the factor in the course answer key. */
+(function (W) {
+  'use strict'
+  var SC = W.SC = W.SC || {}
+  var U = SC.U
+  function M() { return SC.M }
+  var PI = Math.PI
+  var SHOP_LB = 40.8, SHOP_KG = 7.85, US_IN3 = 231, IMP_IN3 = 277.42, KEY_GAL_FT3 = 6.25
+  var FITS = [
+    { id: 'cc', name: 'Corner to corner (CC)', how: 'Shell length A = OAL − 2 × EP. Inside length = A.' },
+    { id: 'of', name: 'Outside flush (OF)', how: 'Shell length A = OAL − 2 × EP. Inside length = A.' },
+    { id: 'if', name: 'Inside flush (IF)', how: 'Shell length A = OAL. Inside length = OAL − 2 × EP.' }
+  ]
+  var CAPS = [
+    { id: 'key', name: 'Answer key: ID, or OD for OF' },
+    { id: 'od', name: 'OD for every fit-up' },
+    { id: 'id', name: 'ID for every fit-up' }
+  ]
+  var SHAPES = { pipe: 1, cylinder: 1, 'angle-iron': 1, 'right-triangle': 1 }
+  function fitOf(id) { return FITS.filter(function (f) { return f.id === id })[0] || FITS[0] }
+  function capOf(id) { return CAPS.filter(function (c) { return c.id === id })[0] || CAPS[0] }
+  function pos(v) { return typeof v === 'number' && isFinite(v) && v > 0 }
+  function imp() { var u = M().unit()
+    return u === 'in' || u === 'ft' }
+  function k() { return U.TO_MM[M().unit()] }
+  function inch(v) { return v * k() / 25.4 }
+  function mm(v) { return v * k() }
+  function n6(v) { return U.plain(v, 6) }
+  function lenT(v) { return M().lenText(v) }
+  function qty(v, unit) { return U.fmt(v) + ' ' + unit }
+  /* a row: lengths follow the inch display, rows with a unit are quantities */
+  function row(key, letter, name, value, lines, o) {
+    o = o || {}
+    var r = { key: 'q:f' + key, letter: letter, name: name, value: value, pow: o.pow || 1, angle: false, param: false, lines: lines, f: lines && lines[0] }
+    if (o.unit) { r.unit = o.unit
+      r.read = 'qty' }
+    return r
+  }
+  function L3(sym, f, sub, v) { return [sym + ' = ' + f, sym + ' = ' + sub, sym + ' ≈ ' + v] }
+  /* steel by the shop rule, from a volume in the drawing's unit: lb in inch drawings, kg in metric drawings */
+  function shopMass(vol) { var c = k()
+    return imp() ? vol * Math.pow(c / 25.4, 3) * SHOP_LB / 144 : vol * c * c * c * SHOP_KG / 1e6 }
+  function massUnit() { return imp() ? 'lb' : 'kg' }
+  function massF() { return imp() ? ' × 40.8 ÷ 144' : ' × 7.85 ÷ 1,000,000' }
+  function massSizes(vals) { return vals.map(function (v) { return n6(imp() ? inch(v) : mm(v)) }).join(' × ') }
+  function sizesWord() { var u = M().unit()
+    return u === 'in' || u === 'mm' ? '' : imp() ? ' (sizes in inches)' : ' (sizes in mm)' }
+
+  /* ---------- pipe: rolled shell and tank fit-up ---------- */
+  function pipeRows(o, p, f) {
+    var R = +p.R, r = +p.r, h = +p.h, out = []
+    if (!(R > r && r > 0 && h > 0)) return out
+    var T = R - r, OD = 2 * R, ID = 2 * r, MD = R + r, B = PI * MD, t = f.tank && pos(f.tank.ep) ? f.tank : null
+    if (t) {
+      var fit = fitOf(t.fit), EP = t.ep, OAL = fit.id === 'if' ? h : h + 2 * EP
+      out.push(row('OAL', 'OAL', 'Overall length', OAL, fit.id === 'if' ? L3('OAL', 'A', n6(h), lenT(OAL)) : L3('OAL', 'A + 2 × EP', n6(h) + ' + 2 × ' + n6(EP), lenT(OAL))))
+      out.push(row('A', 'A', 'Shell length, the width of the flat plate', h, fit.id === 'if' ? L3('A', 'OAL', n6(OAL), lenT(h)) : L3('A', 'OAL − 2 × EP', n6(OAL) + ' − 2 × ' + n6(EP), lenT(h))))
+    }
+    out.push(row('MD', 'MD', 'Mean diameter of the rolled shell (OD − T)', MD, L3('MD', 'OD − T', n6(OD) + ' − ' + n6(T), lenT(MD))))
+    out.push(row('B', 'B', 'Stretch-out on the mean diameter (π × MD)', B, L3('B', 'π × MD', 'π × ' + n6(MD), lenT(B))))
+    out.push(row('Bo', 'B (OD)', 'Stretch-out on the outside diameter (π × OD), with no allowance for the plate thickness', PI * OD, L3('B', 'π × OD', 'π × ' + n6(OD), lenT(PI * OD))))
+    var C = shopMass(h * B * T), mu = massUnit()
+    out.push(row('C', 'C', 'Shell mass, steel by the shop rule (A × B × T' + massF() + ')', C, L3('C', 'A × B × T' + massF() + sizesWord(), massSizes([h, B, T]) + massF(), qty(C, mu)), { unit: mu }))
+    var D = Math.sqrt(h * h + B * B)
+    out.push(row('D', 'D', 'Diagonal of the flat shell plate (√(A² + B²))', D, L3('D', '√(A² + B²)', '√(' + n6(h) + '² + ' + n6(B) + '²)', lenT(D))))
+    if (!t) return out
+    var useOD = t.cap === 'od' || (t.cap !== 'id' && fit.id === 'of'), dia = useOD ? OD : ID, dn = useOD ? 'OD' : 'ID'
+    out.push(row('Cap', 'Ø', 'End cap diameter (the ' + dn + ')', dia, L3('Ø', dn, n6(dia), lenT(dia))))
+    var Ea = PI * dia * dia / 4
+    if (imp()) {
+      var dIn = inch(dia), Eft = PI * dIn * dIn / 4 / 144
+      out.push(row('E', 'E', 'End cap area in square feet (π × Ø² ÷ 4 ÷ 144)', Eft, L3('E', 'π × Ø² ÷ 4 ÷ 144' + sizesWord(), 'π × ' + n6(dIn) + '² ÷ 4 ÷ 144', qty(Eft, 'ft²')), { unit: 'ft', pow: 2 }))
+      if (M().unit() === 'in') out.push(row('Ei', 'E (in²)', 'End cap area in square inches (π × Ø² ÷ 4)', Ea, L3('E', 'π × Ø² ÷ 4', 'π × ' + n6(dia) + '² ÷ 4', U.fmt(Ea) + ' in²'), { pow: 2 }))
+    } else {
+      var dM = mm(dia) / 1000, Em = PI * dM * dM / 4
+      out.push(row('E', 'E', 'End cap area in square metres (π × Ø² ÷ 4)', Em, L3('E', 'π × Ø² ÷ 4 (Ø in metres)', 'π × ' + n6(dM) + '² ÷ 4', qty(Em, 'm²')), { unit: 'm', pow: 2 }))
+    }
+    var F = 2 * shopMass(Ea * EP)
+    out.push(row('F', 'F', 'Mass of the 2 end caps, steel by the shop rule', F, imp()
+      ? L3('F', 'E × EP × 40.8 × 2 (E in sq ft, EP in inches)', n6(PI * inch(dia) * inch(dia) / 4 / 144) + ' × ' + n6(inch(EP)) + ' × 40.8 × 2', qty(F, mu))
+      : L3('F', 'E × EP × 7.85 × 2 (E in sq m, EP in mm)', n6(PI * Math.pow(mm(dia) / 1000, 2) / 4) + ' × ' + n6(mm(EP)) + ' × 7.85 × 2', qty(F, mu)), { unit: mu }))
+    if (pos(t.g) && pos(t.hs)) {
+      var I = Math.sqrt(t.g * t.g + t.hs * t.hs)
+      out.push(row('I', 'I', 'Saddle diagonal (√(G² + H²))', I, L3('I', '√(G² + H²)', '√(' + n6(t.g) + '² + ' + n6(t.hs) + '²)', lenT(I))))
+    }
+    out.push(row('J', 'J', 'Total mass, shell and end caps (C + F, saddles not included)', C + F, L3('J', 'C + F', n6(C) + ' + ' + n6(F), qty(C + F, mu)), { unit: mu }))
+    var Li = fit.id === 'if' ? h - 2 * EP : h
+    if (!(Li > 0)) return out
+    out.push(row('Li', 'Li', 'Inside length', Li, fit.id === 'if' ? L3('Li', 'OAL − 2 × EP', n6(OAL) + ' − 2 × ' + n6(EP), lenT(Li)) : L3('Li', 'A', n6(h), lenT(Li))))
+    var vin3 = PI * inch(ID) * inch(ID) / 4 * inch(Li), sub = 'π × ' + n6(inch(ID)) + '² ÷ 4 × ' + n6(inch(Li))
+    if (imp()) {
+      var Kf = vin3 / 1728
+      out.push(row('K', 'K', 'Volume inside in cubic feet (π × ID² ÷ 4 × Li ÷ 1728)', Kf, L3('K', 'π × ID² ÷ 4 × Li ÷ 1728' + sizesWord(), sub + ' ÷ 1728', qty(Kf, 'ft³')), { unit: 'ft', pow: 3 }))
+    } else {
+      var Lt = PI * mm(ID) * mm(ID) / 4 * mm(Li) / 1e6
+      out.push(row('K', 'K', 'Volume inside in litres (π × ID² ÷ 4 × Li ÷ 1,000,000)', Lt, L3('K', 'π × ID² ÷ 4 × Li ÷ 1,000,000 (sizes in mm)', 'π × ' + n6(mm(ID)) + '² ÷ 4 × ' + n6(mm(Li)) + ' ÷ 1,000,000', qty(Lt, 'L')), { unit: 'L' }))
+    }
+    out.push(row('US', 'L (US)', 'Capacity in US gallons (cubic inches ÷ 231)', vin3 / US_IN3, L3('L', 'π × ID² ÷ 4 × Li ÷ 231 (sizes in inches)', sub + ' ÷ 231', qty(vin3 / US_IN3, 'US gal')), { unit: 'US gal' }))
+    out.push(row('Imp', 'L (imp)', 'Capacity in imperial gallons (cubic inches ÷ 277.42)', vin3 / IMP_IN3, L3('L', 'π × ID² ÷ 4 × Li ÷ 277.42 (sizes in inches)', sub + ' ÷ 277.42', qty(vin3 / IMP_IN3, 'imp gal')), { unit: 'imp gal' }))
+    if (imp()) out.push(row('Key', 'L (key)', 'Capacity by the answer key factor (K × 6.25 gallons per cubic foot)', vin3 / 1728 * KEY_GAL_FT3, L3('L', 'K × 6.25', n6(vin3 / 1728) + ' × 6.25', qty(vin3 / 1728 * KEY_GAL_FT3, 'gal')), { unit: 'gal' }))
+    return out
+  }
+  /* ---------- cylinder rolled from plate ---------- */
+  function cylRows(o, p, f) {
+    var D = 2 * +p.r, h = +p.h, T = f.roll && f.roll.t, out = []
+    if (!(pos(T) && T < D && h > 0)) return out
+    var MD = D - T, B = PI * MD, Dg = Math.sqrt(h * h + B * B)
+    out.push(row('MD', 'MD', 'Mean diameter, rolled from plate T thick (D − T)', MD, L3('MD', 'D − T', n6(D) + ' − ' + n6(T), lenT(MD))))
+    out.push(row('B', 'B', 'Stretch-out on the mean diameter (π × MD)', B, L3('B', 'π × MD', 'π × ' + n6(MD), lenT(B))))
+    out.push(row('Bo', 'B (D)', 'Stretch-out on the diameter D (π × D), as the net is drawn, with no allowance for the plate thickness', PI * D, L3('B', 'π × D', 'π × ' + n6(D), lenT(PI * D))))
+    out.push(row('D', 'Dg', 'Diagonal of the flat plate (√(h² + B²))', Dg, L3('Dg', '√(h² + B²)', '√(' + n6(h) + '² + ' + n6(B) + '²)', lenT(Dg))))
+    return out
+  }
+  /* ---------- angle iron: formed plate ---------- */
+  function ruleOf(T) {
+    var thin = imp() ? inch(T) <= 0.375 + 1e-9 : mm(T) <= 10 + 1e-9, thick = imp() ? inch(T) > 0.4375 + 1e-9 : mm(T) > 11 + 1e-9
+    return thin ? 'inside' : thick ? 'mean' : null
+  }
+  function formRows(o, p, f) {
+    var a = +p.a, b = +p.b, T = +p.t, out = []
+    if (!(a > 0 && b > 0 && T > 0)) return out
+    var ir = f.form && f.form.ir
+    if (pos(ir) && a - (ir + T) > 0 && b - (ir + T) > 0) {
+      var MR = ir + T / 2, A = a - (ir + T), B = PI * MR * 90 / 180, C = b - (ir + T)
+      out.push(row('MR', 'MR', 'Mean radius (IR + T ÷ 2)', MR, L3('MR', 'IR + T ÷ 2', n6(ir) + ' + ' + n6(T) + ' ÷ 2', lenT(MR))))
+      out.push(row('A', 'A', 'Straight part of leg a (a − (IR + T))', A, L3('A', 'a − (IR + T)', n6(a) + ' − (' + n6(ir) + ' + ' + n6(T) + ')', lenT(A))))
+      out.push(row('B', 'B', 'Length of the bend on the mean radius (π × MR × 90 ÷ 180)', B, L3('B', 'π × MR × 90 ÷ 180', 'π × ' + n6(MR) + ' × 90 ÷ 180', lenT(B))))
+      out.push(row('C', 'C', 'Straight part of leg b (b − (IR + T))', C, L3('C', 'b − (IR + T)', n6(b) + ' − (' + n6(ir) + ' + ' + n6(T) + ')', lenT(C))))
+      out.push(row('Fl', 'Flat', 'Flat length of the formed plate (A + B + C)', A + B + C, L3('Flat', 'A + B + C', n6(A) + ' + ' + n6(B) + ' + ' + n6(C), lenT(A + B + C))))
+    }
+    if (f.rule) {
+      var rl = ruleOf(T)
+      if (rl) {
+        var d = rl === 'inside' ? T : T / 2, w = rl === 'inside' ? 'inside' : 'mean', tw = rl === 'inside' ? 'T' : 'T ÷ 2'
+        out.push(row('L1', 'L1', 'Leg a measured on the ' + w + ' (a − ' + tw + ')', a - d, L3('L1', 'a − ' + tw, n6(a) + ' − ' + n6(d), lenT(a - d))))
+        out.push(row('L2', 'L2', 'Leg b measured on the ' + w + ' (b − ' + tw + ')', b - d, L3('L2', 'b − ' + tw, n6(b) + ' − ' + n6(d), lenT(b - d))))
+        out.push(row('FR', 'Flat (rule)', 'Flat length by the formula sheet 2 rule: add the ' + w + ' legs (L1 + L2)', a + b - 2 * d, L3('Flat', 'L1 + L2', n6(a - d) + ' + ' + n6(b - d), lenT(a + b - 2 * d))))
+      }
+    }
+    return out
+  }
+  /* ---------- right triangle: half truss ---------- */
+  function trussRows(o, p, f) {
+    var B = +p.b, A = +p.h, out = []
+    if (!(A > 0 && B > 0) || !f.truss) return out
+    if (imp()) {
+      var Din = A / B * 12, Dv = Din * 25.4 / k()
+      out.push(row('D', 'D', 'Rise in 12 of run (h ÷ b × 12)', Dv, L3('D', 'h ÷ b × 12', n6(A) + ' ÷ ' + n6(B) + ' × 12', U.lenText(Dv, M().unit(), M().doc.inch) + ' in 12')))
+    }
+    var E = f.truss.e
+    if (!(pos(E) && E < B)) return out
+    var C = Math.sqrt(A * A + B * B), F = B - E, G = F * A / B, I = Math.sqrt(F * F + G * G), H = C - I
+    out.push(row('F', 'F', 'Run from the heel to the web (b − E)', F, L3('F', 'b − E', n6(B) + ' − ' + n6(E), lenT(F))))
+    out.push(row('G', 'G', 'Web height, by similar triangles (F × h ÷ b)', G, L3('G', 'F × h ÷ b', n6(F) + ' × ' + n6(A) + ' ÷ ' + n6(B), lenT(G))))
+    out.push(row('I', 'I', 'Top chord from the heel to the web (√(F² + G²))', I, L3('I', '√(F² + G²)', '√(' + n6(F) + '² + ' + n6(G) + '²)', lenT(I))))
+    out.push(row('H', 'H', 'Top chord from the web to the peak (c − I)', H, L3('H', 'c − I', n6(C) + ' − ' + n6(I), lenT(H))))
+    return out
+  }
+
+  /* every shop sheet row of o with the base parameters bp */
+  function rows(o, bp) {
+    if (!o || o.type !== 'shape' || !o.fab || !SHAPES[o.shape]) return []
+    var p = bp || o.params, f = o.fab
+    try {
+      if (o.shape === 'pipe') return f.roll || f.tank ? pipeRows(o, p, f) : []
+      if (o.shape === 'cylinder') return cylRows(o, p, f)
+      if (o.shape === 'angle-iron') return formRows(o, p, f)
+      return trussRows(o, p, f)
+    } catch (e) { return [] }
+  }
+  function items(o) {
+    return rows(o, o.params).filter(function (r) { return isFinite(r.value) }).map(function (r) { return { key: r.key, name: r.name, value: r.value, lines: r.lines } })
+  }
+
+  /* ---------- the Sizes tab section ---------- */
+  function esc(s) { return U.esc(s) }
+  function lenBox(v) { return pos(v) ? U.lenInput(v, M().unit(), M().doc.inch) : '' }
+  function box(id, label, key, v, hint) {
+    return '<label for="' + id + '">' + esc(label) + '</label><input id="' + id + '" data-f="' + key + '" inputmode="decimal" autocomplete="off" spellcheck="false"' + (hint ? ' placeholder="' + esc(hint) + '"' : '') + ' value="' + esc(lenBox(v)) + '">'
+  }
+  function chk(key, on, text) { return '<label class="chk"><input type="checkbox" data-f="' + key + '"' + (on ? ' checked' : '') + '> ' + esc(text) + '</label>' }
+  function sel(id, label, key, list, cur) {
+    return '<label for="' + id + '">' + esc(label) + '</label><select id="' + id + '" data-f="' + key + '">' + list.map(function (x) { return '<option value="' + x.id + '"' + (x.id === cur ? ' selected' : '') + '>' + esc(x.name) + '</option>' }).join('') + '</select>'
+  }
+  var TAIL = '<p class="err" id="f-err" role="alert" hidden></p><p class="muted">The rows show in Worked-out sizes and on the Formulas tab, and can be hidden for practice.</p></div>'
+  function steelNote() { return imp() ? 'Steel by the shop rule: 40.8 lb per sq ft per inch thick.' : 'Steel by the shop rule: 7.85 kg per sq m per mm thick.' }
+  function paneHtml(o) {
+    if (!o || o.type !== 'shape' || !SHAPES[o.shape]) return ''
+    var f = o.fab || {}, h = '<div class="sec" data-xsec="fab"><h3>Metal fab shop sheets</h3>'
+    if (o.shape === 'pipe') {
+      var t = f.tank
+      h += chk('roll', !!(f.roll || t), 'Rolled shell: stretch-out on the mean diameter') + chk('tank', !!t, 'Tank fit-up: end plates, mass and capacity')
+      if (t) {
+        var fit = fitOf(t.fit), p = o.params, oal = pos(t.ep) ? (fit.id === 'if' ? p.h : p.h + 2 * t.ep) : NaN
+        h += '<div class="form-grid">' + sel('f-fit', 'Fit-up', 'fit', FITS, fit.id) + box('f-ep', 'End plate thickness EP', 'ep', t.ep, 'type it, for example 3/8 in') +
+          box('f-oal', 'Overall length OAL (sets the shell length A)', 'oal', oal, pos(t.ep) ? '' : 'type EP first') + sel('f-cap', 'End caps sized on', 'cap', CAPS, capOf(t.cap).id) +
+          box('f-g', 'Saddle G (optional)', 'g', t.g, '') + box('f-h', 'Saddle H (optional)', 'hs', t.hs, '') + '</div>' +
+          '<p class="note">' + esc(fit.how) + '</p>' + (pos(t.ep) ? '' : '<p class="muted">Type the end plate thickness EP to see the tank rows.</p>') +
+          (fit.id === 'if' && pos(t.ep) && !(p.h > 2 * t.ep) ? '<p class="note">The overall length must be longer than 2 × EP.</p>' : '') +
+          '<p class="muted">The answer key sizes the end caps on the ID for corner to corner and inside flush, and on the OD for outside flush. An older reading sizes every end cap on the OD.</p>' +
+          '<p class="muted">' + esc(steelNote()) + ' Gallons: 231 in³ per US gallon and 277.42 in³ per imperial gallon. The answer key uses K × 6.25 gallons per cubic foot.</p>'
+      } else if (f.roll) h += '<p class="muted">' + esc(steelNote()) + '</p>'
+      if (f.roll || t) h += '<p class="muted">A plate rolled into a shell is cut to the stretch-out on the mean diameter. B (OD) is the outside, for comparison.</p><div class="row"><button type="button" class="btn btn-small" data-f-act="plate">Place the flat shell plate</button></div>'
+    } else if (o.shape === 'cylinder') {
+      var rl = f.roll
+      h += chk('croll', !!rl, 'Rolled from plate: stretch-out on the mean diameter')
+      if (rl) h += '<div class="form-grid">' + box('f-t', 'Plate thickness T', 't', rl.t, 'type it, for example 1/4 in') + '</div><p class="muted">D is the outside diameter. The net is drawn on D. The plate is cut to the stretch-out on the mean diameter.</p>'
+    } else if (o.shape === 'angle-iron') {
+      var fm = f.form
+      h += chk('form', !!fm, 'Formed with an inside radius (Radiused Sections)')
+      if (fm) h += '<div class="form-grid">' + box('f-ir', 'Inside radius IR', 'ir', fm.ir, 'type it, for example 8 7/8 in') + '</div><p class="muted">a and b are the outside leg lengths (OAL). The bend is 90°. A drawing\'s R is read as the inside radius.</p>' +
+        (pos(fm.ir) && !(o.params.a - (fm.ir + o.params.t) > 0 && o.params.b - (fm.ir + o.params.t) > 0) ? '<p class="note">IR + T must be shorter than both legs.</p>' : '')
+      h += chk('rule', !!f.rule, 'Formed 90° part: the formula sheet 2 rule')
+      if (f.rule) h += '<p class="muted">Up to 3/8 in (10 mm) thick: add the inside legs. Over 7/16 in (11 mm): add the mean legs.</p>' +
+        (ruleOf(o.params.t) ? '' : '<p class="note">The sheet gives no rule for this thickness. Ask the instructor which legs to add.</p>')
+    } else {
+      var tr = f.truss
+      h += chk('truss', !!tr, 'Half truss: rise in 12 and the web')
+      if (tr) h += '<div class="form-grid">' + box('f-e', 'E, run from the web to the peak', 'e', tr.e, 'type it, for example 1 ft 5 1/4 in') + '</div><p class="muted">b is the run B, h is the rise A and c is the top chord C.</p>' +
+        (pos(tr.e) && !(tr.e < o.params.b) ? '<p class="note">E must be shorter than the run b.</p>' : '')
+    }
+    return h + TAIL
+  }
+  function setLen(o, obj, key, v, err) {
+    if (!String(v).trim()) { delete obj[key]
+      return true }
+    var r = U.parse(v, M().unit(), 'len', 1)
+    if (!r.ok || !(r.value > 0)) { err(r.ok ? 'Type a size greater than 0.' : r.msg)
+      return false }
+    obj[key] = r.value
+    return true
+  }
+  function wire(pane, o, done) {
+    var sec = pane.querySelector('[data-xsec="fab"]')
+    if (!sec) return
+    function err(m) { var e = sec.querySelector('#f-err')
+      if (e) { e.textContent = m || ''
+        e.hidden = !m } }
+    function onChange(el) {
+      var x = el.getAttribute('data-f'), v = el.value, f = o.fab = o.fab || {}
+      if (x === 'roll') { if (el.checked) f.roll = true
+        else { delete f.roll
+          delete f.tank } }
+      else if (x === 'tank') { if (el.checked) f.tank = { fit: 'cc', cap: 'key' }
+        else delete f.tank }
+      else if (x === 'fit') f.tank.fit = fitOf(v).id
+      else if (x === 'cap') f.tank.cap = capOf(v).id
+      else if (x === 'ep' || x === 'g' || x === 'hs') { if (!setLen(o, f.tank, x, v, err)) { el.setAttribute('aria-invalid', 'true')
+        return } }
+      else if (x === 'oal') {
+        var r = U.parse(v, M().unit(), 'len', 1), t = f.tank
+        if (!r.ok) { err(r.msg)
+          el.setAttribute('aria-invalid', 'true')
+          return }
+        var hv = fitOf(t.fit).id === 'if' ? r.value : r.value - 2 * t.ep
+        if (!(hv > 0)) { err('The overall length must be longer than 2 × EP.')
+          el.setAttribute('aria-invalid', 'true')
+          return }
+        var res = M().apply(o, 'p:h', hv)
+        if (!res.ok) { err(res.msg)
+          el.setAttribute('aria-invalid', 'true')
+          return }
+      }
+      else if (x === 'croll') { if (el.checked) f.roll = {}
+        else delete f.roll }
+      else if (x === 't') { if (!setLen(o, f.roll, 't', v, err)) { el.setAttribute('aria-invalid', 'true')
+        return } }
+      else if (x === 'form') { if (el.checked) f.form = {}
+        else delete f.form }
+      else if (x === 'ir') { if (!setLen(o, f.form, 'ir', v, err)) { el.setAttribute('aria-invalid', 'true')
+        return } }
+      else if (x === 'rule') { if (el.checked) f.rule = true
+        else delete f.rule }
+      else if (x === 'truss') { if (el.checked) f.truss = {}
+        else delete f.truss }
+      else if (x === 'e') { if (!setLen(o, f.truss, 'e', v, err)) { el.setAttribute('aria-invalid', 'true')
+        return } }
+      if (!Object.keys(f).length) delete o.fab
+      err('')
+      done()
+    }
+    U.qa('[data-f]', sec).forEach(function (el) {
+      el.addEventListener('change', function () { onChange(el) })
+      if (el.tagName === 'INPUT' && el.type !== 'checkbox') el.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault()
+        onChange(el) } })
+    })
+    var pb = sec.querySelector('[data-f-act="plate"]')
+    if (pb) pb.addEventListener('click', function () { placePlate(o) })
+  }
+  /* the flat shell plate as a rectangle beside the pipe: l is the stretch-out B, w is the shell length A, both linked */
+  function placePlate(o) {
+    var Mm = M(), B = Mm.value(o, 'q:fB'), h = +o.params.h
+    if (!(B > 0 && h > 0)) return
+    var bx = Mm.worldBox(o), s = Mm.addShape('rectangle', 0, 0, { l: B, w: h })
+    if (o.ppu) s.ppu = o.ppu
+    s.name = 'Shell plate of ' + Mm.name(o)
+    var sb = Mm.worldBox(s)
+    s.x += bx[2] + 60 - sb[0]
+    s.y += (bx[1] + bx[3]) / 2 - (sb[1] + sb[3]) / 2
+    Mm.addLink({ o: o.id, k: 'q:fB' }, { o: s.id, k: 'p:l' }, 1, 0)
+    Mm.addLink({ o: o.id, k: 'p:h' }, { o: s.id, k: 'p:w' }, 1, 0)
+    if (SC.Sh) SC.Sh.settle([s])
+    SC.I.commit()
+    SC.I.select([s.id])
+    if (SC.P.keepInView) SC.P.keepInView([o, s])
+    SC.P.toast('Flat shell plate placed: l is the stretch-out B and w is the shell length A. Its diagonal d is D.')
+  }
+  /* changing units with Convert: typed sizes keep their real size */
+  function convert(o, f) {
+    var x = o.fab
+    if (!x) return
+    var list = [[x.tank, ['ep', 'g', 'hs']], [x.roll, ['t']], [x.form, ['ir']], [x.truss, ['e']]]
+    list.forEach(function (pr) {
+      if (pr[0] && typeof pr[0] === 'object') pr[1].forEach(function (key) { if (pos(pr[0][key])) pr[0][key] *= f })
+    })
+  }
+  /* a shared link (#sc=) can carry these settings in s[i].x.fab: only known keys and sizes are kept */
+  function fromLink(id, x) {
+    if (!SHAPES[id] || !x || typeof x !== 'object') return null
+    var out = {}
+    function len(src, key, dst) { var v = src[key]
+      if (pos(v) && v < 1e6) dst[key] = v }
+    if (id === 'pipe') {
+      if (x.roll) out.roll = true
+      if (x.tank && typeof x.tank === 'object') {
+        var t = { fit: fitOf(x.tank.fit).id, cap: capOf(x.tank.cap).id }
+        len(x.tank, 'ep', t)
+        len(x.tank, 'g', t)
+        len(x.tank, 'hs', t)
+        out.tank = t
+      }
+    } else if (id === 'cylinder') {
+      if (x.roll && typeof x.roll === 'object') { out.roll = {}
+        len(x.roll, 't', out.roll) }
+    } else if (id === 'angle-iron') {
+      if (x.form && typeof x.form === 'object') { out.form = {}
+        len(x.form, 'ir', out.form) }
+      if (x.rule) out.rule = true
+    } else if (x.truss && typeof x.truss === 'object') { out.truss = {}
+      len(x.truss, 'e', out.truss) }
+    return Object.keys(out).length ? out : null
+  }
+  SC.F = { rows: rows, items: items, paneHtml: paneHtml, wire: wire, convert: convert, fromLink: fromLink, placePlate: placePlate, FITS: FITS, CAPS: CAPS,
+    factors: { SHOP_LB: SHOP_LB, SHOP_KG: SHOP_KG, US_IN3: US_IN3, IMP_IN3: IMP_IN3, KEY_GAL_FT3: KEY_GAL_FT3 } }
 })(window)
 </script>
 <script id="js-tools">
@@ -17191,7 +17559,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       M.linksOf(o).length, M.doc.layers.map(function (l) { return l.id + l.name; }).join(), o.layer, JSON.stringify(o.hide || null), o.dimsOff, pg.practice, pg.showAnswers, pg.dimsOff,
       M.isBox(o) ? [o.kind, o.end, o.color, o.style, o.size, o.bold, o.check, o.results, JSON.stringify(o.anchor || null), JSON.stringify(o.crop || null)].join(',') : '',
       o.type === 'tool' ? JSON.stringify(o.p) + o.labels : '', o.type === 'comp' && SC.Co ? SC.Co.key(o) + o.name + o.labels + JSON.stringify(o.mat || null) : '',
-      JSON.stringify([o.comp || null, o.cap || null, o.mass || null, o.mat || null]), M.doc.inch, o.type === 'shape' && SC.Co ? M.objs().filter(function (q) { return q.type === 'comp' }).length : '',
+      JSON.stringify([o.comp || null, o.cap || null, o.mass || null, o.mat || null, o.fab || null]), M.doc.inch, o.type === 'shape' && SC.Co ? M.objs().filter(function (q) { return q.type === 'comp' }).length : '',
       JSON.stringify(o.look || null), o.grp || '', o.grpDims ? 1 : 0, SC.Sn && o.grp ? SC.Sn.groupOf(o).length : 0, o.angAll === false ? 'na' : ''].join('|');
   }
   /* the Sizes tab, then the Group and Style sections for pieces that take them */
@@ -17307,7 +17675,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
   function shapePane(o) {
     var b = M.base(o), info = E().info(b.shape), h = '', u = M.unit();
     h += '<div class="sec"><p class="eyebrow">' + esc(kindLabel(o)) + '</p>';
-    if (o.type === 'shape') h += '<label class="sr-only" for="obj-name">Name</label><input id="obj-name" class="search" style="font:700 18px/1.2 var(--font-display);color:var(--red-text)" value="' + esc(M.name(o)) + '">';
+    if (o.type === 'shape') h += '<h2 class="sr-only">Sizes of ' + esc(M.name(o)) + '</h2><label class="sr-only" for="obj-name">Name</label><input id="obj-name" class="search" style="font:700 18px/1.2 var(--font-display);color:var(--red-text)" value="' + esc(M.name(o)) + '">';
     else h += '<h2 class="obj-title">' + esc(M.name(o)) + '</h2>';
     if (o.type === 'net') h += '<p class="muted">The flat pattern of ' + esc(M.name(b)) + '. Change a size here and the solid changes with it.</p>';
     if (o.type === 'piece') h += '<p class="muted">One panel of the net of ' + esc(M.name(b)) + ', as its basic shape. Change a size here and the solid works back to match.</p>';
@@ -17864,7 +18232,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       var c = E().calc(o.shape, o.params, u, o.ao), xs = SC.X ? SC.X.items(o) : [], extra = fullExtras(o.shape, o.params, o.ao, c.items);
       /* capacity shows once: when the instructor has the capacity rows on (extras.js, which practice can hide), the
          engine's own Capacity group is left out. Both use 1 US gal = 3.785411784 L and 1 imperial gal = 4.54609 L. */
-      if (xs.some(function (it) { return /^q:/.test(it.key); })) {
+      if (xs.some(function (it) { return /^q:(L|usg|ig)$/.test(it.key); })) {
         extra = extra.filter(function (it) { return it.group !== 'Capacity'; });
         extra.forEach(function (it, i) { if (i === 0 || extra[i - 1].group !== it.group) it.head = it.group || 'More sizes'; else delete it.head; });
       }
@@ -18607,7 +18975,9 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
   }
   /* ---------- opening a shared link (#sc=...) ----------
      A worked solution or an AI helper can link straight to a set of shapes. The link opens them on a new page:
-     nothing already on the canvas is changed. A shape that does not check out is skipped. */
+     nothing already on the canvas is changed. A shape that does not check out is skipped.
+     Optional per shape: x = { fab: {...} (js-fab fromLink), cap: true, mass: { mat: '<density id>' } }. Older links
+     have no x and open as before. */
   function readLink() {
     var m = /(?:^#|&)sc=([A-Za-z0-9_-]{1,20000})/.exec(W.location.hash || '');
     if (!m) return null;
@@ -18630,9 +19000,19 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
         else p[k] = typeof v === typeof def[k] && String(v).length < 40 ? v : def[k];
       });
       if (Sh.validate(s.i, p)) return;
-      out.push({ id: s.i, p: p, net: !!s.net });
+      out.push({ id: s.i, p: p, net: !!s.net, x: s.x && typeof s.x === 'object' ? s.x : null });
     });
     return out;
+  }
+  /* the settings a link may carry for one shape: anything unknown is ignored */
+  function linkExtras(o, x) {
+    if (!x) return;
+    var fab = SC.F && SC.F.fromLink(o.shape, x.fab);
+    if (fab) o.fab = fab;
+    var solid = false;
+    try { solid = W.Shapes.info(o.shape).kind === 'solid'; } catch (e) { solid = false; }
+    if (solid && x.cap === true) o.cap = true;
+    if (solid && x.mass && SC.X && SC.X.DENS.some(function (d) { return d.id === x.mass.mat && d.kgm3; })) o.mass = { mat: x.mass.mat };
   }
   function importLink() {
     var spec = readLink();
@@ -18645,7 +19025,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
     M.doc.page = M.doc.pages.length - 1;
     S.sel = [];
     /* one scale for every shape from the link, so their sizes compare truthfully; the largest is drawn at the usual size */
-    var made = list.map(function (s) { return { o: M.addShape(s.id, 0, 0, s.p), net: s.net }; });
+    var made = list.map(function (s) { var o = M.addShape(s.id, 0, 0, s.p); linkExtras(o, s.x); return { o: o, net: s.net }; });
     var ppu = Math.min.apply(null, made.map(function (m) { return m.o.ppu; }));
     var x = 0, top = Infinity, left = Infinity;
     made.forEach(function (m) {

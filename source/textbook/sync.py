@@ -13,16 +13,22 @@ This script publishes that build here:
 Every relative link is rewritten for its new location. Links to other Business
 content (for example the asphalt curriculum) become github.com links.
 
+Only curriculum is published. Build records, validation and research files,
+gap analyses and manifests stay in Business (see SKIP, SKIP_DIRS, SKIP_PATHS),
+and strip_non_curriculum() removes the links to them from the books' index page.
+
 Usage:
   git clone --depth 1 https://github.com/GOSTROGIS/Business /path/to/Business
   python3 source/textbook/sync.py /path/to/Business
+  python3 source/textbook/sync.py --strip-only     (re-run the link clean-up on textbook/)
 """
 import json, os, re, shutil, subprocess, sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-BUSINESS = Path(sys.argv[1]).resolve()
-BOOK = BUSINESS / 'curriculum' / 'skills-for-success'
+ARG = sys.argv[1] if len(sys.argv) > 1 else ''
+BUSINESS = Path(ARG).resolve() if ARG and not ARG.startswith('--') else None
+BOOK = BUSINESS / 'curriculum' / 'skills-for-success' if BUSINESS else None
 BOOK_IN_BUSINESS = 'curriculum/skills-for-success'
 GITHUB = 'https://github.com/GOSTROGIS/Business'
 
@@ -33,7 +39,12 @@ ROLE = {'learner': 'learner', 'practitioner': 'teaching', 'answers': 'answers'}
 FOLDERS = [('teaching/ai-literacy', 'skills/digital/ai-literacy'),
            ('teaching/digital-lab', 'skills/digital/practice-desk')]
 SKIP = {'.gitignore'}
-SKIP_DIRS = {'tools', '__pycache__'}  # the builder only works inside Business
+SKIP_DIRS = {'tools', '__pycache__', 'research'}  # the builder only works inside Business
+# Book-relative paths that are build or review records, not curriculum.
+SKIP_PATHS = {'IMPLEMENTATION.md', 'IMPLEMENTATION.html', 'VALIDATION.md', 'VALIDATION.html',
+              'VISUALS.md', 'VISUALS.html', 'build-verification.json', 'book-manifest.json',
+              'teaching-manifest.json', 'visual-sampler.json', 'visual-sampler.pdf',
+              'assets/index.html', 'assets/README.md'}
 TEXT = ('.html', '.md', '.js', '.css')
 LINK = re.compile(r'''(?<![\w:/.%-])((?:\.\.?/)*[A-Za-z0-9_][A-Za-z0-9_.%/-]*)(?=[#?"'`)\s<>\]]|$)''')
 
@@ -53,7 +64,8 @@ def book_files():
     out = []
     for p in sorted(BOOK.rglob('*')):
         rel = p.relative_to(BOOK).as_posix()
-        if p.is_file() and p.name not in SKIP and not (set(rel.split('/')[:-1]) & SKIP_DIRS):
+        if (p.is_file() and p.name not in SKIP and rel not in SKIP_PATHS
+                and not (set(rel.split('/')[:-1]) & SKIP_DIRS)):
             out.append(rel)
     return out
 
@@ -93,8 +105,58 @@ def rewrite(text, rel, new):
     return LINK.sub(sub, text), count
 
 
+# Links and sections in the books' index page (HTML and Markdown) that point at
+# build, validation or research records. Each pattern is removed where it is found.
+STRIP = [
+    r' · <a href="visual-sampler\.pdf">[^<]*</a>',
+    r' · \[[^\]]*\]\(visual-sampler\.pdf\)',
+    r' · <a href="VISUALS\.html">[^<]*</a>',
+    r' · \[[^\]]*\]\(VISUALS\.md\)',
+    r'<p>GitHub previews the PDFs[^<]*</p>\s*',
+    r'GitHub previews the PDFs[^\n]*\n\n',
+    r'<h2 id="editing-and-rebuilding">.*?(?=</main>)',
+    r'## Editing and rebuilding\n.*\Z',
+]
+
+
+def strip_non_curriculum():
+    """Remove links to records that are not published here. Returns the number of removals."""
+    n = 0
+    hits = dict.fromkeys(STRIP, 0)
+    left = re.compile('|'.join(re.escape(s) for s in sorted(SKIP_PATHS - {'assets/index.html'})) + r'|research/')
+    for name in ('index.html', 'README.md'):
+        f = REPO / 'textbook' / name
+        if not f.exists():
+            continue
+        text = f.read_text(encoding='utf-8')
+        for pat in STRIP:
+            text, k = re.subn(pat, '', text, flags=re.S)
+            hits[pat] += k
+        text = text.rstrip('\n') + '\n'
+        if text != f.read_text(encoding='utf-8'):
+            f.write_text(text, encoding='utf-8')
+        for ref in sorted(set(left.findall(text))):
+            print(f'warning: textbook/{name} still mentions {ref}, which is not published')
+    n += sum(hits.values())
+    for pat, k in hits.items():
+        if not k:
+            print(f'warning: nothing matched {pat!r}, the Business wording may have changed')
+    viewer = REPO / 'textbook/assets/visual-viewer.html'
+    if viewer.exists():
+        text = viewer.read_text(encoding='utf-8')
+        text, k = re.subn(r'Return to the <a href="\.\./VISUALS\.html">visual index</a> for original image links and descriptions\.',
+                          'Return to the <a href="../index.html">books</a>.', text)
+        n += k
+        if k:
+            viewer.write_text(text, encoding='utf-8')
+    return n
+
+
 def main():
-    if not BOOK.is_dir():
+    if ARG == '--strip-only':
+        print(f'{strip_non_curriculum()} non-curriculum links removed')
+        return
+    if not BOOK or not BOOK.is_dir():
         sys.exit(f'Not found: {BOOK}')
     files = book_files()
     plan = {rel: target(rel) for rel in files}
@@ -118,7 +180,8 @@ def main():
             shutil.copyfile(BOOK / rel, dst)
     commit = subprocess.run(['git', '-C', str(BUSINESS), 'log', '-1', '--format=%h %cs'],
                             capture_output=True, text=True).stdout.strip()
-    (REPO / 'textbook' / 'SOURCE.json').write_text(json.dumps({
+    stripped = strip_non_curriculum()
+    (REPO / 'source' / 'textbook' / 'SOURCE.json').write_text(json.dumps({
         'source': f'{GITHUB}/tree/main/{BOOK_IN_BUSINESS}',
         'business_commit': commit,
         'files': len(plan),
@@ -126,7 +189,7 @@ def main():
                                          if v.startswith(f'skills/{s}/') and '/' not in v[len(f'skills/{s}/'):])
                                for s in SKILLS},
     }, indent=2) + '\n')
-    print(f'{len(plan)} files copied, {links} links rewritten, Business {commit}')
+    print(f'{len(plan)} files copied, {links} links rewritten, {stripped} non-curriculum links removed, Business {commit}')
 
 
 if __name__ == '__main__':
