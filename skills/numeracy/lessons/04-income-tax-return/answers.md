@@ -4,6 +4,8 @@
 
 $30,000 is under $58,523, so only the first bracket is used. $30,000 × 14% = **$4,200.00**
 
+HP 10bII+: 30000 × 14 % = shows 4,200.00.
+
 ## Task 2 (level 3)
 
 - First BC bracket: $50,363 × 5.6% = $2,820.33

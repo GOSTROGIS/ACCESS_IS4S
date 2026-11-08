@@ -30,6 +30,8 @@ Found on the stub: the employer's name and address, the hours worked, the wage r
 
 EI = 1.63% × $2,365.00 = 0.0163 × 2,365.00 = 38.5495, which rounds to **$38.55**. This matches the stub.
 
+HP 10bII+: 2365 × 1.63 % = shows 38.55.
+
 ## Task 6 (level 2)
 
 1. Exemption for one pay: $3,500 ÷ 26 = $134.6154 (keep the decimals)
@@ -37,6 +39,8 @@ EI = 1.63% × $2,365.00 = 0.0163 × 2,365.00 = 38.5495, which rounds to **$38.55
 3. CPP: 0.0595 × $2,230.3846 = 132.7079, which rounds to **$132.71**. This matches the stub.
 
 A common error is to work left to right as (2,365.00 − 3,500) ÷ 26, which gives a negative number. BEDMAS does the division first.
+
+HP 10bII+: 3500 ÷ 26 = →M, then 2365 − RM = shows 2,230.38, then × 5.95 % = shows 132.71. In Chain mode, 2365 − 3500 ÷ 26 = works left to right and gives the same wrong, negative number as the common error above.
 
 ## Task 7 (level 2)
 

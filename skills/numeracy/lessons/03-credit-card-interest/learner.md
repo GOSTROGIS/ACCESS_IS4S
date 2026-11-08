@@ -37,6 +37,18 @@ A card has a balance of $800 and an annual rate of 18%. The minimum payment is $
 
 After one month and a $24.00 payment, the balance went down by only $12.36. The other $11.64 of the payment covered interest.
 
+### On the HP 10bII+
+
+The HP 10bII+ is a financial calculator. Out of the box the HP 10bII+ works in Chain mode: it does each operation in the order you key it, not in BEDMAS order. To see the mode, press RCL, then the blue shift key, then ON (marked Alg/Chain above it). CHAIN or ALGEBRAIC flashes on the screen. The keys below press = after each step, so they give the same answer in either mode.
+
+The worked example on the HP 10bII+:
+
+1. 800 − 24 = shows 776.00
+2. × 18 % ÷ 12 = shows 11.64, the interest
+3. + 776 = shows 787.64, the new balance
+
+The HP 10bII+ also has time value of money (TVM) keys along its top row: N (number of payments), I/YR (yearly interest rate), PV (present value), PMT (payment) and FV (future value). Enter four of them and it works out the fifth. Money you receive is positive and money you pay out is negative. Task 12 uses these keys to check the spreadsheet in Task 8. "Orange shift, %CHG" means press the orange shift key, then the key with %CHG printed on its edge.
+
 ## Practice
 
 **Document A: credit card information boxes** (fictional cards)
@@ -115,6 +127,22 @@ d) What would the tool set cost on the Classic card if you paid the full balance
 ______________________________________________
 
 **Task 11** (level 3). Write three or four sentences for a co-worker about the $1,200 tool kit. Use only your numbers from Tasks 6 to 8. Say what paying the minimum costs, what paying $100 a month costs, and where the information came from.
+
+______________________________________________
+
+**Task 12** (level 3, HP 10bII+). Check the $100.00 plan from Task 8 with the TVM keys. In the classroom model the payment comes off before the month's interest is added, so the calculator must be in Begin mode.
+
+1. Blue shift, C MEM, then 1. TVM CLR flashes: the TVM memory is cleared.
+2. 12, orange shift, P/YR. The screen shows 12.00: 12 payments a year.
+3. Orange shift, Beg/End. Repeat until BEGIN shows on the screen.
+4. 20.99 I/YR, 1200 PV, 100 +/− PMT, 0 FV.
+5. Press N.
+
+a) What does the screen show? How many payments is that, and why is the last payment smaller than $100.00?
+b) Now key 12 N, then press PMT. What monthly payment clears the $1,200.00 in one year? Why is the number negative?
+c) Key 20.99, orange shift, NOM%, then 12, orange shift, P/YR, then orange shift, EFF%. This is the yearly rate when the month's interest is added every month. Why is it more than 20.99%?
+
+When you finish, press orange shift, Beg/End until BEGIN goes off. The calculator keeps Begin mode until you change it.
 
 ______________________________________________
 

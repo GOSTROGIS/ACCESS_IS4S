@@ -38,6 +38,19 @@ Her deductions add up to $290.15. Net pay: $1,290.00 − $290.15 = $999.85.
 
 Check: $999.85 + $290.15 = $1,290.00. The check works, so the subtraction is right.
 
+### On the HP 10bII+
+
+The HP 10bII+ is a financial calculator. Out of the box the HP 10bII+ works in Chain mode: it does each operation in the order you key it, not in BEDMAS order. To see the mode, press RCL, then the blue shift key, then ON (marked Alg/Chain above it). CHAIN or ALGEBRAIC flashes on the screen. The keys below press = after each step, so they give the same answer in either mode.
+
+After ×, the % key divides the number by 100. Marie's pay of $1,290.00:
+
+- EI: 1290 × 1.63 % = shows 21.03
+- CPP exemption for one pay: 3500 ÷ 26 = shows 134.62. Press →M to keep it in the M memory.
+- CPP bracket: 1290 − RM = shows 1,155.38
+- CPP: × 5.95 % = shows 68.75
+
+The screen rounds to two decimal places, but the calculator keeps 12 digits. →M and RM keep the full exemption, not the rounded 134.62.
+
 ## Practice
 
 Use the documents below. All people, employers and numbers in them are fictional.

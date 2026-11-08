@@ -63,6 +63,18 @@ Taxable income is $70,000. Federal tax before credits:
 
 Do the subtraction in the bracket first (BEDMAS), then multiply. Only $11,477 is taxed at 20.5%, not the whole $70,000.
 
+### On the HP 10bII+
+
+The HP 10bII+ is a financial calculator. Out of the box the HP 10bII+ works in Chain mode: it does each operation in the order you key it, not in BEDMAS order. To see the mode, press RCL, then the blue shift key, then ON (marked Alg/Chain above it). CHAIN or ALGEBRAIC flashes on the screen. The keys below press = after each step, so they give the same answer in either mode.
+
+After ×, the % key divides the number by 100. The worked example:
+
+- First bracket: 58523 × 14 % = shows 8,193.22
+- Second bracket: 70000 − 58523 = shows 11,477.00, then × 20.5 % = shows 2,352.79
+- Total: 8193.22 + 2352.79 = shows 10,546.01
+
+Press = after the subtraction. That finishes the bracket before you multiply, in either mode.
+
 ## Practice
 
 **Document A: T4 slip for 2026** (fictional)

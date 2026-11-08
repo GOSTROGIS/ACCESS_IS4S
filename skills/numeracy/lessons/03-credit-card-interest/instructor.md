@@ -35,6 +35,8 @@ This lesson presents facts and calculations. It does not recommend a card or a w
 | 3.1 | Explain that multiplication and division have the same rank in BEDMAS and go left to right. Read the FCAC description of BNPL plans. | 3.1 Complete Tasks 9 and 10. | Learner page, calculator | 15 min |
 | 3.2 | Ask learners to write Task 11, then read one aloud. Return to the opening guesses on the board and compare. | 3.2 Write and share Task 11. | Learner page | 5 min |
 
+Extension (HP 10bII+): Task 12 checks the Task 8 spreadsheet with the TVM keys. Use it for learners who finish early or as homework. Remind learners to switch Begin mode off at the end, because the calculator keeps it.
+
 ## Post-assessment (15 min)
 
 1. A balance is $2,000 at 24% a year. Using the classroom model, what is one month of interest? ($2,000 × 0.24 ÷ 12 = $40.00)
@@ -59,3 +61,5 @@ During this session we covered:
 - Financial Consumer Agency of Canada, Credit Card Payment Calculator, including the note that statements from federally regulated institutions must show an estimate of how long it takes to pay the balance with minimum payments only. https://itools-ioutils.fcac-acfc.gc.ca/CCPC-CPCC/CreditCardPaymentCalculator.aspx (checked 2026-11-06)
 - Financial Consumer Agency of Canada, Buy now, pay later plans: "With this plan, you're financing your purchase with credit", the provider may run a credit check, equal payment and deferred payment plans, missed payment fees. https://www.canada.ca/en/financial-consumer-agency/services/loans/buy-now-pay-later.html (checked 2026-11-06)
 - The Riverbend Classic and Rewards cards, their rates and fees, and the buy now, pay later provider are fictional. The classroom interest model (balance × annual rate ÷ 12) is a teaching simplification. The 147-month and 14-month results were produced by repeating the Task 6 steps in Python and were checked on 2026-11-06.
+- HP, HP 10bII+ Financial Calculator User's Guide, part number NW239-90001, Edition 1, May 2010: Chain is the default operating mode and works in the order keyed (pp. 23 to 28), RCL then blue shift then Alg/Chain shows the mode (p. 26), the % key divides by 100 unless it follows + or − (p. 45), percent change with %CHG (p. 46), the →M and RM memory keys (p. 4), the TVM keys, P/YR and Beg/End (pp. 6 to 8 and 61), interest rate conversions with NOM% and EFF% (pp. 79 and 80), and Clear All keeping the P/YR setting (p. 30). https://h10032.www1.hp.com/ctg/Manual/c02989763.pdf (checked 2026-11-07)
+- The HP 10bII+ keys and displays in this lesson were worked out from the rules in the user's guide and the results were checked in Python on 2026-11-07. They were not keyed on a physical calculator. Key them once before class.

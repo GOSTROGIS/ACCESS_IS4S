@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>ACCESS Shape Canvas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -186,6 +186,7 @@ p { margin: 0; }
 /* ---------- details panel ---------- */
 .side { display: flex; flex-direction: column; min-height: 0; background: var(--surface); border-left: 1px solid var(--line); }
 .side-tabs { display: flex; border-bottom: 1px solid var(--line); flex: none; align-items: stretch; }
+.side-tablist { display: flex; flex: 1; align-items: stretch; }
 .side-tab { flex: 1; height: 42px; border: 0; border-bottom: 3px solid transparent; background: transparent; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--muted); }
 .side-tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--red); }
 .side-body { overflow-y: auto; padding: 14px 14px 90px; flex: 1; }
@@ -629,7 +630,7 @@ body.presenter .page-tab { height: 36px; font-size: 15px; }
       <button type="button" class="tb" id="btn-menu" aria-haspopup="true" aria-expanded="false" aria-controls="menu" title="Save, open, export and page settings"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span class="tl">Menu</span></button>
     </div>
   </header>
-  <div class="main" id="main">
+  <main class="main" id="main">
     <aside class="lib" id="lib" aria-label="Shape library">
       <div class="lib-head">
         <div class="panel-top"><h2>Shapes</h2><button type="button" class="icon-btn only-narrow" id="lib-x" aria-label="Close the shape library"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -658,17 +659,17 @@ body.presenter .page-tab { height: 36px; font-size: 15px; }
       <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     </section>
     <aside class="side" id="side" aria-label="Sizes, formulas and page">
-      <div class="side-tabs" role="tablist" aria-label="Details">
+      <div class="side-tabs"><div class="side-tablist" role="tablist" aria-label="Details">
         <button type="button" class="side-tab" role="tab" id="tab-shape" aria-selected="true" aria-controls="pane-shape">Sizes</button>
         <button type="button" class="side-tab" role="tab" id="tab-calc" aria-selected="false" aria-controls="pane-calc" tabindex="-1">Formulas</button>
-        <button type="button" class="side-tab" role="tab" id="tab-page" aria-selected="false" aria-controls="pane-page" tabindex="-1">Page</button>
+        <button type="button" class="side-tab" role="tab" id="tab-page" aria-selected="false" aria-controls="pane-page" tabindex="-1">Page</button></div>
         <button type="button" class="icon-btn side-x" id="side-x" aria-label="Close the details panel"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
       <div class="side-body" id="pane-shape" role="tabpanel" aria-labelledby="tab-shape"></div>
       <div class="side-body" id="pane-calc" role="tabpanel" aria-labelledby="tab-calc" hidden></div>
       <div class="side-body" id="pane-page" role="tabpanel" aria-labelledby="tab-page" hidden></div>
     </aside>
-  </div>
+  </main>
   <footer class="pages" id="pages" aria-label="Pages"></footer>
 </div>
 <div class="pop menu" id="menu" hidden role="menu" aria-label="Menu"></div>
@@ -7904,6 +7905,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = CalcKit;
         fab = doc.createElement('button');
         fab.type = 'button';
         fab.className = 'ti-fab';
+        fab.setAttribute('aria-label', 'Calculator');
         fab.setAttribute('aria-controls', 'ti-pop');
         fab.setAttribute('aria-expanded', 'false');
         fab.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="2" width="12" height="16" rx="2"/><path d="M7 5h6M7 9h1M10 9h1M13 9h0M7 12h1M10 12h1M7 15h1M10 15h1M13 12v3"/></svg><span>Calculator</span>';

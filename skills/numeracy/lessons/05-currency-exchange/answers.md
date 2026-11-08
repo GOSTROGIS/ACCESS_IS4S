@@ -29,6 +29,8 @@ Size check: the Canadian number is bigger, because one US dollar was worth more 
 
 A good answer explains that the loss comes from the gap between the two counter rates.
 
+HP 10bII+: 500, orange shift, %CHG, 473.86 = shows −5.23. The minus sign shows a loss of 5.23%.
+
 ## Task 6 (level 2)
 
 - Canadian amount: 249.99 × 1.3989 = $349.71
@@ -39,9 +41,13 @@ A good answer explains that the loss comes from the gap between the two counter 
 
 A good answer adds that the two ways cost almost the same with these rates, and that a different card charge or counter rate would change the result.
 
+HP 10bII+: 249.99 × 1.3989 = shows 349.71, then + 2.5 % = shows 358.45.
+
 ## Task 7 (level 2)
 
 (1.4350 − 1.3989) ÷ 1.3989 × 100 = 0.0361 ÷ 1.3989 × 100 = **2.58%**
+
+HP 10bII+: 1.3989, orange shift, %CHG, 1.4350 = shows 2.58.
 
 ## Task 8 (level 2)
 

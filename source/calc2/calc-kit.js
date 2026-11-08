@@ -2628,6 +2628,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = CalcKit;
         fab = doc.createElement('button');
         fab.type = 'button';
         fab.className = 'ti-fab';
+        fab.setAttribute('aria-label', 'Calculator');
         fab.setAttribute('aria-controls', 'ti-pop');
         fab.setAttribute('aria-expanded', 'false');
         fab.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="2" width="12" height="16" rx="2"/><path d="M7 5h6M7 9h1M10 9h1M13 9h0M7 12h1M10 12h1M7 15h1M10 15h1M13 12v3"/></svg><span>Calculator</span>';

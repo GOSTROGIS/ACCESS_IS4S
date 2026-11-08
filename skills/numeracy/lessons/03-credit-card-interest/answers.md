@@ -58,6 +58,8 @@ c) $1,200.00 + $1,285.76 = **$2,485.76**, more than twice the price of the tool 
 - 0.188959 × 30 = 5.6688, which rounds to $5.67
 - Add the fee: $5.67 + $5.00 = **$10.67**
 
+HP 10bII+: 300 × 22.99 % ÷ 365 × 30 = shows 5.67, then + 5 = shows 10.67. The keys go left to right, the same order as the BEDMAS rule for × and ÷.
+
 ## Task 10 (level 2)
 
 a) $600.00 ÷ 4 = **$150.00**
@@ -73,6 +75,12 @@ Open task. A good response:
 - states that paying $100 a month takes 14 months and costs $132.57 in interest
 - names the source: the Riverbend Classic card information box and the classroom model, which is close to but not the same as how real cards calculate interest
 - uses plain language and does not tell the co-worker what to do
+
+## Task 12 (level 3, HP 10bII+)
+
+a) The screen shows **13.32**. That is 13 full payments of $100.00 and a 14th, smaller payment, the same 14 months as the spreadsheet. The 14th payment only has to clear what is left after 13 payments, which is less than $100.00. (The spreadsheet's total interest of $132.57 makes that last payment $32.57.)
+b) PMT shows **−109.81**: about $109.81 a month. It is negative because it is money you pay out. The $1,200.00 in PV is positive because it is money you received, the tool kit.
+c) EFF% shows **23.13**. Each month's interest is added to the balance, so the next month's interest is charged on it too. Over 12 months that makes the yearly cost higher than 20.99%.
 
 ## Check yourself 1
 

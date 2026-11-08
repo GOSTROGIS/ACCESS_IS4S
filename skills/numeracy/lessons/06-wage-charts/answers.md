@@ -51,6 +51,8 @@ b) $10.00 ÷ $32.00 × 100 = **31.25% more**
 c) $10.00 ÷ $42.00 × 100 = **23.81% less**
 d) The difference is the same $10.00, but b) compares it with the carpenter wage and c) compares it with the millwright wage. A different whole gives a different percent.
 
+HP 10bII+: b) 32, orange shift, %CHG, 42 = shows 31.25. c) 42, orange shift, %CHG, 32 = shows −23.81. The minus sign means "less".
+
 ## Task 6 (level 2)
 
 Hours in a year: 40 × 50 = 2,000.
@@ -90,6 +92,8 @@ Checks: 45 + 25 + 20 + 10 = 100. 162 + 90 + 72 + 36 = 360.
 - Each year the rate goes up by $3.20 ($25.60 − $22.40, and so on).
 - From year 1 to year 4: ($32.00 − $22.40) ÷ $22.40 × 100 = **42.86%**
 - The graph cannot tell you year 5. The table stops at year 4, and nothing says the pattern continues. A guess of $35.20 would be an assumption, not a fact from the data.
+
+HP 10bII+: 22.40, orange shift, %CHG, 32 = shows 42.86.
 
 ## Check yourself 1
 

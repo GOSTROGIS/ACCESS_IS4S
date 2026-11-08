@@ -37,6 +37,17 @@ On November 5, 2026, the Bank of Canada rate for the US dollar was 1.3989.
 
 Check: US$142.97 × 1.3989 = $200.00 (to the nearest cent). The two answers undo each other.
 
+### On the HP 10bII+
+
+The HP 10bII+ is a financial calculator. Out of the box the HP 10bII+ works in Chain mode: it does each operation in the order you key it, not in BEDMAS order. To see the mode, press RCL, then the blue shift key, then ON (marked Alg/Chain above it). CHAIN or ALGEBRAIC flashes on the screen. The keys below press = after each step, so they give the same answer in either mode.
+
+- US$80.00 in Canadian dollars: 80 × 1.3989 = shows 111.91
+- $200.00 Canadian in US dollars: 200 ÷ 1.3989 = shows 142.97
+- Adding a percent: after + the % key works out that percent of the number and adds it. 111.91 + 2.5 % = shows 114.71, the US$80.00 part with a 2.5% card charge.
+- Percent change: 1.3989, orange shift, %CHG, 1.3600 = shows −2.78. The counter buys US dollars 2.78% below the Bank of Canada rate. A minus sign means the second number is smaller.
+
+"Orange shift, %CHG" means press the orange shift key, then the key with %CHG printed on its edge.
+
 ## Practice
 
 **Document A: Bank of Canada daily exchange rates, November 5, 2026** (Canadian dollars for 1 unit)

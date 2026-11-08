@@ -288,6 +288,10 @@ def front(text):
 
 def md_html(text):
     out = markdown.markdown(text, extensions=['tables', 'fenced_code', 'sane_lists', 'attr_list'])
+    # An empty header cell is a table's corner: a data cell, not a header with no name.
+    out = re.sub(r'<th((?: [^>]*)?)>\s*</th>', r'<td\1></td>', out)
+    # Wide preformatted blocks scroll sideways, so keyboard users must be able to reach them.
+    out = out.replace('<pre>', '<pre tabindex="0">')
     return out.replace('<table>', '<div class="table-wrap"><table>').replace('</table>', '</table></div>')
 
 
