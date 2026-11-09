@@ -1,6 +1,6 @@
 # Reading the whole task before you calculate
 
-**Session:** Numeracy lesson 8 of 21. **Total length:** 45 minutes.
+**Session:** Numeracy lesson 8 of 34. **Total length:** 45 minutes.
 
 Before the session, print Task 1 on its own page, one copy for each learner. Learners should not see the rest of the learner page until after Task 1.
 

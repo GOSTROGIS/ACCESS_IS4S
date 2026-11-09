@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 2 of 10 in Problem Solving. Length: 60 min.**
+**Session 2 of 16 in Problem Solving. Length: 60 min.**
 
 Welcome learners. Draw a line down the middle of the board. Label the halves **Turned out well** and **Turned out badly**. Start with a few everyday assumptions: "I'll be at work tomorrow." "I'll pick you up at noon." "The next three turns are left." Ask: what did each one take for granted? (No flat tire, no detour, no sick day.) Ask learners for their own and sort them onto the two halves.
 

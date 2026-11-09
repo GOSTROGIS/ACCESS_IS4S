@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Look up prices, flag a budget and check a loan in Excel · Learner · Digital</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Digital</a></p>
+      <p class="eyebrow">Digital · Lesson 17 · Learner</p>
+      <h1>Look up prices, flag a budget and check a loan in Excel</h1>
+      <p class="lede">Pull prices from a supplier price list with VLOOKUP, flag an order that goes over budget with IF, summarize prices with MIN, MAX and MEDIAN, and check a truck loan payment with PMT.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 90 min</li><li>Components: Use common digital tools to complete tasks; Use digital information</li></ul></nav><article class="prose"><p>Steps and function rules checked against Microsoft Support pages for Excel for Microsoft 365, 2026-11-08. Lesson 5, <a href="../05-excel-materials-list/learner.html">Build a materials list in Excel</a>, comes first.</p>
+<h2>Why this matters on the job</h2>
+<p>A supplier sends a price list with hundreds of items. Typing each price into an order by hand is slow, and one wrong digit costs money. Excel can look the price up from the item code, total the order and tell you straight away when the order goes over the budget. When you buy a truck or a big tool on credit, Excel can also check the monthly payment a lender quotes you and show how much interest you pay in total.</p>
+<h2>Key ideas</h2>
+<p>Open the practice workbook <a href="price-list-practice.xlsx">price-list-practice.xlsx</a>. It has three sheets: <strong>Prices</strong>, <strong>Order</strong> and <strong>Loan</strong>. The supplier, Cedar Ridge Supply, and the job for Riverbend Builders are fictional. The prices are practice numbers, not store prices.</p>
+<h3>A formula can use a cell on another sheet</h3>
+<p><code>Prices!D3</code> means cell D3 on the sheet called Prices. Write the sheet name, an exclamation mark, then the cell.</p>
+<h3>Absolute references: the dollar sign</h3>
+<p>When you copy a formula down with the fill handle, Excel changes the row numbers (Lesson 5). Sometimes you do not want that. A dollar sign locks a reference:</p>
+<ul>
+<li><code>A2</code> changes when copied. Copied one row down it becomes <code>A3</code>.</li>
+<li><code>$A$2</code> stays <code>$A$2</code> wherever you copy it.</li>
+</ul>
+<p>To add the dollar signs, select the reference in the formula bar and press <strong>F4</strong>.</p>
+<h3>VLOOKUP: find a price from a code</h3>
+<p>VLOOKUP looks for a value in the <strong>first column</strong> of a table and brings back a value from another column in the same row.</p>
+<p><code>=VLOOKUP(what to find, where to look, which column to bring back, FALSE)</code></p>
+<ul>
+<li><strong>What to find</strong>: the item code, for example cell A2.</li>
+<li><strong>Where to look</strong>: the price table, locked with dollar signs: <code>Prices!$A$2:$D$9</code>. The codes must be in the first column of this range.</li>
+<li><strong>Which column</strong>: count from the left of the range. Code is column 1, Item 2, Unit 3, Price 4.</li>
+<li><strong>FALSE</strong>: find an exact match only. Always use FALSE for item codes. If you leave it out, Excel looks for an approximate match and can bring back the wrong price.</li>
+</ul>
+<p>If Excel cannot find the code, the cell shows <code>#N/A</code>. Check the code for a typing mistake or an extra space.</p>
+<p>Newer versions of Excel also have XLOOKUP, which Microsoft describes as an improved VLOOKUP. VLOOKUP still works, and you will see it in many workplace files.</p>
+<h3>IF: check a condition</h3>
+<p><code>=IF(test, what to show if true, what to show if false)</code></p>
+<ul>
+<li><code>=IF(E7&gt;E8,"Over budget","OK")</code> shows <strong>Over budget</strong> when the total in E7 is bigger than the budget in E8. Otherwise it shows <strong>OK</strong>.</li>
+<li>Text in a formula goes inside quotation marks. Numbers do not.</li>
+<li><code>&gt;</code> means greater than, <code>&lt;</code> less than, <code>&gt;=</code> greater than or equal to, <code>&lt;=</code> less than or equal to, <code>=</code> equal to.</li>
+</ul>
+<h3>MIN, MAX and MEDIAN</h3>
+<ul>
+<li><code>=MIN(D2:D9)</code> gives the smallest number in the range.</li>
+<li><code>=MAX(D2:D9)</code> gives the largest.</li>
+<li><code>=MEDIAN(D2:D9)</code> gives the middle number when the numbers are put in order. With an even count of numbers, Excel takes the average of the two middle ones.</li>
+<li><code>=AVERAGE(D2:D9)</code> adds them and divides by how many there are (Lesson 5).</li>
+</ul>
+<p>One very expensive item pulls the average up a lot. It moves the median much less.</p>
+<h3>PMT: the payment on a loan</h3>
+<p><code>=PMT(rate per payment, number of payments, amount borrowed)</code></p>
+<ul>
+<li>Keep the units the same. For monthly payments, divide the yearly rate by 12 and multiply the years by 12.</li>
+<li>PMT shows the payment as a negative number, because it is money going out. Put a minus sign in front, <code>=-PMT(...)</code>, to show it as a positive number.</li>
+<li>PMT includes principal and interest. It does not include taxes or fees.</li>
+<li>Payment × number of payments = the total you pay back. Total paid − amount borrowed = the interest.</li>
+</ul>
+<h3>Worked example</h3>
+<p>Riverbend Builders orders 10 pieces of code P02. On the <strong>Order</strong> sheet, cell C2 holds:</p>
+<p><code>=VLOOKUP(A2,Prices!$A$2:$D$9,2,FALSE)</code></p>
+<p>Excel finds P02 in the first column of the price table and brings back column 2: <strong>2x8 pressure-treated, 12 ft</strong>. Change the 2 to a 4 and it brings back the price, $32.00. In E2, <code>=B2*D2</code> gives 10 × 32.00 = $320.00.</p>
+<h2>Practice</h2>
+<p>Open <a href="price-list-practice.xlsx">price-list-practice.xlsx</a> and save a copy as <code>price-check_riverbend_[initials]_v1.xlsx</code>.</p>
+<p><strong>Task 1</strong> (level 2) On the <strong>Order</strong> sheet, enter a VLOOKUP in C2 that brings back the item name for the code in A2, and one in D2 that brings back the price. Use dollar signs on the price table. Copy both down to row 6. Write the five unit prices.</p>
+<hr />
+<p><strong>Task 2</strong> (level 2) In E2, enter a formula for the line total and copy it down to E6. In E7, total the order with SUM. Write the total.</p>
+<hr />
+<p><strong>Task 3</strong> (level 2) The budget for this order is in E8. In E9, enter an IF formula that shows <code>Over budget</code> or <code>OK</code>. What does it show? By how much is the order over or under?</p>
+<hr />
+<p><strong>Task 4</strong> (level 2) The foreman says one box of deck screws is enough. Change the quantity in B4 from 2 to 1. Write the new total and what E9 shows now. Save as <code>v2</code>.</p>
+<hr />
+<p><strong>Task 5</strong> (level 2) In F2, enter <code>=IF(B2&gt;10,"Bulk","")</code> and copy it down to F6. Which rows say Bulk? Why does row 2, with exactly 10 pieces, not say Bulk? How would you change the formula so that 10 counts as bulk?</p>
+<hr />
+<p><strong>Task 6</strong> (level 2) A co-worker types <code>P10</code> in A6 by mistake. What do C6, D6 and E6 show? What happens to the total in E7? Fix it back to <code>P06</code>.</p>
+<hr />
+<p><strong>Task 7</strong> (level 2) On the <strong>Prices</strong> sheet, fill G2 to G5 with MIN, MAX, MEDIAN and AVERAGE of the prices in D2:D9. Write the four answers to the nearest cent. Then sort the eight prices by hand from smallest to largest and check the median yourself.</p>
+<hr />
+<p><strong>Task 8</strong> (level 3) On the <strong>Loan</strong> sheet, a small contractor is checking a truck loan: $30,000 at a practice rate of 6% a year for 5 years, paid monthly. In B5 enter <code>=-PMT(B3/12,B4*12,B2)</code>. In B6 find the total of all payments, and in B7 the interest paid. Write all three.</p>
+<hr />
+<p><strong>Task 9</strong> (level 3) Change B4 to 4 years, then to 3 years. Fill in the table. Which loan costs less in total? Which has the lower monthly payment? Write one sentence about which you would choose for a new business with a tight monthly budget, and why.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Years</th>
+<th>Monthly payment</th>
+<th>Total paid</th>
+<th>Interest paid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Check yourself</h2>
+<ol>
+<li>In <code>=VLOOKUP(A2,Prices!$A$2:$D$9,4,FALSE)</code>, what does the 4 mean?</li>
+<li>Why do the dollar signs matter when you copy a VLOOKUP down a column?</li>
+<li>What does <code>#N/A</code> from a VLOOKUP usually mean?</li>
+<li>Write an IF formula that shows <code>Reorder</code> when the number in C5 is less than 10, and nothing otherwise.</li>
+<li>For a 5-year loan paid monthly, what goes in the rate and number-of-payments parts of PMT if the yearly rate is in B3?</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../16-choosing-and-using-ai-at-work/learner.html">← Lesson 16: Choosing and using AI at work</a></li><li><a rel="next" href="../18-crew-hours-histogram-in-excel/learner.html">Lesson 18: Chart crew hours and level the crew in Excel →</a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

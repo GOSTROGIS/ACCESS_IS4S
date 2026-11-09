@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Site coordinates with northing, easting and azimuth · Learner · Numeracy</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Numeracy</a></p>
+      <p class="eyebrow">Numeracy · Lesson 34 · Learner</p>
+      <h1>Site coordinates with northing, easting and azimuth</h1>
+      <p class="lede">Read site points written as northing and easting, change bearings to azimuths and back, find the distance and direction between two stakes, and work out the coordinates of a new point from a distance and an azimuth.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 3</li><li>Time: 90 min</li><li>Components: Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information; Share the mathematical information, results and implications</li></ul></nav><article class="prose"><h2>Why this matters on the job</h2>
+<p>On a larger site, the surveyor sets control points and gives every corner, pile and pipe a pair of coordinates. A layout crew turns those numbers into stakes in the ground, and checks the stakes before anyone builds. Knowing which number is north and which is east, and how a direction is written, stops a building from going in mirrored, turned or in the wrong place.</p>
+<h2>Key ideas</h2>
+<p><strong>Northing and easting.</strong> A site grid has a north axis and an east axis. A point's <strong>northing (N)</strong> is how far north it is on the grid. Its <strong>easting (E)</strong> is how far east. In this lesson coordinates are in metres to three decimals.</p>
+<p><strong>Which comes first?</strong> Surveying and most mapping give a point as (North, East). Math graphs give (x, y), with x pointing east, so the east number comes first. Never trust the order. <strong>Always read the N and E labels.</strong> In this lesson every point is written with labels, for example N 5,030.000 E 2,040.000.</p>
+<p><strong>Differences.</strong> Going from point 1 to point 2:</p>
+<ul>
+<li>ΔN = N of point 2 − N of point 1. Positive means north, negative means south.</li>
+<li>ΔE = E of point 2 − E of point 1. Positive means east, negative means west.</li>
+</ul>
+<p><strong>Azimuth.</strong> The direction of a line, measured <strong>clockwise from north</strong>, from 0° to 360°. East is 90°, south is 180°, west is 270°.</p>
+<p><strong>Bearing.</strong> The direction as an angle of 0° to 90° from north or south, turned toward east or west. N 30° E means: face north, turn 30° toward east. S 40° W means: face south, turn 40° toward west.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Quadrant</th>
+<th>Bearing</th>
+<th>Azimuth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NE</td>
+<td>N β E</td>
+<td>β</td>
+</tr>
+<tr>
+<td>SE</td>
+<td>S β E</td>
+<td>180° − β</td>
+</tr>
+<tr>
+<td>SW</td>
+<td>S β W</td>
+<td>180° + β</td>
+</tr>
+<tr>
+<td>NW</td>
+<td>N β W</td>
+<td>360° − β</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Back direction.</strong> The line from point 2 back to point 1 points the other way.</p>
+<ul>
+<li>Back azimuth = azimuth + 180°, or − 180° if the azimuth is 180° or more.</li>
+<li>Back bearing: the same angle with both letters swapped. N 30° E becomes S 30° W.</li>
+</ul>
+<p><strong>Inverse: distance and direction from two points.</strong></p>
+<ol>
+<li>Find ΔN and ΔE.</li>
+<li>Distance = √(ΔN² + ΔE²). This is the right triangle from <a href="../15-right-triangles-and-squaring/learner.html">lesson 15</a>.</li>
+<li>Bearing angle β = tan⁻¹(ΔE ÷ ΔN), using the sizes only (ignore the signs).</li>
+<li>The signs give the quadrant: ΔN + is N, ΔN − is S, ΔE + is E, ΔE − is W.</li>
+<li>Change the bearing to an azimuth with the table.</li>
+</ol>
+<p><strong>Forward: a new point from a distance and an azimuth.</strong></p>
+<ul>
+<li>ΔN = distance × cos(azimuth)</li>
+<li>ΔE = distance × sin(azimuth)</li>
+<li>new N = N + ΔN, and new E = E + ΔE</li>
+</ul>
+<p>With the azimuth, the calculator gives the signs of ΔN and ΔE for you. Keep your calculator in degree mode.</p>
+<p><strong>Degrees, minutes and seconds.</strong> 1° = 60' (minutes) and 1' = 60" (seconds). To change 53.1301° to degrees and minutes: 0.1301 × 60 = 7.806', and 0.806 × 60 = 48.4". So 53.1301° is about 53°07'48".</p>
+<h3>Worked example</h3>
+<p>Control point CP1 is at N 5,000.000 E 2,000.000. Stake A is at N 5,030.000 E 2,040.000.</p>
+<ol>
+<li>ΔN = 5,030.000 − 5,000.000 = +30.000. ΔE = 2,040.000 − 2,000.000 = +40.000</li>
+<li>Distance = √(30² + 40²) = √2,500 = <strong>50.000 m</strong></li>
+<li>β = tan⁻¹(40 ÷ 30) = 53.13°</li>
+<li>ΔN is + and ΔE is +, so the line runs NE. Bearing <strong>N 53.13° E</strong>, azimuth <strong>53.13°</strong> (53°07'48").</li>
+<li>Back azimuth from A to CP1: 53.13° + 180° = <strong>233.13°</strong>, bearing S 53.13° W.</li>
+</ol>
+<p>Forward: a pile is 20.000 m from CP1 at an azimuth of 30°.</p>
+<ul>
+<li>ΔN = 20.000 × cos(30°) = +17.321. ΔE = 20.000 × sin(30°) = +10.000</li>
+<li>The pile is at <strong>N 5,017.321 E 2,010.000</strong>.</li>
+</ul>
+<h3>Tools for this lesson</h3>
+<ul>
+<li>Numeracy Hub, <a href="../../hub/index.html#coords">Coordinate Systems tab</a> (the grid, angles and direction, polar and rectangular coordinates) and <a href="../../hub/index.html#conops">Construction Operations tab</a>.</li>
+<li><a href="../15-right-triangles-and-squaring/learner.html">Lesson 15</a> for the right triangle and checking a layout for square.</li>
+</ul>
+<h2>Practice</h2>
+<p><strong>Task 1</strong> (level 2). From CP1 (N 5,000.000 E 2,000.000), find ΔN and ΔE to each point. Say whether the point is north or south of CP1, and east or west.</p>
+<p>a) B: N 4,976.000 E 2,032.000
+b) C: N 4,985.000 E 1,980.000
+c) D: N 5,012.000 E 1,995.000</p>
+<p><strong>Task 2</strong> (level 2-3). Change each bearing to an azimuth, or each azimuth to a bearing.</p>
+<p>a) N 54°53' W
+b) S 12°30' E
+c) S 40°15' W
+d) azimuth 72°45'
+e) azimuth 198°20'
+f) Give the back azimuth of 305°07' and the back bearing of N 54°53' W.</p>
+<p><strong>Task 3</strong> (level 3). Find the distance, the bearing and the azimuth from CP1 to each point in Task 1. Give angles to two decimals of a degree.</p>
+<p><strong>Task 4</strong> (level 3). Find the coordinates of each new point from CP1 (N 5,000.000 E 2,000.000). Give three decimals.</p>
+<p>a) 14.142 m at an azimuth of 135°
+b) 25.000 m at an azimuth of 250°
+c) 18.000 m at an azimuth of 320°</p>
+<p><strong>Task 5</strong> (level 3). The drawing gives these corners for a garage slab. The corners go around the slab in order.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Corner</th>
+<th>N</th>
+<th>E</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>5,010.000</td>
+<td>2,010.000</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>5,013.600</td>
+<td>2,014.800</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>5,020.000</td>
+<td>2,010.000</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>5,016.400</td>
+<td>2,005.200</td>
+</tr>
+</tbody>
+</table></div>
+<p>a) Find the length of each side: P1 to P2, P2 to P3, P3 to P4 and P4 to P1.
+b) Find both diagonals: P1 to P3 and P2 to P4. Is the slab a rectangle?
+c) The crew checks the stakes. P3 was set at N 5,020.060 E 2,010.000. Find the diagonal P1 to P3 for the stake as set. Is the layout square?
+d) Write two or three sentences to your foreman that report the problem and say how to fix it.</p>
+<hr />
+<hr />
+<h2>Check yourself</h2>
+<ol>
+<li>A point is N 1,200.000 E 850.000. Which number is the easting?</li>
+<li>What azimuth is due west?</li>
+<li>Change S 20° E to an azimuth.</li>
+<li>ΔN = −6 and ΔE = +8. What is the distance, and in which quadrant does the line run?</li>
+<li>The azimuth from A to B is 75°. What is the azimuth from B to A?</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../33-read-between-the-lines-interpolation/learner.html">← Lesson 33: Reading between the lines of a chart</a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

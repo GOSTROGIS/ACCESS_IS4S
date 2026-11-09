@@ -1,6 +1,6 @@
 # Volume, concrete and waste allowance
 
-**Session:** Numeracy lesson 14 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 14 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need a calculator with an x³ key (TI-30Xa: 2nd x³, Sharp EL-531XT: x³) or the ACCESS [calculators page](../../calculators/calculators.html). Project the [Numeracy Hub Volume, Area, Layout and Measuring tab](../../hub/index.html#vlm) and the [plate for Article 9.16.4.3](../../../../programs/carpentry/bcbc-part-9/9.16/9.16.4.3.svg). This lesson follows the Intake 142 decks for [Day 13](../../../../programs/carpentry/intake-142/PDF/Day-13_2026-11-18_Week-4.pdf) (percent and waste allowance) and [Day 20](../../../../programs/carpentry/intake-142/PDF/Day-20_2026-12-01_Week-6.pdf) (volume of boxes and prisms).
 

@@ -1,6 +1,6 @@
 # Time math for schedules
 
-**Session:** Numeracy lesson 17 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 17 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need a calculator and a 2027 calendar (print one, or use the calendar on a phone). Print the BC statutory holiday table from the learner page or project it. This lesson starts a five-lesson scheduling set: lesson 18 (Gantt charts), 19 (network diagrams), 20 (forward and backward pass), 21 (float and the critical path), then Problem Solving lesson 10 (recover a late schedule). The same day-counting rule is used in all of them, so take time on Worked example 1.
 

@@ -1,12 +1,12 @@
 # Work around other trades
 
-**Collaboration lesson 10 of 12 · 90 min · Level 2-3**
+**Collaboration lesson 10 of 15 · 90 min · Level 2-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (4 min, step 1.1)
 
-Welcome learners to session 10 of 12. This session runs 90 minutes.
+Welcome learners to session 10 of 15. This session runs 90 minutes.
 
 Hook: "Seven trades, one small washroom. Who goes first?" Let learners call out trades and put them in order on the board. Leave any disagreements up. You will come back to them with the swimlane chart.
 

@@ -1,6 +1,6 @@
 # Capstone: read a real drawing set
 
-Session 18 of 18 in the Reading lessons · 120 minutes
+Session 18 of 26 in the Reading lessons · 120 minutes
 
 **Before the session:** learners need a calculator. Project the figures or print them, one set per pair. Each figure links to a full-size image for zooming on a phone. This is the last lesson of the Reading drawing series. It uses skills from Reading lesson 05 (read a floor plan and its notes), the drawing lessons 11 to 15 (views, pictorial drawings, lines and dimensions, scales, sections and details), lesson 16 (title blocks and sheet sets) and lesson 17 (symbols, legends, grids and schedules). The math comes from Numeracy lesson 11 (fractions, decimals and metric) and Numeracy lesson 13 (perimeter and area). All tasks use one real set: London Square.
 
@@ -8,7 +8,7 @@ Session 18 of 18 in the Reading lessons · 120 minutes
 
 Welcome learners. Hand each pair the figures in a stack, out of order, like a real set that came off the printer. Say: "The foreman wants a report on the Level 4 washrooms before lunch. Where do you start?" Let pairs try for one minute. Most start with the plan. Point them back to the drawing list. Today they work a real job, from the drawing list to the RFI.
 
-This is session 18 of 18 in the Reading lessons. It runs 120 minutes.
+This is session 18 of 26 in the Reading lessons. It runs 120 minutes.
 
 ## Objective (3 min)
 

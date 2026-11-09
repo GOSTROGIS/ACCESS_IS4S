@@ -1,12 +1,12 @@
 # Working styles and style-stepping
 
-**Collaboration lesson 2 of 12 · 100 min · Level 1-3**
+**Collaboration lesson 2 of 15 · 100 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 2 of 12. This session runs 100 minutes.
+Welcome learners to session 2 of 15. This session runs 100 minutes.
 
 Hook (adapted from the ACCESS working styles lesson): "A journeyperson tells an apprentice to clean up the area. The apprentice sweeps and says done. The journeyperson says it's not done: cords aren't coiled, tools aren't away. They argue about what 'clean' means." Ask: "Who is right?" Let learners see that both are describing a real standard. They just have different ideas of done. Today is about noticing those differences and working with them.
 

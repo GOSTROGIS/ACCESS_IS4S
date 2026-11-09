@@ -1,12 +1,12 @@
 # Orthographic projection: read the views of an object
 
-Session 11 of 18 in the Reading lessons · 90 minutes
+Session 11 of 26 in the Reading lessons · 90 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Hold up a simple object, such as a wood block with a notch or a short piece of steel angle. Ask three learners to describe it: one looking from the front, one from above, one from the side. Each sees a different shape. Ask: "Which one is right?" All of them. A drawing puts all three views on one sheet, in fixed places, so a reader can build the shape back in their head. Tell a short story: a fitter reads a supplier drawing as if the side view were on the other side, and welds a lug to the wrong face. The drawing was right. The reading was wrong.
 
-This is session 11 of 18 in the Reading lessons. It runs 90 minutes. It starts the drawing series (lessons 11 to 18). Lesson 5 covered the words on a floor plan. This lesson covers how views work.
+This is session 11 of 26 in the Reading lessons. It runs 90 minutes. It starts the drawing series (lessons 11 to 18). Lesson 5 covered the words on a floor plan. This lesson covers how views work.
 
 Before the session: bring two or three small objects (a notched block, a piece of angle with a hole, a pipe tee or elbow), grid paper, pencils and erasers. A clear plastic box helps show the "glass box" idea.
 

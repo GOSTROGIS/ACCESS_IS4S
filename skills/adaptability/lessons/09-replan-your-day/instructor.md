@@ -1,12 +1,12 @@
 # Re-plan your day when the job changes
 
-Adaptability lesson 9 of 12. Total time: 90 minutes.
+Adaptability lesson 9 of 14. Total time: 90 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Tell a short story about a day on a job when a crane, lift, truck or inspector did not show up. What did the crew do for the first hour? Ask: "When a plan breaks, who decides what you do next?" Explain that this is Adaptability lesson 9 of 12, that it builds on lesson 3 (responding to change), and that the session runs 90 minutes.
+Welcome learners. Tell a short story about a day on a job when a crane, lift, truck or inspector did not show up. What did the crew do for the first hour? Ask: "When a plan breaks, who decides what you do next?" Explain that this is Adaptability lesson 9 of 14, that it builds on lesson 3 (responding to change), and that the session runs 90 minutes.
 
 ## Objective
 

@@ -68,3 +68,29 @@ The 90 minutes ran out at 10:15 a.m.: 8:45 + 90 minutes = 8:45 + 1 hour 30 minut
 2. A must has to be met or the option is out. A like is something you would prefer but can do without. (Level 1)
 3. Example: "If the bus is not running by 6:15 a.m., then I call my cousin for a ride and text my supervisor." Any statement with a trigger and an action. (Level 2)
 4. Because they put different weight on things such as clear instructions, speaking up, timing and safety. Different values can lead careful people to different answers from the same facts. (Level 2)
+
+## Task 7 (level 2)
+
+a. 40 + 30 + 20 + 10 = **100**.
+
+b. Multiply each weight by the score, then add.
+
+- **Fraser:** 40 × 5 + 30 × 3 + 20 × 5 + 10 × 3 = 200 + 90 + 100 + 30 = **420**
+- **Delta:** 40 × 4 + 30 × 5 + 20 × 2 + 10 × 5 = 160 + 150 + 40 + 50 = **400**
+- **Coastline:** 40 × 2 + 30 × 4 + 20 × 5 + 10 × 4 = 80 + 120 + 100 + 40 = **340**
+
+The highest possible total is 100 × 5 = 500.
+
+c. **Fraser Steel Supply**, 420.
+
+d. **Fraser is out**, because 8 working days misses the 5-day must. Delta (3 days) and Coastline (5 days) both meet it. Of those two, **Delta** has the higher total, 400 against 340.
+
+e. New weights: price 30, delivery 40, certificates 20, distance 10.
+
+- **Fraser:** 30 × 5 + 40 × 3 + 20 × 5 + 10 × 3 = 150 + 120 + 100 + 30 = **400**
+- **Delta:** 30 × 4 + 40 × 5 + 20 × 2 + 10 × 5 = 120 + 200 + 40 + 50 = **410**
+- **Coastline:** 30 × 2 + 40 × 4 + 20 × 5 + 10 × 4 = 60 + 160 + 100 + 40 = **360**
+
+**Delta** wins now. Changing the weights changed the answer, so the weights must match what really matters on the job, and they should be set before anyone scores the suppliers.
+
+f. Example: "Delta Metals is the only supplier that meets the 5-day must and also scores highest of the two that are left, at 400 against Coastline's 340. It costs $250 more than Fraser ($4,450 − $4,200), but Fraser cannot deliver in time, and we should ask Delta to send the mill certificates with the steel so the paperwork is not late." Any two sentences that name the must, the scores and one cost or risk are accepted.

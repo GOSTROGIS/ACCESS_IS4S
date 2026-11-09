@@ -1,12 +1,12 @@
 # Pictorial drawings: isometric, oblique and perspective
 
-Session 12 of 18 in the Reading lessons · 90 minutes
+Session 12 of 26 in the Reading lessons · 90 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Show a photo or a real view down a straight road or a long hallway. Ask: "What happens to the edges of the road as they go away from you?" They seem to meet. Then show a piping isometric or a flat-pack furniture instruction sheet. Ask: "Do the edges meet here?" No, they stay parallel. Tell learners that drawings use different kinds of pictures for different jobs, and that some can be measured and some cannot.
 
-This is session 12 of 18 in the Reading lessons. It runs 90 minutes. It builds on lesson 11 (orthographic views).
+This is session 12 of 26 in the Reading lessons. It runs 90 minutes. It builds on lesson 11 (orthographic views).
 
 Before the session: print isometric grid paper (or use the grid in Figure 6) and square grid paper. Bring a 30/60 set square if you have one, and a real piping isometric or spool sheet if your trade partners can share one.
 

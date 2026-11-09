@@ -1,12 +1,12 @@
 # Owning your work and your mistakes
 
-Adaptability lesson 2 of 12. Total time: 75 minutes.
+Adaptability lesson 2 of 14. Total time: 75 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Share a time you made a mistake at work and what happened when you reported it, or when you did not. Keep it short and honest. Ask: "Who would you rather work beside: someone who never admits a mistake, or someone who tells you right away?" Explain that this is Adaptability lesson 2 of 12, and that the session is 75 minutes.
+Welcome learners. Share a time you made a mistake at work and what happened when you reported it, or when you did not. Keep it short and honest. Ask: "Who would you rather work beside: someone who never admits a mistake, or someone who tells you right away?" Explain that this is Adaptability lesson 2 of 14, and that the session is 75 minutes.
 
 ## Objective
 

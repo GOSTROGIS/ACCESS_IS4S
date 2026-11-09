@@ -1,6 +1,6 @@
 # Roof slope, stair rise and stair run
 
-**Session:** Numeracy lesson 16 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 16 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need a calculator. Print or project the ACCESS plates for [9.8.4.1](../../../../programs/carpentry/bcbc-part-9/9.8/9.8.4.1.svg), [9.8.4.2](../../../../programs/carpentry/bcbc-part-9/9.8/9.8.4.2.svg), [9.8.4.4](../../../../programs/carpentry/bcbc-part-9/9.8/9.8.4.4.svg) and [9.26.3.1](../../../../programs/carpentry/bcbc-part-9/9.26/9.26.3.1.svg), and open the [Numeracy Hub Carpentry tab](../../hub/index.html#carp). A tape measure lets learners measure the rise and run of a real stair in the building. This lesson follows the Intake 142 decks for [Day 14](../../../../programs/carpentry/intake-142/PDF/Day-14_2026-11-19_Week-4.pdf) (ratios, rates and proportions) and [Day 23](../../../../programs/carpentry/intake-142/PDF/Day-23_2026-12-04_Week-6.pdf) (angles, grades and carpentry slope applications). Learners should have done lesson 15 (right triangles) before Task 3.
 

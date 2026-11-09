@@ -1,6 +1,6 @@
 # Credit card interest and minimum payments
 
-**Session:** Numeracy lesson 3 of 21. **Total length:** 120 minutes.
+**Session:** Numeracy lesson 3 of 34. **Total length:** 120 minutes.
 
 ## Opening (5 min)
 

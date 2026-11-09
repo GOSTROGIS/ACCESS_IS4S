@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 9 of 10 in Problem Solving. Length: 60 min.**
+**Session 9 of 16 in Problem Solving. Length: 60 min.**
 
 Welcome learners. Read this out in a confident voice, as if from a phone: "Good news! For grinding, any sunglasses with UV protection are fine, as long as they're dark enough. Most pros prefer polarized." Ask: "Would you bet your eyes on that? Where do you think it came from? How would you check it?"
 

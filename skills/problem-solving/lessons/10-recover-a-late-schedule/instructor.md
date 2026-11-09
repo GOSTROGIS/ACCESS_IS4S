@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 10 of 10 in Problem Solving. Length: 90 min.**
+**Session 10 of 16 in Problem Solving. Length: 90 min.**
 
 Welcome learners. Tell a short story: "Tuesday morning. The inspector walks into the washroom you are renovating, looks at the shower drain and writes 'fail'. The tenant moves in 16 days from now." Ask: "What do you do first? Who do you call? What could you do to still make the date?" List every idea on the board without judging. Say: "Today you turn that list into a decision you can defend with numbers."
 

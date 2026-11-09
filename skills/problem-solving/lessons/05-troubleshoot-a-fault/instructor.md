@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 5 of 10 in Problem Solving. Length: 90 min.**
+**Session 5 of 16 in Problem Solving. Length: 90 min.**
 
 Welcome learners. Tell this short story: "A pressure washer at a fictional rental yard would not start. The mechanic changed the spark plug, the fuel filter and the pull cord all at once. It started. Two weeks later the same washer quit again. Which part had fixed it the first time? Nobody knew, so he had to start from the beginning, and he had spent money on two parts it probably never needed."
 

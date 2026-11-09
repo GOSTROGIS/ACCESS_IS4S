@@ -1,12 +1,12 @@
 # Sections, details and callouts
 
-Session 15 of 18 in the Reading lessons · 90 minutes
+Session 15 of 26 in the Reading lessons · 90 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Cut a piece of foam, a carrot or a short length of pipe insulation in half in front of the group, and hold up the cut face. Ask: "What can you see now that you could not see before?" That is a section. Then show a page from a real drawing set with a small circle and a bubble on it. Ask: "Where does this send you?" Tell learners that by the end of the session they will be able to go from a floor plan to the exact detail they need in under a minute.
 
-This is session 15 of 18 in the Reading lessons. It runs 90 minutes. It is the last lesson of the first half of the drawing series. Lessons 16 to 18 use real construction drawing sets.
+This is session 15 of 26 in the Reading lessons. It runs 90 minutes. It is the last lesson of the first half of the drawing series. Lessons 16 to 18 use real construction drawing sets.
 
 Before the session: if you can, bring a short real drawing set (three or four sheets: a plan, a sections sheet and a details sheet) or a printout of one, so learners can follow a real callout after the worked example. Bring coloured pencils for marking hatch patterns.
 

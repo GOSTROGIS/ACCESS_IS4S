@@ -92,3 +92,33 @@ Back in the shop vac example from the troubleshooting lesson, the hose was clear
 2. What is a side effect of a fix?
 3. Why compare rates instead of counts?
 4. What is the problem with making two changes at once?
+
+## More practice: close out the job and record lessons learned
+
+A job is not finished when the last board goes down. It is finished when every item on the **punch list** (the list of small things still to fix or hand over) is closed, the owner has what they need, and the crew has written down what to keep, what to change and what to try next time. That short record is how the next crew starts ahead.
+
+**Task 6** (level 2) Riverbend Decks (fictional) is closing out a backyard deck, the same deck used in Numeracy lesson 19. Here is the punch list on Monday morning.
+
+| No. | Punch list item | Status |
+|---|---|---|
+| 1 | Touch up stain on the stair treads | Done |
+| 2 | Tighten the loose baluster on the east railing | Done |
+| 3 | Replace one cracked deck board | Open: new board arrives Thursday |
+| 4 | Pick up offcuts and loose screws from the lawn | Done |
+| 5 | Give the owner the stain and hardware product sheets | Done |
+| 6 | Final inspection passed | Done |
+| 7 | Fill and re-seed the ruts where the truck drove on the lawn | Open |
+| 8 | Return the rented auger | Done |
+
+Notes the crew wrote during the job:
+
+> "Footing pour got rained out. Lost 2 days."
+> "Ordering lumber a week early meant we never waited for material."
+> "The cracked board came in the first delivery. Nobody checked the pile."
+> "Owner was really happy to get the product sheets."
+> "Truck wrecked the lawn. Should have laid down plywood."
+
+- a. How many items are done? What percent of the punch list is complete?
+- b. Which items stop the job from being closed out? For each one, name an owner (a job title is fine) and a date to have it done.
+- c. Write a lessons-learned record under three headings: **Keep** (worked well, do it again), **Change** (caused a problem, do it differently) and **Try next time** (a new idea). Put at least one item under each heading, using the crew's notes.
+- d. Who should get a copy of the record, and why?

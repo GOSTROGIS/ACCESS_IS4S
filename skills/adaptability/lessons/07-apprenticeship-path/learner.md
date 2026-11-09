@@ -195,3 +195,18 @@ Write your own learning plan with one short-term goal (next 3 months), one mid-t
 3. What mark do you need on the certification exam?
 4. Name two of BC's compulsory trades.
 5. Who gives the Recommendation for Certification?
+
+## Beyond the Red Seal: the route to a BCIT degree
+
+A Red Seal does not have to be the end of your learning. It can also open the door to a degree. BCIT's Bachelor of Technology in Construction Management (BTech CM) has an entry route for certified tradespeople, called Option D. When it was checked in November 2026, BCIT listed these requirements for Option D:
+
+- a Red Seal in an approved trade
+- Math 11 at 60%, or BCIT's BLDT 1011 (Applied Construction Math) at 60%
+- BCIT's Construction Operations Associate Certificate, with a GPA of at least 67%
+- at least one year of construction work on top of your apprenticeship hours
+- English Studies 12 at 73%
+- a pre-entry assessment with the program head before you apply
+
+Requirements can change. Confirm them with the program at cmgt@bcit.ca before you build a plan around them.
+
+The [Construction Operations tab](../../../numeracy/hub/index.html#conops) in the Numeracy Hub has more on this route and practice with the construction math it uses.

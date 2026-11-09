@@ -1,12 +1,12 @@
 # Learn a new tool or method fast
 
-Adaptability lesson 10 of 12. Total time: 90 minutes.
+Adaptability lesson 10 of 14. Total time: 90 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Hold up a tool most learners have not used, or show a photo of one. Ask: "Who has been handed a tool and told to figure it out? What did you do?" Explain that this is Adaptability lesson 10 of 12, that it links to Reading lesson 8 (Use an equipment manual) and Adaptability lesson 6 (learning strategies), and that it runs 90 minutes.
+Welcome learners. Hold up a tool most learners have not used, or show a photo of one. Ask: "Who has been handed a tool and told to figure it out? What did you do?" Explain that this is Adaptability lesson 10 of 14, that it links to Reading lesson 8 (Use an equipment manual) and Adaptability lesson 6 (learning strategies), and that it runs 90 minutes.
 
 ## Objective
 

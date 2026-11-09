@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chart crew hours and level the crew in Excel · Learner · Digital</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Digital</a></p>
+      <p class="eyebrow">Digital · Lesson 18 · Learner</p>
+      <h1>Chart crew hours and level the crew in Excel</h1>
+      <p class="lede">Add up the crew needed each day of a deck job, flag the days that need more people than you have, chart it as a resource histogram, and move a task inside its float to fix an over-booked day.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 60 min</li><li>Components: Use common digital tools to complete tasks; Use digital information</li></ul></nav><article class="prose"><p>Chart steps checked against Microsoft Support pages for Excel for Microsoft 365 on Windows, 2026-11-08. This lesson uses the Riverbend Decks job from Numeracy lessons <a href="../../../numeracy/lessons/19-network-diagrams-and-logic/learner.html">19</a>, <a href="../../../numeracy/lessons/20-forward-and-backward-pass/learner.html">20</a> and <a href="../../../numeracy/lessons/21-float-and-the-critical-path/learner.html">21</a>, and the IF function from <a href="../17-excel-if-vlookup-and-pmt/learner.html">Lesson 17</a>.</p>
+<h2>Why this matters on the job</h2>
+<p>A schedule can look fine on paper and still need five carpenters on a day when the company has four. A foreman who spots that the week before can move a task, borrow a helper or warn the client. A foreman who spots it on the day loses the day. A resource histogram is a column chart of how many people the job needs each day. One glance shows the peaks.</p>
+<h2>Key ideas</h2>
+<h3>The crew loading table</h3>
+<p>Open <a href="deck-crew-loading.xlsx">deck-crew-loading.xlsx</a>. Riverbend Decks is fictional. The crew sizes are job data for this practice file.</p>
+<ul>
+<li>Each <strong>row</strong> is a working day of the deck job, Day 1 to Day 13.</li>
+<li>Columns E to M are the activities A to I from the deck schedule. A number in a cell means that activity has that many people on that day.</li>
+<li>Column B will hold the <strong>crew on site</strong>: the total people needed that day.</li>
+<li>Column C holds the <strong>crew available</strong>: Riverbend Decks has 4 people.</li>
+<li>Column D will say <strong>OVER</strong> or <strong>OK</strong>.</li>
+</ul>
+<p>Days 3 and 4 are empty. That is the 2-day lag after the footing pour (FS+2 in Numeracy 19) while the concrete cures.</p>
+<p>The activities sit on their early start days from the forward pass in Numeracy 20. An activity that starts at ES 1 is worked on working day 2.</p>
+<h3>Person-days and person-hours</h3>
+<p>One person working one day is one <strong>person-day</strong>. On this job a working day is 8 hours, so person-hours = person-days × 8. Labour cost is usually worked out from person-hours.</p>
+<h3>A resource histogram is a column chart</h3>
+<p>To chart it, select the Day labels and the Crew on site numbers (A1:B14), then <strong>Insert</strong> &gt; <strong>Recommended Charts</strong>. Pick a <strong>Clustered Column</strong> chart (look on the <strong>All Charts</strong> tab if it is not shown) and select <strong>OK</strong>. Each column is one day. The taller the column, the more people that day.</p>
+<p>Excel also has a chart type called <strong>Histogram</strong>, under <strong>Insert</strong> &gt; <strong>Insert Statistic Chart</strong>. Do not use it here. That chart sorts numbers into ranges and counts how many fall in each range. A crew histogram just shows one column per day, so use a column chart.</p>
+<h3>Levelling with float</h3>
+<p>Total float is how many days an activity can slip without making the job finish late (Numeracy 21). In the deck job:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Activity</th>
+<th>Total float</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F Cut stair stringers</td>
+<td>9 days</td>
+</tr>
+<tr>
+<td>G Build stairs</td>
+<td>1 day</td>
+</tr>
+<tr>
+<td>A, B, C, D, E, H, I</td>
+<td>0 days (critical)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Levelling</strong> means moving activities that have float to days with fewer people, so no day needs more than the crew you have. A critical activity cannot move without making the job late.</p>
+<h3>Worked example</h3>
+<p>Day 1 has only activity A, with 2 people. In B2, <code>=SUM(E2:M2)</code> gives 2. In D2, <code>=IF(B2&gt;C2,"OVER","OK")</code> gives OK, because 2 is not greater than 4. Copy both formulas down to row 14 with the fill handle.</p>
+<h2>Practice</h2>
+<p>Save a copy of the file as <code>deck-crew_[initials]_v1.xlsx</code>.</p>
+<p><strong>Task 1</strong> (level 1) Read the table before you type anything. On which days does activity C, Posts and beams, have people? How many people? Why are Days 3 and 4 empty?</p>
+<hr />
+<p><strong>Task 2</strong> (level 2) Enter the SUM in B2 and the IF in D2 and copy them down to row 14. Which days say OVER, and how many people does each of those days need?</p>
+<hr />
+<p><strong>Task 3</strong> (level 2) In row 15, add up each activity column and column B with SUM. In B16 find the peak crew with MAX. In B17 find the person-hours. Write the total person-days, the peak and the person-hours.</p>
+<hr />
+<p><strong>Task 4</strong> (level 2) Select A1:B14 and insert a Clustered Column chart. Give it the title <code>Deck crew per day</code>. Which two columns stick up above the others?</p>
+<p><strong>Task 5</strong> (level 2) Day 2 is over because B Pour footings (3 people) and F Cut stair stringers (2 people) are both on Day 2. F has 9 days of float. Move F's 2 people from Day 2 to Day 3: clear J3 and type 2 in J4. What happens to D3, D4 and the chart? Did the job get longer? Save as <code>v2</code>.</p>
+<hr />
+<p><strong>Task 6</strong> (level 3) Day 11 is still over. G Build stairs (2 people) and H Railings (3 people) are both on Day 11. G has 1 day of float, so try moving G to Day 12. What happens? Then explain why this over-booking cannot be fixed with float alone, and write two choices the foreman has, with what each one costs.</p>
+<hr />
+<p><strong>Task 7</strong> (level 2) Did levelling in Task 5 change the total person-days or the person-hours? Why or why not?</p>
+<hr />
+<h2>Check yourself</h2>
+<ol>
+<li>What does one column in a resource histogram show?</li>
+<li>Why should you not use Excel's Histogram chart type for a crew chart?</li>
+<li>Which activities can you move to level the crew without making the job late?</li>
+<li>A job has 34 person-days and an 8-hour day. How many person-hours is that?</li>
+<li>What does <code>=IF(B5&gt;C5,"OVER","OK")</code> show when B5 is 4 and C5 is 4?</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../17-excel-if-vlookup-and-pmt/learner.html">← Lesson 17: Look up prices, flag a budget and check a loan in Excel</a></li><li><a rel="next" href="../19-gps-and-location-sharing/learner.html">Lesson 19: Read a GPS fix and share a location →</a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

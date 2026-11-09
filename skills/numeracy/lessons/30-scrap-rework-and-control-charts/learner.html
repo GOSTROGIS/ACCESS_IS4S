@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scrap, rework and control charts · Learner · Numeracy</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Numeracy</a></p>
+      <p class="eyebrow">Numeracy · Lesson 30 · Learner</p>
+      <h1>Scrap, rework and control charts</h1>
+      <p class="lede">Work out scrap rate, first-pass yield and labour productivity, find what scrap and rework cost, plan how many parts to start, and read a control chart to tell normal variation from a signal.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 90 min</li><li>Components: Identify the task that will require you to use numeracy; Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information; Share the mathematical information, results and implications</li></ul></nav><article class="prose"><h2>Why this matters on the job</h2>
+<p>Every part that goes in the scrap bin was paid for twice: once for the material and once for the hours someone put into it. Every part that has to be fixed costs more hours again. In a fabrication shop, a wall-panel plant or a pipe shop, scrap and rework are often the difference between a job that makes money and one that does not (<a href="../29-is-the-job-on-budget/learner.html">lesson 29</a> shows how that loss shows up in the budget). A control chart is a simple picture that tells the crew when a machine or a process has started to drift, before it makes a pile of bad parts.</p>
+<h2>Key ideas</h2>
+<h3>Scrap, rework and yield</h3>
+<ul>
+<li><strong>Scrap</strong>: a part that cannot be used and is thrown out or recycled.</li>
+<li><strong>Rework</strong>: a part that fails the first check but can be fixed, then passes.</li>
+<li><strong>Scrap rate</strong> = scrapped parts ÷ parts made × 100</li>
+<li><strong>First-pass yield</strong> = parts that passed the first time ÷ parts made × 100. Parts that passed the first time = parts made − scrapped − reworked.</li>
+<li><strong>Good parts</strong> = parts made − scrapped. Reworked parts count as good once they are fixed, but they cost extra hours.</li>
+</ul>
+<p><strong>How many to start.</strong> To end up with a number of good parts when you expect some scrap:</p>
+<p>parts to start = good parts needed ÷ (1 − scrap rate as a decimal)</p>
+<p>Divide first, then <strong>round up</strong>. Rounding down leaves you short.</p>
+<h3>Productivity</h3>
+<p><strong>Labour productivity</strong> = good output ÷ labour hours. For example, good brackets per labour hour. Scrap and rework lower productivity, because the hours are spent but fewer good parts come out.</p>
+<p><strong>Cost of scrap and rework.</strong></p>
+<ul>
+<li>Each scrapped part loses its material cost plus the labour already in it.</li>
+<li>Each reworked part costs the extra hours to fix it × the hourly rate.</li>
+</ul>
+<h3>Control charts</h3>
+<p>Nothing is ever made exactly the same twice. A saw cuts one stud a little long and the next a little short. That everyday spread is <strong>normal variation</strong>. A control chart shows whether the process is only showing normal variation, or whether something has changed.</p>
+<p>How a common type, the <strong>X-bar chart</strong>, works:</p>
+<ul>
+<li>At set times, measure a small sample, for example 5 parts each hour, and plot the <strong>average</strong> of the sample as one point.</li>
+<li>The <strong>centre line</strong> is the average of all the sample averages.</li>
+<li>The <strong>upper control limit (UCL)</strong> and <strong>lower control limit (LCL)</strong> are set 3 standard deviations above and below the centre line. They come from the process's own past data, not from the drawing.</li>
+</ul>
+<p><strong>Signals that something has changed.</strong> Stop and look for a cause when you see:</p>
+<ol>
+<li><strong>One point outside a control limit.</strong></li>
+<li><strong>A run: 8 points in a row on the same side of the centre line.</strong></li>
+</ol>
+<p>Points inside the limits with no pattern are normal variation. Leave the process alone. Adjusting the machine for every small change adds more variation, not less.</p>
+<p><strong>Control limits are not the drawing's limits.</strong> The drawing or the customer says what size a part must be. Control limits say what this process normally does. A process can be in control and still make parts that miss the drawing. That is a problem for the supervisor to raise, not a reason to move the control limits.</p>
+<p><strong>Working out the limits</strong> (level 3). For an X-bar chart with a sample of 5 parts:</p>
+<ul>
+<li>Find the average and the <strong>range</strong> (largest − smallest) of each sample.</li>
+<li>Centre line = the average of the sample averages.</li>
+<li>R̄ (R-bar) = the average of the ranges.</li>
+<li>UCL = centre line + 0.577 × R̄ and LCL = centre line − 0.577 × R̄. The number 0.577 is a factor from a quality-control table for samples of 5.</li>
+</ul>
+<p>A second chart, the <strong>R chart</strong>, tracks the ranges. For samples of 5, its upper limit is 2.114 × R̄ and it has no lower limit. A range above that limit means the parts are spreading out more than normal.</p>
+<h3>Worked example 1: scrap and productivity</h3>
+<p>Northshore Rail Fab (fictional) cut and welded 400 brackets in a week. 20 were scrapped. 30 failed the first check and were reworked. The crew worked 100 labour hours, rework included. All costs are made up for practice.</p>
+<ol>
+<li>Scrap rate: 20 ÷ 400 × 100 = <strong>5%</strong>.</li>
+<li>Passed the first time: 400 − 20 − 30 = 350. First-pass yield: 350 ÷ 400 × 100 = <strong>87.5%</strong>.</li>
+<li>Good parts: 400 − 20 = <strong>380</strong>.</li>
+<li>Labour productivity: 380 ÷ 100 = <strong>3.8 good brackets per labour hour</strong>. With no scrap it would have been 400 ÷ 100 = 4.0.</li>
+<li>Each scrapped bracket had $8 of steel and $12 of labour in it, so $20 each. Cost of scrap: 20 × $20 = <strong>$400</strong>.</li>
+<li>Each rework took 0.5 h at $50.00 an hour. Cost of rework: 30 × 0.5 × $50.00 = <strong>$750</strong>.</li>
+<li>Lost to scrap and rework this week: $400 + $750 = <strong>$1,150</strong>.</li>
+</ol>
+<h3>Worked example 2: reading a control chart</h3>
+<p>Cedar Ridge Panels (fictional) pre-cuts studs for wall panels. The cut list length is 2,400 mm. Each hour the lead hand measures 5 studs and plots their average. From earlier samples, the shop has set the centre line at 2,400.0 mm, the UCL at 2,403.0 mm and the LCL at 2,397.0 mm.</p>
+<div class="figure-art" tabindex="0" role="group" aria-label="Figure, scroll sideways on a small screen">
+<svg viewBox="0 0 760 380" width="100%" role="img" aria-labelledby="n30-we-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="n30-we-title">X-bar chart of stud cut length for 12 hourly samples. Centre line 2,400.0 mm, upper control limit 2,403.0 mm, lower control limit 2,397.0 mm. Samples 1 to 11 are inside the limits. Sample 12, at 2,403.8 mm, is above the upper control limit.</title>
+<rect x="0" y="0" width="760" height="380" fill="#ffffff"/>
+<line x1="78" y1="282.0" x2="640" y2="282.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="246.0" x2="640" y2="246.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="210.0" x2="640" y2="210.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="138.0" x2="640" y2="138.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="102.0" x2="640" y2="102.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="66.0" x2="640" y2="66.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="30.0" x2="640" y2="30.0" stroke="#e4e4e4" stroke-width="1"/>
+<g font-size="12" text-anchor="end" fill="#555555">
+<text x="70" y="322.0">2,396</text>
+<text x="70" y="286.0">2,397</text>
+<text x="70" y="250.0">2,398</text>
+<text x="70" y="214.0">2,399</text>
+<text x="70" y="178.0">2,400</text>
+<text x="70" y="142.0">2,401</text>
+<text x="70" y="106.0">2,402</text>
+<text x="70" y="70.0">2,403</text>
+<text x="70" y="34.0">2,404</text>
+</g>
+<line x1="78" y1="30" x2="78" y2="318" stroke="#777777" stroke-width="1"/>
+<line x1="78" y1="318" x2="640" y2="318" stroke="#777777" stroke-width="1"/>
+<line x1="78" y1="66.0" x2="640" y2="66.0" stroke="#a3271d" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="648" y="64.0" font-size="12" text-anchor="start" font-weight="bold" fill="#a3271d">UCL</text>
+<text x="648" y="78.0" font-size="12" text-anchor="start" fill="#a3271d">2,403.0</text>
+<line x1="78" y1="174.0" x2="640" y2="174.0" stroke="#3d5f86" stroke-width="2"/>
+<text x="648" y="172.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3d5f86">Centre line</text>
+<text x="648" y="186.0" font-size="12" text-anchor="start" fill="#3d5f86">2,400.0</text>
+<line x1="78" y1="282.0" x2="640" y2="282.0" stroke="#a3271d" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="648" y="280.0" font-size="12" text-anchor="start" font-weight="bold" fill="#a3271d">LCL</text>
+<text x="648" y="294.0" font-size="12" text-anchor="start" fill="#a3271d">2,397.0</text>
+<path d="M101.4,159.6 L148.2,202.8 L195.1,138.0 L241.9,181.2 L288.8,152.4 L335.6,195.6 L382.4,166.8 L429.2,224.4 L476.1,145.2 L522.9,123.6 L569.8,109.2 L616.6,37.2" fill="none" stroke="#555555" stroke-width="1.5"/>
+<g fill="#cfe0f2" stroke="#3d5f86" stroke-width="2">
+<circle cx="101.4" cy="159.6" r="5"/>
+<circle cx="148.2" cy="202.8" r="5"/>
+<circle cx="195.1" cy="138.0" r="5"/>
+<circle cx="241.9" cy="181.2" r="5"/>
+<circle cx="288.8" cy="152.4" r="5"/>
+<circle cx="335.6" cy="195.6" r="5"/>
+<circle cx="382.4" cy="166.8" r="5"/>
+<circle cx="429.2" cy="224.4" r="5"/>
+<circle cx="476.1" cy="145.2" r="5"/>
+<circle cx="522.9" cy="123.6" r="5"/>
+<circle cx="569.8" cy="109.2" r="5"/>
+</g>
+<circle cx="616.6" cy="37.2" r="6" fill="#a3271d" stroke="#7a1a13" stroke-width="2"/>
+<g font-size="12" text-anchor="middle" fill="#555555">
+<text x="101.4" y="336">1</text>
+<text x="148.2" y="336">2</text>
+<text x="195.1" y="336">3</text>
+<text x="241.9" y="336">4</text>
+<text x="288.8" y="336">5</text>
+<text x="335.6" y="336">6</text>
+<text x="382.4" y="336">7</text>
+<text x="429.2" y="336">8</text>
+<text x="476.1" y="336">9</text>
+<text x="522.9" y="336">10</text>
+<text x="569.8" y="336">11</text>
+<text x="616.6" y="336">12</text>
+</g>
+<text x="359.0" y="368" font-size="13" text-anchor="middle" fill="#222222">Sample number (one sample of 5 studs each hour)</text>
+<text x="16" y="174.0" font-size="13" text-anchor="middle" fill="#222222" transform="rotate(-90 16 174.0)">Sample average (mm)</text>
+</svg>
+</div>
+
+<ol>
+<li>Samples 1 to 8 go up and down around the centre line, all inside the limits. That is normal variation. No action.</li>
+<li>Sample 8, at 2,398.6 mm, is the lowest so far, but it is still inside the limits. No action.</li>
+<li>Sample 12, at 2,403.8 mm, is <strong>above the UCL</strong>. That is a signal. Stop and look for a cause.</li>
+<li>Look back: samples 9 to 12 climb every hour. Something has been moving for 4 hours. The lead hand checks the saw and finds the stop block has crept. It is reset and locked, and the studs cut since sample 9 are checked.</li>
+</ol>
+<h3>Tools for this lesson</h3>
+<ul>
+<li>A calculator.</li>
+<li><a href="../29-is-the-job-on-budget/learner.html">Lesson 29, Is the job on budget?</a>, for how lost hours show up in the job cost.</li>
+<li>Problem Solving lesson 04, <a href="../../../problem-solving/lessons/04-spot-patterns-and-causes/learner.html">Spot patterns and causes</a>, for finding the cause once the chart gives a signal.</li>
+<li>Creativity and Innovation lesson 11, <a href="../../../creativity-innovation/lessons/11-measure-an-improvement/learner.html">Measure an improvement</a>, for checking whether a fix worked.</li>
+</ul>
+<h2>Practice</h2>
+<p><strong>Task 1</strong> (level 1-2). Find the scrap rate for each batch.</p>
+<p>a) A crew cut 300 brace plates and scrapped 15.<br />
+b) A pipe shop threaded 240 nipples and scrapped 6.<br />
+c) In the batch in b), 18 more nipples were rethreaded and then passed. What is the first-pass yield?</p>
+<hr />
+<p><strong>Task 2</strong> (level 2). How many parts should the crew start? Round up.</p>
+<p>a) 190 good clips are needed. The scrap rate is usually 5%.<br />
+b) 288 good gusset plates are needed. The scrap rate is usually 4%.<br />
+c) 150 good brackets are needed. The scrap rate is usually 6%.<br />
+d) Check c): what is 6% scrap on your answer, and how many good parts are left?</p>
+<hr />
+<p><strong>Task 3</strong> (level 2-3). A crew of 3 works an 8-hour shift on a bracket line. They make 216 brackets. 12 are scrapped. 12 more need rework, which takes 0.25 h each. Each scrapped bracket has $6 of material and $4 of labour in it. Labour costs $48.00 an hour. All costs are made up for practice.</p>
+<p>a) How many labour hours did the crew work?<br />
+b) How many good brackets came out? What is the labour productivity?<br />
+c) What would the productivity be with no scrap?<br />
+d) What do the scrap and the rework cost in one shift?<br />
+e) The crew works 5 shifts a week. What do scrap and rework cost in a week if nothing changes?</p>
+<hr />
+<p><strong>Task 4</strong> (level 2). Cedar Ridge Panels runs the stud saw for another 16 hours. Use the chart.</p>
+<div class="figure-art" tabindex="0" role="group" aria-label="Figure, scroll sideways on a small screen">
+<svg viewBox="0 0 760 380" width="100%" role="img" aria-labelledby="n30-t4-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="n30-t4-title">X-bar chart of stud cut length for 16 hourly samples. Centre line 2,400.0 mm, upper control limit 2,403.0 mm, lower control limit 2,397.0 mm. No sample is outside the limits. Samples 9 to 16 are all above the centre line and drift upward to 2,402.6 mm.</title>
+<rect x="0" y="0" width="760" height="380" fill="#ffffff"/>
+<line x1="78" y1="282.0" x2="640" y2="282.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="246.0" x2="640" y2="246.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="210.0" x2="640" y2="210.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="138.0" x2="640" y2="138.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="102.0" x2="640" y2="102.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="66.0" x2="640" y2="66.0" stroke="#e4e4e4" stroke-width="1"/>
+<line x1="78" y1="30.0" x2="640" y2="30.0" stroke="#e4e4e4" stroke-width="1"/>
+<g font-size="12" text-anchor="end" fill="#555555">
+<text x="70" y="322.0">2,396</text>
+<text x="70" y="286.0">2,397</text>
+<text x="70" y="250.0">2,398</text>
+<text x="70" y="214.0">2,399</text>
+<text x="70" y="178.0">2,400</text>
+<text x="70" y="142.0">2,401</text>
+<text x="70" y="106.0">2,402</text>
+<text x="70" y="70.0">2,403</text>
+<text x="70" y="34.0">2,404</text>
+</g>
+<line x1="78" y1="30" x2="78" y2="318" stroke="#777777" stroke-width="1"/>
+<line x1="78" y1="318" x2="640" y2="318" stroke="#777777" stroke-width="1"/>
+<line x1="78" y1="66.0" x2="640" y2="66.0" stroke="#a3271d" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="648" y="64.0" font-size="12" text-anchor="start" font-weight="bold" fill="#a3271d">UCL</text>
+<text x="648" y="78.0" font-size="12" text-anchor="start" fill="#a3271d">2,403.0</text>
+<line x1="78" y1="174.0" x2="640" y2="174.0" stroke="#3d5f86" stroke-width="2"/>
+<text x="648" y="172.0" font-size="12" text-anchor="start" font-weight="bold" fill="#3d5f86">Centre line</text>
+<text x="648" y="186.0" font-size="12" text-anchor="start" fill="#3d5f86">2,400.0</text>
+<line x1="78" y1="282.0" x2="640" y2="282.0" stroke="#a3271d" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="648" y="280.0" font-size="12" text-anchor="start" font-weight="bold" fill="#a3271d">LCL</text>
+<text x="648" y="294.0" font-size="12" text-anchor="start" fill="#a3271d">2,397.0</text>
+<path d="M95.6,188.4 L130.7,145.2 L165.8,210.0 L200.9,166.8 L236.1,195.6 L271.2,152.4 L306.3,217.2 L341.4,202.8 L376.6,138.0 L411.7,152.4 L446.8,123.6 L481.9,145.2 L517.1,109.2 L552.2,130.8 L587.3,94.8 L622.4,80.4" fill="none" stroke="#555555" stroke-width="1.5"/>
+<g fill="#cfe0f2" stroke="#3d5f86" stroke-width="2">
+<circle cx="95.6" cy="188.4" r="5"/>
+<circle cx="130.7" cy="145.2" r="5"/>
+<circle cx="165.8" cy="210.0" r="5"/>
+<circle cx="200.9" cy="166.8" r="5"/>
+<circle cx="236.1" cy="195.6" r="5"/>
+<circle cx="271.2" cy="152.4" r="5"/>
+<circle cx="306.3" cy="217.2" r="5"/>
+<circle cx="341.4" cy="202.8" r="5"/>
+<circle cx="376.6" cy="138.0" r="5"/>
+<circle cx="411.7" cy="152.4" r="5"/>
+<circle cx="446.8" cy="123.6" r="5"/>
+<circle cx="481.9" cy="145.2" r="5"/>
+<circle cx="517.1" cy="109.2" r="5"/>
+<circle cx="552.2" cy="130.8" r="5"/>
+<circle cx="587.3" cy="94.8" r="5"/>
+<circle cx="622.4" cy="80.4" r="5"/>
+</g>
+<g font-size="12" text-anchor="middle" fill="#555555">
+<text x="95.6" y="336">1</text>
+<text x="130.7" y="336">2</text>
+<text x="165.8" y="336">3</text>
+<text x="200.9" y="336">4</text>
+<text x="236.1" y="336">5</text>
+<text x="271.2" y="336">6</text>
+<text x="306.3" y="336">7</text>
+<text x="341.4" y="336">8</text>
+<text x="376.6" y="336">9</text>
+<text x="411.7" y="336">10</text>
+<text x="446.8" y="336">11</text>
+<text x="481.9" y="336">12</text>
+<text x="517.1" y="336">13</text>
+<text x="552.2" y="336">14</text>
+<text x="587.3" y="336">15</text>
+<text x="622.4" y="336">16</text>
+</g>
+<text x="359.0" y="368" font-size="13" text-anchor="middle" fill="#222222">Sample number (one sample of 5 studs each hour)</text>
+<text x="16" y="174.0" font-size="13" text-anchor="middle" fill="#222222" transform="rotate(-90 16 174.0)">Sample average (mm)</text>
+</svg>
+</div>
+
+<p>a) What are the centre line, the UCL and the LCL?<br />
+b) Is any point outside a control limit?<br />
+c) Look for a run. Which samples are all on the same side of the centre line? Is that a signal?<br />
+d) Give one possible cause a lead hand could check on the saw.<br />
+e) After sample 3, a new helper wants to move the saw stop because 2,399.0 mm is "short". What do you tell them?</p>
+<hr />
+<p><strong>Task 5</strong> (level 3). A second saw cuts plates to a cut list length of 3,000 mm. The lead hand takes 4 samples of 5 plates.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Sample</th>
+<th>Lengths (mm)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2,997, 3,000, 3,001, 3,002, 3,000</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2,999, 3,003, 3,001, 2,997, 3,005</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3,000, 2,996, 2,998, 3,001, 3,000</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3,002, 2,998, 3,000, 3,003, 2,997</td>
+</tr>
+</tbody>
+</table></div>
+<p>a) Find the average and the range of each sample.<br />
+b) Find the centre line and R̄.<br />
+c) Find the UCL and LCL for the X-bar chart. Round to one decimal place.<br />
+d) Find the upper limit for the R chart. Round to one decimal place.<br />
+e) The next sample is 3,002, 3,006, 3,004, 3,005, 3,004. Find its average and range. Is either one a signal?</p>
+<hr />
+<p><strong>Task 6</strong> (level 3). Use your answer to Task 5 e). Write a two-sentence message to the shop supervisor that says what the chart showed and what you did about it.</p>
+<hr />
+<hr />
+<h2>Check yourself</h2>
+<ol>
+<li>A shop made 200 parts and scrapped 10. What is the scrap rate?</li>
+<li>Why does scrap lower labour productivity even when the crew works the same hours?</li>
+<li>One point lands above the UCL. What should the crew do?</li>
+<li>Eight points in a row sit below the centre line, all inside the limits. Is that a signal?</li>
+<li>Are control limits the same as the sizes on the drawing? Explain.</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../29-is-the-job-on-budget/learner.html">← Lesson 29: Is the job on budget?</a></li><li><a rel="next" href="../31-builders-level-and-elevations/learner.html">Lesson 31: Setting heights with a builder&#x27;s level →</a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Adding and subtracting fractions on a cut list
 
-**Session:** Numeracy lesson 10 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 10 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need a fraction calculator (TI-30Xa or Sharp EL-531XT) or the ACCESS [calculators page](../../calculators/calculators.html). A tape and a few offcuts help with the kerf demonstration. This lesson follows the Intake 142 decks for [Day 08](../../../../programs/carpentry/intake-142/PDF/Day-08_2026-11-09_Week-3.pdf), [Day 09](../../../../programs/carpentry/intake-142/PDF/Day-09_2026-11-10_Week-3.pdf), [Day 10](../../../../programs/carpentry/intake-142/PDF/Day-10_2026-11-13_Week-3.pdf) and [Day 11](../../../../programs/carpentry/intake-142/PDF/Day-11_2026-11-16_Week-4.pdf).
 

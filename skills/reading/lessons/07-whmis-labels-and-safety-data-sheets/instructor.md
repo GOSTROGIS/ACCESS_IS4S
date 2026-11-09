@@ -1,12 +1,12 @@
 # Read a WHMIS label and a safety data sheet
 
-Session 7 of 18 in the Reading lessons · 75 minutes
+Session 7 of 26 in the Reading lessons · 75 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Put a real product from the shop on the table, such as a can of spray paint or a jug of cleaner, label facing the class. Ask: "Without opening the SDS, what can you tell me about the danger from this label alone?" Take answers. Then ask: "Where is the SDS for it in this building?" Many learners will not know. Today is about getting the safety information out of a label and an SDS quickly and correctly.
 
-This is session 7 of 18 in the Reading lessons. It runs 75 minutes.
+This is session 7 of 26 in the Reading lessons. It runs 75 minutes.
 
 Tell learners clearly: this is a reading lesson. It is not WHMIS certification, and it does not replace the WHMIS education and training their employer must provide for the products at their workplace.
 

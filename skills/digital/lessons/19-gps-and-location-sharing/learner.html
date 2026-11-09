@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Read a GPS fix and share a location · Learner · Digital</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Digital</a></p>
+      <p class="eyebrow">Digital · Lesson 19 · Learner</p>
+      <h1>Read a GPS fix and share a location</h1>
+      <p class="lede">Convert coordinates between degrees-minutes-seconds and decimal degrees, read how accurate your phone&#x27;s location is, send a meeting point a crew can find, decide when to share your live location, and read a UTM easting and northing.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2</li><li>Time: 60 min</li><li>Components: Use online tools and platforms; Use digital information; Apply safe and responsible practices online</li></ul></nav><article class="prose"><p>Checked against Google Maps Help (computer and Android), Google Earth Help and Natural Resources Canada, 2026-11-08. Lesson 9, <a href="../09-maps-and-site-location/learner.html">Find and measure a site on a map</a>, comes first. The phone steps were checked for Android. On an iPhone, check the iPhone version of the same Google Maps Help pages.</p>
+<h2>Why this matters on the job</h2>
+<p>A survey stake, a laydown yard on a logging road or a pipeline right-of-way often has no street address. The foreman sends coordinates, and you have to get them into your phone the right way. Coordinates come in more than one format, and one wrong sign puts you on the wrong side of the world. Your phone's blue dot also has an error you can see, and sharing your live location with a boss or a crew is a choice with privacy on the line.</p>
+<h2>Key ideas</h2>
+<h3>Three ways to write the same point</h3>
+<p>Google Maps Help lists all three as formats you can type into the search box. Google Earth Pro can show all three.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Example: Vancouver City Hall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Decimal degrees (DD)</td>
+<td><code>49.2608, -123.1139</code></td>
+</tr>
+<tr>
+<td>Degrees, minutes, seconds (DMS)</td>
+<td><code>49°15'39"N 123°06'50"W</code></td>
+</tr>
+<tr>
+<td>Degrees and decimal minutes (DMM)</td>
+<td><code>49°15.650'N 123°06.833'W</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>One degree has 60 minutes ('), and one minute has 60 seconds ("). So one degree has 60 × 60 = 3600 seconds.</p>
+<p>In decimal degrees, north and east are positive, south and west are negative. All of BC is north and west, so BC latitudes are positive and longitudes are negative. In DMS, the letters N and W do that job instead of the minus sign.</p>
+<h3>Converting DMS to decimal degrees</h3>
+<p>Decimal degrees = degrees + minutes ÷ 60 + seconds ÷ 3600</p>
+<p>BEDMAS: do both divisions first, then add. Then put a minus sign in front if the letter is W (or S).</p>
+<h3>Worked example</h3>
+<p>Vancouver City Hall is at <code>49°15'39"N 123°06'50"W</code>.</p>
+<p>Latitude: 49 + 15 ÷ 60 + 39 ÷ 3600 = 49 + 0.25 + 0.010833… = 49.260833… → <strong>49.2608</strong></p>
+<p>Longitude: 123 + 6 ÷ 60 + 50 ÷ 3600 = 123 + 0.1 + 0.013888… = 123.113888… → <strong>123.1139</strong>. The letter is W, so it is <strong>−123.1139</strong>.</p>
+<p>In Google Maps: <code>49.2608, -123.1139</code>. Latitude first, a period for the decimal, a comma between the two numbers.</p>
+<h3>How sure is your phone?</h3>
+<ul>
+<li>On a phone, the <strong>blue dot</strong> shows where Google Maps thinks you are.</li>
+<li>When Google Maps is not sure, a <strong>light blue circle</strong> shows around the dot. You could be anywhere inside it. The smaller the circle, the more certain the location.</li>
+<li>A grey dot, or no dot, means Maps cannot find you and is showing your last known place.</li>
+<li>GPS from satellites can find you to about 20 metres. Inside buildings or underground it is often wrong. A location from cell towers alone can be off by a few thousand metres.</li>
+</ul>
+<p>A GPS fix on a phone is good for finding a gate or a trailer. It is not a survey, and it does not show buried lines. Before anyone digs, contact BC 1 Call (Lesson 9).</p>
+<h3>Getting coordinates from your phone</h3>
+<p>On an Android phone, open Google Maps and <strong>touch and hold</strong> a spot on the map that has no label. A red pin drops, and the coordinates show in the search box. You can copy them into a text message.</p>
+<p>A good meeting-point message has three parts: the coordinates, a landmark a person can see, and the time. For example: <code>Meet 49.2608, -123.1139, City Hall front steps, 6:30.</code> Ask the person to read it back (<a href="../../../communication/lessons/01-listen-and-repeat-back/learner.html">Communication 1</a>).</p>
+<h3>Sharing your live location</h3>
+<p>Google Maps <strong>Location sharing</strong> sends your real-time location to people you pick. People you share with can see your name and photo, your device's recent location (even when you are not using Google apps), your battery level, and more depending on how you share.</p>
+<ul>
+<li>You choose how long: a set time, or until you turn it off.</li>
+<li>To stop on an Android phone: tap your profile picture, then <strong>Location sharing</strong>, tap the person, then <strong>Stop</strong>.</li>
+<li>A share link sent to someone without a Google account works for up to 24 hours.</li>
+</ul>
+<p>Before you turn it on for a boss or a crew, ask: who sees it, for how long, and does it stop when my shift stops? Sharing a single meeting point is often all the job needs.</p>
+<h3>UTM: eastings and northings in metres</h3>
+<p>Surveyors, forestry crews and engineers often use <strong>UTM</strong> coordinates instead of degrees. UTM splits the world into 60 zones, each 6 degrees of longitude wide, numbered from 1 at 180° going east. The Vancouver area is in <strong>zone 10</strong>, which runs from 126°W to 120°W with its centre line at 123°W.</p>
+<ul>
+<li><strong>Northing</strong>: metres north of the equator.</li>
+<li><strong>Easting</strong>: metres from a line set 500 000 m west of the zone's centre line. So the centre line itself has an easting of 500 000. Points west of it have eastings below 500 000, and points east of it have eastings above.</li>
+</ul>
+<p>Google Earth Pro on a computer can show UTM: <strong>Tools</strong> &gt; <strong>Options</strong> &gt; <strong>3D View</strong>, then under <strong>Show Lat/Long</strong> choose <strong>Universal Transverse Mercator</strong>. On a Mac it is <strong>Google Earth</strong> &gt; <strong>Preferences</strong> &gt; <strong>3D View</strong>. The coordinates show in the lower right corner as you move the mouse.</p>
+<h2>Practice</h2>
+<p><strong>Task 1</strong> (level 1) Name the format of each: (a) <code>49°16.600'N 123°06.717'W</code> (b) <code>49.2767, -123.1119</code> (c) <code>49°16'36"N 123°06'43"W</code></p>
+<p>(a) <strong><em>_</em>_  (b) </strong><strong><em>_  (c) </em></strong>___</p>
+<p><strong>Task 2</strong> (level 2) Convert Vancouver City Hall, <code>49°15'39"N 123°06'50"W</code>, to decimal degrees without looking at the worked example. Show the divisions first, then the additions. Round to 4 decimal places. Type your answer into Google Maps to check it lands on City Hall.</p>
+<hr />
+<p><strong>Task 3</strong> (level 2) BC Place stadium is at <code>49°16'36"N 123°06'43"W</code>. Convert it to decimal degrees to 4 places. Then type the DMS version straight into the Google Maps search box. Do both land in the same place? Which is farther north, BC Place or City Hall? How can you tell from the numbers alone?</p>
+<hr />
+<p><strong>Task 4</strong> (level 2) A co-worker types <code>49.2767, 123.1119</code> into Google Maps for BC Place. What went wrong, and roughly where in the world does the pin land?</p>
+<hr />
+<p><strong>Task 5</strong> (level 1) On your phone, open Google Maps and find your location. Look at the blue dot inside the classroom, then (if you can) by a window or outside. Write what you see around the dot each time and what it tells you.</p>
+<hr />
+<p><strong>Task 6</strong> (level 2) Touch and hold a spot near the training site's entrance to drop a pin. Copy the coordinates. Write a meeting-point text for a new crew member with coordinates, a landmark and a time. Send it to your partner (or read it aloud), and have them read it back and find it on their own map.</p>
+<hr />
+<p><strong>Task 7</strong> (level 2) Your new foreman says: "Turn on location sharing with me, until you turn it off, so I know where everyone is." Write what the foreman would be able to see, two questions you would ask before saying yes, and how you would stop sharing later.</p>
+<hr />
+<p><strong>Task 8</strong> (level 3) In Google Earth Pro, set the coordinate display to UTM. Put the mouse on Vancouver City Hall. Write the zone, the easting and the northing. Is the easting more or less than 500 000? Explain why using City Hall's longitude.</p>
+<hr />
+<h2>Check yourself</h2>
+<ol>
+<li>How many seconds are in one degree?</li>
+<li>In decimal degrees, why is the longitude of a BC site negative?</li>
+<li>What does a large light blue circle around your blue dot mean?</li>
+<li>What three things make a good meeting-point text?</li>
+<li>In UTM, what does a northing measure?</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../18-crew-hours-histogram-in-excel/learner.html">← Lesson 18: Chart crew hours and level the crew in Excel</a></li><li><a rel="next" href="../20-your-community-on-the-map/learner.html">Lesson 20: Put your community on the map →</a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

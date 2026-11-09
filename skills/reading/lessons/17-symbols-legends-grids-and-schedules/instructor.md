@@ -1,6 +1,6 @@
 # Symbols, legends, grids and schedules
 
-Session 17 of 18 in the Reading lessons · 90 minutes
+Session 17 of 26 in the Reading lessons · 90 minutes
 
 **Before the session:** project the figures on the learner page or print them. Each figure links to a full-size image, so learners can zoom in on a phone. Have a calculator on hand for Task 3 and Task 5c. If you can, bring one legend sheet from a local job so learners see that every office draws its own. This lesson follows lesson 16 (title blocks and sheet sets) and uses the same real drawing sets. Lesson 18, the capstone, uses every skill from lessons 05 and 11 to 17.
 
@@ -8,7 +8,7 @@ Session 17 of 18 in the Reading lessons · 90 minutes
 
 Welcome learners. Show Figure 3 with the red letters covered. Ask: "What do you recognize on this plan?" Most learners spot doors and walls. Few know what the split circles mean. Then show Figure 1. Say: "Every office makes its own dictionary for its drawings. Today you learn to use the dictionary, not to memorize it." Tell a short story: an apprentice on a commercial job sees "FD" on a duct drawing and goes looking for a floor drain. It was a fire damper. The same two letters meant two things on the same sheet.
 
-This is session 17 of 18 in the Reading lessons. It runs 90 minutes.
+This is session 17 of 26 in the Reading lessons. It runs 90 minutes.
 
 ## Objective (3 min)
 

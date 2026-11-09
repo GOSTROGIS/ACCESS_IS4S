@@ -120,3 +120,32 @@ Make a table with pros and cons of each offer, in the short term (next 3 months)
 2. What is the difference between a must and a like?
 3. Write an if-then statement for getting to work on a day the bus might not run.
 4. Why might two careful people rank the people in "The rejected load" differently?
+
+## More practice: compare quotes with a weighted decision table
+
+When several options all meet the musts, a **weighted decision table** helps you compare them on the likes. Give each thing you care about a **weight** so the weights add up to 100. Score each option from 1 (poor) to 5 (best) on each thing. Multiply each weight by its score, then add the products for each option (BEDMAS: multiply first, then add). The highest total is the best fit for what you said matters.
+
+**Task 7** (level 2) Northshore Pipe and Steel (fictional) needs steel pipe for the 10-section handrail job. Every supplier must supply mill certificates (the steel's test reports), because the job specification asks for them. Three fictional suppliers quoted.
+
+| | Fraser Steel Supply | Delta Metals | Coastline Steel |
+|---|---|---|---|
+| Price | $4,200 | $4,450 | $4,900 |
+| Delivery | 8 working days | 3 working days | 5 working days |
+| Mill certificates | Sent with the steel | Only on request, 5 days after delivery | Sent with the steel |
+| Distance from the shop | 45 km | 12 km | 30 km |
+
+The foreman sets these weights and scores:
+
+| What matters | Weight | Fraser | Delta | Coastline |
+|---|---:|---:|---:|---:|
+| Price | 40 | 5 | 4 | 2 |
+| Delivery | 30 | 3 | 5 | 4 |
+| Mill certificates | 20 | 5 | 2 | 5 |
+| Distance | 10 | 3 | 5 | 4 |
+
+- a. Check that the weights add up to 100.
+- b. Work out the weighted total for each supplier. Show the BEDMAS steps for one.
+- c. Which supplier has the highest total?
+- d. The general contractor now says the steel must be in the shop within **5 working days**. That is a must. Which supplier is out? Of the two left, which has the higher total?
+- e. Instead of part d, suppose the foreman decides delivery matters most and changes the weights to price 30, delivery 40, certificates 20, distance 10. Work out the new totals. Which supplier wins now?
+- f. Write two sentences to the foreman defending your choice for the 5-day must in part d.

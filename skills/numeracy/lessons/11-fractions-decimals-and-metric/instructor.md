@@ -1,6 +1,6 @@
 # Converting between fractions, decimals and millimetres
 
-**Session:** Numeracy lesson 11 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 11 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need a calculator or the ACCESS [calculators page](../../calculators/calculators.html), and a tape with both inch and metric marks if you have one. Project the [Numeracy Hub Unit Conversions tab](../../hub/index.html#units). This lesson follows the Intake 142 decks for [Day 12](../../../../programs/carpentry/intake-142/PDF/Day-12_2026-11-17_Week-4.pdf) (decimals) and [Day 15](../../../../programs/carpentry/intake-142/PDF/Day-15_2026-11-24_Week-5.pdf) (measurement systems and exact conversion factors).
 

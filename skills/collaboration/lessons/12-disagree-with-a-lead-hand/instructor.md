@@ -1,12 +1,12 @@
 # Disagree with a lead hand and still get the work done
 
-**Collaboration lesson 12 of 12 · 75 min · Level 3**
+**Collaboration lesson 12 of 15 · 75 min · Level 3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (4 min, step 1.1)
 
-Welcome learners to session 12 of 12. This session runs 75 minutes. It is the last Collaboration session.
+Welcome learners to session 12 of 15. This session runs 75 minutes. It is the last Collaboration session.
 
 Hook: "Hands up if a boss has ever told you to do something a way you thought was wrong." Most hands go up. "What did you do?" Take two or three answers. Sort them on the board into "argued," "went quiet," "said it once" and "refused." Today is about which one fits which situation.
 

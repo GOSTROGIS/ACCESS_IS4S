@@ -1,6 +1,6 @@
 # Showing up and managing your time on a job site
 
-Adaptability lesson 1 of 12. Total time: 75 minutes.
+Adaptability lesson 1 of 14. Total time: 75 minutes.
 
 ## Opening
 

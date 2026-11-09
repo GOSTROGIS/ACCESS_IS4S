@@ -198,3 +198,25 @@ _______________________________________________
 3. Name five things you can find in a title block.
 4. What do a revision cloud and a delta tell you, and where do you read the reason for the change?
 5. How do you write the date November 8, 1999 in all numbers?
+
+## Extra: what a CAD drawing is
+
+Most drawing sets today are made on a computer with CAD (computer-aided design) software. AutoCAD is one common program. You do not need to use CAD to read the prints, but four CAD ideas explain things you will see on the sheets.
+
+**1. Drawn full size, printed to scale.** In AutoCAD, the drafter draws in **model space** at full size (1:1), after deciding what one unit stands for, such as one millimetre. To print, they set up a **layout** in **paper space** with the title block and notes. On the layout, **viewports** show views of the full-size model, each at its own scale. That is how one sheet can show a plan at 1:100 and a detail at 1:20. Both views come from the same full-size drawing.
+
+**2. Layers.** Every object is put on a **layer**, such as walls, doors or electrical wiring. Autodesk compares layers to clear plastic sheets. A layer can be turned off or frozen to hide everything on it. So two sheets made from the same file can show different things. If something you expect is missing from a print, it may be on a layer that was turned off. Ask before you assume it is not there.
+
+**3. Blocks.** A **block** is a group of objects joined into one named object, such as a door symbol, a receptacle symbol or a title block. The drafter inserts the same block again and again. That is why every receptacle symbol on a set looks exactly the same.
+
+**4. External references (xrefs).** An **xref** links one drawing file into another. For example, the architect's floor plan can be linked into the electrical drawing so the electrical engineer draws on top of the walls. Changes made to the linked file show up in the drawing when it is opened or the xref is reloaded. So a sheet can change because a file it links to changed. This is one more reason to build only from an issued sheet and to check its issue block.
+
+**Task 12** (level 2)
+a) A sheet shows a floor plan at 1:100 and a stair detail at 1:20. Did the drafter draw the stair twice, at two sizes? Explain with model space and layouts.
+b) An electrician's print shows the walls of a floor, but no doors. Which CAD idea could explain this? What should the electrician do?
+c) Every receptacle symbol on the electrical sheets looks exactly the same. Which CAD idea explains this?
+d) The architect moved a wall on Monday. On Tuesday, someone in the office prints an electrical sheet, and the wall is in its new place. The issue block on the print has not changed. Which CAD idea explains why the wall moved? Why must the electrician still build from the issued sheet?
+
+_______________________________________________
+
+_______________________________________________

@@ -1,12 +1,12 @@
 # Drawing scales and the scale rule
 
-Session 14 of 18 in the Reading lessons · 90 minutes
+Session 14 of 26 in the Reading lessons · 90 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Hold up a full-size sheet and a half-size copy of the same drawing. Ask: "Both say SCALE 1:50. Can they both be right?" Let learners argue it out. Tell a short story: a crew lays out a footing from a reduced copy, measuring with a ruler and the written scale. Every footing comes out half size. The written dimensions were on the drawing the whole time.
 
-This is session 14 of 18 in the Reading lessons. It runs 90 minutes. It follows lesson 13 (lines and dimensions).
+This is session 14 of 26 in the Reading lessons. It runs 90 minutes. It follows lesson 13 (lines and dimensions).
 
 Before the session: bring architect's scale rules and metric scale rules (one per pair if possible), 12-inch rulers, a calculator per pair, and one full-size and one reduced copy of any drawing with a scale bar. If you have no scale rules, Figures 1 and 2 show how they read, and a plain ruler with the multiplier table in Key idea 3 works.
 

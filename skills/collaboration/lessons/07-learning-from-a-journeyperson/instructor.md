@@ -1,12 +1,12 @@
 # Learning from a journeyperson
 
-**Collaboration lesson 7 of 12 · 70 min · Level 1-3**
+**Collaboration lesson 7 of 15 · 70 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (3 min, step 1.1)
 
-Welcome learners to session 7 of 12. This session runs 70 minutes.
+Welcome learners to session 7 of 15. This session runs 70 minutes.
 
 Hook: "Think of the best teacher, coach, Elder, boss or older worker who ever showed you how to do something. What did they do that made it stick? And what did *you* do that made them want to keep teaching you?" Take two or three answers. Point out the second half: learning is a two-way job.
 

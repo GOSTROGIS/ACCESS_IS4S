@@ -1,12 +1,12 @@
 # Setbacks, fear of failure and trying again
 
-Adaptability lesson 5 of 12. Total time: 75 minutes.
+Adaptability lesson 5 of 14. Total time: 75 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. The original ACCESS growth mindset lesson opened with the instructor's own story, and that still works best. Share a time you failed something on the way to your trade (a test, a job, a first attempt at a skill) and what you did next. Ask: "Who here has failed something and gone back and done it?" Explain that this is Adaptability lesson 5 of 12, and that the session is 75 minutes.
+Welcome learners. The original ACCESS growth mindset lesson opened with the instructor's own story, and that still works best. Share a time you failed something on the way to your trade (a test, a job, a first attempt at a skill) and what you did next. Ask: "Who here has failed something and gone back and done it?" Explain that this is Adaptability lesson 5 of 14, and that the session is 75 minutes.
 
 ## Objective
 

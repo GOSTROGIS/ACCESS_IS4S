@@ -1,12 +1,12 @@
 # Find it in a table, log or form
 
-Session 4 of 18 in the Reading lessons · 75 minutes
+Session 4 of 26 in the Reading lessons · 75 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Hold up any real table you have on hand: a bus timetable, a parts catalogue page or a pay stub. Ask: "Does anyone read this from the top left corner to the bottom right corner?" Then tell a short story: a worker grabs bolts from the bin next to the right one because the label looks the same. The railing they built rusts in a year. The skill today is landing on the right row and the right column every time.
 
-This is session 4 of 18 in the Reading lessons. It runs 75 minutes.
+This is session 4 of 26 in the Reading lessons. It runs 75 minutes.
 
 ## Objective (2 min)
 

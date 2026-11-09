@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><script src="../../../../brand/instructor-gate.js" data-gate="page"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chart crew hours and level the crew in Excel · Answers · Digital</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Digital</a></p>
+      <p class="eyebrow">Digital · Lesson 18 · Answers</p>
+      <h1>Chart crew hours and level the crew in Excel</h1>
+      <p class="lede">Add up the crew needed each day of a deck job, flag the days that need more people than you have, chart it as a resource histogram, and move a task inside its float to fix an over-booked day.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html" aria-current="page">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 60 min</li><li>Components: Use common digital tools to complete tasks; Use digital information</li></ul></nav><article class="prose"><h2>Task 1 (level 1)</h2>
+<p>Answer: activity C has 3 people on Day 5 and Day 6 (cells G6 and G7).</p>
+<p>Days 3 and 4 are empty because of the FS+2 lag after B Pour pier footings. The concrete cures for 2 days before posts and beams go on, and no other activity is scheduled on those days yet.</p>
+<h2>Task 2 (level 2)</h2>
+<p>Answer: B2 <code>=SUM(E2:M2)</code> and D2 <code>=IF(B2&gt;C2,"OVER","OK")</code>, copied down to row 14.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Crew on site</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5</td>
+<td>OVER</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>5</td>
+<td>3</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>6</td>
+<td>3</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>7</td>
+<td>3</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>8</td>
+<td>3</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>9</td>
+<td>3</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>10</td>
+<td>3</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>11</td>
+<td>5</td>
+<td>OVER</td>
+</tr>
+<tr>
+<td>12</td>
+<td>3</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>13</td>
+<td>1</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table></div>
+<p>Day 2 needs 5 people (B 3 + F 2). Day 11 needs 5 people (G 2 + H 3). Both are 1 more than the 4 available.</p>
+<h2>Task 3 (level 2)</h2>
+<p>Answer: total <strong>34 person-days</strong>, peak crew <strong>5</strong>, <strong>272 person-hours</strong>.</p>
+<p>Steps: row 15 per activity: A 2, B 3, C 6, D 6, E 6, F 2, G 2, H 6, I 1. Then 2 + 3 + 6 + 6 + 6 + 2 + 2 + 6 + 1 = 34. The column B total gives the same: 2 + 5 + 0 + 0 + 3 + 3 + 3 + 3 + 3 + 3 + 5 + 3 + 1 = 34. Getting the same total two ways is a good check. B16 <code>=MAX(B2:B14)</code> = 5. B17 <code>=B15*8</code> = 34 × 8 = 272.</p>
+<h2>Task 4 (level 2)</h2>
+<p>Answer: a column chart with 13 columns, titled <code>Deck crew per day</code>. The columns for Day 2 and Day 11 stick up above the rest, at 5. Days 3 and 4 have no column.</p>
+<h2>Task 5 (level 2)</h2>
+<p>Answer: D3 changes from OVER to OK (Day 2 now has 3 people). D4 stays OK (Day 3 now has 2 people). On the chart the Day 2 column drops from 5 to 3 and a column of 2 appears on Day 3.</p>
+<p>The job did not get longer. F has 9 days of total float, so moving it 1 day uses 1 day of float and does not touch the finish. F was a good choice because Day 3 was empty while the concrete cured. Saved as <code>v2</code>.</p>
+<h2>Task 6 (level 3)</h2>
+<p>Answer: moving G to Day 12 makes Day 11 OK (3 people) but Day 12 OVER (H 3 + G 2 = 5). The problem just moves one day.</p>
+<p>Why float is not enough: H Railings is critical and runs on both Day 11 and Day 12. G has only 1 day of float, so it can only sit on Day 11 or Day 12, and H is on both. Moving G to Day 13 would push I Final inspection to Day 14 and make the job a day late.</p>
+<p>Two choices a good response names, with the cost:</p>
+<ol>
+<li>Bring in a fifth person for one day (a helper from another crew or a hired labourer). Cost: one extra day of wages, 8 person-hours.</li>
+<li>Let G slip to Day 13 and the inspection to Day 14. Cost: the job finishes one day late, which can upset the client or the next job.</li>
+</ol>
+<p>Another reasonable answer is to ask the client whether the finish date can move, which is choice 2 with the client's agreement. The answer must say that each choice costs money or time.</p>
+<h2>Task 7 (level 2)</h2>
+<p>Answer: no. Total person-days stay 34 and person-hours stay 272.</p>
+<p>Levelling moves work to a different day. It does not add or remove any work. The same 2 people still cut the stringers for 1 day.</p>
+<h2>Check yourself</h2>
+<ol>
+<li>How many people the job needs on one day (or one week, if the chart is by week).</li>
+<li>It groups numbers into ranges and counts them. A crew chart needs one column per day showing the crew total, which is a plain column chart.</li>
+<li>Activities with float: F Cut stair stringers (9 days) and G Build stairs (1 day). Critical activities cannot move without making the job late.</li>
+<li>34 × 8 = 272 person-hours.</li>
+<li>OK. 4 is not greater than 4.</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../17-excel-if-vlookup-and-pmt/answers.html">← Lesson 17: Look up prices, flag a budget and check a loan in Excel<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a rel="next" href="../19-gps-and-location-sharing/answers.html">Lesson 19: Read a GPS fix and share a location →<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

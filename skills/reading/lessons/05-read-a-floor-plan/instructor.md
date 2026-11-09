@@ -1,12 +1,12 @@
 # Read a floor plan and its notes
 
-Session 5 of 18 in the Reading lessons · 90 minutes
+Session 5 of 26 in the Reading lessons · 90 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Ask: "Has anyone worked from drawings on a site? What was the hardest part?" Most learners say the symbols or the size of the set. Tell a short story: a tile crew finishes two washrooms to the height on the plan. A week later the foreman finds the revision that lowered the tile behind the sinks. The tile comes off. The drawing was right. The crew read the old revision. Today is about reading the words on a drawing, not just the lines.
 
-This is session 5 of 18 in the Reading lessons. It runs 90 minutes.
+This is session 5 of 26 in the Reading lessons. It runs 90 minutes.
 
 ## Objective (3 min)
 

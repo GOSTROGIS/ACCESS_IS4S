@@ -1,6 +1,6 @@
 # Right triangles, the 3-4-5 check and squaring a layout
 
-**Session:** Numeracy lesson 15 of 21. **Total length:** 75 minutes.
+**Session:** Numeracy lesson 15 of 34. **Total length:** 75 minutes.
 
 **Before the session:** learners need a calculator with x² and √ keys, or the ACCESS [calculators page](../../calculators/calculators.html). For step 3.2, set out a rectangle of string or tape on the floor or a table, about 1,200 mm by 900 mm, with one corner slightly out of square, and have two tapes ready. This lesson follows the Intake 142 decks for [Day 17](../../../../programs/carpentry/intake-142/PDF/Day-17_2026-11-26_Week-5.pdf) (square roots and hidden dimensions), [Day 21](../../../../programs/carpentry/intake-142/PDF/Day-21_2026-12-02_Week-6.pdf) (Pythagorean theorem and brace lengths) and [Day 22](../../../../programs/carpentry/intake-142/PDF/Day-22_2026-12-03_Week-6.pdf) (checking square, diagonals and layout).
 

@@ -55,3 +55,24 @@ Points a good response covers:
 2. A new problem caused by the fix. (Level 1)
 3. Because the number of tries can be different. 2 failures out of 24 is a much higher rate than 2 out of 200. (Level 2)
 4. If things improve, you cannot tell which change made the difference. (Level 2)
+
+## Task 6 (level 2)
+
+a. **6** items are done (1, 2, 4, 5, 6 and 8). 6 ÷ 8 × 100 = **75%** complete.
+
+b. Items **3** (cracked deck board) and **7** (ruts in the lawn). Example owners and dates:
+
+- Item 3: lead hand, replace the board on Thursday when it arrives, or Friday at the latest.
+- Item 7: lead hand or labourer, fill and re-seed the ruts this week, before the owner's final walk-through.
+
+Any named owner and specific date is accepted. "Someone, soon" is not.
+
+c. Example record:
+
+- **Keep:** order lumber a week early. Give the owner the product sheets at handover.
+- **Change:** check every delivery pile for damaged boards when it arrives, before the driver leaves. Plan the footing pour around the forecast and keep tarps on site.
+- **Try next time:** lay plywood or ground mats along the truck route to protect the lawn.
+
+A good record is short, uses plain words a new crew member would understand, and turns each note into an action, not a complaint.
+
+d. The owner of the company or the supervisor (to update how jobs are run), the next crew or lead hand who builds a deck (so they start with the lessons), and whoever orders material and books deliveries (for the delivery check and the early order). Keeping a copy in the job file means the lesson is not lost when people move on.

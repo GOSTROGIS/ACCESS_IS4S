@@ -1,12 +1,12 @@
 # Respecting differences on a job site
 
-**Collaboration lesson 3 of 12 · 100 min · Level 1-3**
+**Collaboration lesson 3 of 15 · 100 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 3 of 12. This session runs 100 minutes.
+Welcome learners to session 3 of 15. This session runs 100 minutes.
 
 Hook: "How many languages can the people in this room speak, or speak a few words of? Count them with me." Write the count on the board. Include English, French, sign languages, Indigenous languages, family languages, and a few words learned on a job site. Then ask: "On a crew, is that a problem or an advantage?"
 

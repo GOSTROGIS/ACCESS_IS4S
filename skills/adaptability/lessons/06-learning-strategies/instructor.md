@@ -1,12 +1,12 @@
 # Learning strategies that work
 
-Adaptability lesson 6 of 12. Total time: 75 minutes.
+Adaptability lesson 6 of 14. Total time: 75 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Tell them about something you learned the hard way in your trade, and the method that finally made it stick. Ask: "How do you usually study for a test?" Explain that this is Adaptability lesson 6 of 12, and that the session is 75 minutes.
+Welcome learners. Tell them about something you learned the hard way in your trade, and the method that finally made it stick. Ask: "How do you usually study for a test?" Explain that this is Adaptability lesson 6 of 14, and that the session is 75 minutes.
 
 ## Objective
 

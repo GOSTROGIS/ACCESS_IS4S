@@ -1,6 +1,6 @@
 # Title blocks, sheet sets and the drawing index
 
-Session 16 of 18 in the Reading lessons · 90 minutes
+Session 16 of 26 in the Reading lessons · 90 minutes
 
 **Before the session:** project or print the figures on the learner page. Each figure links to a full-size image, so learners on phones can zoom in. If you have a paper drawing set from any job, bring it: learners should handle a real title block and a real drawing list. This lesson builds on Reading lesson 05 (Read a floor plan and its notes) and on the drawing-reading lessons 11 to 15. Lesson 17 goes on to symbols, legends, grids and schedules, and lesson 18 is a capstone that uses the London Square set from start to finish.
 
@@ -8,7 +8,7 @@ Session 16 of 18 in the Reading lessons · 90 minutes
 
 Welcome learners. Hold up a thick drawing set, or show Figure 1 on the screen. Ask: "If the foreman says 'grab A-401', how do you know what that is?" Let a few people guess. Then show that A-401 is a section in London Square and an elevation in the leləm̓ set. Tell a short story: an electrician on a school job roughs in a classroom from the tender set. The construction set moved three outlets. The tender set had no revision clouds yet, because it was not revised. The crew read an old issue, and the boxes came out. Today is about finding the right sheet and proving it is current.
 
-This is session 16 of 18 in the Reading lessons. It runs 90 minutes.
+This is session 16 of 26 in the Reading lessons. It runs 90 minutes.
 
 ## Objective (3 min)
 

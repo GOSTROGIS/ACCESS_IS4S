@@ -1,12 +1,12 @@
 # Checking assumptions before you act
 
-**Collaboration lesson 4 of 12 · 100 min · Level 1-3**
+**Collaboration lesson 4 of 15 · 100 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (6 min, step 1.1)
 
-Welcome learners to session 4 of 12. This session runs 100 minutes.
+Welcome learners to session 4 of 15. This session runs 100 minutes.
 
 Hook, "Choose someone" (adapted from the ACCESS biases lesson, with written descriptions in place of the magazine collage). Read these four co-workers aloud and write them on the board:
 

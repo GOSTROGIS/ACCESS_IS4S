@@ -1,12 +1,12 @@
 # Plan and build together, then debrief
 
-**Collaboration lesson 6 of 12 · 100 min · Level 2-3**
+**Collaboration lesson 6 of 15 · 100 min · Level 2-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (4 min, step 1.1)
 
-Welcome learners to session 6 of 12. This session runs 100 minutes, and most of it is hands-on.
+Welcome learners to session 6 of 15. This session runs 100 minutes, and most of it is hands-on.
 
 Hook: "On a real job, who has the schedule? The specs? The budget? What the client wants?" List the answers (superintendent, engineer or drawings, estimator, client). "Does any one person have all of it?" Today each team member holds one piece, and the team has to put the pieces together.
 

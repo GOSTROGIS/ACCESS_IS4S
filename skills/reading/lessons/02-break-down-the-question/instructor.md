@@ -1,12 +1,12 @@
 # Break down the question first
 
-Session 2 of 18 in the Reading lessons · 60 minutes
+Session 2 of 26 in the Reading lessons · 60 minutes
 
 ## Opening (5 min)
 
 Welcome learners back. Ask the class: "Where is the ABM?" Write down the answers you get: "Down the street", "I don't have a bank card", "Why, do you need cash?" Point out that only one of these answers the question that was asked. On a job site the same thing happens with written questions on forms, quizzes and work orders. Today is about reading the question before reading the document.
 
-This is session 2 of 18 in the Reading lessons. It runs 60 minutes.
+This is session 2 of 26 in the Reading lessons. It runs 60 minutes.
 
 ## Objective (2 min)
 

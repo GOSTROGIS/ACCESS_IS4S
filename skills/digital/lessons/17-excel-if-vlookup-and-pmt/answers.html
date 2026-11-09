@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><script src="../../../../brand/instructor-gate.js" data-gate="page"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Look up prices, flag a budget and check a loan in Excel · Answers · Digital</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Digital</a></p>
+      <p class="eyebrow">Digital · Lesson 17 · Answers</p>
+      <h1>Look up prices, flag a budget and check a loan in Excel</h1>
+      <p class="lede">Pull prices from a supplier price list with VLOOKUP, flag an order that goes over budget with IF, summarize prices with MIN, MAX and MEDIAN, and check a truck loan payment with PMT.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html" aria-current="page">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 90 min</li><li>Components: Use common digital tools to complete tasks; Use digital information</li></ul></nav><article class="prose"><h2>Task 1 (level 2)</h2>
+<p>Answer: C2 <code>=VLOOKUP(A2,Prices!$A$2:$D$9,2,FALSE)</code> and D2 <code>=VLOOKUP(A2,Prices!$A$2:$D$9,4,FALSE)</code>, copied down to row 6.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Code</th>
+<th>Item (column C)</th>
+<th>Unit price (column D)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>P02</td>
+<td>2x8 pressure-treated, 12 ft</td>
+<td>$32.00</td>
+</tr>
+<tr>
+<td>3</td>
+<td>P04</td>
+<td>Joist hanger, 2x8</td>
+<td>$3.75</td>
+</tr>
+<tr>
+<td>4</td>
+<td>P03</td>
+<td>Deck screws, box</td>
+<td>$45.00</td>
+</tr>
+<tr>
+<td>5</td>
+<td>P05</td>
+<td>Concrete mix, 30 kg bag</td>
+<td>$9.50</td>
+</tr>
+<tr>
+<td>6</td>
+<td>P06</td>
+<td>Post base</td>
+<td>$18.25</td>
+</tr>
+</tbody>
+</table></div>
+<p>Steps: the code in column A is what to find. The price table <code>Prices!$A$2:$D$9</code> is where to look, locked so it does not move when copied. Column 2 of the table is the item and column 4 is the price. FALSE asks for an exact match. In row 3 the copied formula reads <code>=VLOOKUP(A3,Prices!$A$2:$D$9,2,FALSE)</code>: only A2 changed to A3.</p>
+<h2>Task 2 (level 2)</h2>
+<p>Answer: E2 <code>=B2*D2</code>, copied down. E7 <code>=SUM(E2:E6)</code> = <strong>$708.50</strong>.</p>
+<p>Steps: 10 × 32.00 = 320.00. 20 × 3.75 = 75.00. 2 × 45.00 = 90.00. 12 × 9.50 = 114.00. 6 × 18.25 = 109.50. Then 320.00 + 75.00 + 90.00 + 114.00 + 109.50 = 708.50.</p>
+<h2>Task 3 (level 2)</h2>
+<p>Answer: <code>=IF(E7&gt;E8,"Over budget","OK")</code> shows <strong>Over budget</strong>. The order is $8.50 over.</p>
+<p>Steps: 708.50 is greater than 700, so the test is true. 708.50 − 700.00 = 8.50.</p>
+<h2>Task 4 (level 2)</h2>
+<p>Answer: the new total is <strong>$663.50</strong> and E9 shows <strong>OK</strong>. The order is now $36.50 under budget.</p>
+<p>Steps: E4 becomes 1 × 45.00 = 45.00. 320.00 + 75.00 + 45.00 + 114.00 + 109.50 = 663.50. 663.50 is not greater than 700, so the IF shows OK. 700.00 − 663.50 = 36.50. Saved as <code>v2</code> with <code>v1</code> kept.</p>
+<h2>Task 5 (level 2)</h2>
+<p>Answer: rows 3 (20 joist hangers) and 5 (12 bags of concrete) say Bulk.</p>
+<p>Row 2 has exactly 10, and <code>&gt;</code> means greater than, so 10 is not greater than 10 and the test is false. To count 10 as bulk, use greater than or equal to: <code>=IF(B2&gt;=10,"Bulk","")</code>. Then rows 2, 3 and 5 say Bulk.</p>
+<h2>Task 6 (level 2)</h2>
+<p>Answer: C6, D6 and E6 all show <code>#N/A</code>. The total in E7 also shows <code>#N/A</code>, and so does the check in E9, because one error in the range spreads into every formula that uses it.</p>
+<p>Steps: P10 is not in the first column of the price table, and FALSE asks for an exact match, so VLOOKUP cannot find it. A good response notes that the error is useful: a wrong code is caught before the order goes to the supplier. Fixing A6 back to P06 brings the totals back.</p>
+<h2>Task 7 (level 2)</h2>
+<p>Answer:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Formula</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G2</td>
+<td><code>=MIN(D2:D9)</code></td>
+<td>$3.75</td>
+</tr>
+<tr>
+<td>G3</td>
+<td><code>=MAX(D2:D9)</code></td>
+<td>$45.00</td>
+</tr>
+<tr>
+<td>G4</td>
+<td><code>=MEDIAN(D2:D9)</code></td>
+<td>20.125, shown as $20.13</td>
+</tr>
+<tr>
+<td>G5</td>
+<td><code>=AVERAGE(D2:D9)</code></td>
+<td>20.28125, shown as $20.28</td>
+</tr>
+</tbody>
+</table></div>
+<p>Steps for the median by hand: in order, the prices are 3.75, 7.25, 9.50, 18.25, 22.00, 24.50, 32.00, 45.00. There are 8 prices, an even count, so the median is the average of the 4th and 5th: (18.25 + 22.00) ÷ 2 = 40.25 ÷ 2 = 20.125. Brackets first, then divide (BEDMAS).</p>
+<p>Average: 3.75 + 7.25 + 9.50 + 18.25 + 22.00 + 24.50 + 32.00 + 45.00 = 162.25. 162.25 ÷ 8 = 20.28125.</p>
+<h2>Task 8 (level 3)</h2>
+<p>Answer:</p>
+<ul>
+<li>B5 <code>=-PMT(B3/12,B4*12,B2)</code> = <strong>$579.98</strong> a month</li>
+<li>B6 <code>=B5*B4*12</code> = <strong>$34,799.04</strong> total paid</li>
+<li>B7 <code>=B6-B2</code> = <strong>$4,799.04</strong> interest</li>
+</ul>
+<p>Steps: the monthly rate is 6% ÷ 12 = 0.5%. The number of payments is 5 × 12 = 60. Excel works out the payment that pays off $30,000 in 60 months at that rate. Total: 579.984… × 60 = 34,799.04. Interest: 34,799.04 − 30,000.00 = 4,799.04.</p>
+<p>If a learner multiplies the rounded payment by hand, 579.98 × 60 = 34,798.80. The 24-cent difference comes from rounding the payment first. Excel keeps all the decimals.</p>
+<h2>Task 9 (level 3)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Years</th>
+<th>Monthly payment</th>
+<th>Total paid</th>
+<th>Interest paid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>$579.98</td>
+<td>$34,799.04</td>
+<td>$4,799.04</td>
+</tr>
+<tr>
+<td>4</td>
+<td>$704.55</td>
+<td>$33,818.44</td>
+<td>$3,818.44</td>
+</tr>
+<tr>
+<td>3</td>
+<td>$912.66</td>
+<td>$32,855.69</td>
+<td>$2,855.69</td>
+</tr>
+</tbody>
+</table></div>
+<p>Answer: the 3-year loan costs the least in total. The 5-year loan has the lowest monthly payment.</p>
+<p>A good sentence names the trade-off. For example: "With a tight monthly budget I would take the 5-year loan, because $579.98 a month is easier to cover in a slow season, even though it costs about $1,943 more in interest than the 3-year loan." (4,799.04 − 2,855.69 = 1,943.35.) A learner who chooses the 3-year loan and says the business can afford $912.66 a month is also right, as long as the reason is given.</p>
+<h2>Check yourself</h2>
+<ol>
+<li>Bring back the value from the 4th column of the range, counted from the left. Here that is the Price column.</li>
+<li>Without them, the range moves down one row every time the formula is copied, so lower rows search the wrong part of the table and can return <code>#N/A</code> or a wrong price.</li>
+<li>The value you looked for is not in the first column of the range, often because of a typing mistake or an extra space.</li>
+<li><code>=IF(C5&lt;10,"Reorder","")</code></li>
+<li>Rate <code>B3/12</code> and number of payments <code>5*12</code> (60). For example <code>=-PMT(B3/12,5*12,B2)</code> when the amount borrowed is in B2.</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../16-choosing-and-using-ai-at-work/answers.html">← Lesson 16: Choosing and using AI at work<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a rel="next" href="../18-crew-hours-histogram-in-excel/answers.html">Lesson 18: Chart crew hours and level the crew in Excel →<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

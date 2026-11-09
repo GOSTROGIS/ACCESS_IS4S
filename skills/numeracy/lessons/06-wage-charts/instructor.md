@@ -1,6 +1,6 @@
 # Reading and making charts of trade wages
 
-**Session:** Numeracy lesson 6 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 6 of 34. **Total length:** 90 minutes.
 
 ## Opening (5 min)
 

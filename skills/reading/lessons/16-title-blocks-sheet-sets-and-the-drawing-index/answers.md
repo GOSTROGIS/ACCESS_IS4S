@@ -98,3 +98,18 @@ The cloud shows the area that changed. The delta shows which revision changed it
 ## Check yourself 5
 
 **1999-11-08**
+
+## Task 12 (level 2)
+
+These answers go with the section "Extra: what a CAD drawing is". The CAD facts were checked against Autodesk's AutoCAD help on 2026-11-08: "About Model Space and Paper Space" (https://help.autodesk.com/view/ACD/2027/ENU/?guid=GUID-990538B6-DDA1-4190-BCC0-BB5BA94C9879), "Layers" (https://help.autodesk.com/view/ACD/2027/ENU/?guid=GUID-FA005756-B8F5-4A78-988F-31335A68D77C), "About Layers" (https://help.autodesk.com/view/ACD/2027/ENU/?guid=GUID-6B3E3B5D-3AE2-4162-A5FE-CFE42AB0743B), "About Attaching and Detaching Referenced Drawings (Xrefs)" (https://help.autodesk.com/view/ACD/2027/ENU/?guid=GUID-A987D2FF-45BD-474E-99C1-E6316A42F667) and the AutoCAD ActiveX reference "Block Object" (https://help.autodesk.com/view/OARX/2027/ENU/?guid=GUID-E6F7B03B-F5CC-4A18-9C48-BBF1D32A31FD), which describes a simple block as a collection of objects associated together to form a single object.
+
+a) **No.** The stair is drawn once, at full size, in model space. The sheet is a layout in paper space with two viewports. One viewport shows the floor at 1:100, and the other shows the stair at 1:20.
+
+b) **Layers.** The doors may be on a layer that was turned off or frozen when the sheet was printed. The electrician should **not** assume there are no doors. Check the architectural floor plan for the same floor, and ask the foreman or send an RFI if the sheets do not agree.
+
+c) **Blocks.** The receptacle symbol is one block, inserted many times.
+
+d) **An xref.** The architect's floor plan is linked into the electrical drawing, so the moved wall showed up when the electrical file was opened again. Points a good answer covers:
+- The print is not an issued revision. The issue block did not change, and there may be no revision cloud.
+- The electrical design (receptacles, lights, circuits) may not have been changed to suit the new wall yet.
+- Build only from the sheet issued for construction, and ask the foreman which issue is current if prints do not agree.

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><script src="../../../../brand/instructor-gate.js" data-gate="page"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Run and change a Python script · Answers · Digital</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Digital</a></p>
+      <p class="eyebrow">Digital · Lesson 21 · Answers</p>
+      <h1>Run and change a Python script</h1>
+      <p class="lede">Open a short Python script that checks the grade between two points, run it, change the inputs and one line of code, break it on purpose and read the error, and check the answer by hand and in Excel.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html" aria-current="page">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 3</li><li>Time: 60 min</li><li>Components: Update and upgrade digital skills; Use common digital tools to complete tasks; Use digital information</li></ul></nav><article class="prose"><h2>Task 1 (level 2)</h2>
+<p>Answer:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Question the script asks</th>
+<th>Stored under</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Elevation at the start (m)</td>
+<td><code>start</code></td>
+</tr>
+<tr>
+<td>Elevation at the end (m)</td>
+<td><code>end</code></td>
+</tr>
+<tr>
+<td>Horizontal distance between them (m)</td>
+<td><code>run</code></td>
+</tr>
+<tr>
+<td>Steepest grade this job allows (%)</td>
+<td><code>limit</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Check: the learner found the four <code>input(...)</code> lines and read the name to the left of each <code>=</code> sign.</p>
+<h2>Task 2 (level 3)</h2>
+<p>Answer, worked example: the output matches the learner page.</p>
+<pre tabindex="0"><code>Rise: 0.45 m
+Grade: 2.5 %
+The ground goes uphill from start to end.
+Within the limit for this job.
+</code></pre>
+<p>Answer, drain pipe (99.80, 99.56, 12, 2):</p>
+<pre tabindex="0"><code>Rise: -0.24 m
+Grade: -2.0 %
+The ground goes downhill from start to end.
+Within the limit for this job.
+</code></pre>
+<p>By hand: rise = 99.56 − 99.80 = −0.24 m. Grade = −0.24 ÷ 12 × 100 = −0.02 × 100 = −2.0%. The minus sign means downhill. The script uses <code>abs()</code>, so it compares 2.0 with the 2% limit. 2.0 is not greater than 2, so it is within the limit, exactly at it.</p>
+<h2>Task 3 (level 3)</h2>
+<p>Answer: the script prints <code>Rise: 1.5 m</code>, <code>Grade: 7.5 %</code>, uphill, and <code>Too steep for this job. Tell the foreman.</code></p>
+<p>By hand: rise = 51.50 − 50.00 = 1.50 m. Grade = 1.50 ÷ 20 × 100 = 0.075 × 100 = 7.5%. 7.5 is greater than 5.</p>
+<p>To reach exactly 5%: the length must be rise ÷ 0.05 = 1.50 ÷ 0.05 = 30 m. So the ramp needs to be 10 m longer, or the height difference smaller.</p>
+<h2>Task 4 (level 3)</h2>
+<p>(a) Last line: <code>ValueError: could not convert string to float: 'twelve'</code>. <code>float()</code> can only turn digits into a number. Fix: run again and type <code>12</code>.</p>
+<p>(b) Last line: <code>ZeroDivisionError: float division by zero</code>. The grade line divides by <code>run</code>, and nothing can be divided by zero. Fix: run again with a real distance. On site, a distance of 0 means the two points were recorded at the same spot.</p>
+<p>(c) Last line: <code>SyntaxError: '(' was never closed</code>, pointing at the grade line. Python reads the code before running it and stops at the open bracket, so no questions are asked at all. Fix: put the <code>)</code> back after <code>start</code>, save and run.</p>
+<p>The exact words after the error name can differ a little between Python versions. The error names stay the same.</p>
+<h2>Task 5 (level 3)</h2>
+<p>Answer: with the drain-pipe numbers the script prints <code>Grade: -732.11 %</code> and says it is too steep. The rise line is still correct (−0.24 m), because it is a separate line.</p>
+<p>Step by step with BEDMAS, without brackets: <code>end - start / run * 100</code> = 99.56 − 99.80 ÷ 12 × 100.</p>
+<ol>
+<li>Division and multiplication first, left to right: 99.80 ÷ 12 = 8.31666…, then × 100 = 831.666…</li>
+<li>Then subtraction: 99.56 − 831.666… = −732.106… → −732.11.</li>
+</ol>
+<p>Python divided only the start elevation by the run instead of the difference. Putting the brackets back makes it subtract first and gives −2.0% again.</p>
+<h2>Task 6 (level 3)</h2>
+<p>Answer: the new line prints <code>That is about 1 in 40.0</code> for the worked example.</p>
+<p>"1 in 40" means the ground rises 1 m for every 40 m along the run (or 1 cm for every 40 cm). Check: 18 ÷ 0.45 = 40.</p>
+<p>For level ground (start and end the same), the rise is 0 and the new line divides by 0. The script stops with <code>ZeroDivisionError: float division by zero</code> after printing the grade. A good response notes that the line works for slopes but needs its own check for level ground, for example only printing it when <code>rise</code> is not 0.</p>
+<h2>Task 7 (level 2)</h2>
+<p>Answer: a correct explanation says: "If the size of the grade, ignoring whether it is uphill or downhill, is bigger than the limit, run the indented line under it", which prints the too-steep message.</p>
+<p>Check against the script: the comment above the line says <code>abs()</code> ignores the minus sign of a downhill grade. A test run confirms it: the drain pipe at −2.0% with a 1% limit prints <code>Too steep</code>. A good response says whether the chatbot matched this, and notes that only the single line was pasted.</p>
+<h2>Task 8 (level 2)</h2>
+<p>Answer: B4 <code>=(B2-B1)/B3*100</code>. With 100.00 in B1, 100.45 in B2 and 18 in B3, B4 shows 2.5.</p>
+<p>This is the same formula as the script. Brackets work the same way in Excel, Python and on paper.</p>
+<h2>Check yourself</h2>
+<ol>
+<li>It skips it. A <code>#</code> line is a comment for people to read.</li>
+<li>The last line. It names the kind of error and gives a short reason.</li>
+<li>So the subtraction happens first. Without brackets, BEDMAS makes Python divide the start elevation by the run before subtracting, and the grade is wrong.</li>
+<li>2.0</li>
+<li>Any of: client names or addresses, passwords, employer bid prices, personal information, or a whole work file.</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../20-your-community-on-the-map/answers.html">← Lesson 20: Put your community on the map<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

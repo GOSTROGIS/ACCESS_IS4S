@@ -1,6 +1,6 @@
 # Checking a pay stub and filling in a TD1
 
-**Session:** Numeracy lesson 1 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 1 of 34. **Total length:** 90 minutes.
 
 ## Opening (5 min)
 

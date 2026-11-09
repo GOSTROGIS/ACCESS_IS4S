@@ -2,7 +2,7 @@
 
 ## Opening (6 min)
 
-**Session 6 of 10 in Problem Solving. Length: 90 min.**
+**Session 6 of 16 in Problem Solving. Length: 90 min.**
 
 Welcome learners. Run the ACCESS agree and disagree line: learners stand in a line. Read each statement. They step forward if they agree, back if they disagree, and stay if they cannot decide. Return to the line after each one.
 

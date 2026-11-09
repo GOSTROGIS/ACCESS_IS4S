@@ -1,12 +1,12 @@
 # Find a rule in the BC Building Code
 
-Session 6 of 18 in the Reading lessons · 90 minutes
+Session 6 of 26 in the Reading lessons · 90 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Ask: "Who has heard someone on a site say 'Code says…'? Did anyone check?" Hold up a phone and say the whole BC Building Code is free on it. Tell a short story: two carpenters argue about how far a handrail can stick out into a stair. One says 4 inches, one says 6. Neither looks it up. The inspector does. Today learners find the exact rule in less time than the argument takes.
 
-This is session 6 of 18 in the Reading lessons. It runs 90 minutes.
+This is session 6 of 26 in the Reading lessons. It runs 90 minutes.
 
 Before the session: check that every learner has a device that can open a large PDF (about 16 MB), or arrange shared devices. Download the PDF in advance in case the internet is slow. If you plan to print pages, read the "Acknowledgements and copyright" section on the BC Building Code 2024 web page first.
 

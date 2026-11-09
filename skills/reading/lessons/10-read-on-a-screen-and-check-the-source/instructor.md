@@ -1,12 +1,12 @@
 # Read on a screen and check the source
 
-Session 10 of 18 in the Reading lessons · 75 minutes
+Session 10 of 26 in the Reading lessons · 75 minutes
 
 ## Opening (5 min)
 
 Welcome learners to Reading lesson 10. Ask: "When you need to know something on the job, what do you do first?" Many will say "Google it" or "ask my phone". Ask: "How do you know the answer is right?" Tell a short story: a crew finds a post online saying a product is safe to use indoors. The post was about a different product from another country. The SDS for theirs says use with good ventilation. Today is about reading on a screen and checking the source.
 
-This is session 10 of 18 in the Reading lessons. It runs 75 minutes.
+This is session 10 of 26 in the Reading lessons. It runs 75 minutes.
 
 Before the session: check the Wi-Fi, and make sure each learner or pair has a phone, tablet or computer. Open the three official pages used in the tasks on your own device to confirm they still load and still say what the answer key says.
 

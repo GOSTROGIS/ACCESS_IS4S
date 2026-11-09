@@ -1,6 +1,6 @@
 # Network diagrams and schedule logic
 
-**Session:** Numeracy lesson 19 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 19 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need pencils, an eraser and large paper (11 × 17 or flip-chart) for Task 3. Sticky notes make good activity boxes for step 1.3: one note per activity, arrows drawn on the paper. Problem Solving lesson 7 (plan and organize the work) asked "what has to be done before this can start?" This lesson turns that question into a drawing. Learners should have done lessons 17 and 18.
 

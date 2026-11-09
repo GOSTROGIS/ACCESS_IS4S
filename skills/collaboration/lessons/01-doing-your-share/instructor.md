@@ -1,6 +1,6 @@
 # Doing your share on a crew
 
-**Collaboration lesson 1 of 12 · 70 min · Level 1-3**
+**Collaboration lesson 1 of 15 · 70 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 

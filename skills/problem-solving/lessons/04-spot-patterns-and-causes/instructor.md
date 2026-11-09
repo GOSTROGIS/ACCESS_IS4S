@@ -2,7 +2,7 @@
 
 ## Opening (4 min)
 
-**Session 4 of 10 in Problem Solving. Length: 60 min.**
+**Session 4 of 16 in Problem Solving. Length: 60 min.**
 
 Welcome learners. Write **2, 4, 6, …** on the board and ask what comes next. Most will say 8. Then write a different ending that also fits: **2, 4, 6, −2, −4, −6**. Do the same with colours: blue, yellow, red, blue, yellow, red, and then reveal blue, yellow, red in lower-case letters. (This opening comes from the ACCESS ESAF assumption and bias lesson.)
 

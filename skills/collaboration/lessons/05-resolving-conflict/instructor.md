@@ -1,12 +1,12 @@
 # Preventing and resolving conflict on a crew
 
-**Collaboration lesson 5 of 12 · 100 min · Level 2-3**
+**Collaboration lesson 5 of 15 · 100 min · Level 2-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 5 of 12. This session runs 100 minutes.
+Welcome learners to session 5 of 15. This session runs 100 minutes.
 
 Hook: "Think of the last argument you saw at work or on a team. Was it about the facts, the plan, or the person?" Take a few answers without names. Point out that arguments often start about the work and end up about the person. Today is about keeping it on the work.
 

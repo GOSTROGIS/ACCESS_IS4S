@@ -1,12 +1,12 @@
 # Who does what on a job site
 
-**Collaboration lesson 9 of 12 · 75 min · Level 1-3**
+**Collaboration lesson 9 of 15 · 75 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (4 min, step 1.1)
 
-Welcome learners to session 9 of 12. This session runs 75 minutes. Lessons 9 to 12 take the Collaboration skills onto a real site with other trades.
+Welcome learners to session 9 of 15. This session runs 75 minutes. Lessons 9 to 12 take the Collaboration skills onto a real site with other trades.
 
 Hook: "You walk onto a site on day one. There are 40 people in hard hats. Who do you ask where to park?" Take a few answers. Then ask, "Who do you tell if a guardrail is missing?" Point out that the two answers are different people, and that today is about knowing which is which.
 

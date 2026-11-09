@@ -1,12 +1,12 @@
 # Responding to change on a project
 
-Adaptability lesson 3 of 12. Total time: 75 minutes.
+Adaptability lesson 3 of 14. Total time: 75 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Tell a short story about a day on a job when the plan fell apart, and what the crew did next. Ask: "What is the most common change you have seen on a job?" Explain that this is Adaptability lesson 3 of 12, and that the session is 75 minutes.
+Welcome learners. Tell a short story about a day on a job when the plan fell apart, and what the crew did next. Ask: "What is the most common change you have seen on a job?" Explain that this is Adaptability lesson 3 of 14, and that the session is 75 minutes.
 
 ## Objective
 

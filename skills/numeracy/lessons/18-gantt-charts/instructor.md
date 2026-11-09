@@ -1,6 +1,6 @@
 # Read and draw a Gantt chart
 
-**Session:** Numeracy lesson 18 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 18 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need a pencil, a ruler and coloured pencils or two highlighters. Print the blank Gantt grid from Task 6, or give out graph paper. If you have Microsoft Project, Excel or a free Gantt tool, a short demo at step 3.2 helps, but it is not needed. Learners should have done lesson 17 (time math): the bars in this lesson use the same rule for working days.
 

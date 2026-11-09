@@ -1,6 +1,6 @@
 # Float and the critical path
 
-**Session:** Numeracy lesson 21 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 21 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need a calculator and their garage and washroom passes from lesson 20 (the tables on the learner page repeat them). Print the parkade float chart and the two-zone framing chart, or project them. This lesson closes the Numeracy scheduling set. Problem Solving lesson 10 (recover a late schedule) uses the washroom network from Task 2, so keep learners' Task 2 work for that session.
 

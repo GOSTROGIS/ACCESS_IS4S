@@ -1,12 +1,12 @@
 # Read a workplace policy or agreement
 
-Session 9 of 18 in the Reading lessons · 75 minutes
+Session 9 of 26 in the Reading lessons · 75 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Ask: "On your first day at a job, how many papers did you sign? Did you read them all?" Most learners will say no. Tell a short story: a new worker signs a stack of forms on day one. Three months later, a drill goes missing from the gang box and money comes off his cheque. He says, "I never agreed to that." The form says he did. Today learners practise reading the handbook and the forms before they sign.
 
-This is session 9 of 18 in the Reading lessons. It runs 75 minutes.
+This is session 9 of 26 in the Reading lessons. It runs 75 minutes.
 
 Be clear with learners: this lesson teaches reading. It is not legal advice. For a real question about their rights, send them to BC Employment Standards or, for union members, their union.
 

@@ -1,12 +1,12 @@
 # Respectful workplaces, bullying and harassment
 
-**Collaboration lesson 8 of 12 · 70 min · Level 2-3**
+**Collaboration lesson 8 of 15 · 70 min · Level 2-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (3 min, step 1.1)
 
-Welcome learners to session 8 of 12, the last of the first eight Collaboration sessions. This session runs 70 minutes.
+Welcome learners to session 8 of 15, the last of the first eight Collaboration sessions. This session runs 70 minutes.
 
 Say at the start: this topic can bring up hard memories. Learners can step out at any time, and no one has to share a personal story. The support line is at the end of the learner page.
 

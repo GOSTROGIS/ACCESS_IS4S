@@ -1,6 +1,6 @@
 # Converting money with exchange rates
 
-**Session:** Numeracy lesson 5 of 21. **Total length:** 60 minutes.
+**Session:** Numeracy lesson 5 of 34. **Total length:** 60 minutes.
 
 ## Opening (5 min)
 

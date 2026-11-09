@@ -1,12 +1,12 @@
 # Keep going after rejected work
 
-Adaptability lesson 11 of 12. Total time: 90 minutes.
+Adaptability lesson 11 of 14. Total time: 90 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Share a time your own work was failed by an inspector, a test or a foreman, and what you did next. Keep it honest and short. Ask: "What is the first thing you feel when someone rejects your work? What is the first thing you want to say?" Explain that this is Adaptability lesson 11 of 12, that it pulls together lessons 2 (owning mistakes), 3 (responding to change) and 4 (staying calm), and that it runs 90 minutes.
+Welcome learners. Share a time your own work was failed by an inspector, a test or a foreman, and what you did next. Keep it honest and short. Ask: "What is the first thing you feel when someone rejects your work? What is the first thing you want to say?" Explain that this is Adaptability lesson 11 of 14, that it pulls together lessons 2 (owning mistakes), 3 (responding to change) and 4 (staying calm), and that it runs 90 minutes.
 
 ## Objective
 

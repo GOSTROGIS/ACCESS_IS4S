@@ -1,12 +1,12 @@
 # Run a pre-task huddle and hand over at shift end
 
-**Collaboration lesson 11 of 12 · 75 min · Level 2-3**
+**Collaboration lesson 11 of 15 · 75 min · Level 2-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (4 min, step 1.1)
 
-Welcome learners to session 11 of 12. This session runs 75 minutes.
+Welcome learners to session 11 of 15. This session runs 75 minutes.
 
 Hook: hand one learner a note that says only "Finish the job by the door." Ask them to act it out. Then ask the group, "What do they need to know that the note does not say?" List the gaps. Today is about the two short talks that fill those gaps: the huddle and the handover.
 

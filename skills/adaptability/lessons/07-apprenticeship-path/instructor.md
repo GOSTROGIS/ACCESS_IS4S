@@ -1,12 +1,12 @@
 # Keep learning as an apprentice in BC
 
-Adaptability lesson 7 of 12. Total time: 90 minutes.
+Adaptability lesson 7 of 14. Total time: 90 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Share how you got into your trade: the first job, the sponsor, a level you found hard. Ask: "How is this session going to be useful to you?" (the opening question from the ACCESS occupations lesson). Explain that this is Adaptability lesson 7 of 12, and that the session is 90 minutes. Learners will need a computer or phone for step 3.1.
+Welcome learners. Share how you got into your trade: the first job, the sponsor, a level you found hard. Ask: "How is this session going to be useful to you?" (the opening question from the ACCESS occupations lesson). Explain that this is Adaptability lesson 7 of 14, and that the session is 90 minutes. Learners will need a computer or phone for step 3.1.
 
 ## Objective
 
@@ -88,3 +88,4 @@ During this session we covered:
 - Canada Apprentice Loan of up to $4,000 per period of technical training for Red Seal trade apprentices: SkilledTradesBC, Canada Apprentice Loan, https://skilledtradesbc.ca/canada-apprentice-loans, checked 2026-11-06.
 - The older framework replaced by Skills for Success in 2021: Government of Canada, The new Skills for Success model, https://www.canada.ca/en/services/jobs/training/initiatives/skills-success/new-model.html, checked 2026-11-06.
 - Brainstorm and sorting of occupations by training, and short, mid and long-term goals: adapted from the ACCESS ESAF lessons named in the learner page front matter.
+- BTech in Construction Management, Option D entry (Red Seal, Math 11 or BLDT 1011 at 60%, Construction Operations Associate Certificate at a 67% GPA, one year of construction work beyond apprenticeship hours, English Studies 12 at 73%, pre-entry assessment), checked November 2026: BCIT, Construction Management, Bachelor of Technology, https://www.bcit.ca/programs/construction-management-bachelor-of-technology-full-time-part-time-8800btech/

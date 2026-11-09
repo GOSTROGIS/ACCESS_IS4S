@@ -1,12 +1,12 @@
 # The alphabet of lines and reading dimensions
 
-Session 13 of 18 in the Reading lessons · 90 minutes
+Session 13 of 26 in the Reading lessons · 90 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Draw three lines on the board: a thick solid line, a thin dashed line, and a thin line with an arrow at each end. Ask: "Are these the same?" Each one means something different: an edge, a hidden edge, and a size. Tell a short story: a concrete crew forms a slab from a dimension string without adding it up. The string is 100 mm short of the overall. The error shows up when the steel arrives and does not fit. The fix took a day. Adding the string took one minute.
 
-This is session 13 of 18 in the Reading lessons. It runs 90 minutes. It follows lessons 11 (views) and 12 (pictorial drawings).
+This is session 13 of 26 in the Reading lessons. It runs 90 minutes. It follows lessons 11 (views) and 12 (pictorial drawings).
 
 Before the session: bring a tape measure, a calculator for each pair, and if possible a real shop drawing or framing elevation with a dimension string. Draw a 6-metre line on the floor with tape for Task 10, with four marks for anchor bolts, if you have room.
 

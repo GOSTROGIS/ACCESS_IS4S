@@ -1,12 +1,12 @@
 # Set and adjust goals across your apprenticeship
 
-Adaptability lesson 12 of 12. Total time: 90 minutes.
+Adaptability lesson 12 of 14. Total time: 90 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Share one bump in your own apprenticeship: a layoff, a level you had to wait for, a move. Say how long it set you back and what you did. Ask: "If you were laid off for two months next winter, what would you do with the time?" Explain that this is the last Adaptability lesson, lesson 12 of 12, that it builds on lesson 7 (the apprenticeship path), and that it runs 90 minutes. Learners need a computer or phone for Task 10.
+Welcome learners. Share one bump in your own apprenticeship: a layoff, a level you had to wait for, a move. Say how long it set you back and what you did. Ask: "If you were laid off for two months next winter, what would you do with the time?" Explain that this is the last Adaptability lesson, lesson 12 of 14, that it builds on lesson 7 (the apprenticeship path), and that it runs 90 minutes. Learners need a computer or phone for Task 10.
 
 ## Objective
 

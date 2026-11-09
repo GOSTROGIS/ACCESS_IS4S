@@ -1,12 +1,12 @@
 # Follow written instructions step by step
 
-Session 3 of 18 in the Reading lessons · 60 minutes
+Session 3 of 26 in the Reading lessons · 60 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Ask: "Has anyone had a job go wrong because a step was skipped or done in the wrong order? What happened?" Take two or three stories. Then ask: "How many ways can a ten-step procedure go wrong?" Lead learners to the answer the old ACCESS lesson used: at least as many as there are steps.
 
-This is session 3 of 18 in the Reading lessons. It runs 60 minutes.
+This is session 3 of 26 in the Reading lessons. It runs 60 minutes.
 
 ## Objective (2 min)
 

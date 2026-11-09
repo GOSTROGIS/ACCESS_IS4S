@@ -1,6 +1,6 @@
 # Working out the tax on a simple return
 
-**Session:** Numeracy lesson 4 of 21. **Total length:** 120 minutes. Run this lesson after lesson 1 (pay stubs and the TD1) or after a session on percent.
+**Session:** Numeracy lesson 4 of 34. **Total length:** 120 minutes. Run this lesson after lesson 1 (pay stubs and the TD1) or after a session on percent.
 
 ## Opening (5 min)
 

@@ -1,6 +1,6 @@
 # The forward and backward pass
 
-**Session:** Numeracy lesson 20 of 21. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 20 of 34. **Total length:** 90 minutes.
 
 **Before the session:** learners need pencils, erasers and a calculator. Print the blank garage network from Task 2 on 11 × 17 paper, one per learner. Learners should bring their garage network from lesson 19, Task 3. Decide now that the class uses the day-0 rule from the learner page, and say so on the board at the start: ES of the first activity is 0, EF = ES + Dur, and a plain FS successor starts at the predecessor's EF.
 

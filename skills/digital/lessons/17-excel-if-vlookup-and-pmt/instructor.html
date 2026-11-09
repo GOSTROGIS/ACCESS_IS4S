@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><script src="../../../../brand/instructor-gate.js" data-gate="page"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Look up prices, flag a budget and check a loan in Excel · Instructor · Digital</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Digital</a></p>
+      <p class="eyebrow">Digital · Lesson 17 · Instructor</p>
+      <h1>Look up prices, flag a budget and check a loan in Excel</h1>
+      <p class="lede">Pull prices from a supplier price list with VLOOKUP, flag an order that goes over budget with IF, summarize prices with MIN, MAX and MEDIAN, and check a truck loan payment with PMT.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html">Learner</a></li><li><a href="instructor.html" aria-current="page">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 90 min</li><li>Components: Use common digital tools to complete tasks; Use digital information</li></ul></nav><article class="prose"><p>ACCESS Indigenous Skills4Success · Digital · Lesson plan</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Session</th>
+<th>Total length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Digital 17</td>
+<td>90 min</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Opening (3 min)</h2>
+<p>Welcome learners. Hook: "A supplier price list has 400 items. Your order has 25 lines. How many chances do you get to copy a price wrong?" Today Excel does the copying. Learners pick prices from a list by item code, get a warning when the order is over budget, and check a truck loan payment before signing anything. This session builds on Lesson 5, the materials list.</p>
+<h2>Objective (2 min)</h2>
+<p>By the end of the session learners will be able to:</p>
+<ul>
+<li>use VLOOKUP with an exact match and an absolute range to bring a name and a price from a price list into an order (Use common digital tools to complete tasks: use software for a purpose, for example Excel)</li>
+<li>write IF formulas with comparison operators to flag an order over budget and mark bulk lines (Use common digital tools to complete tasks)</li>
+<li>summarize a price list with MIN, MAX, MEDIAN and AVERAGE and explain the difference between median and average (Use digital information: evaluate the relevance and reliability of digital information)</li>
+<li>check a monthly loan payment with PMT and work out the total paid and the interest (Use common digital tools to complete tasks)</li>
+</ul>
+<p>Complexity: level 2, with Tasks 8 and 9 at level 3.</p>
+<h2>Pre-assessment (5 min)</h2>
+<ol>
+<li>In Lesson 5 we wrote <code>=B2*D2</code> in E2 and dragged it down. What did it become in row 3?</li>
+<li>You borrow $1,000 and pay back $1,100. How much interest did you pay?</li>
+</ol>
+<p>(Answers: <code>=B3*D3</code>. $100.)</p>
+<h2>Learning tasks (70 min)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Instructor activities</th>
+<th>Learner activities</th>
+<th>Resources</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.1</td>
+<td>Open the practice workbook on the projector. Tour the three sheet tabs. Click a cell on Order and type <code>=Prices!D3</code> to show a reference to another sheet. Show <code>A2</code> against <code>$A$2</code> and press F4 in the formula bar.</td>
+<td>1.1 Open the workbook, save a copy as <code>v1</code>, and repeat the <code>=Prices!D3</code> test in an empty cell, then delete it.</td>
+<td>Projector, <code>price-list-practice.xlsx</code></td>
+<td>8 min</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>Model the worked example in C2. Say each part of the VLOOKUP aloud. Change the column number from 2 to 4 in D2. Drag both down and show that the dollar signs kept the price table in place.</td>
+<td>1.2 Complete Task 1.</td>
+<td>Excel</td>
+<td>12 min</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>Remind learners of the line total and SUM from Lesson 5.</td>
+<td>1.3 Complete Task 2.</td>
+<td>Excel</td>
+<td>6 min</td>
+</tr>
+<tr>
+<td>2.1</td>
+<td>Demonstrate <code>=IF(E7&gt;E8,"Over budget","OK")</code>. Point out the quotation marks around text.</td>
+<td>2.1 Complete Tasks 3 and 4 and save <code>v2</code>.</td>
+<td>Excel</td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>Write the comparison operators on the board. Ask: does 10 count as more than 10?</td>
+<td>2.2 Complete Task 5.</td>
+<td>Whiteboard, Excel</td>
+<td>6 min</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>Type a wrong code and show <code>#N/A</code>. Ask what a supplier would do with an order that has an unknown code.</td>
+<td>2.3 Complete Task 6.</td>
+<td>Excel</td>
+<td>5 min</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td>Demonstrate MIN, MAX, MEDIAN and AVERAGE on the Prices sheet. Sort eight numbers on the board and find the middle pair.</td>
+<td>2.4 Complete Task 7.</td>
+<td>Whiteboard, Excel</td>
+<td>8 min</td>
+</tr>
+<tr>
+<td>3.1</td>
+<td>Explain PMT with the truck loan. Show why the yearly rate is divided by 12 and the years multiplied by 12. Show the negative result without the minus sign, then with it.</td>
+<td>3.1 Complete Task 8.</td>
+<td>Excel</td>
+<td>9 min</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>Ask the class to change the years together and watch the payment rise and the interest fall.</td>
+<td>3.2 Complete Task 9.</td>
+<td>Excel</td>
+<td>6 min</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Post-assessment (6 min)</h2>
+<ol>
+<li>Click D3 in your workbook. Read me the formula and explain each of its four parts.</li>
+<li>Without Excel, what does <code>=IF(450&gt;500,"Over budget","OK")</code> show?</li>
+<li>A lender quotes $650 a month for the same truck loan in Task 8. Your PMT check says $579.98. What do you ask the lender?</li>
+</ol>
+<h2>Summary (4 min)</h2>
+<p>During this session we covered:</p>
+<ul>
+<li>references to another sheet and absolute references with dollar signs and F4</li>
+<li>VLOOKUP with an exact match to pull names and prices from a price list</li>
+<li><code>#N/A</code> when a code is not in the list</li>
+<li>IF with comparison operators to flag a budget and mark bulk lines</li>
+<li>MIN, MAX, MEDIAN and AVERAGE, and why the median and average differ</li>
+<li>PMT for a monthly payment, the total paid and the interest</li>
+</ul>
+<p>Time check: 3 + 2 + 5 + 70 + 6 + 4 = 90 min.</p>
+<h2>Notes for the instructor</h2>
+<ul>
+<li>The workbook <a href="price-list-practice.xlsx">price-list-practice.xlsx</a> has no formulas. Learners build every formula themselves. Cedar Ridge Supply and Riverbend Builders are fictional, and every price and the 6% rate are practice numbers. If a learner asks for real loan rates, send them to a lender's own website and treat it as a <a href="../07-search-and-judge-sources/learner.html">Lesson 7</a> source-checking exercise.</li>
+<li>A real loan quote can be higher than the PMT check because of fees, a different rate, a different way the lender compounds interest, or extras added to the loan. Post-assessment question 3 is about asking why, not about the lender being wrong.</li>
+<li>Some learners will type the VLOOKUP range without dollar signs. Let them copy it down and see what breaks before fixing it. It sticks better than being told.</li>
+<li>VLOOKUP is taught here because learners will meet it in existing workplace files. Mention XLOOKUP only as the newer option Microsoft recommends, and check which functions the class computers' version of Excel offers before class.</li>
+<li>Level 3 extension: on the Order sheet, add a 5% discount line that applies only when the total is $500 or more, using IF. Learners decide which comparison operator to use.</li>
+<li>The <a href="../../../numeracy/learner.html">numeracy lessons</a> cover percent and interest by hand. The <a href="../../../numeracy/hub/index.html#conops">Numeracy Hub Construction Operations tab</a> has estimating practice that suits this lesson.</li>
+</ul>
+<h2>Sources</h2>
+<ul>
+<li>Microsoft Support. <em>VLOOKUP function</em> (Excel for Microsoft 365): syntax, lookup value in the first column, column number counted from the left, FALSE for an exact match, TRUE or left out gives an approximate match, <code>#N/A</code> when an exact match is not found, absolute references for the range, XLOOKUP described as an improved version. https://support.microsoft.com/en-us/office/vlookup-function-0bbc8083-26fe-4963-8ab8-93a18ad188a1, checked 2026-11-08.</li>
+<li>Microsoft Support. <em>IF function</em>: syntax, text in quotation marks, <code>=IF(C2&gt;B2,"Over Budget","Within Budget")</code> style example. https://support.microsoft.com/en-us/office/if-function-69aed7c9-4e8a-4755-a9bc-aa8bbff73be2, checked 2026-11-08.</li>
+<li>Microsoft Support. <em>MEDIAN function</em>: middle number, average of the two middle numbers for an even count. https://support.microsoft.com/en-us/office/median-function-d0916313-4753-414c-8537-ce85bdd967d2, checked 2026-11-08.</li>
+<li>Microsoft Support. <em>MIN function</em> and <em>MAX function</em>: smallest and largest value in a set. https://support.microsoft.com/en-us/office/min-function-61635d12-920f-4ce2-a70f-96f202dcc152 and https://support.microsoft.com/en-us/office/max-function-e0012414-9ac8-4b34-9a47-73e662c08098, checked 2026-11-08.</li>
+<li>Microsoft Support. <em>PMT function</em>: syntax, payment includes principal and interest but no taxes or fees, use 12%/12 for rate and 4*12 for nper on a monthly four-year loan, multiply PMT by nper for the total paid, payment shown as a negative amount in the example. https://support.microsoft.com/en-us/office/pmt-function-0214da64-9a63-4996-bc20-214433fa6441, checked 2026-11-08.</li>
+<li>Microsoft Support. <em>Switch between relative, absolute, and mixed references</em>: <code>$</code> locks a reference, F4 switches reference types. https://support.microsoft.com/en-us/office/switch-between-relative-absolute-and-mixed-references-dfec08cd-ae65-4f56-839e-5f0d8d0baca9, checked 2026-11-08.</li>
+<li>Government of Canada. <em>Skill components and proficiency levels</em>, Digital components 2 and 3 (Excel named as an example tool). https://www.canada.ca/en/services/jobs/training/initiatives/skills-success/learning-steps.html, checked 2026-11-08.</li>
+<li>All loan payments, totals and interest in the answers were worked out with the PMT formula and checked by running the workbook formulas, 2026-11-08.</li>
+</ul></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../16-choosing-and-using-ai-at-work/instructor.html">← Lesson 16: Choosing and using AI at work<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a rel="next" href="../18-crew-hours-histogram-in-excel/instructor.html">Lesson 18: Chart crew hours and level the crew in Excel →<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>
