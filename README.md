@@ -57,7 +57,7 @@ Math practice, books and calculators for ACCESS Indigenous Skills4Success pre-ap
 | Open this | What it is |
 |---|---|
 | `skills/numeracy/index.html` | The Numeracy page, with links to everything below |
-| `skills/numeracy/hub/index.html` | Numeracy Hub: shapes, order of operations, volume and layout, angles and trig, fabrication, pipe trades, unit conversions, mechanical aptitude, coordinate systems, measuring tools, The Basics, Carpentry, the exam builder and CNC machining |
+| `skills/numeracy/hub/index.html` | Numeracy Hub: shapes, order of operations, volume and layout, angles and trig, fabrication, pipe trades, unit conversions, mechanical aptitude, coordinate systems, measuring tools, The Basics, Carpentry, Construction Operations (the Red Seal route to the BTech in Construction Management, reading drawings, estimating), the exam builder and CNC machining |
 | `skills/numeracy/shape-canvas/index.html` | Shape Canvas: drag shapes onto a sheet with every angle and formula shown, make flat shapes 3D, change their sizes, unfold them into nets, snap pieces together, style them, copy them into PowerPoint, and export drawings with a title block (vector PDF, SVG, PNG) |
 | `skills/numeracy/hub/cnc/index.html` | 3D CNC mill and lathe, plus a program builder that records manual machining moves as G-code. Also opens from the Hub’s CNC machining tab. |
 | `skills/numeracy/calculators/` | TI-30Xa, Sharp EL-531XT and HP-15C calculators that work in the browser |
@@ -88,5 +88,6 @@ The [Exercise Book web edition](skills/numeracy/books/ACCESS-Trades-Numeracy-Exe
 
 - **Nine-skills books.** They are written and built in [GOSTROGIS/Business](https://github.com/GOSTROGIS/Business/tree/main/curriculum/skills-for-success). After a rebuild there, clone Business and run `python3 source/textbook/sync.py /path/to/Business`. It copies the books here, splits the chapters into the skill folders and rewrites every link. `source/textbook/SOURCE.json` records the Business commit. Build, validation and research records stay in Business, so only the curriculum is published here.
 - **Hub and skill pages.** Run `python3 source/site/build_pages.py` after a sync or after adding decks. Titles and introductions come from the chapters, and deck lists from the folders.
+- **Construction Operations tab.** Edit the files in `source/hub/conops/`, then run `python3 source/hub/conops/inject.py` to rebuild the tab inside the Numeracy Hub. The tab is not in the exam builder yet: its tasks can be practised on the tab, but the exam builder does not draw questions from it.
 - **Links.** `python3 source/check-links.py` reports any relative link that points at a missing file.
 - **Old addresses.** `404.html` holds the list of moved folders. GitHub Pages shows it for any missing address, and it forwards old links (pages, PDFs and plates) to their new place.

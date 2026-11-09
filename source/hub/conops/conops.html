@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Construction Operations</title>
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="conops.css">
+</head>
+<body>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4A4E54"/></marker>
+</defs></svg>
+<script>try{if(window.self!==window.top)document.documentElement.classList.add("embedded")}catch(e){document.documentElement.classList.add("embedded")}window.addEventListener("message",function(e){var d=e.data;if(d&&d.shell==="zoom"&&typeof d.z==="number"){document.documentElement.style.zoom=String(d.z)}})</script>
+
+<header class="mast">
+  <div class="wrap">
+    <svg class="lockup" viewBox="0 0 172 86" role="img" aria-label="ACCESS"><title>ACCESS</title></svg>
+    <div class="mast-text">
+      <p class="eyebrow">Indigenous Skills4Success · Numeracy</p>
+      <h1>Construction Operations</h1>
+      <p class="lead">A Red Seal is one way into BCIT's Bachelor of Technology in Construction Management. This page shows what that entrance route asks for, then works the two skills the Construction Operations courses lean on most: reading construction drawings and estimating quantities and costs. Every task gets fresh numbers whenever you want them.</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="bar" aria-label="Progress and controls">
+    <div class="meter">
+      <div class="meter-label"><span>Your progress on this device</span><span><b id="prog-n">0</b> of <span id="prog-total">0</span> tasks right</span></div>
+      <div class="track" aria-hidden="true"><div class="fill" id="prog-fill"></div></div>
+    </div>
+    <div class="ctrls">
+      <button class="btn" id="btn-key" type="button" aria-pressed="false">Show all answers</button>
+      <button class="btn" id="btn-reset" type="button">Reset progress</button>
+    </div>
+    <div class="confirm" id="reset-confirm" hidden>
+      <span>Clear every saved result on this device?</span>
+      <button class="btn primary" id="btn-reset-yes" type="button">Clear progress</button>
+      <button class="btn" id="btn-reset-no" type="button">Keep it</button>
+    </div>
+  </section>
+
+  <p class="howto">Type numbers like <code>8.4</code> or <code>1,697.89</code>. Units are shown beside each box. Job data, such as a waste allowance or a truck size, is given in each question. Press <b>New numbers</b> on any task for a fresh version.</p>
+
+  <nav class="index" aria-labelledby="idx-h">
+    <h2 id="idx-h">On this page</h2>
+    <ol class="idx" id="idx"></ol>
+  </nav>
+
+  <section class="part" id="getting-in" aria-labelledby="gi-h">
+    <p class="eyebrow">Part A</p>
+    <h2 id="gi-h">Getting in: the Red Seal route to the BTech in Construction Management</h2>
+    <p class="why">BCIT's <b>Bachelor of Technology in Construction Management (BTech CM)</b> is a degree completion program: it gives years 3 and 4 of a four-year degree. It has four entry options. <b>Option D</b> is the one built for tradespeople with a Red Seal, and it requires the <b>Construction Operations Associate Certificate</b> as bridging courses.</p>
+
+    <figure class="paper flow">
+      <svg class="dg" viewBox="0 0 1000 250" role="img" aria-labelledby="flow-t">
+        <title id="flow-t">Option D route: Red Seal and Math 11, then the Construction Operations certificate at a 67 percent GPA, one year of construction work beyond apprenticeship hours, Step 1 pre-entry assessment, Step 2 application, then the BTech CM. Two years of related work are needed before the capstone.</title>
+        <rect x="10" y="40" width="150" height="110" rx="10" class="shape"/>
+        <text x="85" y="78" text-anchor="middle">Red Seal</text>
+        <text x="85" y="102" text-anchor="middle" class="s">approved trade</text>
+        <text x="85" y="126" text-anchor="middle" class="s">+ Math 11 at 60%</text>
+        <rect x="180" y="40" width="170" height="110" rx="10" class="shape"/>
+        <text x="265" y="78" text-anchor="middle">Construction</text>
+        <text x="265" y="100" text-anchor="middle">Operations</text>
+        <text x="265" y="126" text-anchor="middle" class="s">6 courses, GPA 67%</text>
+        <rect x="370" y="40" width="150" height="110" rx="10" class="shape"/>
+        <text x="445" y="78" text-anchor="middle">1 year work</text>
+        <text x="445" y="102" text-anchor="middle" class="s">in construction,</text>
+        <text x="445" y="126" text-anchor="middle" class="s">plus apprenticeship</text>
+        <rect x="540" y="40" width="140" height="110" rx="10" class="shape"/>
+        <text x="610" y="78" text-anchor="middle">Step 1</text>
+        <text x="610" y="102" text-anchor="middle" class="s">pre-entry</text>
+        <text x="610" y="126" text-anchor="middle" class="s">assessment</text>
+        <rect x="700" y="40" width="120" height="110" rx="10" class="shape"/>
+        <text x="760" y="78" text-anchor="middle">Step 2</text>
+        <text x="760" y="102" text-anchor="middle" class="s">apply with</text>
+        <text x="760" y="126" text-anchor="middle" class="s">proof</text>
+        <rect x="840" y="40" width="150" height="110" rx="10" class="conc"/>
+        <text x="915" y="88" text-anchor="middle">BTech CM</text>
+        <text x="915" y="114" text-anchor="middle" class="s">years 3 and 4</text>
+        <line x1="160" y1="95" x2="178" y2="95" class="dim" marker-end="url(#arw)"/>
+        <line x1="350" y1="95" x2="368" y2="95" class="dim" marker-end="url(#arw)"/>
+        <line x1="520" y1="95" x2="538" y2="95" class="dim" marker-end="url(#arw)"/>
+        <line x1="680" y1="95" x2="698" y2="95" class="dim" marker-end="url(#arw)"/>
+        <line x1="820" y1="95" x2="838" y2="95" class="dim" marker-end="url(#arw)"/>
+        <text x="500" y="200" text-anchor="middle" class="u">English Studies 12 at 73% (Category 1) is also required.</text>
+        <text x="500" y="232" text-anchor="middle" class="s">Before the capstone project: at least 2 years of related work, counting the work used to get in.</text>
+      </svg>
+      <figcaption>The Option D route, left to right. Do not apply (Step 2) until the department approves Step 1.</figcaption>
+    </figure>
+
+    <div class="path-grid">
+      <div class="card">
+        <h3>Option D: Red Seal certification in an approved trade</h3>
+        <p>You must meet every item:</p>
+        <ul>
+          <li><b>Red Seal:</b> a Certificate of Qualification with an Inter-Provincial Red Seal Endorsement in a related, approved trade: cabinetmaker, carpenter, electrician, industrial mechanic (millwright), metal fabricator, plumber, refrigeration and air conditioning mechanic, or welder (level A).</li>
+          <li><b>Math, one of:</b> Pre-Calculus 11 (60%), Foundations of Math 11 (60%), Workplace Math 11 (60%), BLDT 1011 Applied Construction Math (60%), or another acceptable BC or Yukon course.</li>
+          <li><b>Bridging courses:</b> the Construction Operations Associate Certificate, with a minimum GPA of 67%.</li>
+          <li><b>Work experience:</b> at least one year in the construction industry, in addition to apprenticeship hours.</li>
+          <li><b>English:</b> English Studies 12 at 73% or equivalent (BCIT Category 1).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>The two-step admission</h3>
+        <ol>
+          <li><b>Step 1, pre-entry assessment.</b> The department reviews your entry option and your construction work experience. Make an appointment with the program head. When you are accepted, you get a pre-entry assessment form to include in your BCIT application.</li>
+          <li><b>Step 2, apply.</b> Only after Step 1 is approved, submit the online application with proof of every requirement.</li>
+        </ol>
+        <p><b>To reach the end:</b> you need at least two years of related work experience before the final capstone project and graduation. That two years includes the work you used to get in.</p>
+        <p class="sub">BCIT notes that students do better when they start with at least two years of industry experience, and that students must be proficient in Microsoft Word and Excel.</p>
+      </div>
+      <div class="card">
+        <h3>The other three options, in one line each</h3>
+        <ul>
+          <li><b>Option A:</b> a construction-related diploma or degree (GPA 67%) plus one year of construction work.</li>
+          <li><b>Option B:</b> an unrelated diploma or degree (GPA 67%), the Construction Operations certificate (GPA 67%), plus one year of construction work.</li>
+          <li><b>Option C:</b> an unrelated diploma or degree (GPA 67%) plus at least eight years of North American construction management experience.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>The Construction Operations Associate Certificate</h3>
+        <ul>
+          <li>6 courses, 18 credits, part-time. BCIT runs it with the Vancouver Regional Construction Association (VRCA).</li>
+          <li>Entrance: English Studies 12 at 50% or equivalent (Category 3). Recommended: Grade 10 math. The program is designed for people with a trade background.</li>
+          <li>Pass mark: 50% in each course. The BTech CM route needs a 67% GPA across the certificate, so a pass alone is not enough.</li>
+          <li>Blended delivery. Courses run six or twelve weeks, usually one evening a week, 6:30 to 9:30 pm, at the Burnaby campus. Some are offered online.</li>
+          <li>Construction Operations alone does not get you into the degree. You still need every other Option D item.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="courses">
+      <table class="k">
+        <caption>The six required courses (3.0 credits each)</caption>
+        <thead><tr><th scope="col">Course</th><th scope="col">Title</th><th scope="col">What it covers</th></tr></thead>
+        <tbody>
+          <tr><td class="num">BLDT 1011</td><td>Applied Construction Math</td><td>Math, algebra, geometry and trigonometry applied to building. A 60% or better here also meets the Option D math requirement.</td></tr>
+          <tr><td class="num">BLDT 1021</td><td>Construction Drawings</td><td>Reading a drawing set and deriving the information you need from it. Part B of this page.</td></tr>
+          <tr><td class="num">BLDT 1031</td><td>Site Processes in Construction</td><td>Site general requirements, contracts and project organization, procurement, equipment, site layout and scheduling.</td></tr>
+          <tr><td class="num">BLDT 1041</td><td>Basic Estimating with Computer Applications</td><td>Sound estimating method and accuracy, getting ready to apply material and labour prices. Needs Windows and Excel basics. Part C of this page.</td></tr>
+          <tr><td class="num">BLDT 1061</td><td>Basic Management and Ethics</td><td>Supervision, communication, leadership, teamwork, negotiation, dispute resolution and codes of ethics.</td></tr>
+          <tr><td class="num">COMM 1103</td><td>Introduction to Business and Technical Communication</td><td>Memos, letters, requests and replies, and oral presentations. Needs English Studies 12 at 67% (C+). COMM 1106 may be taken instead. BLDT 1051 Technical Writing and Communications, taken in the past, counts as equivalent.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="path-grid">
+      <div class="card" id="ready">
+        <h3>Am I ready? Option D checklist</h3>
+        <div class="choice" id="chk" role="group" aria-label="Option D checklist"></div>
+        <p class="fb" id="chk-out" role="status" aria-live="polite"></p>
+      </div>
+      <div class="card" id="gpa">
+        <h3>GPA checker: the six Construction Operations courses</h3>
+        <p>Every course is worth 3.0 credits. When the credits are all equal, the credit-weighted average is the same as the plain average: add the six percentages and divide by 6.</p>
+        <div class="grid6" id="gpa-in"></div>
+        <p class="fb hint" id="gpa-out" role="status" aria-live="polite">Enter your six course percentages.</p>
+      </div>
+      <div class="card" id="final">
+        <h3>What do I need on the final? BLDT 1021 Construction Drawings</h3>
+        <p>One Fall 2026 section of BLDT 1021 (CRN 52141) weighs the course like this: labs 25%, midterm exam 35%, final exam 40%. Check your own course outline, since weights can differ between sections.</p>
+        <div class="grid6">
+          <div class="field-row"><label for="fx-lab">Labs average</label><div class="field"><input id="fx-lab" inputmode="decimal" autocomplete="off"><span class="unit">%</span></div></div>
+          <div class="field-row"><label for="fx-mid">Midterm</label><div class="field"><input id="fx-mid" inputmode="decimal" autocomplete="off"><span class="unit">%</span></div></div>
+          <div class="field-row"><label for="fx-goal">Goal for the course</label><div class="field"><input id="fx-goal" inputmode="decimal" autocomplete="off" value="67"><span class="unit">%</span></div></div>
+        </div>
+        <p class="fb hint" id="fx-out" role="status" aria-live="polite">Enter your labs and midterm marks.</p>
+        <p class="sub">The math, in BEDMAS order: needed final = (goal − 0.25 × labs − 0.35 × midterm) ÷ 0.40. A goal of 67 keeps you on the BTech CM route. 50 is the pass mark.</p>
+      </div>
+    </div>
+
+    <p class="checked">Checked on BCIT pages, November 2026. Programs change: confirm with <a href="mailto:cmgt@bcit.ca">cmgt@bcit.ca</a> before you plan your courses. Pages: <a href="https://www.bcit.ca/programs/construction-management-bachelor-of-technology-full-time-part-time-8800btech/" target="_blank" rel="noopener">BTech in Construction Management</a> · <a href="https://www.bcit.ca/programs/construction-operations-associate-certificate-part-time-7880acert/" target="_blank" rel="noopener">Construction Operations Associate Certificate</a>.</p>
+  </section>
+
+  <section class="part" id="drawings" aria-labelledby="dr-h">
+    <p class="eyebrow">Part B</p>
+    <h2 id="dr-h">Reading drawings</h2>
+    <p class="why">BCIT's BLDT 1021 outline sets the goal plainly: interpret construction drawings, read a full drawing set, and connect the drawings to the specifications, the contract and the building code. Estimating, scheduling and site work all start here.</p>
+    <div id="mods-draw"></div>
+  </section>
+
+  <section class="part" id="estimating" aria-labelledby="es-h">
+    <p class="eyebrow">Part C</p>
+    <h2 id="es-h">Estimating</h2>
+    <p class="why">An estimate is quantities first, prices second. You measure from the drawings (the quantity take-off), add the allowances the job calls for, then extend each quantity by its unit price and its labour. A wrong quantity makes every price after it wrong, so the method and the checking matter more than speed.</p>
+    <div id="mods-est"></div>
+  </section>
+
+  <section class="sources" id="sources" aria-labelledby="src-h">
+    <h2 id="src-h">Sources</h2>
+    <p>The program facts and fixed values come from the sources below. Prices, rates, waste allowances and other job data in the tasks are made up for practice.</p>
+    <ol>
+      <li><a href="https://www.bcit.ca/programs/construction-management-bachelor-of-technology-full-time-part-time-8800btech/" target="_blank" rel="noopener">BCIT, Construction Management, Bachelor of Technology</a><span class="what">Entrance options A to D, the Option D Red Seal trade list, math, bridging and work requirements, English Category 1, the two-step admission and the two-year continuation rule. Read November 2026.</span></li>
+      <li><a href="https://www.bcit.ca/programs/construction-operations-associate-certificate-part-time-7880acert/" target="_blank" rel="noopener">BCIT, Construction Operations, Associate Certificate</a><span class="what">The six courses and their descriptions, 18 credits, entrance (English Category 3), recommended math and trade background, the 50% pass mark, evening schedule, blended delivery, the BLDT 1051 and COMM 1103 equivalence, and the note that the certificate alone does not admit you to the degree. Read November 2026.</span></li>
+      <li><a href="https://www.bcit.ca/outlines/20263052141" target="_blank" rel="noopener">BCIT course outline, BLDT 1021 Construction Drawings, Fall 2026, CRN 52141</a><span class="what">Learning outcomes, the weekly topics used for Part B, and the labs 25%, midterm 35%, final 40% weighting used in the final-exam calculator.</span></li>
+      <li><a href="https://www.bcit.ca/courses/applied-construction-math-bldt-1011/" target="_blank" rel="noopener">BCIT, Applied Construction Math (BLDT 1011)</a><span class="what">Course description and learning outcomes.</span></li>
+      <li>MasterFormat 2016 Numbers and Titles, The Construction Specifications Institute and Construction Specifications Canada<span class="what">The division and section numbers and titles in the MasterFormat lesson, read from the April 2016 numbers-and-titles list.</span></li>
+      <li><a href="https://www.irebar.com/Canada_BarDiameters.html" target="_blank" rel="noopener">Canadian bar diameters and masses (from the RSIC / IAAC Standards Practice Manual)</a><span class="what">Nominal masses of CSA G30.18 bars: 10M 0.785, 15M 1.570, 20M 2.355 and 25M 3.925 kg/m.</span></li>
+      <li><a href="https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-which-rate.html" target="_blank" rel="noopener">Canada Revenue Agency, Charge and collect the GST/HST: which rate to charge</a><span class="what">The 5% GST rate that applies in British Columbia. BC's 7% PST is a separate provincial tax and is left out of these tasks.</span></li>
+      <li>Unit definition<span class="what">1 yard = 0.9144 m exactly, so 1 cubic yard = 0.9144 × 0.9144 × 0.9144 = 0.764555 m³ (rounded).</span></li>
+    </ol>
+  </section>
+  <p class="foot">ACCESS Indigenous Skills4Success · Numeracy. Progress is saved only in this browser on this device.</p>
+</main>
+
+<script src="../../calc2/ti30.js"></script>
+<script src="tikeys.js"></script>
+<script src="conops.js"></script>
+</body>
+</html>
