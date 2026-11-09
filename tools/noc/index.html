@@ -29,7 +29,7 @@
       <input id="q" name="q" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-describedby="q-hint" aria-controls="results" placeholder="e.g. carpenter">
       <button type="button" class="btn btn-clear" id="clear" aria-label="Clear the search">Clear</button>
     </div>
-    <p class="chips-label" id="chips-label">Common trades</p>
+    <p class="chips-label" id="chips-label">Quick picks (not the full list)</p>
     <ul class="chips" aria-labelledby="chips-label">
       <li><button type="button" class="chip" data-q="carpenter">Carpenter</button></li>
       <li><button type="button" class="chip" data-q="electrician">Electrician</button></li>
@@ -40,6 +40,12 @@
       <li><button type="button" class="chip" data-q="millwright">Millwright</button></li>
       <li><button type="button" class="chip" data-q="cook">Cook</button></li>
     </ul>
+    <p class="noc-hint" id="coverage-summary">Search the complete NOC 2021 list, not just these quick picks: 516 occupation groups and 27,935 official example job titles.</p>
+    <details class="noc-browse" id="browse-all">
+      <summary>Browse all trades and occupations</summary>
+      <p>Choose a category, then an occupation to see its code and job titles. Trades are spread across categories: cooks, bakers and hairstylists are under Sales and service; horticulturists are under Natural and applied sciences.</p>
+      <div id="occupation-directory"></div>
+    </details>
   </section>
 
   <section aria-labelledby="results-heading">
@@ -89,6 +95,7 @@
   <section class="noc-about" aria-labelledby="data-heading">
     <h2 id="data-heading">About this data</h2>
     <p id="data-summary">NOC 2021 Version 1.0 from Statistics Canada: 516 unit groups and 27,935 official example job titles, downloaded 2026-11-07. NOC 2021 Version 1.0 is the version in force on that date. All searching happens on this device. Nothing you type is sent anywhere.</p>
+    <p>This is the complete NOC 2021 Version 1.0 classification, including trades outside the trades and transport category. NOC groups are not a list of provincial apprenticeship programs or Red Seal designations. Local trade names may differ from the official example titles. Check the official profile and match the main duties before choosing a code.</p>
     <ul id="data-sources">
       <li><a href="https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-classification-structure.csv">NOC 2021 Version 1.0 - Classification structure (CSV)</a></li>
       <li><a href="https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-elements.csv">NOC 2021 Version 1.0 - Elements (CSV)</a></li>

@@ -76,3 +76,13 @@ mark{background:var(--gold-tint);color:var(--ink);box-shadow:inset 0 -3px 0 var(
 }
 @media print{.noc-search,.btn,.chips{display:none}.noc-more[hidden]{display:grid}}
 [hidden]{display:none!important}
+
+.noc-browse{border-top:1px solid var(--line);padding-top:14px;min-width:0}
+.noc-browse summary{cursor:pointer;min-height:44px;padding:10px 4px;font-weight:600;overflow-wrap:anywhere}
+.noc-browse summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.noc-browse p{font-size:15px;color:var(--muted)}
+#occupation-directory details{border-top:1px solid var(--line);padding:4px 0}
+#occupation-directory ul{list-style:none;padding:0;margin:0;display:grid;gap:4px}
+#occupation-directory .code-link{min-height:44px;text-align:left;overflow-wrap:anywhere;padding:8px}
+#occupation-directory .code-link span{white-space:nowrap}
+@media(min-width:720px){#occupation-directory ul{grid-template-columns:repeat(2,minmax(0,1fr))}}

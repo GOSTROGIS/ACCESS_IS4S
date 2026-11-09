@@ -367,7 +367,10 @@
     if (t.classList.contains('chip')) { setQuery(t.getAttribute('data-q')); return; }
     if (t.classList.contains('code-link')) {
       setQuery(t.getAttribute('data-code') || t.getAttribute('data-q'));
-      input.focus();
+      if (t.closest('#occupation-directory')) {
+        var heading = list.querySelector('h3[tabindex]');
+        if (heading) { heading.focus(); heading.scrollIntoView({ block: 'start' }); }
+      } else input.focus();
       return;
     }
     if (t.classList.contains('btn-toggle')) {
@@ -413,6 +416,21 @@
       input.select();
     }
   });
+
+  // Complete directory, built from the same authoritative dataset as search.
+  // Put trades first without excluding trades classified in other categories.
+  var directory = '';
+  ['7', '6', '2', '8', '9', '0', '1', '3', '4', '5'].forEach(function (category) {
+    var units = U.filter(function (u) { return u.code.charAt(0) === category; });
+    units.sort(function (a, b) { return a.title.localeCompare(b.title, 'en-CA'); });
+    directory += '<details' + (category === '7' ? ' open' : '') + '><summary>' + esc(D.broad[category]) + ' (' + units.length + ')</summary><ul>';
+    units.forEach(function (u) {
+      directory += '<li><button type="button" class="code-link" data-code="' + u.code + '">' + esc(u.title) + ' <span>(' + u.code + ')</span></button></li>';
+    });
+    directory += '</ul></details>';
+  });
+  $('occupation-directory').innerHTML = directory;
+  $('coverage-summary').textContent = 'Search the complete NOC 2021 list, not just these quick picks: ' + fmt(U.length) + ' occupation groups and ' + fmt(D.meta.exampleTitles) + ' official example job titles.';
 
   // TEER table
   var tb = document.querySelector('#teer-table tbody'), rows = '';
