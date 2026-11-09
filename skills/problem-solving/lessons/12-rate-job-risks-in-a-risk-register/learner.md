@@ -34,14 +34,21 @@ Use a 1 to 3 scale. A job sets its own scale. This is the one used in this lesso
 | Score | Likelihood | Impact |
 |---|---|---|
 | 1 | Unlikely | Small: less than half a day, or under $200 |
-| 2 | Could happen | Medium: up to 2 days, or $200 to $1,000 |
+| 2 | Could happen | Medium: half a day to 2 days, or $200 to $1,000 |
 | 3 | Likely | Serious: more than 2 days, or over $1,000, or the work must be torn out |
+
+Choose the highest applicable impact across time, cost and rework. For example, a delay of one day with a cost over $1,000 has impact 3, not 2.
 
 **Risk score = likelihood × impact.** Scores run from 1 to 9.
 
 - **6 or 9:** high. Plan a response now and watch it every day.
 - **3 or 4:** medium. Plan a response and check it at each planning meeting.
 - **1 or 2:** low. Write it down and keep an eye on it.
+
+<figure class="figure-art">
+<img src="risk-score-matrix.svg" width="720" height="754" alt="A three by three matrix multiplies likelihood by impact. Every cell has its calculation and priority label; the caption gives all nine scores.">
+<figcaption>Read across impact 1, 2, 3. Likelihood 3 gives 3 medium, 6 high, 9 high. Likelihood 2 gives 2 low, 4 medium, 6 high. Likelihood 1 gives 1 low, 2 low, 3 medium. These are the lesson’s practice categories, not a universal risk standard. <a href="risk-score-matrix.svg">Open the full-size diagram</a>.</figcaption>
+</figure>
 
 ### Safety comes first
 
@@ -111,7 +118,7 @@ Learners who want more practice with job numbers can open the Numeracy Hub [Cons
 - c. Write a trigger.
 - d. Write one if-then backup.
 
-**Task 5** (level 2) Here are parts of a small commercial job (fictional). For each one, rate it low, medium or high risk if it goes wrong, and write one plain sentence saying why.
+**Task 5** (level 2) Here are parts of a small commercial job (fictional). For each one, describe what could go wrong and state your assumptions about the delay, cost or rework. Use those assumptions to rate its **impact**: 1 (small), 2 (medium) or 3 (serious). Explain your rating. There is no single impact rating without those details. You cannot assign an overall **risk score** until you also know the likelihood. If your example could hurt someone, follow the safety reporting rule above rather than using this grid to decide whether to act.
 
 - a. Concrete slab pour
 - b. Roof membrane

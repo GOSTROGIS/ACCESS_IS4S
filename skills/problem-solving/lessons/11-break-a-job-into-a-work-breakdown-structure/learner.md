@@ -56,6 +56,11 @@ Stop splitting when one person or crew can do the piece, you can say how long it
 
 Riverbend Decks (a fictional company) is building the backyard deck you will meet again in Numeracy lesson 19.
 
+<figure class="figure-art">
+<img src="deck-work-breakdown.svg" width="720" height="810" alt="The backyard deck splits into six numbered branches. The complete equivalent outline follows.">
+<figcaption>The lines show which pieces belong to the whole deck. They do not show task order or construction details. Read the complete text outline below. <a href="deck-work-breakdown.svg">Open the full-size diagram</a>.</figcaption>
+</figure>
+
 ```
 1     Backyard deck
 1.1     Footings

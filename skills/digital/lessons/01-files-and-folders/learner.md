@@ -27,7 +27,7 @@ On a BC job site, a foreman may send you a tool list, a safety form or a set of 
 
 - Use words a co-worker would search for.
 - Put the date year first (2026-11-06) so files sort in date order.
-- Add `v1`, `v2` when you change a file, so you never guess which copy is newest.
+- Use `v1`, `v2` to tell versions apart. Before editing, save a copy with the new version name so the earlier version stays unchanged, even when AutoSave is on.
 - Windows does not allow these characters in a name: `< > : " / \ | ? *`. OneDrive does not allow them either.
 
 **On this computer or in the cloud.** A file saved in a OneDrive folder is stored online and can also sit on the computer. In File Explorer, OneDrive shows a small icon beside each file:
@@ -53,6 +53,11 @@ Devon works for a fictional framing contractor, Riverbend Builders. The foreman 
 
 The name tells anyone what the file is, which job and which day. The folder keeps it with the rest of that job's paperwork.
 
+<figure class="figure-art">
+<img src="file-name-and-location.svg" width="720" height="504" alt="Two nested folders lead to a saved file. The text below gives the same location and file name.">
+<figcaption>Read the nesting from top to bottom: Documents contains Riverbend job, which contains material-request_riverbend_2026-11-06_v1. The name identifies the work; the folder path is its location. This is a folder diagram, not a screenshot. <a href="file-name-and-location.svg">Open the full-size diagram</a>.</figcaption>
+</figure>
+
 ## Practice
 
 Use the practice folder your instructor gives you. Use invented job names only. Do not open other people's files.
@@ -76,7 +81,7 @@ Location: ____________________________________________
 
 **Task 4** (level 1) Close Word. Find your file using the File Explorer search box. Open it and check that your line of text is there.
 
-**Task 5** (level 2) Add `1 utility knife` to the list. Save the changed list as a new version (`v2`) so that `v1` is kept. Close the file. Open both versions and say which one has the knife.
+**Task 5** (level 2) Before changing the list, save a copy with `v2` in its name using Save As or Save a Copy. Check that you are working in `v2`, then add `1 utility knife` and save. Close the file. Open both versions and check that `v1` is unchanged and only `v2` has the knife. Copying before editing protects `v1` when AutoSave is on.
 
 **Task 6** (level 1) Each of these names has a problem. Write a better name for each one.
 
