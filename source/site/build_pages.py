@@ -582,6 +582,8 @@ def main():
             build_skill(slug, name, i)
     n = build_carpentry()
     g = apply_gates()
+    from build_downloads import main as build_downloads
+    build_downloads()
     print(f'built hub, 8 skill pages, Numeracy chapters, Carpentry page, {n} carpentry intake(s), {g} page(s) newly locked')
 
 

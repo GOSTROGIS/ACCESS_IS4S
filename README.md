@@ -42,6 +42,12 @@ programs/
 source/                    build scripts and tests (not part of the website)
 ```
 
+## Download an individual section
+
+Use **Download individual sections** on the home page, or **Download this section** on any skill page. Each ZIP contains that skill’s chapters, lessons and tools, including instructor material and required shared assets. Extract the entire ZIP and open `START-HERE.html`. Links to other sections open the live website and need internet access. The Numeracy pack includes the complete web books; its large PDF books remain separate online downloads. Some interactive browser features may need a local web server. Browser-saved progress is not included. Instructor prompts remain, but these public files are not secure access control.
+
+Rebuild the packages after changing materials with `python3 source/site/build_downloads.py`. The normal `source/site/build_pages.py` build also regenerates them.
+
 ## Get the latest version
 
 1. Click the green **Code** button at the top of this page, then **Download ZIP**.
