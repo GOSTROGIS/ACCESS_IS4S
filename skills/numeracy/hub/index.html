@@ -1,7 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><link rel="icon" type="image/svg+xml" href="../../../brand/is4s-badge.svg">
 <link rel="stylesheet" href="is4s-brand.css">
 <script src="is4s-brand.js"></script>
-<script src="../../../brand/instructor-gate.js"></script>
 </head><body>
 <title>Numeracy Hub</title>
 <style>
@@ -1125,7 +1124,7 @@ main.wrap { padding-block: 28px 56px; display: grid; gap: 48px; }
       <button type="button" class="hubnav-group" role="tab" id="g-found" aria-controls="gp-found" aria-selected="false" tabindex="-1"><span>Foundations</span></button>
       <button type="button" class="hubnav-group" role="tab" id="g-shapes" aria-controls="gp-shapes" aria-selected="false" tabindex="-1"><span>Shapes<span class="g-long"> and measurement</span></span></button>
       <button type="button" class="hubnav-group" role="tab" id="g-trades" aria-controls="gp-trades" aria-selected="false" tabindex="-1"><span>Trades</span></button>
-      <button type="button" class="hubnav-group" role="tab" id="g-instr" aria-controls="gp-instr" aria-selected="false" tabindex="-1"><span class="nav-lock" aria-hidden="true">🔒</span><span>Instructor<span class="sr-only">, needs the instructor code</span></span></button>
+      <button type="button" class="hubnav-group" role="tab" id="g-instr" aria-controls="gp-instr" aria-selected="false" tabindex="-1"><span>Instructor</span></button>
     </div>
     <div class="hubnav-sub" id="gp-found" role="tabpanel" aria-labelledby="g-found" hidden>
       <div class="tabs" role="tablist" aria-label="Foundations">
@@ -1155,7 +1154,7 @@ main.wrap { padding-block: 28px 56px; display: grid; gap: 48px; }
     </div>
     <div class="hubnav-sub" id="gp-instr" role="tabpanel" aria-labelledby="g-instr" hidden>
       <div class="tabs" role="tablist" aria-label="Instructor">
-      <button type="button" class="tab" role="tab" id="t-exam" aria-controls="p-exam" aria-selected="false" tabindex="-1" title="Exam builder">Exam builder <span class="nav-lock" aria-hidden="true">🔒</span><span class="sr-only">, needs the instructor code</span></button>
+      <button type="button" class="tab" role="tab" id="t-exam" aria-controls="p-exam" aria-selected="false" tabindex="-1" title="Exam builder">Exam builder </button>
       </div>
     </div>
   </nav>
@@ -30170,15 +30169,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = MFA;
 
 /* Shell navigation: four topic groups (Foundations, Shapes and measurement, Trades, Instructor), each with its own row
    of section tabs. Every section keeps its tab (#t-id), its panel (#p-id) and its hash link (#id). A section loads
-   into its frame the first time it opens. The Exam builder is for instructors: it opens only after the instructor
-   code (ACCESSInstructorGate). If the code is cancelled, the section that was open stays open. */
+   into its frame the first time it opens. All sections, including the Exam builder, are open to everyone. */
 (function (G) {
   'use strict';
   var doc = G.document;
   var tabs = Array.prototype.slice.call(doc.querySelectorAll('.hubnav .tab'));
   var groupTabs = Array.prototype.slice.call(doc.querySelectorAll('.hubnav-group'));
   var lists = Array.prototype.slice.call(doc.querySelectorAll('.hubnav .tabs[role="tablist"]'));
-  var STORE = 'access-shell-tab-v1', HOME = 'shape', LOCKED = { exam: 1 };
+  var STORE = 'access-shell-tab-v1', HOME = 'shape';
   var current = null, lastIn = {};
   var bar = doc.querySelector('.tabs-bar');
   function measure() { if (bar) doc.documentElement.style.setProperty('--nav-h', bar.offsetHeight + 'px'); }
@@ -30248,21 +30246,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = MFA;
     try { G.localStorage.setItem(STORE, key); } catch (e) { /* storage blocked */ }
     if (push) { try { G.history.replaceState(null, '', '#' + key); } catch (e) { /* sandboxed */ } }
   }
-  /* open a section: the Exam builder asks for the instructor code first */
-  function open(id, focus, push) {
-    var gate = G.ACCESSInstructorGate;
-    if (!LOCKED[id] || !gate || gate.isUnlocked()) { show(id, focus, push); return; }
-    var back = current;
-    function openExamBuilder() { show(id, true, push); }
-    gate.request(openExamBuilder, {
-      message: 'The exam builder is for instructors. Enter the 3-digit instructor code to open it.',
-      onCancel: function () {
-        var t = doc.getElementById('t-' + (back || HOME));
-        if (back) { try { G.history.replaceState(null, '', '#' + back); } catch (e) { /* sandboxed */ } } else show(HOME, false, true);
-        if (t) t.focus();
-      }
-    });
-  }
+  /* Every Hub section opens directly, without an instructor code. */
+  function open(id, focus, push) { show(id, focus, push); }
   tabs.forEach(function (t) {
     t.addEventListener('click', function () { open(t.id.slice(2), false, true); });
     t.addEventListener('keydown', function (e) {
@@ -30307,13 +30292,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = MFA;
   if (start === 'calc') return;
   var fromHash = !!doc.getElementById('t-' + start);
   if (!fromHash) { try { start = G.localStorage.getItem(STORE) || ''; } catch (e) { start = ''; } }
-  if (LOCKED[start] && G.ACCESSInstructorGate && !G.ACCESSInstructorGate.isUnlocked()) {
-    /* a link to the Exam builder: the last section used (or Shape Studio) shows under the code dialog */
-    var under = '';
-    try { under = G.localStorage.getItem(STORE) || ''; } catch (e) { under = ''; }
-    show(LOCKED[under] || !doc.getElementById('t-' + under) ? HOME : under, false, false);
-    if (fromHash) open(start, false, true);
-  } else show(start, false, false);
+  show(start, false, false);
   measure();
 })(window);
 /* Hub frames: every module page uses "an" before numbers said with a vowel sound (an 8, an 11, an 18).
