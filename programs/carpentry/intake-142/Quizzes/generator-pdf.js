@@ -66,7 +66,7 @@
     const pdf = await PDFDocument.create();
     pdf.registerFontkit(root.fontkit);
     const [regularBytes, boldBytes, logoBytes] = await Promise.all([
-      asset('vendor/DejaVuSans.ttf'), asset('vendor/DejaVuSans-Bold.ttf'), asset('../../../../brand/is4s-badge-512.png')
+      asset('vendor/DejaVuSans.ttf'), asset('vendor/DejaVuSans-Bold.ttf'), asset('logo')
     ]);
     const [normal, bold, fieldFont, logo] = await Promise.all([
       pdf.embedFont(regularBytes, { subset: true }), pdf.embedFont(boldBytes, { subset: true }),

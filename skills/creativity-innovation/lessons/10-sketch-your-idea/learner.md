@@ -1,0 +1,240 @@
+---
+title: Sketch your idea so others can build it
+summary: Sketch an idea in isometric and in three views with the right lines and sizes, so someone else can build it without you there.
+level: 1-3
+time: 90 min
+components: Develop your ideas; Apply your ideas; Use your imagination and curiosity
+---
+
+# Sketch your idea so others can build it
+
+## Why this matters on the job
+
+You have a good idea for a stop block, a bracket or a jig. If it only lives in your head, nobody else can build it, check it or improve it. In lesson 5 you used spoken directions and found out how easy it is to miss a detail. A sketch with sizes fixes that. Tradespeople sketch on scrap plywood, on the back of a drawing or on grid paper every day. Drawings in the trades follow a few simple rules, so anyone who knows the rules can read them.
+
+## Key ideas
+
+**Pictorial sketch.** A picture that shows three sides at once. It is quick to understand. The most common kind in the trades is the **isometric** sketch.
+
+**Isometric sketch.** You draw on three axes: one vertical, and two at 30° above the horizontal, one to the left and one to the right. Every edge that runs along one of these axes is drawn true length, so you can measure along them. Isometric grid or dot paper makes it easy.
+
+<div class="figure-art">
+<svg viewBox="0 0 720 450" width="100%" role="img" aria-labelledby="cr10-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="cr10-f1-title">Isometric sketch of an L-shaped stop block: a base with a round hole and an upright along the back. A key shows the vertical axis and two axes at 30 degrees above the horizontal, one to the left for length and one to the right for depth. An arrow marks the front.</title>
+<defs><marker id="cr10-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="cr10-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="450" fill="#ffffff"/>
+<text x="360.0" y="28.0" font-size="20" text-anchor="middle" font-weight="bold" fill="#222222">Saw stop block: isometric sketch</text>
+<path d="M210.1,98.0 L435.2,228.0 L480.3,202.0 L255.1,72.0 z" stroke="#222222" stroke-width="2.5" fill="#f7f0e0" stroke-linejoin="round"/>
+<path d="M210.1,176.0 L435.2,306.0 L435.2,228.0 L210.1,98.0 z" stroke="#222222" stroke-width="2.5" fill="#e3d3b2" stroke-linejoin="round"/>
+<path d="M120.0,228.0 L345.2,358.0 L435.2,306.0 L210.1,176.0 z" stroke="#222222" stroke-width="2.5" fill="#f7f0e0" stroke-linejoin="round"/>
+<path d="M120.0,280.0 L345.2,410.0 L345.2,358.0 L120.0,228.0 z" stroke="#222222" stroke-width="2.5" fill="#e3d3b2" stroke-linejoin="round"/>
+<path d="M345.2,410.0 L480.3,332.0 L480.3,202.0 L435.2,228.0 L435.2,306.0 L345.2,358.0 z" stroke="#222222" stroke-width="2.5" fill="#cdb98f" stroke-linejoin="round"/>
+<path d="M288.9,273.5 L290.7,272.3 L292.0,270.9 L293.0,269.4 L293.5,267.8 L293.5,266.2 L293.0,264.6 L292.0,263.1 L290.7,261.7 L288.9,260.5 L286.7,259.5 L284.3,258.7 L281.7,258.1 L279.0,257.8 L276.2,257.8 L273.5,258.1 L270.9,258.7 L268.5,259.5 L266.4,260.5 L264.6,261.7 L263.2,263.1 L262.2,264.6 L261.8,266.2 L261.8,267.8 L262.2,269.4 L263.2,270.9 L264.6,272.3 L266.4,273.5 L268.5,274.5 L270.9,275.3 L273.5,275.9 L276.2,276.2 L279.0,276.2 L281.7,275.9 L284.3,275.3 L286.7,274.5 z" stroke="#222222" stroke-width="2" fill="#ffffff"/>
+<line x1="520.0" y1="330.0" x2="680.0" y2="330.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="4 3"/>
+<line x1="600.0" y1="330.0" x2="539.4" y2="295.0" stroke="#2f5d8a" stroke-width="2.2" marker-end="url(#cr10-f1-ar)"/>
+<line x1="600.0" y1="330.0" x2="660.6" y2="295.0" stroke="#2f5d8a" stroke-width="2.2" marker-end="url(#cr10-f1-ar)"/>
+<line x1="600.0" y1="330.0" x2="600.0" y2="250.0" stroke="#2f5d8a" stroke-width="2.2" marker-end="url(#cr10-f1-ar)"/>
+<text x="534.0" y="286.0" font-size="14" text-anchor="end" font-weight="normal" fill="#2f5d8a">length</text>
+<text x="666.0" y="286.0" font-size="14" text-anchor="start" font-weight="normal" fill="#2f5d8a">depth</text>
+<text x="600.0" y="242.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#2f5d8a">height</text>
+<path d="M556,330 A44,44 0 0 1 561.9,308.0" stroke="#2f5d8a" stroke-width="1.5" fill="none"/>
+<path d="M644,330 A44,44 0 0 0 638.1,308.0" stroke="#2f5d8a" stroke-width="1.5" fill="none"/>
+<text x="548.0" y="348.0" font-size="13" text-anchor="end" font-weight="normal" fill="#2f5d8a">30°</text>
+<text x="652.0" y="348.0" font-size="13" text-anchor="start" font-weight="normal" fill="#2f5d8a">30°</text>
+<text x="600.0" y="374.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#2f5d8a">isometric axes</text>
+<line x1="150.1" y1="372.4" x2="204.1" y2="322.4" stroke="#b3261e" stroke-width="2" marker-end="url(#cr10-f1-ar)"/>
+<text x="146.1" y="388.4" font-size="15" text-anchor="end" font-weight="bold" fill="#b3261e">FRONT</text>
+<text x="30.0" y="435.0" font-size="14" text-anchor="start" font-weight="normal" fill="#6b6b6b">Base 100 x 60 x 20 with a 10 mm hole. Back upright 20 thick. Total height 50.</text>
+</svg>
+</div>
+
+**Three views.** A pictorial sketch is easy to read but hard to build from. So we also draw the object straight on from three sides: the **front**, the **top** and the **right side**. Each view shows two sizes at true scale.
+
+**Third-angle layout.** In Canada and the United States, views are placed this way:
+
+- the **top view** goes directly **above** the front view
+- the **right side view** goes directly **to the right of** the front view
+
+Much of Europe and Asia uses first-angle layout, which swaps these places. Check which one a drawing uses.
+
+**Line types.** Lines on a drawing mean different things:
+
+- **visible line**: thick and solid. An edge you can see.
+- **hidden line**: thinner, short even dashes. An edge you cannot see from that side.
+- **centre line**: thin, long and short dashes. The centre of a hole or round part.
+
+**Sizes.** Write sizes on the drawing with dimension lines and arrows. Say the units once, for example "sizes in mm". Give the overall length, depth and height, and locate every hole from an edge.
+
+### Worked example
+
+Kai has an idea for a saw stop block: a wooden base that clamps to the saw table, with an upright at the back that the board butts against. The base has one hole for a screw.
+
+**Step 1. List the sizes.** Base 100 mm long, 60 mm deep, 20 mm thick. Upright along the back, 20 mm thick, top at 50 mm. One 10 mm hole through the base, 50 mm from the left end and 20 mm from the front edge.
+
+**Step 2. Sketch it in isometric.** Kai draws the base as a box on the isometric axes: 100 along the length axis, 60 along the depth axis, 20 up. Then he adds the upright on top at the back. He draws the hole as an oval on the top of the base, because a circle on a slanted face looks like an oval.
+
+**Step 3. Draw the three views.** He draws the front view first. Then he lines up the top view above it and the right side view beside it, so the edges line up across views.
+
+<div class="figure-art">
+<svg viewBox="0 0 720 560" width="100%" role="img" aria-labelledby="cr10-f2-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="cr10-f2-title">Three views of the stop block in third-angle layout. The top view sits above the front view and the right side view sits to the right of the front view. The front view is 100 wide and 50 high with a line at 20 and two dashed hidden lines for the hole. The top view is 100 by 60 with a line at 40 and a 10 mm hole 50 from the left end and 20 from the front edge. The right side view is an L shape with the 20 mm upright at the back, and dashed lines for the hole.</title>
+<defs><marker id="cr10-f2-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="cr10-f2-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="560" fill="#ffffff"/>
+<text x="360.0" y="26.0" font-size="20" text-anchor="middle" font-weight="bold" fill="#222222">Three views, third-angle layout (sizes in mm)</text>
+<path d="M110.0,470.0 L350.0,470.0 L350.0,350.0 L110.0,350.0 L110.0,470.0" stroke="#222222" stroke-width="3" fill="none"/>
+<path d="M110.0,422.0 L350.0,422.0" stroke="#222222" stroke-width="3" fill="none"/>
+<path d="M218.0,470.0 L218.0,422.0" stroke="#222222" stroke-width="1.6" fill="none" stroke-dasharray="6 4"/>
+<path d="M242.0,470.0 L242.0,422.0" stroke="#222222" stroke-width="1.6" fill="none" stroke-dasharray="6 4"/>
+<path d="M230.0,484.4 L230.0,407.6" stroke="#2f5d8a" stroke-width="1.2" fill="none" stroke-dasharray="14 4 3 4"/>
+<text x="230.0" y="330.8" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">FRONT</text>
+<path d="M110.0,230.0 L350.0,230.0 L350.0,86.0 L110.0,86.0 L110.0,230.0" stroke="#222222" stroke-width="3" fill="none"/>
+<path d="M110.0,134.0 L350.0,134.0" stroke="#222222" stroke-width="3" fill="none"/>
+<circle cx="230.0" cy="182.0" r="12.0" fill="none" stroke="#222222" stroke-width="3"/>
+<path d="M230.0,201.2 L230.0,162.8" stroke="#2f5d8a" stroke-width="1.2" fill="none" stroke-dasharray="8 3 3 3"/>
+<path d="M210.8,182.0 L249.2,182.0" stroke="#2f5d8a" stroke-width="1.2" fill="none" stroke-dasharray="8 3 3 3"/>
+<text x="230.0" y="66.8" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">TOP</text>
+<path d="M430.0,470.0 L574.0,470.0 L574.0,350.0 L526.0,350.0 L526.0,422.0 L430.0,422.0 L430.0,470.0" stroke="#222222" stroke-width="3" fill="none"/>
+<path d="M466.0,470.0 L466.0,422.0" stroke="#222222" stroke-width="1.6" fill="none" stroke-dasharray="6 4"/>
+<path d="M490.0,470.0 L490.0,422.0" stroke="#222222" stroke-width="1.6" fill="none" stroke-dasharray="6 4"/>
+<path d="M478.0,484.4 L478.0,407.6" stroke="#2f5d8a" stroke-width="1.2" fill="none" stroke-dasharray="14 4 3 4"/>
+<text x="502.0" y="522.8" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">RIGHT SIDE</text>
+<line x1="110.0" y1="328.0" x2="110.0" y2="238.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="350.0" y1="328.0" x2="350.0" y2="238.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="358.0" y1="470.0" x2="422.0" y2="470.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="358.0" y1="422.0" x2="422.0" y2="422.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="358.0" y1="350.0" x2="422.0" y2="350.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="110.0" y1="474.0" x2="110.0" y2="510.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="350.0" y1="474.0" x2="350.0" y2="510.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="110.0" y1="504.0" x2="350.0" y2="504.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr10-f2-ds)" marker-end="url(#cr10-f2-ds)"/>
+<text x="230.0" y="498.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#222222">100</text>
+<line x1="106.0" y1="350.0" x2="74.0" y2="350.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="106.0" y1="470.0" x2="74.0" y2="470.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="80.0" y1="350.0" x2="80.0" y2="470.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr10-f2-ds)" marker-end="url(#cr10-f2-ds)"/>
+<text x="72.0" y="414.9" font-size="14" text-anchor="end" font-weight="normal" fill="#222222">50</text>
+<line x1="106.0" y1="422.0" x2="32.0" y2="422.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="106.0" y1="470.0" x2="32.0" y2="470.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="38.0" y1="422.0" x2="38.0" y2="470.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr10-f2-ds)" marker-end="url(#cr10-f2-ds)"/>
+<text x="30.0" y="450.9" font-size="14" text-anchor="end" font-weight="normal" fill="#222222">20</text>
+<line x1="106.0" y1="86.0" x2="74.0" y2="86.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="106.0" y1="230.0" x2="74.0" y2="230.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="80.0" y1="86.0" x2="80.0" y2="230.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr10-f2-ds)" marker-end="url(#cr10-f2-ds)"/>
+<text x="72.0" y="162.9" font-size="14" text-anchor="end" font-weight="normal" fill="#222222">60</text>
+<line x1="354.0" y1="182.0" x2="386.0" y2="182.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="354.0" y1="230.0" x2="386.0" y2="230.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="380.0" y1="182.0" x2="380.0" y2="230.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr10-f2-ds)" marker-end="url(#cr10-f2-ds)"/>
+<text x="388.0" y="210.9" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">20</text>
+<line x1="110.0" y1="234.0" x2="110.0" y2="262.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="230.0" y1="234.0" x2="230.0" y2="262.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="110.0" y1="256.0" x2="230.0" y2="256.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr10-f2-ds)" marker-end="url(#cr10-f2-ds)"/>
+<text x="170.0" y="250.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#222222">50</text>
+<line x1="238.4" y1="173.6" x2="358.0" y2="110.0" stroke="#222222" stroke-width="1"/>
+<text x="362.0" y="108.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">Ø10 thru</text>
+<line x1="526.0" y1="346.0" x2="526.0" y2="314.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="574.0" y1="346.0" x2="574.0" y2="314.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="526.0" y1="320.0" x2="574.0" y2="320.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr10-f2-ds)" marker-end="url(#cr10-f2-ds)"/>
+<text x="550.0" y="314.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#222222">20</text>
+<text x="520.0" y="120.0" font-size="15" text-anchor="start" font-weight="bold" fill="#222222">Lines</text>
+<line x1="520.0" y1="145.0" x2="580.0" y2="145.0" stroke="#222222" stroke-width="3"/>
+<text x="590.0" y="150.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">visible edge</text>
+<line x1="520.0" y1="175.0" x2="580.0" y2="175.0" stroke="#222222" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="590.0" y="180.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">hidden edge</text>
+<line x1="520.0" y1="205.0" x2="580.0" y2="205.0" stroke="#2f5d8a" stroke-width="1.2" stroke-dasharray="14 4 3 4"/>
+<text x="590.0" y="210.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">centre line</text>
+</svg>
+</div>
+
+**Step 4. Check each view.**
+
+- Front view: 100 wide and 50 high. The line at 20 is the edge where the base top meets the upright. The hole cannot be seen from the front, so it shows as two hidden lines with a centre line.
+- Top view: 100 by 60. The line at 40 from the front is where the base top meets the upright. The hole shows as a circle, so its size is given there: Ø10 thru.
+- Right side view: an L shape. The front of the block is on the left of this view, so the upright is on the right. The hole shows as hidden lines.
+
+**Step 5. Test it.** Kai gives the views, but not the isometric, to a classmate. The classmate builds a cardboard model. It matches. That is the real test of a sketch.
+
+## Practice
+
+**Task 1** (level 1) In third-angle layout, where does the top view go? Where does the right side view go?
+
+______________________________________________
+
+**Task 2** (level 1) Name the line type for each.
+
+a) A thin line of long and short dashes through the middle of a hole
+
+b) A thick, solid line
+
+c) A line of short, even dashes
+
+______________________________________________
+
+**Task 3** (level 2) Use Kai's three views.
+
+a) What are the overall length, depth and height of the stop block?
+
+b) How thick is the upright?
+
+c) How far is the hole from the left end? From the front edge?
+
+d) Why is the hole shown as dashed lines in the front view but as a solid circle in the top view?
+
+______________________________________________
+
+**Task 4** (level 2) On isometric dot paper, sketch a box 6 squares long, 4 squares deep and 3 squares high. Then cut a notch 2 squares wide and 1 square deep into the middle of the top, running from the front face to the back face. Draw only the visible edges.
+
+**Task 5** (level 2) On square grid paper, draw the front, top and right side views of the box from Task 4. Use third-angle layout. Show any hidden lines.
+
+**Task 6** (level 2) Look at Kai's first try.
+
+<div class="figure-art">
+<svg viewBox="0 0 720 400" width="100%" role="img" aria-labelledby="cr10-f3-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="cr10-f3-title">Kai's sketch: a front view, a top view above it, and a right side view drawn to the left of the front view. The front and side views show no hidden lines for the hole.</title>
+<defs><marker id="cr10-f3-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="cr10-f3-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="400" fill="#ffffff"/>
+<text x="360.0" y="26.0" font-size="20" text-anchor="middle" font-weight="bold" fill="#222222">Spot the mistake: Kai's three views</text>
+<path d="M300.0,330.0 L460.0,330.0 L460.0,250.0 L300.0,250.0 L300.0,330.0" stroke="#222222" stroke-width="3" fill="none"/>
+<path d="M300.0,298.0 L460.0,298.0" stroke="#222222" stroke-width="3" fill="none"/>
+<text x="380.0" y="362.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">FRONT</text>
+<path d="M300.0,170.0 L460.0,170.0 L460.0,74.0 L300.0,74.0 L300.0,170.0" stroke="#222222" stroke-width="3" fill="none"/>
+<path d="M300.0,106.0 L460.0,106.0" stroke="#222222" stroke-width="3" fill="none"/>
+<circle cx="380.0" cy="138.0" r="8.0" fill="none" stroke="#222222" stroke-width="3"/>
+<text x="380.0" y="58.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">TOP</text>
+<path d="M70.0,330.0 L166.0,330.0 L166.0,250.0 L134.0,250.0 L134.0,298.0 L70.0,298.0 L70.0,330.0" stroke="#222222" stroke-width="3" fill="none"/>
+<text x="118.0" y="362.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">RIGHT SIDE</text>
+<text x="360.0" y="390.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#6b6b6b">Find two things that do not follow the rules on this page.</text>
+</svg>
+</div>
+
+Find two things that do not follow the rules in this lesson. Say how to fix each one.
+
+______________________________________________
+
+______________________________________________
+
+**Task 7** (level 2) A builder asks Kai: "How far is the front face of the upright from the front edge of the base?" Find the answer from the three views. Say which view and which sizes you used.
+
+______________________________________________
+
+**Task 8** (level 3) Sketch the shelf-pin jig from lesson 9 in three views. It is a plywood strip 300 mm long, 80 mm wide and 12 mm thick. A fence 300 mm long, 19 mm thick and 31 mm tall is glued along one long edge, flush with the top, so it hangs 19 mm below the strip. It has 9 holes of 5 mm through the strip. Use third-angle layout, the right line types and the main sizes. You may show only the first and last hole in full and note "9 holes, 32 mm centres".
+
+**Task 9** (level 3) Draw three views of your own idea from an earlier lesson (a jig, a bracket, a rack or a holder). Give the views to a partner, without the isometric or any words except sizes. Your partner builds a cardboard model. Compare the model with your idea and list what your drawing was missing.
+
+What the drawing was missing: ______________________________________________
+
+**Task 10** (level 3) A welder sketches a pipe stand made of a square steel plate 200 mm × 200 mm × 10 mm, with a solid round steel bar 60 mm across welded upright in the centre, 400 mm tall from the top of the plate.
+
+a) Describe what the top view looks like. Which lines are visible and which, if any, are hidden?
+
+b) Describe what the front view looks like.
+
+c) Where do centre lines go in each view?
+
+______________________________________________
+
+______________________________________________
+
+## Check yourself
+
+1. What angles are used for the two sloping axes in an isometric sketch?
+2. Name the three views and where each goes in third-angle layout.
+3. What does a dashed line mean on a drawing?
+4. Why give the views to someone else to build from?

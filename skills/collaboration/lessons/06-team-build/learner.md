@@ -2,7 +2,7 @@
 title: Plan and build together, then debrief
 summary: Share information, agree on a plan, build a model bridge within a budget, handle a change order and look back on how the team worked.
 level: 2-3
-time: 90 min
+time: 100 min
 components: Achieve a common goal with others; Facilitate an environment where you can collaborate with others; Reflect and improve on teamwork
 rebuilds: A - Working with Others/Team Building-rb.xlsx; A - Working with Others/personalities+WWO in Necktieing exercise ik.docx; A - Working with Others/Artic survival challenge.pdf; A - Working with Others/Debating activities into the classroom.docx
 ---
@@ -30,6 +30,39 @@ On a real job, nobody holds every piece of information. The super has the schedu
 **Manage risk and resources.** Check the budget before you buy. Test before the client sees it. Think about what could go wrong.
 
 **Debrief.** After the job, look back on the work and on how the team worked together. Make suggestions that are specific and kind, and use the feedback you get.
+
+The job runs as a loop. A change order sends the team back to the plan.
+
+<div class="figure-art">
+<svg viewBox="0 0 640 500" width="100%" role="img" aria-labelledby="c06-loop-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="c06-loop-title">A loop of five steps: share every card, plan and agree on roles, build within budget, test and explain, debrief. A change order in the middle sends the team back to the plan.</title>
+<defs><marker id="c06-loop-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="500" fill="#ffffff"/>
+<path d="M383.8,76.3 A185,185 0 0 1 465.5,135.7" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#c06-loop-ah)"/>
+<path d="M504.9,257.0 A185,185 0 0 1 473.7,353.0" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#c06-loop-ah)"/>
+<path d="M370.5,428.0 A185,185 0 0 1 269.5,428.0" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#c06-loop-ah)"/>
+<path d="M166.3,353.0 A185,185 0 0 1 135.1,257.0" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#c06-loop-ah)"/>
+<path d="M174.5,135.7 A185,185 0 0 1 256.2,76.3" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#c06-loop-ah)"/>
+<rect x="236" y="32" width="168" height="66" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="320" y="60.325" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">1 Share</text>
+<text x="320" y="81.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">every card</text>
+<rect x="411.945" y="159.832" width="168" height="66" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="495.945" y="188.157" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">2 Plan</text>
+<text x="495.945" y="209.407" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">agree, roles</text>
+<rect x="344.74" y="366.668" width="168" height="66" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="428.74" y="394.993" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">3 Build</text>
+<text x="428.74" y="416.243" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">in budget</text>
+<rect x="127.26" y="366.668" width="168" height="66" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="211.26" y="394.993" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">4 Test</text>
+<text x="211.26" y="416.243" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">and explain</text>
+<rect x="60.0545" y="159.832" width="168" height="66" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="144.055" y="188.157" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">5 Debrief</text>
+<text x="144.055" y="209.407" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">next time we will</text>
+<rect x="250" y="222" width="140" height="66" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="320" y="250.875" font-size="15" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Change order:</text>
+<text x="320" y="269.625" font-size="15" text-anchor="middle" font-weight="normal" fill="#2b2b2b">back to plan</text>
+</svg>
+</div>
 
 ### Worked example: the purchase order
 
@@ -94,6 +127,32 @@ e) One constructive suggestion for next time, starting with "Next time we will..
 f) One piece of feedback we got from the observer or instructor, and what we will do with it.
 
 ______________________________________________
+
+______________________________________________
+
+______________________________________________
+
+**Task 6** (level 2) **A real mini-job: the cut list.**
+Your team frames a practice wall in the shop. The wall is 2,400 mm long. Studs go at 400 mm on centre, with a stud at each end. The wall has one bottom plate and one top plate, each 2,400 mm long. Each plate is 38 mm thick, and the wall is 2,400 mm tall overall.
+
+All pieces are cut from 2,440 mm lengths of 2x4 at $5.25 each (a fictional price). The budget is $50.
+
+a) How many studs do you need?
+b) How long is each stud?
+c) How many 2,440 mm lengths do you buy?
+d) What is the total cost? How much of the budget is left?
+e) Name a person for each role: cutter, layout, nailer, checker, budget keeper.
+
+______________________________________________
+
+______________________________________________
+
+**Task 7** (level 3) **You are the lead hand. A change order lands.**
+Halfway through, the client asks for one extra stud at 1,200 mm so a shelf can be fixed there. There is already a stud at 1,200 mm on centre, so the client wants a second stud beside it.
+
+a) Can you cut the extra stud from offcuts? Show why or why not.
+b) How much over budget does the change take you?
+c) Write what you say to the client.
 
 ______________________________________________
 

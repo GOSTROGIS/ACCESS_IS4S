@@ -1,6 +1,6 @@
 # Perimeter and area with openings and cut-outs
 
-**Session:** Numeracy lesson 13 of 16. **Total length:** 90 minutes.
+**Session:** Numeracy lesson 13 of 21. **Total length:** 90 minutes.
 
 **Before the session:** learners need a calculator and access to the [Shape Canvas](../../shape-canvas/index.html) on a computer or tablet, one for each pair. Project the Shape Canvas and the [Numeracy Hub Volume, Area, Layout and Measuring tab](../../hub/index.html#vlm). This lesson follows the Intake 142 decks for [Day 18](../../../../programs/carpentry/intake-142/PDF/Day-18_2026-11-27_Week-5.pdf) (perimeter and frame lengths), [Day 19](../../../../programs/carpentry/intake-142/PDF/Day-19_2026-11-30_Week-6.pdf) (area, openings and coverage) and [Day 24](../../../../programs/carpentry/intake-142/PDF/Day-24_2026-12-07_Week-7.pdf) (floor layout and sheeting).
 

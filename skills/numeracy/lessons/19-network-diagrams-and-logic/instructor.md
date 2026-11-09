@@ -1,0 +1,63 @@
+# Network diagrams and schedule logic
+
+**Session:** Numeracy lesson 19 of 21. **Total length:** 90 minutes.
+
+**Before the session:** learners need pencils, an eraser and large paper (11 × 17 or flip-chart) for Task 3. Sticky notes make good activity boxes for step 1.3: one note per activity, arrows drawn on the paper. Problem Solving lesson 7 (plan and organize the work) asked "what has to be done before this can start?" This lesson turns that question into a drawing. Learners should have done lessons 17 and 18.
+
+## Opening (5 min)
+
+Welcome learners. Ask the group to call out the steps to build a deck, in any order. Write them on separate sticky notes on the board. Ask: "Which ones have to wait for another one? Which ones can happen at the same time?" Move the notes left to right and draw a few arrows. Say: "That is a network diagram. Today you learn to draw it properly, with four kinds of link." Tell learners this is session 19 of the Numeracy set, and it runs 90 minutes.
+
+## Objective (2 min)
+
+By the end of the session, learners will be able to:
+
+- read predecessors, durations and link types from a predecessor table (Identify the mathematical information)
+- connect each activity to its predecessors and successors in an activity-on-node network, and find merges and bursts (Make connections between related pieces of mathematical information)
+- find when a successor can start or finish for FS, SS, FF and SF links with lag or lead (Apply mathematical operations and tools you will need to answer the question)
+- find logic errors such as loops and activities with no successor (Interpret and evaluate the information)
+- draw a clear network that another person can check (Share the mathematical information, results and implications)
+
+## Pre-assessment (3 min)
+
+1. Can you start drywall before the electrical rough-in is inspected? Why? (No. Walls must stay open until the rough-in passes inspection.)
+2. Name two jobs on a site that can happen at the same time. (Open, for example plumbing and electrical rough-in)
+
+## Learning tasks (70 min)
+
+| Step | Instructor activities | Learner activities | Resources | Time |
+|---|---|---|---|---|
+| 1.1 | Teach activity, predecessor, successor, merge and burst. Show the AON and AOA picture and explain the dummy arrow in one or two sentences. | 1.1 Point out a merge and a burst in the AON picture. | Learner page, projector | 7 min |
+| 1.2 | Model Worked example 1: draw the deck network from the table, one step at a time. | 1.2 Draw along and list each activity's successors. | Learner page | 10 min |
+| 1.3 | Assign Task 2 in pairs. | 1.3 Complete Task 2. | Washroom table | 7 min |
+| 2.1 | Teach the four link types and lag and lead with the bar picture. State the day-number rule: day numbers count finished working days. | 2.1 Complete Task 1. | Link type and lead pictures | 10 min |
+| 2.2 | Model Worked example 2. Write the four timing rules on the board. | 2.2 Complete Task 4. | Learner page | 10 min |
+| 3.1 | Assign Task 3 on large paper. Check that every box has an arrow in, except 1, and an arrow out, except 12 and 13. | 3.1 Draw the garage network. | Large paper, sticky notes | 12 min |
+| 3.2 | Assign Task 5 (real parkade logic) and Task 6 (find the errors). Discuss loops and orphan activities. | 3.2 Complete Tasks 5 and 6. | Learner page | 14 min |
+
+## Post-assessment (5 min)
+
+1. A predecessor finishes at day 9. The successor follows FS+1 and takes 2 days. Find its ES and EF. (ES 10, EF 12)
+2. A predecessor starts at day 3. The successor follows SS+1. When can it start? (Day 4)
+3. What is wrong with "A follows B, and B follows A"? (It is a loop and can never be scheduled)
+
+## Summary (5 min)
+
+During this session we covered:
+
+- activities, predecessors, successors, merges and bursts
+- activity-on-node networks, and why the older activity-on-arrow method needs dummy arrows
+- the four link types FS, SS, FF and SF, with lag and lead
+- drawing a network from a predecessor table and checking it for loops and orphan activities
+
+Next session: the forward and backward pass, which turns this network into start and finish days.
+
+## Sources
+
+- Microsoft Support, "Link tasks in a project", https://support.microsoft.com/en-us/project/link-tasks-in-a-project, checked 2026-11-08: definitions of finish-to-start, start-to-start, finish-to-finish and start-to-finish (for example, SF: "The dependent task (B) can't be completed until the task that it depends on (A) begins"). FS is the default link. "To enter lead time, type a negative value in the Lag column, such as –2 for two days of lead time."
+- Microsoft Support, "Add lead or lag time to a task", https://support.microsoft.com/en-us/project/add-lead-or-lag-time-to-a-task, checked 2026-11-08: lead time is an overlap, lag time is a delay between linked tasks.
+- Kirkwood Community College, *Project Management Basics*, "Network Diagram & Critical Path", https://kirkwood.pressbooks.pub/projectmanagementbasics/chapter/network-diagram-critical-path, checked 2026-11-08: activity-on-node (precedence diagramming method), activity-on-arrow, and that in AOA "it is not possible to show lead and lag except by adding or subtracting time" and "dummy activities can occur".
+- Cleveland State University, *Project Management*, 2nd edition, "7.4 Creating an Activity Network Diagram", https://pressbooks.ulib.csuohio.edu/projectmanagement2ndedition/chapter/7-4-creating-an-activity-network-diagram, checked 2026-11-08: AON "is more commonly used and is supported by all project management programs".
+- The parkade predecessor table in Task 5 uses the activities, durations and links of WBS 3.1 to 3.2 of a Microsoft Project 2016 schedule (FINAL_ASSIGNMENT.xml) supplied by the instructor, checked against the file. The planner's reason for the FS+5 lag is not in the file, so Task 5b asks for possible reasons only.
+- The deck, washroom, garage and shed jobs and their companies are made up for practice. All ES and EF values in the worked examples and answers were computed by a critical path script written for this lesson set and cross-checked against a second, independent scheduling engine on the same networks. They matched. The diagrams were drawn by script from the same data.
+- Skills for Success component names: Government of Canada, "Skill components and proficiency levels", Numeracy section, https://www.canada.ca/en/services/jobs/training/initiatives/skills-success/learning-steps.html, checked 2026-11-08.

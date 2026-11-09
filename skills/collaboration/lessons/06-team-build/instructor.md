@@ -1,12 +1,12 @@
 # Plan and build together, then debrief
 
-**Collaboration lesson 6 of 8 · 90 min · Level 2-3**
+**Collaboration lesson 6 of 12 · 100 min · Level 2-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (4 min, step 1.1)
 
-Welcome learners to session 6 of 8. This session runs 90 minutes, and most of it is hands-on.
+Welcome learners to session 6 of 12. This session runs 100 minutes, and most of it is hands-on.
 
 Hook: "On a real job, who has the schedule? The specs? The budget? What the client wants?" List the answers (superintendent, engineer or drawings, estimator, client). "Does any one person have all of it?" Today each team member holds one piece, and the team has to put the pieces together.
 
@@ -67,9 +67,10 @@ By the end of the session, learners will be able to:
 | 2.6 | Set Task 5. Observers give their notes first. Visit each team and add one piece of feedback | Debrief and write answers a to f | Learner page, observer notes | 12 min |
 | 2.7 | Each team shares one thing that went well and one "next time we will". Draw out the link to real job sites | Share with the class | Whiteboard | 6 min |
 | 2.8 | Give time for Check yourself | Answer the five questions alone | Learner page, answers page | 3 min |
+| 2.9 | Show the loop figure. Set Task 6 in teams and check the arithmetic on the board. Then hand out Task 7 as a surprise change order | Build the cut list, cost it, answer the change order | Learner page, calculators | 10 min |
 | 3.1 | Ask the post-assessment questions | Answer aloud or on paper | Whiteboard | 4 min |
 | 3.2 | Summary and preview of lesson 7 | Name one team habit they will take to a job site | None | 2 min |
-| | | | **Total** | **90 min** |
+| | | | **Total** | **100 min** |
 
 ## Post-assessment (4 min, step 3.1)
 

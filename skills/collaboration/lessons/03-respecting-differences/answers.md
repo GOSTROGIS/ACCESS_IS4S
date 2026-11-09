@@ -51,6 +51,20 @@ d) As the lead: "Thanks for asking ahead. Let's work out when you'll make up the
 
 **Steps:** read the reason for the treatment in each case, then look for it in the section 13 list on the learner page.
 
+## Task 6 (level 2)
+
+**a)** Age (19 or older).
+**b)** Place of origin, ancestry or race. Making fun of someone for this can also be bullying and harassment (lesson 8).
+**c)** Not a protected ground. It is still unfair, and the apprentice can raise it.
+**d)** Religion. The employer has a duty to accommodate, by taking reasonable steps such as a shift swap.
+
+## Task 7 (level 3)
+
+**a)** Religion.
+**b)** Sample: "Thanks for asking ahead. Let's make it work. I'll set it up and let you know by Wednesday." A good answer thanks Amir, takes the request seriously and does not ask him to explain or defend his religion.
+**c)** Any two reasonable steps, such as: Amir takes lunch from 1:00 on Fridays and another worker covers his task from 1:00 to 1:30. Or Amir works through the noon break and takes his break at 1:00. Or the crew plans Friday work so his task can pause at 1:00.
+**d)** The foreman or supervisor, so the change is on record and follows company policy. The employer holds the duty to accommodate, so the people who make the schedule need to know.
+
 ## Check yourself 1
 
 Any answer along these lines: the shared beliefs, customs and ways of doing things of a group, such as language, food, ceremonies, values and how decisions are made.

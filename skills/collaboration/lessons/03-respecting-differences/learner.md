@@ -1,8 +1,8 @@
 ---
 title: Respecting differences on a job site
 summary: Understand what culture is, work respectfully with people whose ways differ from yours, and know what BC human rights law says about work.
-level: 1-2
-time: 90 min
+level: 1-3
+time: 100 min
 components: Value diversity and inclusivity of others; Work well with other people
 rebuilds: A - Writing/A - Thinking Skills/Defining Culture-rb.docx
 ---
@@ -45,6 +45,49 @@ In plain words: ask instead of assuming, let people choose what they share about
 - a criminal or summary conviction that is unrelated to the job
 
 Employers also have a **duty to accommodate**. The BC Human Rights Tribunal explains it as a duty to take all reasonable steps to avoid a negative effect on someone because of one of these grounds. For example, a rule to work a certain day can affect a person whose religion does not allow work on that day. The Tribunal advises workers to tell their employer if they can't meet a work requirement because of one of these personal characteristics.
+
+The cards below show the same grounds from section 13. The yellow bar is the duty to accommodate.
+
+<div class="figure-art">
+<svg viewBox="0 0 640 472" width="100%" role="img" aria-labelledby="c03-grounds-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="c03-grounds-title">Nine cards showing the protected grounds in section 13 of the BC Human Rights Code, and a note on the duty to accommodate.</title>
+<defs><marker id="c03-grounds-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="472" fill="#ffffff"/>
+<text x="320" y="34" font-size="18" text-anchor="middle" font-weight="bold" fill="#1f3a5f">BC Human Rights Code, section 13: protected grounds at work</text>
+<rect x="14" y="56" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="113" y="100.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Indigenous</text>
+<text x="113" y="121.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">identity</text>
+<rect x="220" y="56" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="319" y="89.7" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Race, colour,</text>
+<text x="319" y="110.95" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">ancestry, place</text>
+<text x="319" y="132.2" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">of origin</text>
+<rect x="426" y="56" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="525" y="100.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Political</text>
+<text x="525" y="121.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">belief</text>
+<rect x="14" y="166" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="113" y="220.95" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Religion</text>
+<rect x="220" y="166" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="319" y="210.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Marital status or</text>
+<text x="319" y="231.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">family status</text>
+<rect x="426" y="166" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="525" y="210.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Physical or</text>
+<text x="525" y="231.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">mental disability</text>
+<rect x="14" y="276" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="113" y="309.7" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Sex, sexual</text>
+<text x="113" y="330.95" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">orientation, gender</text>
+<text x="113" y="352.2" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">identity or expression</text>
+<rect x="220" y="276" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="319" y="320.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Age</text>
+<text x="319" y="341.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">(19 or older)</text>
+<rect x="426" y="276" width="198" height="98" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="525" y="309.7" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Criminal or summary</text>
+<text x="525" y="330.95" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">conviction unrelated</text>
+<text x="525" y="352.2" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">to the job</text>
+<rect x="14" y="392" width="612" height="66" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="320" y="420.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Duty to accommodate: the employer takes all reasonable</text>
+<text x="320" y="441.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">steps to avoid a negative effect because of a ground.</text>
+</svg>
+</div>
 
 ### Worked example: a call from home
 
@@ -98,6 +141,32 @@ c) Ray is refused a labourer job because he is First Nations.
 d) Lin is let go because she can't work on her religion's holy day. The employer did not look at any other options.
 e) Alex is not offered overtime because the foreman doesn't like Alex's taste in music.
 f) Pat is turned down for a framing job because of a conviction 15 years ago that has nothing to do with the work.
+
+**Task 6** (level 2) **Which ground?**
+For each situation, name the protected ground from the cards, or write "not a protected ground."
+
+a) A foreman says he won't hire a carpenter because she is 58.
+b) The crew makes fun of a pipefitter's accent and where he grew up.
+c) An apprentice gets less overtime because he cheers for a different hockey team than the foreman.
+d) A worker asks to swap her Friday afternoon shift because of her religious practice.
+
+______________________________________________
+
+______________________________________________
+
+**Task 7** (level 3) **You are the lead hand.**
+Amir (fictional), a second-year pipefitting apprentice, asks you on Monday: "Can I take my lunch at 1:00 on Fridays instead of noon? I go to prayers." The crew always takes lunch together at noon.
+
+a) Which protected ground is part of this request?
+b) Write what you say to Amir.
+c) Give two ways to make it work on the crew.
+d) Who else do you tell, and why?
+
+______________________________________________
+
+______________________________________________
+
+______________________________________________
 
 ## Check yourself
 

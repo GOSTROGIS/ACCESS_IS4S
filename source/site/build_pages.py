@@ -1,4 +1,4 @@
-"""Build the 9 Skills hub, the skill pages and the program pages.
+"""Build the IS4S Skills for Success hub, the skill pages and the program pages.
 
 Titles and introductions come from the textbook chapters in skills/<skill>/.
 File lists come from the folders themselves. Re-run after source/textbook/sync.py
@@ -15,6 +15,8 @@ SKILLS = [('reading', 'Reading'), ('writing', 'Writing'), ('numeracy', 'Numeracy
           ('collaboration', 'Collaboration'), ('adaptability', 'Adaptability'),
           ('creativity-innovation', 'Creativity and innovation')]
 MARK = ('<!-- 9-skills:start -->', '<!-- 9-skills:end -->')
+HUB = 'IS4S Skills for Success'
+HUB_CRUMB = (f'← {HUB}', '../../index.html')
 e = html.escape
 
 CSS = """:root{
@@ -102,6 +104,10 @@ main>*,nav{min-width:0}
 .sources{margin:0;padding-left:22px;max-width:78ch;overflow-wrap:anywhere;font-size:15px}
 .sources li{margin-bottom:6px}
 .lock{font-size:.85em;margin-left:3px}
+.figure-art{margin:20px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.figure-art:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.figure-art img{max-width:100%;height:auto}
+@media (max-width:640px){.figure-art>svg,.figure-art img{min-width:600px}}
 .lesson-steps{justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 """
@@ -285,8 +291,8 @@ def build_hub():
                 + '</div></section>')
     body = (f'<section><h2>The nine skills</h2><div class="grid">{"".join(cards)}</div></section>'
             + books_section('') + tools_section() + programs)
-    page('index.html', 'The 9 Skills · ACCESS Indigenous Skills4Success', 'ACCESS Indigenous Skills4Success',
-         'The 9 Skills', 'Reading, Writing, Numeracy, Digital, Problem solving, Communication, Collaboration, '
+    page('index.html', f'{HUB} · ACCESS Indigenous Skills4Success', 'ACCESS Indigenous Skills4Success',
+         HUB, 'Reading, Writing, Numeracy, Digital, Problem solving, Communication, Collaboration, '
          'Adaptability, and Creativity and innovation, each with its learner chapter, teaching chapter, answer guidance and tools.', body)
 
 
@@ -312,6 +318,8 @@ def md_html(text):
     out = re.sub(r'<th((?: [^>]*)?)>\s*</th>', r'<td\1></td>', out)
     # Wide preformatted blocks scroll sideways, so keyboard users must be able to reach them.
     out = out.replace('<pre>', '<pre tabindex="0">')
+    out = re.sub(r'<(div|figure) class="figure-art">',
+                 r'<\1 class="figure-art" tabindex="0" role="group" aria-label="Figure, scroll sideways on a small screen">', out)
     return out.replace('<table>', '<div class="table-wrap"><table>').replace('</table>', '</table></div>')
 
 
@@ -345,8 +353,8 @@ def build_lessons(slug, name, i):
             steps = ''
             for lesson, arrow in ((prev_l, 'prev'), (next_l, 'next')):
                 if lesson and (REPO / f'skills/{slug}/lessons/{lesson[0]}/{role}.md').exists():
-                    label = f'Lesson {int(lesson[0][:2])}: {lesson[1].get("title", lesson[0])}'
-                    text = f'← {e(label)}' if arrow == 'prev' else f'{e(label)} →'
+                    step = f'Lesson {int(lesson[0][:2])}: {lesson[1].get("title", lesson[0])}'
+                    text = f'← {e(step)}' if arrow == 'prev' else f'{e(step)} →'
                     steps += f'<li><a rel="{arrow}" href="../{lesson[0]}/{role}.html">{text}</a></li>'
             steps = f'<nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps">{steps}</ul></nav>' if steps else ''
             page(f'{base}/{role}.html', f'{fm.get("title", folder)} · {label} · {name}', f'{name} · Lesson {folder[:2]} · {label}',
@@ -377,8 +385,8 @@ def build_skill(slug, name, i):
     body = (lessons_section(slug, name, i)
             + f'<section><h2>Chapters</h2><div class="grid">{"".join(chapter_cards(slug))}</div></section>'
             + tools + books_section('../../'))
-    page(f'skills/{slug}/index.html', f'{name} · The 9 Skills', f'Skill {i} of 9', name, e(p), body,
-         crumb=('← All 9 skills', '../../index.html'))
+    page(f'skills/{slug}/index.html', f'{name} · {HUB}', f'Skill {i} of 9', name, e(p), body,
+         crumb=HUB_CRUMB)
 
 
 def build_numeracy_section():
@@ -386,7 +394,7 @@ def build_numeracy_section():
     t = path.read_text(encoding='utf-8')
     ls = lessons_section('numeracy', 'Numeracy', 3)
     ls = f'<div class="wrap" style="padding-block:0 32px">{ls}</div>' if ls else ''
-    block = (f'{MARK[0]}\n<section class="wrap" style="padding-block:0 32px"><p class="nine-crumb"><a href="../../index.html">← All 9 skills</a></p><h2>Numeracy in the nine-skills books</h2>'
+    block = (f'{MARK[0]}\n<section class="wrap" style="padding-block:0 32px"><p class="nine-crumb"><a href="../../index.html">← {HUB}</a></p><h2>Numeracy in the nine-skills books</h2>'
              f'<div class="grid">{"".join(chapter_cards("numeracy"))}</div></section>\n{ls}{MARK[1]}')
     if MARK[0] in t:
         t = re.sub(re.escape(MARK[0]) + '.*?' + re.escape(MARK[1]), lambda _: block, t, flags=re.S)
@@ -526,7 +534,7 @@ def build_carpentry():
     page(f'{CARP}/index.html', 'Carpentry · ACCESS IS4S', 'Programs · Trade', 'Carpentry',
          'The carpenter trade in BC, the materials every carpentry intake shares, and each intake’s own schedule.',
          about + shared + intakes_html + f'<section id="sources"><h2>Sources</h2>{sources}</section>',
-         crumb=('← All 9 skills', '../../index.html'))
+         crumb=HUB_CRUMB)
     for it in intakes:
         if (REPO / CARP / it['folder'] / 'PDF').exists():
             build_intake(it, decks)

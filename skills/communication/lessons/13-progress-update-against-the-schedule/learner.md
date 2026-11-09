@@ -1,0 +1,198 @@
+---
+title: Give a progress update against the schedule
+summary: Read where a job stands on a bar chart, work out how far ahead or behind it is, and give a short update that says where we are, why, the effect, the fix and what you need.
+level: 3
+time: 90 min
+components: Speak with purpose; Speak with clarity; Adapt to your audience and contexts
+---
+
+# Give a progress update against the schedule
+
+## Why this matters on the job
+
+Every morning someone asks, "Where are we?" A foreman asks the lead hand. A superintendent asks the foreman. The owner asks the superintendent. "Going good" does not help anyone plan. "Framing is one day behind because the lumber came late, and here is how we get it back" lets the next person act: book the roofers a day later, or approve the extra crew. A clear update is short, honest and based on the schedule.
+
+## Key ideas
+
+**A bar chart (Gantt chart)** shows each activity as a bar across the days. The plan bar shows when it was supposed to happen. A second bar shows what actually happened or what is now forecast. A **today line** shows where we are now. Numeracy lessons on scheduling teach how to build these charts. Here you read one and talk about it.
+
+<div class="figure-art">
+<svg viewBox="0 0 640 438" width="100%" role="img" aria-labelledby="m13-bars-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m13-bars-title">Bar chart of a garage job over 12 work days. Each activity has a plan bar and a forecast bar. Footings and slab are done on plan. Framing was planned for days 5 to 8 and is now forecast for days 5 to 9, one day late. Roof and windows each move one day later. A red line marks today, the end of day 7.</title>
+<defs><marker id="m13-bars-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="438" fill="#ffffff"/>
+<text x="140" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">1</text>
+<line x1="160" y1="44" x2="160" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="180" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">2</text>
+<line x1="200" y1="44" x2="200" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="220" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">3</text>
+<line x1="240" y1="44" x2="240" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="260" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">4</text>
+<line x1="280" y1="44" x2="280" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="300" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">5</text>
+<line x1="320" y1="44" x2="320" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="340" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">6</text>
+<line x1="360" y1="44" x2="360" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="380" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">7</text>
+<line x1="400" y1="44" x2="400" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="420" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">8</text>
+<line x1="440" y1="44" x2="440" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="460" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">9</text>
+<line x1="480" y1="44" x2="480" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="500" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">10</text>
+<line x1="520" y1="44" x2="520" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="540" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">11</text>
+<line x1="560" y1="44" x2="560" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="580" y="38" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">12</text>
+<line x1="600" y1="44" x2="600" y2="370" stroke="#d0d6dd" stroke-width="1"/>
+<text x="360" y="16" font-size="15" text-anchor="middle" font-weight="bold" fill="#6b6b6b">Work day</text>
+<text x="110" y="88" font-size="16" text-anchor="end" font-weight="bold" fill="#2b2b2b">Footings</text>
+<rect x="122" y="60" width="76" height="18" rx="3" fill="#ffffff" stroke="#1f3a5f" stroke-width="2"/>
+<rect x="122" y="82" width="76" height="18" rx="3" fill="#2a7f62"/>
+<text x="110" y="152" font-size="16" text-anchor="end" font-weight="bold" fill="#2b2b2b">Slab</text>
+<rect x="202" y="124" width="76" height="18" rx="3" fill="#ffffff" stroke="#1f3a5f" stroke-width="2"/>
+<rect x="202" y="146" width="76" height="18" rx="3" fill="#2a7f62"/>
+<text x="110" y="216" font-size="16" text-anchor="end" font-weight="bold" fill="#2b2b2b">Framing</text>
+<rect x="282" y="188" width="156" height="18" rx="3" fill="#ffffff" stroke="#1f3a5f" stroke-width="2"/>
+<rect x="282" y="210" width="196" height="18" rx="3" fill="#c98a12"/>
+<text x="110" y="280" font-size="16" text-anchor="end" font-weight="bold" fill="#2b2b2b">Roof</text>
+<rect x="442" y="252" width="76" height="18" rx="3" fill="#ffffff" stroke="#1f3a5f" stroke-width="2"/>
+<rect x="482" y="274" width="76" height="18" rx="3" fill="#b9c6d4"/>
+<text x="110" y="344" font-size="16" text-anchor="end" font-weight="bold" fill="#2b2b2b">Windows</text>
+<rect x="522" y="316" width="36" height="18" rx="3" fill="#ffffff" stroke="#1f3a5f" stroke-width="2"/>
+<rect x="562" y="338" width="36" height="18" rx="3" fill="#b9c6d4"/>
+<line x1="400" y1="44" x2="400" y2="376" stroke="#b3261e" stroke-width="3"/>
+<text x="400" y="396" font-size="15" text-anchor="middle" font-weight="bold" fill="#b3261e">Today: end of day 7</text>
+<rect x="40" y="414" width="30" height="14" fill="#ffffff" stroke="#1f3a5f" stroke-width="2"/><text x="78" y="426" font-size="15" text-anchor="start" font-weight="normal" fill="#2b2b2b">Plan</text>
+<rect x="150" y="414" width="30" height="14" fill="#2a7f62"/><text x="188" y="426" font-size="15" text-anchor="start" font-weight="normal" fill="#2b2b2b">Done</text>
+<rect x="250" y="414" width="30" height="14" fill="#c98a12"/><text x="288" y="426" font-size="15" text-anchor="start" font-weight="normal" fill="#2b2b2b">Now, forecast</text>
+<rect x="430" y="414" width="30" height="14" fill="#b9c6d4"/><text x="468" y="426" font-size="15" text-anchor="start" font-weight="normal" fill="#2b2b2b">Forecast</text>
+</svg>
+</div>
+
+**Ahead or behind.** Compare what should be done by today with what is done.
+
+- Framing was planned for days 5 to 8, which is 4 days of work.
+- Today is the end of day 7. By plan, 3 of the 4 days of framing should be done. That is 3 ÷ 4 = 75%.
+- The crew has done 2 days' worth of framing. That is 2 ÷ 4 = 50%.
+- 75% − 50% = 25% of the framing, which is 1 day of work. Framing is **1 day behind**.
+
+**The effect.** The roof cannot start until framing is done. Windows cannot go in until the roof is on. So if nothing changes, framing ends on day 9, the roof moves to days 10 and 11, and windows move to day 12. The whole job is one day late.
+
+**Five parts of a progress update:**
+
+<div class="figure-art">
+<svg viewBox="0 0 640 396" width="100%" role="img" aria-labelledby="m13-script-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m13-script-title">Five parts of a progress update: where we are, why, the effect, the fix, and what I need, each with an example line.</title>
+<defs><marker id="m13-script-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="396" fill="#ffffff"/>
+<rect x="16" y="16" width="186" height="62" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="109" y="52.95" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Where we are</text>
+<text x="214" y="53" font-size="16" text-anchor="start" font-weight="normal" fill="#2b2b2b">&quot;Framing is 1 day behind.&quot;</text>
+<rect x="16" y="92" width="186" height="62" rx="8" fill="#fdf1d8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="109" y="128.95" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Why</text>
+<text x="214" y="129" font-size="16" text-anchor="start" font-weight="normal" fill="#2b2b2b">&quot;Lumber came a day late.&quot;</text>
+<rect x="16" y="168" width="186" height="62" rx="8" fill="#fdf1d8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="109" y="204.95" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Effect</text>
+<text x="214" y="205" font-size="16" text-anchor="start" font-weight="normal" fill="#2b2b2b">&quot;Roof and windows slide 1 day.&quot;</text>
+<rect x="16" y="244" width="186" height="62" rx="8" fill="#e6f3ec" stroke="#1f3a5f" stroke-width="2"/>
+<text x="109" y="280.95" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">The fix</text>
+<text x="214" y="281" font-size="16" text-anchor="start" font-weight="normal" fill="#2b2b2b">&quot;Four more framers tomorrow gets the day back.&quot;</text>
+<rect x="16" y="320" width="186" height="62" rx="8" fill="#e6f3ec" stroke="#1f3a5f" stroke-width="2"/>
+<text x="109" y="356.95" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">What I need</text>
+<text x="214" y="357" font-size="16" text-anchor="start" font-weight="normal" fill="#2b2b2b">&quot;OK to bring them from Elm St. by 3:00?&quot;</text>
+</svg>
+</div>
+
+1. **Where we are.** Ahead, on time or behind, in days. Name the activity.
+2. **Why.** One sentence. Facts, not blame.
+3. **Effect.** What else moves if nothing changes.
+4. **The fix.** Your plan to recover, or two options.
+5. **What I need.** A decision, a person, money or time, and by when.
+
+**Say bad news early and plainly.** "We're a bit behind but it should be fine" hides the problem. "We're one day behind on framing" lets people plan. Most supervisors forgive a delay. Few forgive a surprise.
+
+**Adapt to the listener.** Your foreman wants the detail: which wall, how many framers. The owner wants the effect on move-in day and cost. Same facts, different focus.
+
+**Bring options when you can.** "We can add four framers tomorrow, or work Saturday. The first costs more but the roofers don't move." Then the person who decides can decide.
+
+### Worked example: the garage
+
+Ridgeway Builders (fictional) is building a two-car garage. Kendra is the lead hand. The framing crew is 4 framers. At the end of day 7 her foreman, Paul, calls.
+
+**Kendra works it out first.**
+
+- Framing plan: days 5 to 8. Should be 75% done. It is 50% done. One day behind.
+- Why: the lumber package came at noon on day 5 instead of 7:00, and the crew lost the afternoon of day 6 to rain.
+- Work left: 2 days of work for 4 framers = 2 × 4 = 8 framer-days.
+- Fix: with 4 more framers tomorrow, that is 8 framers for one day = 8 framer-days. Framing would finish at the end of day 8, back on plan.
+
+**Kendra's update to Paul:**
+
+> "Paul, framing is one day behind. The lumber came at noon on day 5 and we lost the afternoon of day 6 to rain. If nothing changes, framing finishes day 9, and the roof and windows each slide a day. If you can send four framers from the Elm St. job tomorrow, we finish framing on day 8 and we're back on plan. I need to know by 3:00 so I can set up the work for eight people."
+
+Paul says it back, then decides: "Okay. Four framers tomorrow. I'll tell the roofers we're still on for day 9."
+
+Kendra used all five parts in under 30 seconds, with numbers from the schedule.
+
+## Practice
+
+**Task 1** (level 2) **Read the chart.** Use the bar chart.
+
+a) What days were planned for the slab? Were they done on plan?
+b) What day is today?
+c) On what days are the roof's plan bar and forecast bar?
+d) Which activity is shown as in progress?
+
+______________________________________________
+
+**Task 2** (level 2) **Percent planned.** An activity is planned for 5 days. Today is the end of its day 2. What percent should be done by plan? Show your work.
+
+______________________________________________
+
+**Task 3** (level 2) **Ahead or behind?** Siding is planned for 6 days. Today is the end of day 4 of the siding. The crew has done 3 days' worth. How many days ahead or behind is it? Show your work in days and in percent.
+
+______________________________________________
+
+**Task 4** (level 2) **Vague to clear.** Rewrite each update so it states where we are in days.
+
+a) "Drywall's going okay, a little slow maybe."
+b) "We're kind of ahead on the paving."
+
+______________________________________________
+
+**Task 5** (level 3) **The effect.** In the garage job, the roof is planned for days 9 and 10, and windows for day 11. The roof crew is 2 days late arriving, but framing is back on plan. What are the new days for the roof and windows? What day does the job finish?
+
+______________________________________________
+
+**Task 6** (level 3) **Crew-days.** A deck has 3 days of work left for a crew of 2. How many worker-days is that? If you add 1 worker, how many full days will it take now? Is that enough to finish in 2 days?
+
+______________________________________________
+
+**Task 7** (level 3) **Write the update.** Electrical rough-in at a fictional duplex was planned for days 10 to 13 (4 days). Today is the end of day 12. The crew is 25% done because the panel was back-ordered. The inspection is booked for day 14 and drywall for day 15. Write a five-part update to the superintendent. Offer two options.
+
+______________________________________________
+
+______________________________________________
+
+______________________________________________
+
+**Task 8** (level 3) **Same facts, two listeners.** Take your Task 7 update. Rewrite it for the owner of the duplex, who cares about move-in day and cost, not panels and crews.
+
+______________________________________________
+
+______________________________________________
+
+**Task 9** (level 3) **Ahead of schedule.** Your paving crew finished the base course a day early. Is that worth reporting? Write the update and say what the superintendent might do with the extra day.
+
+______________________________________________
+
+**Task 10** (level 3) **Say it out loud.** In pairs, give the Task 7 update out loud in 30 seconds or less. The listener says it back and asks one question. Then switch.
+
+## Check yourself
+
+1. What does the today line on a bar chart show?
+2. An activity planned for 4 days is at the end of its third day. What percent should be done?
+3. Name the five parts of a progress update.
+4. Why report a delay early, even if you might catch up?
+5. How does an update change for the owner compared with your foreman?

@@ -1,6 +1,6 @@
 # Building a quick model and explaining it
 
-Session 5 of 8 in the Creativity and Innovation lessons. Total length 60 minutes.
+Session 5 of 12 in the Creativity and Innovation lessons. Total length 60 minutes.
 
 ## Opening (5 min)
 

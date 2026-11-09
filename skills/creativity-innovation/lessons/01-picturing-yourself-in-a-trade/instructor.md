@@ -1,6 +1,6 @@
 # Picturing yourself in a trade
 
-Session 1 of 8 in the Creativity and Innovation lessons. Total length 60 minutes.
+Session 1 of 12 in the Creativity and Innovation lessons. Total length 60 minutes.
 
 ## Opening (5 min)
 

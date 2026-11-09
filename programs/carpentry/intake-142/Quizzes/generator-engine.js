@@ -2,8 +2,7 @@
 (function (root) {
   'use strict';
   const VERSION = 'LQ1';
-  function seeded(seed) { let a=seed>>>0; return function(){a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;}; }
-  function shuffle(items,r) { const out=items.slice();for(let i=out.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out; }
+  const shared=root.QuizShared||require('./quiz-shared.js'),seeded=seed=>shared.seeded(Number(seed)),shuffle=shared.shuffle;
   function fmt(n,dp=4) { return Number(n.toFixed(dp)).toLocaleString('en-CA',{maximumFractionDigits:dp}); }
   function gcd(a,b){return b?gcd(b,a%b):Math.abs(a);}
   function fraction(n,d){const g=gcd(n,d);n/=g;d/=g;if(d===1)return String(n);const w=Math.floor(n/d),rem=n%d;return (w?w+' ':'')+rem+'/'+d;}
@@ -87,7 +86,7 @@
     return {code,version:VERSION,seed,count,lecture:{id:lecture.id,day:lecture.day,date:lecture.date,week:lecture.week,start:lecture.start,end:lecture.end,topic:lecture.topic,reading:lecture.reading},questions:shuffle(selected,r),assets:data.assets};
   }
   function decode(code){const m=String(code||'').trim().toUpperCase().match(/^LQ1-(W\d{2})(L\d{2})-(1\d|2[0-5])-([0-9A-Z]{1,7})$/);if(!m)throw new Error('Use a complete quiz code, such as LQ1-W01L01-15-ABC123.');const seed=parseInt(m[4],36);if(seed>0xffffffff)throw new Error('The quiz code contains an invalid seed.');return {lectureId:m[1]+'-'+m[2],count:Number(m[3]),seed};}
-  function freshSeed(){if(root.crypto&&root.crypto.getRandomValues)return root.crypto.getRandomValues(new Uint32Array(1))[0];return (Date.now()^Math.floor(Math.random()*0xffffffff))>>>0;}
+  const freshSeed=shared.freshSeed;
   function answerText(q){return q.type==='choice'?String.fromCharCode(65+q.choices.indexOf(q.answer))+'. '+q.answer:q.displayAnswer;}
   const api={build,decode,freshSeed,answerText,mapping:MAPPING,version:VERSION};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.LectureQuiz=api;
 })(typeof window!=='undefined'?window:globalThis);

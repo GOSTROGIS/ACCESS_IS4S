@@ -1,6 +1,6 @@
 # Order of operations in trade formulas
 
-**Session:** Numeracy lesson 12 of 16. **Total length:** 75 minutes.
+**Session:** Numeracy lesson 12 of 21. **Total length:** 75 minutes.
 
 **Before the session:** learners need a calculator or the ACCESS [calculators page](../../calculators/calculators.html). Project the [Numeracy Hub Order of Operations tab](../../hub/index.html#ooo). This lesson follows the Intake 142 decks for [Day 03](../../../../programs/carpentry/intake-142/PDF/Day-03_2026-11-02_Week-2.pdf) (BEDMAS), [Day 04](../../../../programs/carpentry/intake-142/PDF/Day-04_2026-11-03_Week-2.pdf) (brackets, squares and square roots) and [Day 16](../../../../programs/carpentry/intake-142/PDF/Day-16_2026-11-25_Week-5.pdf) (substituting into formulas).
 

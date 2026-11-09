@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Network diagrams and schedule logic · Learner · Numeracy</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Numeracy</a></p>
+      <p class="eyebrow">Numeracy · Lesson 19 · Learner</p>
+      <h1>Network diagrams and schedule logic</h1>
+      <p class="lede">Draw an activity-on-node network from a predecessor table, name predecessors and successors, and use the four link types (FS, SS, FF, SF) with lag and lead to find when the next activity can start or finish.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 1-3</li><li>Time: 90 min</li><li>Components: Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information; Share the mathematical information, results and implications</li></ul></nav><article class="prose"><h2>Why this matters on the job</h2>
+<p>A Gantt chart shows <em>when</em> the work happens. A network diagram shows <em>why</em>: which work has to be done before the next work can start. That is called the <strong>logic</strong> of the schedule. When something changes on site, the logic tells you which other activities move. Planners build the logic first, and the software draws the Gantt chart from it.</p>
+<h2>Key ideas</h2>
+<p><strong>Activity.</strong> A piece of work with a duration, for example "Pour pier footings, 1 day".</p>
+<p><strong>Predecessor and successor.</strong> If B cannot start until A is done, A is a <strong>predecessor</strong> of B and B is a <strong>successor</strong> of A. A <strong>predecessor table</strong> lists each activity with its duration and its predecessors.</p>
+<p><strong>Activity-on-node (AON).</strong> Each activity is a box (a node). Each arrow is a logic link from a predecessor to a successor. Time runs from left to right. AON is the method that scheduling software supports.</p>
+<p><strong>Merge and burst.</strong> A <strong>merge</strong> is an activity with two or more arrows coming in. It waits for all of them. A <strong>burst</strong> is an activity with two or more arrows going out.</p>
+<p><strong>Activity-on-arrow (AOA).</strong> An older method draws each activity as an arrow between numbered circles (events). When an activity needs two predecessors that do not share an event, AOA needs a dashed <strong>dummy</strong> arrow that takes no time. AOA cannot show lag, SS or FF links in a clean way, so these lessons use AON.</p>
+<div class="figure-art" tabindex="0" role="group" aria-label="Figure, scroll sideways on a small screen">
+<svg viewBox="0 0 760 230" width="100%" role="img" aria-labelledby="n19-aoa-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="n19-aoa-title">The same four activities drawn two ways: activity-on-arrow on the left and activity-on-node on the right.</title>
+<rect x="0" y="0" width="760" height="230" fill="#ffffff"/>
+<defs><marker id="n19-aoa-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555555"/></marker><marker id="n19-aoa-ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a3271d"/></marker><pattern id="n19-aoa-hol" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#eeeeee"/><line x1="0" y1="0" x2="0" y2="8" stroke="#9a9a9a" stroke-width="3"/></pattern><pattern id="n19-aoa-crit" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#a3271d"/><line x1="0" y1="0" x2="0" y2="10" stroke="#7a1a13" stroke-width="4"/></pattern></defs>
+<text x="170.0" y="24.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">Activity-on-arrow (AOA)</text>
+<text x="560.0" y="24.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">Activity-on-node (AON)</text>
+<circle cx="30" cy="120" r="15" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="30.0" y="125.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">1</text>
+<circle cx="130" cy="120" r="15" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="130.0" y="125.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">2</text>
+<circle cx="230" cy="60" r="15" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="230.0" y="65.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">3</text>
+<circle cx="230" cy="180" r="15" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="230.0" y="185.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">4</text>
+<circle cx="340" cy="60" r="15" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="340.0" y="65.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">5</text>
+<line x1="46.0" y1="120.0" x2="113.0" y2="120.0" stroke="#222222" stroke-width="2" marker-end="url(#n19-aoa-ah)"/>
+<text x="80.0" y="112.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">A</text>
+<line x1="143.7" y1="111.8" x2="215.4" y2="68.7" stroke="#222222" stroke-width="2" marker-end="url(#n19-aoa-ah)"/>
+<text x="180.0" y="82.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">B</text>
+<line x1="143.7" y1="128.2" x2="215.4" y2="171.3" stroke="#222222" stroke-width="2" marker-end="url(#n19-aoa-ah)"/>
+<text x="180.0" y="142.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">C</text>
+<line x1="246.0" y1="60.0" x2="323.0" y2="60.0" stroke="#222222" stroke-width="2" marker-end="url(#n19-aoa-ah)"/>
+<text x="285.0" y="52.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">D</text>
+<line x1="230.0" y1="164.0" x2="230.0" y2="77.0" stroke="#222222" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#n19-aoa-ah)"/>
+<text x="238.0" y="124.0" font-size="12" text-anchor="start" font-weight="normal" fill="#555555">dummy</text>
+<rect x="430" y="100" width="60" height="40" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="460.0" y="126.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">A</text>
+<rect x="530" y="50" width="60" height="40" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="560.0" y="76.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">B</text>
+<rect x="530" y="150" width="60" height="40" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="560.0" y="176.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">C</text>
+<rect x="640" y="100" width="60" height="40" fill="#ffffff" stroke="#222222" stroke-width="2"/>
+<text x="670.0" y="126.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">D</text>
+<line x1="490" y1="120" x2="528" y2="70" stroke="#222222" stroke-width="2" marker-end="url(#n19-aoa-ah)"/>
+<line x1="490" y1="120" x2="528" y2="170" stroke="#222222" stroke-width="2" marker-end="url(#n19-aoa-ah)"/>
+<line x1="590" y1="70" x2="638" y2="120" stroke="#222222" stroke-width="2" marker-end="url(#n19-aoa-ah)"/>
+<line x1="590" y1="170" x2="638" y2="120" stroke="#222222" stroke-width="2" marker-end="url(#n19-aoa-ah)"/>
+<text x="380.0" y="220.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">B and C both follow A. D needs both B and C, so AOA needs a dummy arrow.</text>
+</svg>
+</div>
+
+<p><strong>Day numbers.</strong> In these lessons, day numbers count <em>finished</em> working days. Day 0 is the start of the job. "End of day 4" is day 4. An activity that starts at day 4 is worked on during the 5th working day.</p>
+<p><strong>The four link types.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Link</th>
+<th>Short form</th>
+<th>The rule</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Finish-to-start</td>
+<td>FS</td>
+<td>The successor cannot start until the predecessor finishes.</td>
+<td>Backfill after waterproofing</td>
+</tr>
+<tr>
+<td>Start-to-start</td>
+<td>SS</td>
+<td>The successor cannot start until the predecessor starts.</td>
+<td>Pull wire once conduit has started</td>
+</tr>
+<tr>
+<td>Finish-to-finish</td>
+<td>FF</td>
+<td>The successor cannot finish until the predecessor finishes.</td>
+<td>Taping finishes after hanging finishes</td>
+</tr>
+<tr>
+<td>Start-to-finish</td>
+<td>SF</td>
+<td>The successor cannot finish until the predecessor starts.</td>
+<td>A rented heater runs until the new furnace starts up</td>
+</tr>
+</tbody>
+</table></div>
+<p>FS is by far the most common. SF is rare.</p>
+<p><strong>Lag and lead.</strong> A <strong>lag</strong> is a wait added to a link, written as a plus number: FS+2 means "start 2 days after the predecessor finishes", for example to let concrete cure. A <strong>lead</strong> is an overlap, written as a minus number: FS−2 means "start 2 days before the predecessor finishes".</p>
+<p><strong>Timing rules for one link.</strong> ES is when an activity starts and EF is when it finishes. EF = ES + duration.</p>
+<ul>
+<li>FS + lag: successor ES = predecessor EF + lag</li>
+<li>SS + lag: successor ES = predecessor ES + lag</li>
+<li>FF + lag: successor EF = predecessor EF + lag, so successor ES = that EF − duration</li>
+<li>SF + lag: successor EF = predecessor ES + lag</li>
+</ul>
+<div class="figure-art" tabindex="0" role="group" aria-label="Figure, scroll sideways on a small screen">
+<svg viewBox="0 0 710 512" width="100%" role="img" aria-labelledby="n19-links-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="n19-links-title">Four link types shown as pairs of bars on a time scale: FS with lag, SS with lag, FF with lag, and SF.</title>
+<rect x="0" y="0" width="710" height="512" fill="#ffffff"/>
+<defs><marker id="n19-links-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555555"/></marker><marker id="n19-links-ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a3271d"/></marker><pattern id="n19-links-hol" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#eeeeee"/><line x1="0" y1="0" x2="0" y2="8" stroke="#9a9a9a" stroke-width="3"/></pattern><pattern id="n19-links-crit" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#a3271d"/><line x1="0" y1="0" x2="0" y2="10" stroke="#7a1a13" stroke-width="4"/></pattern></defs>
+<line x1="250" y1="30" x2="250" y2="504" stroke="#d0d0d0"/>
+<text x="250.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">0</text>
+<line x1="294" y1="30" x2="294" y2="504" stroke="#d0d0d0"/>
+<text x="294.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">1</text>
+<line x1="338" y1="30" x2="338" y2="504" stroke="#d0d0d0"/>
+<text x="338.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">2</text>
+<line x1="382" y1="30" x2="382" y2="504" stroke="#d0d0d0"/>
+<text x="382.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">3</text>
+<line x1="426" y1="30" x2="426" y2="504" stroke="#d0d0d0"/>
+<text x="426.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">4</text>
+<line x1="470" y1="30" x2="470" y2="504" stroke="#d0d0d0"/>
+<text x="470.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">5</text>
+<line x1="514" y1="30" x2="514" y2="504" stroke="#d0d0d0"/>
+<text x="514.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">6</text>
+<line x1="558" y1="30" x2="558" y2="504" stroke="#d0d0d0"/>
+<text x="558.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">7</text>
+<line x1="602" y1="30" x2="602" y2="504" stroke="#d0d0d0"/>
+<text x="602.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">8</text>
+<line x1="646" y1="30" x2="646" y2="504" stroke="#d0d0d0"/>
+<text x="646.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">9</text>
+<line x1="690" y1="30" x2="690" y2="504" stroke="#d0d0d0"/>
+<text x="690.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">10</text>
+<text x="8.0" y="22.0" font-size="13" text-anchor="start" font-weight="normal" fill="#555555">Day number (end of day)</text>
+<text x="8.0" y="52.0" font-size="15" text-anchor="start" font-weight="bold" fill="#222222">Finish-to-start with a 2-day lag (FS+2)</text>
+<text x="8.0" y="134.0" font-size="13" text-anchor="start" font-weight="normal" fill="#555555">Strip the forms 2 days after the pour finishes (cure).</text>
+<text x="242.0" y="80.0" font-size="13" text-anchor="end" font-weight="normal" fill="#222222">Pour footings</text>
+<rect x="250" y="64" width="44" height="22" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="242.0" y="112.0" font-size="13" text-anchor="end" font-weight="normal" fill="#222222">Strip footing forms</text>
+<rect x="382" y="96" width="44" height="22" fill="#f3e2c4" stroke="#8a5a00" stroke-width="1.5"/>
+<path d="M294,75 L300,75 L300,107 L380,107" fill="none" stroke="#333333" stroke-width="2" marker-end="url(#n19-links-ah)"/>
+<text x="8.0" y="170.0" font-size="15" text-anchor="start" font-weight="bold" fill="#222222">Start-to-start with a 1-day lag (SS+1)</text>
+<text x="8.0" y="252.0" font-size="13" text-anchor="start" font-weight="normal" fill="#555555">Pull wire 1 day after conduit starts.</text>
+<text x="242.0" y="198.0" font-size="13" text-anchor="end" font-weight="normal" fill="#222222">Install conduit</text>
+<rect x="250" y="182" width="176" height="22" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="242.0" y="230.0" font-size="13" text-anchor="end" font-weight="normal" fill="#222222">Pull wire</text>
+<rect x="294" y="214" width="176" height="22" fill="#f3e2c4" stroke="#8a5a00" stroke-width="1.5"/>
+<path d="M254,204 L254,225 L254,225 L292,225" fill="none" stroke="#333333" stroke-width="2" marker-end="url(#n19-links-ah)"/>
+<text x="8.0" y="288.0" font-size="15" text-anchor="start" font-weight="bold" fill="#222222">Finish-to-finish with a 1-day lag (FF+1)</text>
+<text x="8.0" y="370.0" font-size="13" text-anchor="start" font-weight="normal" fill="#555555">Mud finishes 1 day after hanging finishes.</text>
+<text x="242.0" y="316.0" font-size="13" text-anchor="end" font-weight="normal" fill="#222222">Hang drywall</text>
+<rect x="250" y="300" width="176" height="22" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="242.0" y="348.0" font-size="13" text-anchor="end" font-weight="normal" fill="#222222">Tape and mud</text>
+<rect x="338" y="332" width="132" height="22" fill="#f3e2c4" stroke="#8a5a00" stroke-width="1.5"/>
+<path d="M426,311 L484,311 L484,343 L472,343" fill="none" stroke="#333333" stroke-width="2" marker-end="url(#n19-links-ah)"/>
+<text x="8.0" y="406.0" font-size="15" text-anchor="start" font-weight="bold" fill="#222222">Start-to-finish (SF)</text>
+<text x="8.0" y="488.0" font-size="13" text-anchor="start" font-weight="normal" fill="#555555">The rented heater cannot finish before furnace start-up starts.</text>
+<text x="242.0" y="434.0" font-size="13" text-anchor="end" font-weight="normal" fill="#222222">Start up furnace</text>
+<rect x="602" y="418" width="44" height="22" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="242.0" y="466.0" font-size="13" text-anchor="end" font-weight="normal" fill="#222222">Run rented heater</text>
+<rect x="470" y="450" width="132" height="22" fill="#f3e2c4" stroke="#8a5a00" stroke-width="1.5"/>
+<path d="M606,440 L606,461 L604,461" fill="none" stroke="#333333" stroke-width="2" marker-end="url(#n19-links-ah)"/>
+</svg>
+</div>
+
+<div class="figure-art" tabindex="0" role="group" aria-label="Figure, scroll sideways on a small screen">
+<svg viewBox="0 0 530 150" width="100%" role="img" aria-labelledby="n19-lead-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif" style="max-width:530px">
+<title id="n19-lead-title">Lead: tape and mud starts 2 days before hanging drywall finishes (FS minus 2).</title>
+<rect x="0" y="0" width="530" height="150" fill="#ffffff"/>
+<defs><marker id="n19-lead-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555555"/></marker><marker id="n19-lead-ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a3271d"/></marker><pattern id="n19-lead-hol" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#eeeeee"/><line x1="0" y1="0" x2="0" y2="8" stroke="#9a9a9a" stroke-width="3"/></pattern><pattern id="n19-lead-crit" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#a3271d"/><line x1="0" y1="0" x2="0" y2="10" stroke="#7a1a13" stroke-width="4"/></pattern></defs>
+<line x1="160" y1="28" x2="160" y2="120" stroke="#d0d0d0"/>
+<text x="160.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">0</text>
+<line x1="210" y1="28" x2="210" y2="120" stroke="#d0d0d0"/>
+<text x="210.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">1</text>
+<line x1="260" y1="28" x2="260" y2="120" stroke="#d0d0d0"/>
+<text x="260.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">2</text>
+<line x1="310" y1="28" x2="310" y2="120" stroke="#d0d0d0"/>
+<text x="310.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">3</text>
+<line x1="360" y1="28" x2="360" y2="120" stroke="#d0d0d0"/>
+<text x="360.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">4</text>
+<line x1="410" y1="28" x2="410" y2="120" stroke="#d0d0d0"/>
+<text x="410.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">5</text>
+<line x1="460" y1="28" x2="460" y2="120" stroke="#d0d0d0"/>
+<text x="460.0" y="22.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#555555">6</text>
+<text x="152.0" y="57.0" font-size="14" text-anchor="end" font-weight="normal" fill="#222222">Hang drywall</text>
+<rect x="160" y="40" width="200" height="24" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="152.0" y="97.0" font-size="14" text-anchor="end" font-weight="normal" fill="#222222">Tape and mud</text>
+<rect x="260" y="80" width="200" height="24" fill="#f3e2c4" stroke="#8a5a00" stroke-width="1.5"/>
+<path d="M360,70 L262,82" stroke="#333333" stroke-width="2" fill="none" marker-end="url(#n19-lead-ah)"/>
+<line x1="260" y1="128" x2="360" y2="128" stroke="#333333" stroke-width="1.5"/>
+<text x="310.0" y="144.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">lead of 2 days (FS−2)</text>
+</svg>
+</div>
+
+<p><strong>How to draw a network from a predecessor table.</strong></p>
+<ol>
+<li>Put the activities with no predecessors on the left.</li>
+<li>Place each other activity to the right of all its predecessors.</li>
+<li>Draw an arrow from each predecessor to its successor. Write the link type and lag on any arrow that is not plain FS.</li>
+<li>Check: every activity except the first has an arrow coming in, and every activity except the last has an arrow going out.</li>
+<li>Check that no arrow path loops back to an earlier box. A loop means "A waits for B and B waits for A", which can never be scheduled.</li>
+</ol>
+<h3>Worked example 1: the deck network</h3>
+<p>Riverbend Decks (a fictional company) has this predecessor table for a deck. Durations are in working days.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Activity</th>
+<th>Duration (days)</th>
+<th>Predecessors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Lay out and dig post holes</td>
+<td>1</td>
+<td>none (start)</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Pour pier footings</td>
+<td>1</td>
+<td>A</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Set posts and beams</td>
+<td>2</td>
+<td>B FS+2</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Install joists</td>
+<td>2</td>
+<td>C</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Install decking</td>
+<td>2</td>
+<td>D</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Cut stair stringers</td>
+<td>1</td>
+<td>A</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Build stairs</td>
+<td>1</td>
+<td>E, F</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Install railings</td>
+<td>2</td>
+<td>E</td>
+</tr>
+<tr>
+<td>I</td>
+<td>Final inspection</td>
+<td>1</td>
+<td>G, H</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>A has no predecessors, so it goes on the far left.</li>
+<li>B and F both follow A. Put them in the next column. A is a burst.</li>
+<li>C follows B with FS+2. The 2-day lag lets the pier concrete cure. Write "FS+2" on that arrow.</li>
+<li>D follows C, and E follows D.</li>
+<li>G needs E and F. H needs E. Put G and H to the right of E. E is a burst.</li>
+<li>I needs G and H, so it is a merge at the far right.</li>
+<li>Successors: A → B, F. B → C. C → D. D → E. E → G, H. F → G. G → I. H → I.</li>
+</ol>
+<div class="figure-art" style="overflow-x:auto" tabindex="0" role="region" aria-label="Deck network, scrolls sideways">
+<svg viewBox="0 0 1536 420" width="100%" role="img" aria-labelledby="n19-deck-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif" style="min-width:1105px">
+<title id="n19-deck-title">Activity-on-node network for the deck job, drawn from the predecessor table. Each box shows the activity letter, name and duration.</title>
+<rect x="0" y="0" width="1536" height="420" fill="#ffffff"/>
+<defs><marker id="n19-deck-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555555"/></marker><marker id="n19-deck-ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a3271d"/></marker><pattern id="n19-deck-hol" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#eeeeee"/><line x1="0" y1="0" x2="0" y2="8" stroke="#9a9a9a" stroke-width="3"/></pattern><pattern id="n19-deck-crit" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#a3271d"/><line x1="0" y1="0" x2="0" y2="10" stroke="#7a1a13" stroke-width="4"/></pattern></defs>
+<path d="M192.0,210.0 C218.0,210.0 218.0,210.0 242.0,210.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<path d="M412.0,210.0 C438.0,210.0 438.0,210.0 462.0,210.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<rect x="416.8" y="189.0" width="42" height="20" rx="3" fill="#ffffff" stroke="#888888" stroke-width="1"/>
+<text x="438.0" y="204.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">FS+2</text>
+<path d="M632.0,210.0 C658.0,210.0 658.0,210.0 682.0,210.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<path d="M852.0,210.0 C878.0,210.0 878.0,210.0 902.0,210.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<path d="M192.0,210.0 C218.0,210.0 218.0,72.0 242.0,72.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<path d="M1072.0,210.0 C1098.0,210.0 1098.0,72.0 1122.0,72.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<path d="M412.0,72.0 C768.0,72.0 768.0,72.0 1122.0,72.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<path d="M1072.0,210.0 C1098.0,210.0 1098.0,348.0 1122.0,348.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<path d="M1292.0,72.0 C1318.0,72.0 1318.0,210.0 1342.0,210.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<path d="M1292.0,348.0 C1318.0,348.0 1318.0,210.0 1342.0,210.0" fill="none" stroke="#555555" stroke-width="1.8" marker-end="url(#n19-deck-ah)"/>
+<g>
+<rect x="24" y="162" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="24" y1="188" x2="192" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="24" y1="232" x2="192" y2="232" stroke="#555555" stroke-width="1"/>
+<line x1="80.0" y1="162" x2="80.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="80.0" y1="232" x2="80.0" y2="258" stroke="#555555" stroke-width="1"/>
+<line x1="136.0" y1="162" x2="136.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="136.0" y1="232" x2="136.0" y2="258" stroke="#555555" stroke-width="1"/>
+<text x="52.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="52.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="108.0" y="181.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">1</text>
+<text x="108.0" y="251.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="164.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="164.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="108.0" y="206.0" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">A  Lay out and dig</text>
+<text x="108.0" y="223.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#222222">post holes</text>
+</g>
+<g>
+<rect x="244" y="162" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="244" y1="188" x2="412" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="244" y1="232" x2="412" y2="232" stroke="#555555" stroke-width="1"/>
+<line x1="300.0" y1="162" x2="300.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="300.0" y1="232" x2="300.0" y2="258" stroke="#555555" stroke-width="1"/>
+<line x1="356.0" y1="162" x2="356.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="356.0" y1="232" x2="356.0" y2="258" stroke="#555555" stroke-width="1"/>
+<text x="272.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="272.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="328.0" y="181.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">1</text>
+<text x="328.0" y="251.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="384.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="384.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="328.0" y="214.5" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">B  Pour pier footings</text>
+</g>
+<g>
+<rect x="464" y="162" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="464" y1="188" x2="632" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="464" y1="232" x2="632" y2="232" stroke="#555555" stroke-width="1"/>
+<line x1="520.0" y1="162" x2="520.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="520.0" y1="232" x2="520.0" y2="258" stroke="#555555" stroke-width="1"/>
+<line x1="576.0" y1="162" x2="576.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="576.0" y1="232" x2="576.0" y2="258" stroke="#555555" stroke-width="1"/>
+<text x="492.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="492.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="548.0" y="181.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">2</text>
+<text x="548.0" y="251.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="604.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="604.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="548.0" y="214.5" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">C  Set posts and beams</text>
+</g>
+<g>
+<rect x="684" y="162" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="684" y1="188" x2="852" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="684" y1="232" x2="852" y2="232" stroke="#555555" stroke-width="1"/>
+<line x1="740.0" y1="162" x2="740.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="740.0" y1="232" x2="740.0" y2="258" stroke="#555555" stroke-width="1"/>
+<line x1="796.0" y1="162" x2="796.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="796.0" y1="232" x2="796.0" y2="258" stroke="#555555" stroke-width="1"/>
+<text x="712.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="712.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="768.0" y="181.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">2</text>
+<text x="768.0" y="251.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="824.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="824.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="768.0" y="214.5" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">D  Install joists</text>
+</g>
+<g>
+<rect x="904" y="162" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="904" y1="188" x2="1072" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="904" y1="232" x2="1072" y2="232" stroke="#555555" stroke-width="1"/>
+<line x1="960.0" y1="162" x2="960.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="960.0" y1="232" x2="960.0" y2="258" stroke="#555555" stroke-width="1"/>
+<line x1="1016.0" y1="162" x2="1016.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="1016.0" y1="232" x2="1016.0" y2="258" stroke="#555555" stroke-width="1"/>
+<text x="932.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="932.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="988.0" y="181.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">2</text>
+<text x="988.0" y="251.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="1044.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1044.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="988.0" y="214.5" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">E  Install decking</text>
+</g>
+<g>
+<rect x="244" y="24" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="244" y1="50" x2="412" y2="50" stroke="#555555" stroke-width="1"/>
+<line x1="244" y1="94" x2="412" y2="94" stroke="#555555" stroke-width="1"/>
+<line x1="300.0" y1="24" x2="300.0" y2="50" stroke="#555555" stroke-width="1"/>
+<line x1="300.0" y1="94" x2="300.0" y2="120" stroke="#555555" stroke-width="1"/>
+<line x1="356.0" y1="24" x2="356.0" y2="50" stroke="#555555" stroke-width="1"/>
+<line x1="356.0" y1="94" x2="356.0" y2="120" stroke="#555555" stroke-width="1"/>
+<text x="272.0" y="43.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="272.0" y="113.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="328.0" y="43.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">1</text>
+<text x="328.0" y="113.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="384.0" y="43.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="384.0" y="113.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="328.0" y="76.5" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">F  Cut stair stringers</text>
+</g>
+<g>
+<rect x="1124" y="24" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="1124" y1="50" x2="1292" y2="50" stroke="#555555" stroke-width="1"/>
+<line x1="1124" y1="94" x2="1292" y2="94" stroke="#555555" stroke-width="1"/>
+<line x1="1180.0" y1="24" x2="1180.0" y2="50" stroke="#555555" stroke-width="1"/>
+<line x1="1180.0" y1="94" x2="1180.0" y2="120" stroke="#555555" stroke-width="1"/>
+<line x1="1236.0" y1="24" x2="1236.0" y2="50" stroke="#555555" stroke-width="1"/>
+<line x1="1236.0" y1="94" x2="1236.0" y2="120" stroke="#555555" stroke-width="1"/>
+<text x="1152.0" y="43.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1152.0" y="113.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1208.0" y="43.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">1</text>
+<text x="1208.0" y="113.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="1264.0" y="43.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1264.0" y="113.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1208.0" y="76.5" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">G  Build stairs</text>
+</g>
+<g>
+<rect x="1124" y="300" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="1124" y1="326" x2="1292" y2="326" stroke="#555555" stroke-width="1"/>
+<line x1="1124" y1="370" x2="1292" y2="370" stroke="#555555" stroke-width="1"/>
+<line x1="1180.0" y1="300" x2="1180.0" y2="326" stroke="#555555" stroke-width="1"/>
+<line x1="1180.0" y1="370" x2="1180.0" y2="396" stroke="#555555" stroke-width="1"/>
+<line x1="1236.0" y1="300" x2="1236.0" y2="326" stroke="#555555" stroke-width="1"/>
+<line x1="1236.0" y1="370" x2="1236.0" y2="396" stroke="#555555" stroke-width="1"/>
+<text x="1152.0" y="319.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1152.0" y="389.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1208.0" y="319.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">2</text>
+<text x="1208.0" y="389.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="1264.0" y="319.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1264.0" y="389.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1208.0" y="352.5" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">H  Install railings</text>
+</g>
+<g>
+<rect x="1344" y="162" width="168" height="96" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+<line x1="1344" y1="188" x2="1512" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="1344" y1="232" x2="1512" y2="232" stroke="#555555" stroke-width="1"/>
+<line x1="1400.0" y1="162" x2="1400.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="1400.0" y1="232" x2="1400.0" y2="258" stroke="#555555" stroke-width="1"/>
+<line x1="1456.0" y1="162" x2="1456.0" y2="188" stroke="#555555" stroke-width="1"/>
+<line x1="1456.0" y1="232" x2="1456.0" y2="258" stroke="#555555" stroke-width="1"/>
+<text x="1372.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1372.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1428.0" y="181.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">1</text>
+<text x="1428.0" y="251.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222"></text>
+<text x="1484.0" y="181.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1484.0" y="251.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222"></text>
+<text x="1428.0" y="214.5" font-size="14" text-anchor="middle" font-weight="bold" fill="#222222">I  Final inspection</text>
+</g>
+</svg>
+</div>
+
+<h3>Worked example 2: timing each link type</h3>
+<p>Use the bars in the link type picture.</p>
+<ol>
+<li><strong>FS+2.</strong> Pour footings finishes at day 1. Strip forms can start at 1 + 2 = <strong>day 3</strong>.</li>
+<li><strong>SS+1.</strong> Install conduit starts at day 0. Pull wire can start at 0 + 1 = <strong>day 1</strong>.</li>
+<li><strong>FF+1.</strong> Hang drywall finishes at day 4. Tape and mud finishes at 4 + 1 = <strong>day 5</strong>. It takes 3 days, so it starts at 5 − 3 = <strong>day 2</strong>.</li>
+<li><strong>SF.</strong> Start-up of the furnace starts at day 8. The rented heater finishes at day 8 at the earliest. It runs 3 days, so it starts at 8 − 3 = <strong>day 5</strong>.</li>
+<li><strong>Lead, FS−2.</strong> Hang drywall finishes at day 4. Tape and mud starts at 4 − 2 = <strong>day 2</strong>, on the rooms that are already hung.</li>
+</ol>
+<h2>Practice</h2>
+<p><strong>Task 1</strong> (level 1). Write the link type (FS, SS, FF or SF) and any lag or lead for each sentence.</p>
+<p>a) Paint can start 1 day after the drywall taping is finished.<br />
+b) The pipe insulators start 2 days after the pipefitters start, and work behind them.<br />
+c) Testing the fire alarm cannot finish until the last device is installed.<br />
+d) Backfill starts as soon as the waterproofing is finished.<br />
+e) The old electrical service must keep running until the new service is energized.<br />
+f) The floor tile setter starts 1 day before the wall tile is finished.</p>
+<hr />
+<p><strong>Task 2</strong> (level 1-2). Use this predecessor table for a washroom renovation by a fictional contractor.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Activity</th>
+<th>Duration (days)</th>
+<th>Predecessors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Demolition and haul-out</td>
+<td>2</td>
+<td>none (start)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Frame new partition</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Plumbing rough-in</td>
+<td>3</td>
+<td>2 SS+1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Electrical rough-in</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Exhaust fan duct</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Rough-in inspection</td>
+<td>1</td>
+<td>3, 4, 5</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Insulation and vapour barrier</td>
+<td>1</td>
+<td>6</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Hang drywall and cement board</td>
+<td>2</td>
+<td>7</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Tape and mud</td>
+<td>3</td>
+<td>8 SS+1, 8 FF+1</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Waterproof membrane</td>
+<td>1</td>
+<td>8</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Floor and wall tile</td>
+<td>2</td>
+<td>10 FS+1</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Prime and paint</td>
+<td>2</td>
+<td>9 FS+1</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Set fixtures and devices</td>
+<td>2</td>
+<td>11, 12</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Final inspection</td>
+<td>0</td>
+<td>13</td>
+</tr>
+</tbody>
+</table></div>
+<p>a) List the predecessors of activity 6.<br />
+b) List the successors of activity 2 and of activity 8.<br />
+c) Which activity is the biggest merge? Which activities are bursts?<br />
+d) Which activity starts the job, and which one ends it?</p>
+<hr />
+<p><strong>Task 3</strong> (level 2). Draw the activity-on-node network for the garage job. Write each activity's number, name and duration in its box.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Activity</th>
+<th>Duration (days)</th>
+<th>Predecessors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Layout and excavate</td>
+<td>2</td>
+<td>none (start)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Form footings</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Place footing rebar</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Footing inspection</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Pour footings</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Order and deliver roof trusses</td>
+<td>10</td>
+<td>1</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Under-slab electrical conduit</td>
+<td>2</td>
+<td>5</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Under-slab plumbing</td>
+<td>1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Pour slab</td>
+<td>2</td>
+<td>7, 8</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Frame walls</td>
+<td>4</td>
+<td>9</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Set trusses and sheathe roof</td>
+<td>3</td>
+<td>10, 6</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Shingles</td>
+<td>2</td>
+<td>11</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Install overhead door</td>
+<td>1</td>
+<td>11</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<p><strong>Task 4</strong> (level 2). Find the successor's ES and EF for each link. Durations are in working days.</p>
+<p>a) The predecessor finishes at day 6. The successor follows FS and takes 3 days.<br />
+b) The predecessor starts at day 4. The successor follows SS+2 and takes 5 days.<br />
+c) The predecessor finishes at day 12. The successor follows FF+1 and takes 4 days.<br />
+d) A slab pour finishes at day 10. Stripping follows FS+3 and takes 2 days.<br />
+e) The predecessor finishes at day 8. The successor follows FS−2 and takes 4 days.</p>
+<hr />
+<p><strong>Task 5</strong> (level 2-3). This predecessor table uses the activities and logic of a real Microsoft Project schedule for the parkade foundation of a six-storey wood-frame building.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Activity</th>
+<th>Duration (days)</th>
+<th>Predecessors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>42</td>
+<td>Form footings grid A-D</td>
+<td>5</td>
+<td>none (start)</td>
+</tr>
+<tr>
+<td>43</td>
+<td>Rebar footings grid A-D</td>
+<td>4</td>
+<td>42 SS+2</td>
+</tr>
+<tr>
+<td>44</td>
+<td>Pour footings grid A-D</td>
+<td>3</td>
+<td>43</td>
+</tr>
+<tr>
+<td>45</td>
+<td>Form footings grid E-H</td>
+<td>4</td>
+<td>42 SS+3</td>
+</tr>
+<tr>
+<td>46</td>
+<td>Rebar footings grid E-H</td>
+<td>4</td>
+<td>45 SS+2</td>
+</tr>
+<tr>
+<td>47</td>
+<td>Pour footings grid E-H</td>
+<td>2</td>
+<td>46</td>
+</tr>
+<tr>
+<td>48</td>
+<td>Footings complete</td>
+<td>0</td>
+<td>47</td>
+</tr>
+<tr>
+<td>50</td>
+<td>Form foundation walls north</td>
+<td>6</td>
+<td>44, 48</td>
+</tr>
+<tr>
+<td>51</td>
+<td>Rebar walls north</td>
+<td>5</td>
+<td>50 SS+2</td>
+</tr>
+<tr>
+<td>52</td>
+<td>Pour walls north</td>
+<td>7</td>
+<td>51</td>
+</tr>
+<tr>
+<td>53</td>
+<td>Form foundation walls south</td>
+<td>6</td>
+<td>47</td>
+</tr>
+<tr>
+<td>54</td>
+<td>Rebar walls south</td>
+<td>4</td>
+<td>53 SS+2</td>
+</tr>
+<tr>
+<td>55</td>
+<td>Pour walls south</td>
+<td>6</td>
+<td>54</td>
+</tr>
+<tr>
+<td>56</td>
+<td>Waterproof walls north</td>
+<td>7</td>
+<td>52 FS+5</td>
+</tr>
+<tr>
+<td>57</td>
+<td>Waterproof walls south</td>
+<td>7</td>
+<td>55 FS+5</td>
+</tr>
+<tr>
+<td>58</td>
+<td>Drainage and protection board</td>
+<td>6</td>
+<td>56 SS+2, 57 SS+2</td>
+</tr>
+<tr>
+<td>59</td>
+<td>Backfill foundation walls</td>
+<td>6</td>
+<td>58 SS+3</td>
+</tr>
+<tr>
+<td>60</td>
+<td>Foundation walls complete</td>
+<td>0</td>
+<td>59</td>
+</tr>
+</tbody>
+</table></div>
+<p>a) Find two links that are SS with a lag. Explain one of them in your own words.<br />
+b) Activity 56 follows 52 with FS+5. Give a reason a planner might put 5 days between pouring a wall and waterproofing it.<br />
+c) Activity 58 has two predecessors, both SS+2. What does that mean for the drainage crew?<br />
+d) Activity 48 is a milestone with a duration of 0. Why is it useful?</p>
+<hr />
+<p><strong>Task 6</strong> (level 3). A fictional planner made this table for a storage shed. Find the logic errors and explain how to fix each one.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Activity</th>
+<th>Duration (days)</th>
+<th>Predecessors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Excavate</td>
+<td>1</td>
+<td>none (start)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Form slab</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Pour slab</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Frame walls</td>
+<td>2</td>
+<td>3, 5</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Install roof</td>
+<td>2</td>
+<td>4</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Order windows</td>
+<td>5</td>
+<td>none (start)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Install windows</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Final clean</td>
+<td>1</td>
+<td>5, 7</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<hr />
+<h2>Check yourself</h2>
+<ol>
+<li>What is a predecessor?</li>
+<li>In activity-on-node, what does a box show and what does an arrow show?</li>
+<li>Which link type is the most common?</li>
+<li>What does FS+2 mean?</li>
+<li>What is a lead?</li>
+</ol></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../18-gantt-charts/learner.html">← Lesson 18: Read and draw a Gantt chart</a></li><li><a rel="next" href="../20-forward-and-backward-pass/learner.html">Lesson 20: The forward and backward pass →</a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

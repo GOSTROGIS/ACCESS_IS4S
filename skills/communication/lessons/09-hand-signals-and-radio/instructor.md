@@ -1,8 +1,10 @@
 # Hand signals and radio on a job site
 
+**Session:** Communication lesson 9 of 13.
+
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 9 of the Communication series. The session runs 60 minutes. Ask who led or helped lead a talk since last session.
+Welcome learners to session 9 of the Communication series. The session runs 75 minutes. Ask who led or helped lead a talk since last session.
 
 Hook: without speaking, use only gestures to guide one volunteer from the door to a chair across the room. Then ask the group: "What made that work? What would have happened if three of us were waving at once?" Lead into why crane work relies on a qualified signaller and one set of standard signals.
 
@@ -31,9 +33,10 @@ By the end of the session, learners will be able to:
 | 2.4 | Teach the radio habits. Make clear they are a class practice pattern, and that a site's own radio rules come first. Read the worked example with a learner as Dana. Run Task 4. | Read Jordan's part, write a radio call with a read-back. | Learner page | 8 min |
 | 2.5 | Task 3. Line up learners. Whisper this message to the first one: "Pump truck at gate three at ten-fifteen. Keep the north lane clear." Compare first and last versions. | Pass the message with call, answer, message and read-back. Discuss what changed. | None | 7 min |
 | 2.6 | Task 5. Take answers quickly. | Name the rule for each situation. | Learner page | 3 min |
+| 2.7 | Show the four signal panels. Point out that the drawings come from TG 07-29, and that two marked * come from ASME B30.5. Set Task 6 with the drawings covered, then Tasks 7 and 8 | Name signals from drawings, choose signals, apply the rules to a blind lift | Learner page, printed TG 07-29 | 15 min |
 | 4.1 | Post-assessment questions. | Answer. | None | 5 min |
 | 4.2 | Summary and action plan. | Hand back assertiveness goal sheets from session 3, if collected. Learners note which goals they met and pick one next step. | Goal sheets | 3 min |
-| | | | **Total** | **60 min** |
+| | | | **Total** | **75 min** |
 
 Notes for the instructor:
 
@@ -57,7 +60,7 @@ During this session we covered:
 - when a radio or other system must replace hand signals, and the ban on multi-channel radios for directing crane movement
 - clear radio habits: call, wait, short message, clear numbers, read-back, and no answer means no message
 
-This is the last session of the Communication series. Hand back goal sheets and ask each learner to name one communication habit from the series they will keep using.
+This closes the first part of the Communication series. Lessons 10 to 13 use these habits for instructions, reports up the chain, drawings and schedules. Hand back goal sheets and ask each learner to name one communication habit from the series they will keep using.
 
 ## Sources
 
@@ -66,3 +69,6 @@ This is the last session of the Communication series. Hand back goal sheets and 
 - Section 15.20 (signals in Figure 15-1 must be used when hand signals are used) and section 15.2 (qualified riggers familiar with the code of signals): WorkSafeBC, "OHS Regulation Part 15: Rigging," https://www.worksafebc.com/en/law-policy/occupational-health-safety/searchable-ohs-regulation/ohs-regulation/part-15-rigging, checked 2026-11-06.
 - Hand signal chart: WorkSafeBC toolbox meeting guide "Hand signals for hoist and crane operations," TG 07-29, published 2007, https://www.worksafebc.com/en/resources/health-safety/toolbox-meeting-guides/hand-signals-for-hoist-and-crane-operations, checked 2026-11-06.
 - This lesson has no older ESAF version. All people, companies and situations in the worked example and tasks are fictional.
+- Signal names and descriptions drawn in this lesson (stop, raise the boom and lower the load, lower the boom and raise the load, hoist, extend boom, raise boom, swing, move slowly, dog (stop) everything, lower, retract boom, lower boom): WorkSafeBC toolbox meeting guide TG 07-29 text, as reproduced at https://www.hsewebsite.com/wp-content/uploads/2016/08/hand-signals-for-hoist-and-crane-operators.pdf (copy of the WorkSafeBC guide), checked 2026-11-08. The official page is listed above.
+- Emergency stop and travel (marked *): ASME B30.5 wording as published in OSHA 29 CFR 1926 Subpart CC Appendix A, "Standard Hand Signals," https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926SubpartCCAppA, and the NCCCO Signalperson Reference Manual, https://www.nccco.org/docs/default-source/reference-materials-2014/sgp_rm_051214a-web.pdf, both checked 2026-11-08. These are US and industry references, not BC law. Learners must check the chart used on their site.
+- The signal drawings are original line drawings made for this lesson from the descriptions above.

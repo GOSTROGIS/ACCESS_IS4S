@@ -1,8 +1,8 @@
 ---
 title: Giving and taking feedback and criticism
 summary: Give thanks and corrections that are specific and fair, take criticism without getting defensive, and know when criticism crosses into bullying.
-level: 2
-time: 75 min
+level: 2-3
+time: 85 min
 components: Listen to understand; Speak with purpose; Adapt to your audience and contexts
 rebuilds: A - Writing/A - Thinking Skills/Handling Criticism-rb.docx; A - Oral Communication/Gratitude & Compliments-rb.xlsx; A - Oral Communication/Communication Series-rb.docx
 ---
@@ -34,6 +34,30 @@ An apprentice is corrected many times a day. That is how a trade is learned. A j
 3. **What to do**: "Run them along the wall and tape the crossing."
 
 Talk about the work, not the person. Do it in private when you can. Keep your voice steady.
+
+Here is the correction as a card you can carry in your head:
+
+<div class="figure-art">
+<svg viewBox="0 0 640 366" width="100%" role="img" aria-labelledby="m05-card-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m05-card-title">A correction card with three rows: what I saw, why it matters, what to do. The example is about extension cords across a walkway.</title>
+<defs><marker id="m05-card-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="366" fill="#ffffff"/>
+<rect x="20" y="20" width="600" height="300" rx="8" fill="#ffffff" stroke="#1f3a5f" stroke-width="3"/>
+<rect x="30" y="30" width="180" height="86" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="120" y="79.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">What I saw</text>
+<text x="410" y="68" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">The cords were run across the walkway</text>
+<text x="410" y="89.25" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">again this morning.</text>
+<rect x="30" y="126" width="180" height="86" rx="8" fill="#fdf1d8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="120" y="175.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Why it matters</text>
+<text x="410" y="164" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Someone carrying sheets</text>
+<text x="410" y="185.25" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">could trip.</text>
+<rect x="30" y="222" width="180" height="86" rx="8" fill="#e6f3ec" stroke="#1f3a5f" stroke-width="2"/>
+<text x="120" y="271.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">What to do</text>
+<text x="410" y="260" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Run them along the wall</text>
+<text x="410" y="281.25" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">and tape the crossing.</text>
+<text x="320" y="350" font-size="17" text-anchor="middle" font-weight="normal" fill="#6b6b6b" font-style="italic">Talk about the work, not the person. Private if you can.</text>
+</svg>
+</div>
 
 ### Taking criticism: the A B C D techniques
 
@@ -117,6 +141,28 @@ ______________________________________________
 4. The crew makes every new apprentice go through a humiliating "initiation." ___
 5. A journeyperson disagrees with your plan for routing the conduit and explains why. ___
 6. Your lead hand yells at you and threatens you after a mistake. ___
+
+**Task 7** (level 2) **Use the card.** Your crew-mate leaves cut rebar ends sticking up by the walkway with no caps on them. Fill in the card.
+
+What I saw: ______________________________________________
+
+Why it matters: ______________________________________________
+
+What to do: ______________________________________________
+
+**Task 8** (level 3) **You are the lead hand.** The superintendent walks by and says, in front of your whole crew: "Your crew's housekeeping is a disgrace. Look at this mess."
+
+a) Write your reply. Use Boundaries and at least one other technique.
+
+______________________________________________
+
+b) Later, in private, the superintendent shows you three problems: offcuts in the stairwell, a cord across the doorway and an open pail of screws. Write the correction you give your crew. Use the card.
+
+______________________________________________
+
+c) Why do you give your crew the correction as facts, not as "the super is mad at us"?
+
+______________________________________________
 
 ## Check yourself
 

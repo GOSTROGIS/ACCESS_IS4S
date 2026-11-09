@@ -47,6 +47,60 @@ SkilledTradesBC describes an apprenticeship as about 80 percent work-based train
 7. **Get a Recommendation for Certification** from your sponsor.
 8. **Receive your credential:** a Certificate of Qualification for BC, with a Red Seal Endorsement in Red Seal trades so you can work across Canada.
 
+<div class="figure-art">
+<svg viewBox="0 0 720 440" width="100%" role="img" aria-labelledby="ad07-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="ad07-f1-title">Eight steps in two rows: find your trade, find a sponsor, register in the Portal, register for technical training, pass level exams for each level, pass the certification exam, get a recommendation from your sponsor, receive your credential.</title>
+<defs><marker id="ad07-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="ad07-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="440" fill="#ffffff"/>
+<text x="360.0" y="30.0" font-size="22" text-anchor="middle" font-weight="bold" fill="#222222">The BC apprenticeship path</text>
+<rect x="20.0" y="60.0" width="150.0" height="92.0" rx="8" fill="#d6e4f2" stroke="#2f5d8a" stroke-width="2"/>
+<text x="95.0" y="92.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Step 1</text>
+<text x="95.0" y="111.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">Find your</text>
+<text x="95.0" y="131.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">trade</text>
+<line x1="172.0" y1="106.0" x2="194.0" y2="106.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad07-f1-ar)"/>
+<rect x="196.0" y="60.0" width="150.0" height="92.0" rx="8" fill="#d6e4f2" stroke="#2f5d8a" stroke-width="2"/>
+<text x="271.0" y="92.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Step 2</text>
+<text x="271.0" y="111.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">Find a</text>
+<text x="271.0" y="131.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">sponsor</text>
+<line x1="348.0" y1="106.0" x2="370.0" y2="106.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad07-f1-ar)"/>
+<rect x="372.0" y="60.0" width="150.0" height="92.0" rx="8" fill="#d6e4f2" stroke="#2f5d8a" stroke-width="2"/>
+<text x="447.0" y="92.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Step 3</text>
+<text x="447.0" y="111.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">Register in</text>
+<text x="447.0" y="131.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">the Portal</text>
+<line x1="524.0" y1="106.0" x2="546.0" y2="106.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad07-f1-ar)"/>
+<rect x="548.0" y="60.0" width="150.0" height="92.0" rx="8" fill="#d6e4f2" stroke="#2f5d8a" stroke-width="2"/>
+<text x="623.0" y="92.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Step 4</text>
+<text x="623.0" y="111.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">Register for</text>
+<text x="623.0" y="131.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">tech training</text>
+<rect x="20.0" y="250.0" width="150.0" height="92.0" rx="8" fill="#d8ecd5" stroke="#2e6b34" stroke-width="2"/>
+<text x="95.0" y="282.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Step 8</text>
+<text x="95.0" y="301.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">Credential:</text>
+<text x="95.0" y="321.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">C of Q, Red Seal</text>
+<rect x="196.0" y="250.0" width="150.0" height="92.0" rx="8" fill="#fbe3c8" stroke="#b85c00" stroke-width="2"/>
+<text x="271.0" y="282.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Step 7</text>
+<text x="271.0" y="301.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">Recommendation</text>
+<text x="271.0" y="321.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">from sponsor</text>
+<line x1="194.0" y1="296.0" x2="172.0" y2="296.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad07-f1-ar)"/>
+<rect x="372.0" y="250.0" width="150.0" height="92.0" rx="8" fill="#fbe3c8" stroke="#b85c00" stroke-width="2"/>
+<text x="447.0" y="282.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Step 6</text>
+<text x="447.0" y="301.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">Certification</text>
+<text x="447.0" y="321.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">exam, 70%+</text>
+<line x1="370.0" y1="296.0" x2="348.0" y2="296.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad07-f1-ar)"/>
+<rect x="548.0" y="250.0" width="150.0" height="92.0" rx="8" fill="#fbe3c8" stroke="#b85c00" stroke-width="2"/>
+<text x="623.0" y="282.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Step 5</text>
+<text x="623.0" y="301.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">Level exams</text>
+<text x="623.0" y="321.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">each level</text>
+<line x1="546.0" y1="296.0" x2="524.0" y2="296.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad07-f1-ar)"/>
+<line x1="623.0" y1="154.0" x2="623.0" y2="248.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad07-f1-ar)"/>
+<path d="M702,296 q36,-95 0,-190" stroke="#6b6b6b" stroke-width="2" fill="none" stroke-dasharray="6 5" marker-end="url(#ad07-f1-ar)"/>
+<text x="694.0" y="205.0" font-size="14" text-anchor="end" font-weight="normal" fill="#6b6b6b">repeat for</text>
+<text x="694.0" y="222.5" font-size="14" text-anchor="end" font-weight="normal" fill="#6b6b6b">each level</text>
+<rect x="20.0" y="368.0" width="680.0" height="54.0" rx="6" fill="#f4f1ea" stroke="#bdb6aa" stroke-width="1"/>
+<text x="360.0" y="392.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">About 80% of the training is at work, about 20% in class.</text>
+<text x="360.0" y="413.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#6b6b6b">The average is about 4 years across all trades.</text>
+</svg>
+</div>
+
 ### Compulsory trades
 
 In BC, seven trades fall under Skilled Trades Certification (compulsory trades): Construction Electrician, Industrial Electrician, Powerline Technician, Steamfitter/Pipefitter, Refrigeration and Air Conditioning Mechanic, Gasfitter Class A and Class B, and Sheet Metal Worker. To work in these trades you must be a registered apprentice, a trade qualifier or a certified journeyperson. Employers must keep a ratio of no more than two apprentices to one journeyperson. Mobile Crane Operator and Tower Crane Operator become compulsory trades on July 5, 2027.
@@ -72,6 +126,18 @@ The old ACCESS Individual Enhancement Plan tracked short, mid and long-term goal
 | Short: apply to 5 electrical contractors for an apprentice job | End of next month | Program staff, online job boards | 5 applications sent |
 | Mid: registered apprentice with 1,000 hours logged | In 12 months | Sponsor, SkilledTradesBC Portal | Hours show in the Portal |
 | Long: Red Seal Endorsement | In 5 years | Sponsor, training provider, study group | Certificate received |
+
+### Worked example: how many weeks to the next level?
+
+Tasha is now a registered construction electrician apprentice. Her sponsor wants her to have 1,500 work-based training hours before she goes to Level 2. This is her sponsor's plan, not a SkilledTradesBC rule. The Portal shows 1,200 hours. She works 38 hours a week.
+
+**Step 1. Hours to go.** 1,500 − 1,200 = 300 hours.
+
+**Step 2. Weeks to go.** 300 ÷ 38 = 7.89. Round up to **8 weeks**, because after 7 weeks she would have only 7 × 38 = 266 more hours, 34 short.
+
+**Step 3. Check.** After 8 weeks: 1,200 + 8 × 38 = 1,200 + 304 = 1,504 hours. That is past 1,500.
+
+**Step 4. Act now.** Classes fill quickly, so Tasha registers for Level 2 technical training today, for a class that starts after week 8. She also writes a goal she can check: "1,500 hours in the Portal in 8 weeks."
 
 ## Practice
 

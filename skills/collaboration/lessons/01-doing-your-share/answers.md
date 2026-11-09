@@ -57,6 +57,20 @@ Any honest, job-related answer is fine. Learners do not have to share personal o
 
 **Steps:** list each person or group named in the facts, then look at what happened before their part in the order of the story.
 
+## Task 6 (level 2)
+
+**a)** Dana's laid-out plates and Marcus's cut studs.
+**b)** Dana, who checks the wall, and the whole crew, who stand it up.
+**c)** Marcus, Priya (nothing to nail) and Dana (stops her layout to look for the cut list). Tomas may also wait if the crew needs him to cut.
+**d)** Open. A good chart has the learner in the middle, at least one box above (work they wait on) and one box below (work that waits on them), joined by arrows.
+
+## Task 7 (level 3)
+
+**a)** Tying the rebar on the north footing. The pump truck arrives at 7:30 and Jess arrives at 7:40. If the rebar is not tied, the pour waits and the truck sits.
+**b)** Ray, or the lead hand. Ray is fast at tying rebar, so the footing is most likely to be ready by 7:30. A good answer gives a reason based on strengths and the deadline.
+**c)** Moving material: chairs, bar and tie wire to Ray, and clearing the pump truck's path. Ali has never tied rebar, so 7:30 is not the time to learn it alone.
+**d)** Sample: "Thanks for the heads-up. Ray is starting your footing. When you get here, check his ties on the north side, then help with the pour." A good text thanks Jess for telling you early, says who is covering and gives Jess a clear job on arrival.
+
 ## Check yourself 1
 
 "Your ability to contribute and support others to achieve a common goal." (Government of Canada, Skills for Success.)

@@ -1,6 +1,6 @@
 # Reading a tape measure to the sixteenth
 
-**Session:** Numeracy lesson 9 of 16. **Total length:** 75 minutes.
+**Session:** Numeracy lesson 9 of 21. **Total length:** 75 minutes.
 
 **Before the session:** have one tape measure for each pair, scrap lumber offcuts at least 600 mm long, pencils, and the [Numeracy Hub Measuring Tools tab](../../hub/index.html#measure) ready to project. This lesson follows the Intake 142 decks for [Day 05](../../../../programs/carpentry/intake-142/PDF/Day-05_2026-11-04_Week-2.pdf), [Day 06](../../../../programs/carpentry/intake-142/PDF/Day-06_2026-11-05_Week-2.pdf) and [Day 07](../../../../programs/carpentry/intake-142/PDF/Day-07_2026-11-06_Week-2.pdf).
 

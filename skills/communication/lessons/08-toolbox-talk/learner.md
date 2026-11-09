@@ -2,7 +2,7 @@
 title: Giving a short toolbox talk
 summary: Plan and deliver a five-minute safety talk to a crew, with a clear opening, a few key points, something to show, a check and a closing action.
 level: 2-3
-time: 90 min
+time: 100 min
 components: Speak with clarity; Speak with purpose; Adapt to your audience and contexts
 rebuilds: A - Oral Communication/Presentation Skills-rb.xlsx
 ---
@@ -22,6 +22,34 @@ Most BC crews hold short safety talks, often called toolbox talks or crew talks.
 3. **Show something.** A tool, a photo, the drawing, the sign on the wall. Showing helps people who learn by seeing and people whose first language is different from yours.
 4. **Check.** Ask a question that needs more than "yes": "What's the first thing you do if the lead hand asks you to dig before the locates are marked?"
 5. **Close with one action.** "Before you pick up a shovel today, check the locate marks with me."
+
+Here is the shape as a card you can copy onto an index card:
+
+<div class="figure-art">
+<svg viewBox="0 0 640 478" width="100%" role="img" aria-labelledby="m08-card-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m08-card-title">A toolbox talk outline card with five parts: open, two or three key points, show something, check with a question, close with one action.</title>
+<defs><marker id="m08-card-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="478" fill="#ffffff"/>
+<rect x="20" y="16" width="600" height="420" rx="8" fill="#fffdf6" stroke="#c98a12" stroke-width="3"/>
+<text x="320" y="50" font-size="20" text-anchor="middle" font-weight="bold" fill="#1f3a5f">Toolbox talk card (five minutes)</text>
+<rect x="36" y="70" width="170" height="56" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="121" y="104.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">1 Open</text>
+<text x="220" y="104" font-size="17" text-anchor="start" font-weight="normal" fill="#2b2b2b">Topic, and why it matters today</text>
+<rect x="36" y="140" width="170" height="56" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="121" y="174.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">2 Key points</text>
+<text x="220" y="174" font-size="17" text-anchor="start" font-weight="normal" fill="#2b2b2b">Two or three. No more.</text>
+<rect x="36" y="210" width="170" height="56" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="121" y="244.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">3 Show</text>
+<text x="220" y="244" font-size="17" text-anchor="start" font-weight="normal" fill="#2b2b2b">A tool, photo, drawing or sign</text>
+<rect x="36" y="280" width="170" height="56" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="121" y="314.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">4 Check</text>
+<text x="220" y="314" font-size="17" text-anchor="start" font-weight="normal" fill="#2b2b2b">A question that needs more than &quot;yes&quot;</text>
+<rect x="36" y="350" width="170" height="56" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="121" y="384.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">5 Close</text>
+<text x="220" y="384" font-size="17" text-anchor="start" font-weight="normal" fill="#2b2b2b">One action for today</text>
+<text x="320" y="462" font-size="16" text-anchor="middle" font-weight="normal" fill="#6b6b6b" font-style="italic">Then fill in the record: date, who attended, topics.</text>
+</svg>
+</div>
 
 ### Preparing
 
@@ -129,6 +157,30 @@ One thing to try next time: ______________________________________________
 Experienced crew: ______________________________________________
 
 First-week apprentices: ______________________________________________
+
+**Task 7** (level 3) **Fix the talk.** Read this talk. Which of the five parts are missing or weak? Rewrite it.
+
+> "Okay, so, ladders. Ladders are important. There are lots of rules. Be careful on them. Three points of contact and all that. Any questions? No? Good. Let's go."
+
+Missing or weak parts: ______________________________________________
+
+Your rewrite: ______________________________________________
+
+______________________________________________
+
+**Task 8** (level 2) **Time it.** A learner plans these times for a five-minute talk:
+
+| Part | Time |
+|---|---|
+| Open | 30 seconds |
+| Key points | 3 points × 60 seconds |
+| Show | 45 seconds |
+| Check | 45 seconds |
+| Close | 15 seconds |
+
+a) What is the total, in minutes and seconds?
+b) Is the talk over or under five minutes, and by how much?
+c) Where would you cut time? Why there?
 
 ## Check yourself
 

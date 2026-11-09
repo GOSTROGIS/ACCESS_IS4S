@@ -1,8 +1,10 @@
 # Giving and taking feedback and criticism
 
+**Session:** Communication lesson 5 of 13.
+
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 5 of the Communication series. The session runs 75 minutes. Ask who said no assertively since last session.
+Welcome learners to session 5 of the Communication series. The session runs 85 minutes. Ask who said no assertively since last session.
 
 Hook: "Write down, just for yourself, one piece of feedback that helped you get better at something. Now one that just made you angry." After a minute, ask: "What was the difference?" Take a few answers without asking for the stories. Usually the helpful one was specific and fair.
 
@@ -33,9 +35,10 @@ By the end of the session, learners will be able to:
 | 3.1 | Task 3. Check answers together. | Label four replies. | Learner page | 5 min |
 | 3.2 | Task 4 in groups of four to six. Give each group the Task 4 statements plus two or three from the flipchart. Debrief: "Could you use the techniques? What more did you need? How did you handle the hardest statements?" | Practise replies out loud, then write the Task 4 answers. | Learner page, flipchart list | 10 min |
 | 3.3 | Teach "Criticism or bullying?" Show worksafebc.com/bullying on screen if available. Run Task 6. | Classify six situations, discuss. | Learner page, screen | 6 min |
+| 3.4 | Show the correction card. Set Task 7. Then act out Task 8 a in pairs and write part b together | Fill the card, practise answering public criticism | Learner page | 10 min |
 | 4.1 | Post-assessment questions. | Answer. | None | 4 min |
 | 4.2 | Summary and action plan. | Commit to one specific compliment and one acknowledge-first reply before next session. | None | 3 min |
-| | | | **Total** | **75 min** |
+| | | | **Total** | **85 min** |
 
 Notes for the instructor:
 

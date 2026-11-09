@@ -1,6 +1,6 @@
 # ACCESS IS4S skill lessons: how a lesson is built
 
-Each of the 9 Skills for Success has a lessons folder:
+Each of the IS4S Skills for Success has a lessons folder:
 
 ```
 skills/<skill>/lessons/

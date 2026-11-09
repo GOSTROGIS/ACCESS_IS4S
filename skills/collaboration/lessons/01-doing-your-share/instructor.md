@@ -1,12 +1,12 @@
 # Doing your share on a crew
 
-**Collaboration lesson 1 of 8 · 60 min · Level 1-2**
+**Collaboration lesson 1 of 12 · 70 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (4 min, step 1.1)
 
-Welcome learners. This is the first of eight Collaboration sessions, and it runs 60 minutes.
+Welcome learners. This is the first of twelve Collaboration sessions, and it runs 70 minutes.
 
 Hook: write on the board "Is a totem pole made by one person?" Let learners answer in a word or two, then leave the question up. Tell them you will come back to it with one real pole project. Add a second hook from the trades: "Has a job ever stopped because one person was missing or late?"
 
@@ -42,9 +42,10 @@ Note who already names "tell the lead early". You can pair them with learners wh
 | 2.5 | Set Task 3. Ask two or three learners to read their text aloud. Point out what, when and what the crew can do | Write the text message, read aloud if willing | Learner page, pens | 8 min |
 | 2.6 | Set Task 4. Remind learners they choose what to share | Write a strength, a help area and the words to ask | Learner page | 4 min |
 | 2.7 | Give learners time for Check yourself. Go over question 5 aloud | Answer the five questions alone | Learner page, answers page | 4 min |
+| 2.8 | Show the Cedar Flats chart. Set Task 6. Then set Task 7 in pairs and compare who each pair moved and why | Read the chart, do Tasks 6 and 7 | Learner page | 10 min |
 | 3.1 | Ask the three post-assessment questions | Answer aloud or on paper | Whiteboard | 5 min |
 | 3.2 | Give the summary and preview lesson 2 | Listen, add one thing they will try this week | None | 2 min |
-| | | | **Total** | **60 min** |
+| | | | **Total** | **70 min** |
 
 ## Post-assessment (5 min, step 3.1)
 

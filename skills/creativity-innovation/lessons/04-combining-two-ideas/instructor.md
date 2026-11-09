@@ -1,6 +1,6 @@
 # Combining two ideas into something new
 
-Session 4 of 8 in the Creativity and Innovation lessons. Total length 90 minutes.
+Session 4 of 12 in the Creativity and Innovation lessons. Total length 90 minutes.
 
 ## Opening (5 min)
 

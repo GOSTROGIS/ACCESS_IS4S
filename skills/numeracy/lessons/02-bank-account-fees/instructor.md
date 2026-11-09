@@ -1,6 +1,6 @@
 # Working out the monthly cost of a bank account
 
-**Session:** Numeracy lesson 2 of 8. **Total length:** 75 minutes.
+**Session:** Numeracy lesson 2 of 21. **Total length:** 75 minutes.
 
 ## Opening (5 min)
 

@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 9 of 9 in Problem Solving. Length: 60 min.**
+**Session 9 of 10 in Problem Solving. Length: 60 min.**
 
 Welcome learners. Read this out in a confident voice, as if from a phone: "Good news! For grinding, any sunglasses with UV protection are fine, as long as they're dark enough. Most pros prefer polarized." Ask: "Would you bet your eyes on that? Where do you think it came from? How would you check it?"
 
@@ -53,7 +53,7 @@ During this session we covered:
 - the official BC sources for safety, building and electrical rules
 - checking an answer against the source before acting on it
 
-This is the last of the nine Problem Solving lessons. Ask learners which of the nine they will use first on the job.
+Lesson 10 puts these steps to work on a late job schedule. Ask learners which of the nine lessons so far they will use first on the job.
 
 ## Sources
 

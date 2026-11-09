@@ -1,8 +1,8 @@
 ---
 title: Respectful workplaces, bullying and harassment
 summary: Know what counts as workplace bullying and harassment in BC, what employers, supervisors and workers must do, and how to report it.
-level: 2
-time: 60 min
+level: 2-3
+time: 70 min
 components: Manage difficult interactions with other people; Facilitate an environment where you can collaborate with others; Work well with other people
 ---
 
@@ -51,6 +51,38 @@ The "person" can be anyone at work: a boss, a co-worker, a client or a member of
 3. After that, you can send WorkSafeBC a Bullying and Harassment Questionnaire.
 
 WorkSafeBC checks that employers have proper policies and deal with reports. It does not mediate disputes between people.
+
+The chart shows the same three reporting steps as a flow.
+
+<div class="figure-art">
+<svg viewBox="0 0 640 604" width="100%" role="img" aria-labelledby="c08-report-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="c08-report-title">Flow chart of how to report bullying and harassment in BC: report to your employer, the employer investigates, call WorkSafeBC if there is no policy or no reasonable steps, then send the questionnaire.</title>
+<defs><marker id="c08-report-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="604" fill="#ffffff"/>
+<rect x="60" y="20" width="520" height="70" rx="8" fill="#f2f2f2" stroke="#1f3a5f" stroke-width="2"/>
+<text x="320" y="50.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">You see or experience</text>
+<text x="320" y="71.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">bullying or harassment</text>
+<line x1="320" y1="92" x2="320" y2="120" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#c08-report-ah)"/>
+<rect x="60" y="124" width="520" height="96" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="320" y="156.7" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">1 Report to your employer</text>
+<text x="320" y="177.95" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">as soon as possible, using</text>
+<text x="320" y="199.2" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">the employer&#x27;s procedures</text>
+<line x1="320" y1="222" x2="320" y2="250" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#c08-report-ah)"/>
+<rect x="60" y="254" width="520" height="70" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="320" y="284.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Employer must deal with the report,</text>
+<text x="320" y="305.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">including an investigation</text>
+<line x1="320" y1="326" x2="320" y2="354" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#c08-report-ah)"/>
+<rect x="60" y="358" width="520" height="96" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="320" y="390.7" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">2 No policy, or no reasonable steps?</text>
+<text x="320" y="411.95" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Call WorkSafeBC Prevention Information</text>
+<text x="320" y="433.2" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Line: 604.276.3100 or 1.888.621.7233</text>
+<line x1="320" y1="456" x2="320" y2="484" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#c08-report-ah)"/>
+<rect x="60" y="488" width="520" height="96" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="320" y="520.7" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">3 Then you can send</text>
+<text x="320" y="541.95" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">a Bullying and Harassment</text>
+<text x="320" y="563.2" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Questionnaire to WorkSafeBC</text>
+</svg>
+</div>
 
 **Harassment linked to a protected ground**, such as Indigenous identity, race, sex or religion, can also be discrimination under the BC *Human Rights Code* (see lesson 3).
 
@@ -114,6 +146,31 @@ https://www.worksafebc.com/en/health-safety/hazards-exposures/bullying-harassmen
 a) What is the first thing it says to do?
 b) What is the toll-free number for the Prevention Information Line?
 c) What can you submit after you have reported to your employer and spoken with a prevention officer?
+
+**Task 6** (level 2) **Follow the chart.**
+For each person, write the next step from the chart.
+
+a) Maya (fictional) is called names every day by a co-worker. She has not told anyone.
+b) Joe reported harassment to his employer two weeks ago. The employer has no policy and has done nothing.
+c) Ana called the Prevention Information Line and spoke with a prevention officer.
+
+______________________________________________
+
+______________________________________________
+
+**Task 7** (level 3) **You are the lead hand.**
+For a week, one of your crew has hidden the new apprentice's tools every morning "as a joke." The apprentice laughs, but you can see he is upset, and he is late starting work each day.
+
+a) Could this be bullying and harassment under WorkSafeBC's definition? Explain using the words of the definition.
+b) As a supervisor, what two things must you do?
+c) Write what you say to the crew member who hides the tools.
+d) Write what you say to the apprentice.
+
+______________________________________________
+
+______________________________________________
+
+______________________________________________
 
 ## Check yourself
 

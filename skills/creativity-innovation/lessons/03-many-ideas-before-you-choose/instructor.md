@@ -1,6 +1,6 @@
 # Many ideas before you choose
 
-Session 3 of 8 in the Creativity and Innovation lessons. Total length 75 minutes.
+Session 3 of 12 in the Creativity and Innovation lessons. Total length 75 minutes.
 
 ## Opening (5 min)
 
@@ -38,6 +38,8 @@ The table covers the whole session, including the opening, objective, pre-assess
 | 2.7 | Set Task 6. Check that learners subtract both end distances. | Complete Task 6. | Learner page, calculator | 6 min |
 | 3.1 | Run the post-assessment. | Answer the three questions. | Paper | 5 min |
 | 3.2 | Summarize the session. Tell learners the next session combines ideas from two different sources. | Keep their idea lists. | None | 2 min |
+
+**Extension.** Task 7 is a level 3 trade task for fast finishers or homework. It uses the same generate-then-choose method with an electrical rough-in problem. It is not timed in the table above.
 
 **Safety.** This session is sketching and talking only. If a group wants to build its jig, review the design first, and have it built in a later shop session under the shop's own safety orientation and tool rules.
 

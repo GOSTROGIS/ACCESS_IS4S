@@ -51,6 +51,21 @@ b) 200 − 30 − 30 = 140 mm between hole centres.
 
 c) Brackets first: 40 × (2.5 − 0.5) = 40 × 2 = 80 minutes saved.
 
+## Task 7 (level 3)
+
+a) Open answer. At least 6 different ideas, not judged, with at least two prompts named. Examples:
+
+- a story stick cut to the box height, held on the subfloor (do it differently)
+- a height block or jig the box rests on while it is fastened (combine a stop with a template)
+- a laser line set once for the whole room (do it differently)
+- mark all the studs in a room at once with a chalk line (expand)
+- ask whether the finished floor thickness is known, so the block can allow for it (ask a question)
+- reverse: set the box on the block and screw the block's position, instead of measuring up to each box
+
+b) Open answer. Criteria might be same every time, fast, uses scrap, easy to check, works before the floor is finished. The chosen idea should have the highest total, or a good reason given.
+
+c) Open answer. The key unknown is the finished floor thickness, because the 450 mm is from the finished floor. A story stick or block cut from the subfloor must be longer by that thickness. Ask the foreman or check the finish schedule on the drawings.
+
 ## Check yourself
 
 **1.** If you judge while generating, people stop offering ideas and the group settles on the first, familiar idea. Keeping them apart gets more and wider ideas to choose from. Level 2.

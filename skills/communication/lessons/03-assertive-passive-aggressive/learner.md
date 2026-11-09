@@ -1,8 +1,8 @@
 ---
 title: Assertive, passive and aggressive responses
 summary: Tell the three ways people respond under pressure apart, speak up assertively on a crew, and set small goals to practise.
-level: 1-2
-time: 75 min
+level: 1-3
+time: 85 min
 components: Speak with purpose; Adapt to your audience and contexts
 rebuilds: A - Writing/A - Thinking Skills/Assertiveness-rb.docx; A - Writing/A - Thinking Skills/Setting Goals-rb.docx; A - Writing/A - Thinking Skills/Action Plans-rb.docx
 ---
@@ -27,6 +27,38 @@ There are three common ways to respond.
 **Assertive and aggressive both speak up.** The difference is how. An aggressive response aims to hurt, threaten or put down. An assertive response aims to be clear, with no intention to hurt.
 
 **Hinting is passive.** "I wish I knew someone who could help me carry this door" leaves the other person guessing. "Can you give me a hand with this door?" is clear.
+
+The three styles on one line, with how each one sounds:
+
+<div class="figure-art">
+<svg viewBox="0 0 640 296" width="100%" role="img" aria-labelledby="m03-line-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m03-line-title">Three response styles on a line: passive, assertive and aggressive, each with how it sounds and an example.</title>
+<defs><marker id="m03-line-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="296" fill="#ffffff"/>
+<line x1="40" y1="120" x2="600" y2="120" stroke="#6b6b6b" stroke-width="6"/>
+<circle cx="115" cy="120" r="16" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="4"/>
+<text x="115" y="80" font-size="21" text-anchor="middle" font-weight="bold" fill="#1f3a5f">Passive</text>
+<rect x="15" y="150" width="200" height="130" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="115" y="200.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Hints, gives in,</text>
+<text x="115" y="220.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">stays quiet</text>
+<text x="115" y="240.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">&quot;Uh, it&#x27;s fine.&quot;</text>
+<circle cx="320" cy="120" r="16" fill="#e6f3ec" stroke="#2a7f62" stroke-width="4"/>
+<text x="320" y="80" font-size="21" text-anchor="middle" font-weight="bold" fill="#2a7f62">Assertive</text>
+<rect x="220" y="150" width="200" height="130" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="320" y="190.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Clear, calm,</text>
+<text x="320" y="210.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">respects both</text>
+<text x="320" y="230.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">&quot;Can we run the cords</text>
+<text x="320" y="250.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">along the wall?&quot;</text>
+<circle cx="525" cy="120" r="16" fill="#fbe6e4" stroke="#b3261e" stroke-width="4"/>
+<text x="525" y="80" font-size="21" text-anchor="middle" font-weight="bold" fill="#b3261e">Aggressive</text>
+<rect x="425" y="150" width="200" height="130" rx="8" fill="#fbe6e4" stroke="#b3261e" stroke-width="2"/>
+<text x="525" y="190.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Loud, blames,</text>
+<text x="525" y="210.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">puts down</text>
+<text x="525" y="230.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">&quot;Who&#x27;s the idiot</text>
+<text x="525" y="250.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">who did this?&quot;</text>
+<text x="320" y="40" font-size="17" text-anchor="middle" font-weight="normal" fill="#6b6b6b" font-style="italic">Assertive and aggressive both speak up. The difference is how.</text>
+</svg>
+</div>
 
 **A simple assertive statement has three parts.**
 
@@ -112,6 +144,27 @@ ______________________________________________
 1. ______________________________________________
 2. ______________________________________________
 3. ______________________________________________
+
+**Task 6** (level 2) **Place it on the line.** These lines are from a welding shop. Write P (passive), As (assertive) or Ag (aggressive).
+
+1. "Whatever. Use my booth, I don't care." ______
+2. "Move your cart. Now. Are you blind?" ______
+3. "When the cart blocks the booth door, I can't get out fast. Can you park it by the wall?" ______
+4. "Someone should really fix that curtain, I guess." ______
+
+**Task 7** (level 3) **You are the lead hand.** An older journeyperson grinds near your apprentice's work area. The sparks spray toward the apprentice and his fuel cans.
+
+a) Write an assertive statement with all three parts.
+
+______________________________________________
+
+b) The journeyperson snaps: "I've been doing this 30 years. Mind your own business." Write your next line. Stay assertive.
+
+______________________________________________
+
+c) He keeps grinding toward the fuel cans. What do you do next?
+
+______________________________________________
 
 ## Check yourself
 

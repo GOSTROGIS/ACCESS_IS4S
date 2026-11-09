@@ -47,12 +47,60 @@ So believing you can get better is a good start, not the whole answer. What move
 4. **Make a plan.** Write what you will do, when, and who will help.
 5. **Try again.** Then check what changed.
 
+<div class="figure-art">
+<svg viewBox="0 0 720 360" width="100%" role="img" aria-labelledby="ad05-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="ad05-f1-title">A staircase of five steps: feel it, get the facts, find causes you can work on, make a plan, try again.</title>
+<defs><marker id="ad05-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="ad05-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+<text x="360.0" y="30.0" font-size="22" text-anchor="middle" font-weight="bold" fill="#222222">Five steps after a setback</text>
+<rect x="14.0" y="270.0" width="136.0" height="50.0" rx="0" fill="#d6e4f2" stroke="#222222" stroke-width="1.5"/>
+<text x="82.0" y="292.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">1 Feel it</text>
+<text x="82.0" y="312.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">a little time</text>
+<rect x="150.0" y="220.0" width="136.0" height="100.0" rx="0" fill="#fbe3c8" stroke="#222222" stroke-width="1.5"/>
+<text x="218.0" y="242.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">2 Get the facts</text>
+<text x="218.0" y="262.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">score, parts</text>
+<rect x="286.0" y="170.0" width="136.0" height="150.0" rx="0" fill="#d8ecd5" stroke="#222222" stroke-width="1.5"/>
+<text x="354.0" y="192.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">3 Find causes</text>
+<text x="354.0" y="212.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">ones you can fix</text>
+<rect x="422.0" y="120.0" width="136.0" height="200.0" rx="0" fill="#e4dcf2" stroke="#222222" stroke-width="1.5"/>
+<text x="490.0" y="142.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">4 Make a plan</text>
+<text x="490.0" y="162.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">what, when, who</text>
+<rect x="558.0" y="70.0" width="136.0" height="250.0" rx="0" fill="#fdf3c4" stroke="#222222" stroke-width="1.5"/>
+<text x="626.0" y="92.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">5 Try again</text>
+<text x="626.0" y="112.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">then check</text>
+<line x1="10.0" y1="320.0" x2="710.0" y2="320.0" stroke="#222222" stroke-width="2"/>
+<text x="704.0" y="344.0" font-size="14" text-anchor="end" font-weight="normal" fill="#6b6b6b">Each step lifts you a little. You do not have to jump to the top.</text>
+</svg>
+</div>
+
 **Worked example.** Priya is a first-year carpentry apprentice. On March 3 she writes her Level 1 exam and scores 64 percent. The pass mark is 70 percent.
 
 - **Facts:** she did well on safety and tools, and poorly on the math and drawings questions.
 - **Cause she can work on:** she studied by rereading her notes and never practised timed questions.
 - **Plan:** practise 30 minutes a day, five days a week, using practice questions. Meet a classmate on Saturdays to quiz each other. Ask her instructor which drawing topics to review.
 - **Rewrite:** SkilledTradesBC rewrites have a 30-day waiting period from the last attempt. Thirty days after March 3 is April 2, so April 2 is the earliest she can rewrite.
+
+### Worked example: a 4-week plan after missing by 4 percent
+
+Owen is a first-year welding apprentice. On April 10 he writes his Level 1 exam and scores 66 percent. The pass mark is 70 percent, so he missed by 70 − 66 = 4 percentage points.
+
+**1. Feel it.** Owen is angry for a day. He goes for a long walk with his dog and does not open his notes.
+
+**2. Get the facts.** His results show he did well on safety and welding processes. He did poorly on drawings and on metric conversions.
+
+**3. Find causes he can work on.** He studied drawings by rereading. He never practised conversions against the clock.
+
+**4. Make a plan.** Rewrites have a 30-day waiting period from the last attempt. April has 30 days, so 30 days after April 10 is May 10. That gives Owen about 4 weeks.
+
+| Weeks | What | How often | Minutes |
+|---|---|---|---|
+| 1 and 2 | Practice questions on drawings and metric only | 25 min a day, 6 days a week | 25 × 6 × 2 = 300 |
+| 3 and 4 | Mixed practice tests, timed, all topics | 45 min, 3 times a week | 45 × 3 × 2 = 270 |
+| **Total** | | | **570** |
+
+570 minutes ÷ 60 = 9.5 hours of practice, spread over 4 weeks. He asks his instructor for a drawing he can practise reading each week.
+
+**5. Try again.** Owen books the rewrite for May 12 in the SkilledTradesBC Portal. After it, he will check which topics improved.
 
 ### Exam rewrites for BC apprentices
 

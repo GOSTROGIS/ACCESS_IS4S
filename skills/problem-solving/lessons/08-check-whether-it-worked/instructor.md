@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 8 of 9 in Problem Solving. Length: 60 min.**
+**Session 8 of 10 in Problem Solving. Length: 60 min.**
 
 Welcome learners. Ask: "Have you ever fixed something that broke again a week later? A leaky tap, a car, a phone, a door?" Take two or three stories. For each one ask: "When did you find out the fix had not lasted? What would have told you sooner?"
 

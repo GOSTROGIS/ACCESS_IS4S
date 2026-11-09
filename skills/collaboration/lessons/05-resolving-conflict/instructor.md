@@ -1,12 +1,12 @@
 # Preventing and resolving conflict on a crew
 
-**Collaboration lesson 5 of 8 · 90 min · Level 2**
+**Collaboration lesson 5 of 12 · 100 min · Level 2-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 5 of 8. This session runs 90 minutes.
+Welcome learners to session 5 of 12. This session runs 100 minutes.
 
 Hook: "Think of the last argument you saw at work or on a team. Was it about the facts, the plan, or the person?" Take a few answers without names. Point out that arguments often start about the work and end up about the person. Today is about keeping it on the work.
 
@@ -39,9 +39,10 @@ By the end of the session, learners will be able to:
 | 2.6 | Task 5, round 3: same pairs and items, this time with W.I.N. and the four skills. Debrief: What changed? Did both people get something? | Resolve the conflict with the new skills, write what was different | Box of items, learner page | 10 min |
 | 2.7 | Set Task 6. Invite, do not require, learners to share their intent | Write a goal and a W.I.N. statement | Learner page | 6 min |
 | 2.8 | Give time for Check yourself | Answer the five questions alone | Learner page, answers page | 3 min |
+| 2.9 | Show the conflict chart and the W.I.N. boxes. Set Task 7. Then role-play Task 8 in groups of three, with one learner as lead hand | Name the habits, role-play the lead hand | Learner page | 10 min |
 | 3.1 | Ask the post-assessment questions | Answer aloud or on paper | Whiteboard | 4 min |
 | 3.2 | Summary and preview of lesson 6 | Finish the sentence "One thing I will do differently in a conflict is..." | None | 2 min |
-| | | | **Total** | **90 min** |
+| | | | **Total** | **100 min** |
 
 ## Post-assessment (4 min, step 3.1)
 
@@ -75,3 +76,4 @@ Next session: a team build task with a debrief.
 - Causes of conflict, warning signs and the four skills (attending, valuing, paraphrasing, questioning) are adapted from the ACCESS lesson "Conflict Resolution" (Theory box).
 - The "You've got it, I want it" activity, the conflict questionnaire, the W.I.N. method, the workload example for a boss and the goal sheet are adapted from the ACCESS lesson "Conflict and Communication" (Theory box and exercises).
 - Ridgeview Mechanical, Ana, Jordan and the crew meeting in Task 1 are fictional.
+- Five ways of responding to conflict, placed on two dimensions (assertiveness and cooperativeness): Thomas-Kilmann Conflict Mode Instrument, described in Herk, Thompson, Thomas and Kilmann, "International Technical Brief for the Thomas-Kilmann Conflict Mode Instrument," CPP, 2011, http://ap.themyersbriggs.com/content/Research%20and%20White%20Papers/TKI/TKI_Intl_Tech_Brief.pdf, checked 2026-11-08. The lesson uses its own plain words for the five modes.

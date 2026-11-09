@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><script src="../../../../brand/instructor-gate.js" data-gate="page"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The forward and backward pass · Instructor · Numeracy</title>
+<link rel="icon" href="../../../../brand/is4s-badge.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../../brand/site.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../../index.html"><img class="lockup" src="../../../../brand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../../index.html">← Numeracy</a></p>
+      <p class="eyebrow">Numeracy · Lesson 20 · Instructor</p>
+      <h1>The forward and backward pass</h1>
+      <p class="lede">Fill in the node box with ES, EF, LS, LF and total float, run the forward pass to find the project duration, run the backward pass to find the latest dates, and handle FS, SS and FF links with lag.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html">Learner</a></li><li><a href="instructor.html" aria-current="page">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 90 min</li><li>Components: Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information; Share the mathematical information, results and implications</li></ul></nav><article class="prose"><p><strong>Session:</strong> Numeracy lesson 20 of 21. <strong>Total length:</strong> 90 minutes.</p>
+<p><strong>Before the session:</strong> learners need pencils, erasers and a calculator. Print the blank garage network from Task 2 on 11 × 17 paper, one per learner. Learners should bring their garage network from lesson 19, Task 3. Decide now that the class uses the day-0 rule from the learner page, and say so on the board at the start: ES of the first activity is 0, EF = ES + Dur, and a plain FS successor starts at the predecessor's EF.</p>
+<h2>Opening (5 min)</h2>
+<p>Welcome learners. Show the garage predecessor table. Ask: "The owner wants to know how long this garage takes. Can you add up all the durations?" Let someone add them: 2 + 2 + 1 + 1 + 1 + 10 + 2 + 1 + 2 + 4 + 3 + 2 + 1 = 32 days. Then say the real answer is 20 working days, because the trusses, the plumbing and the overhead door happen at the same time as other work. Say: "Adding durations does not work. Today you learn the method the software uses." Tell learners this is session 20 of the Numeracy set, and it runs 90 minutes.</p>
+<h2>Objective (2 min)</h2>
+<p>By the end of the session, learners will be able to:</p>
+<ul>
+<li>read the six numbers in a node box (Identify the mathematical information)</li>
+<li>connect each activity's numbers to its predecessors in the forward pass and its successors in the backward pass (Make connections between related pieces of mathematical information)</li>
+<li>run the forward and backward pass with FS, SS and FF links and lag, and find the project duration (Apply mathematical operations and tools you will need to answer the question)</li>
+<li>check the results: no negative float, and a critical path that runs from start to finish (Interpret and evaluate the information)</li>
+<li>show the passes clearly in node boxes so another person can check them (Share the mathematical information, results and implications)</li>
+</ul>
+<h2>Pre-assessment (3 min)</h2>
+<ol>
+<li>A predecessor finishes at day 4 and the successor follows FS+2. When can the successor start? (Day 6)</li>
+<li>Which is bigger: 9, 7 or 12? Which is smaller? (12 is the largest, 7 the smallest. Learners will take the largest and the smallest of a list many times today.)</li>
+</ol>
+<h2>Learning tasks (70 min)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Instructor activities</th>
+<th>Learner activities</th>
+<th>Resources</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.1</td>
+<td>Teach the node box and the day-0 rule. Show how ES 0 and Dur 2 means working days 1 and 2. Mention the day-1 rule and say the class will not mix them.</td>
+<td>1.1 Complete Task 1.</td>
+<td>Node box picture</td>
+<td>8 min</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>Model the forward pass on the deck (Worked example 1). Say "merge: take the largest" every time.</td>
+<td>1.2 Fill in ES and EF on their own copy.</td>
+<td>Deck network</td>
+<td>9 min</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>Model the backward pass on the deck. Say "burst: take the smallest". Find TF and the critical path. Show how ES 4 becomes Tuesday, August 3.</td>
+<td>1.3 Fill in LS, LF and TF.</td>
+<td>Deck network</td>
+<td>9 min</td>
+</tr>
+<tr>
+<td>2.1</td>
+<td>Assign Tasks 2 and 3 on the printed garage network. Circulate and check merges at 9 and 11 and bursts at 1, 5 and 11.</td>
+<td>2.1 Complete Tasks 2 and 3.</td>
+<td>Printed blank network</td>
+<td>16 min</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>Assign Task 4. Remind learners that ES k starts on working day k + 1 and EF k finishes on working day k.</td>
+<td>2.2 Complete Task 4.</td>
+<td>Calendar</td>
+<td>6 min</td>
+</tr>
+<tr>
+<td>3.1</td>
+<td>Teach the SS and FF rules with Worked example 2. Show why the FF link controls B and why A's LF is 4.</td>
+<td>3.1 Follow the worked example.</td>
+<td>Drywall network</td>
+<td>9 min</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>Assign Task 5. Ask learners to say which link controls activity 9.</td>
+<td>3.2 Complete Task 5.</td>
+<td>Washroom table</td>
+<td>9 min</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>Assign Task 6. Discuss what goes wrong when two people on one job use different rules.</td>
+<td>3.3 Complete Task 6.</td>
+<td>Learner page</td>
+<td>4 min</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Post-assessment (5 min)</h2>
+<ol>
+<li>Two predecessors finish at day 7 and day 9. The successor follows both with FS. What is its ES? (9)</li>
+<li>Two successors have LS 12 and LS 10. Both follow the activity with FS. What is its LF? (10)</li>
+<li>An activity has ES 4, Dur 3 and LF 9. Find EF, LS and TF. (EF 7, LS 6, TF 2)</li>
+</ol>
+<h2>Summary (5 min)</h2>
+<p>During this session we covered:</p>
+<ul>
+<li>the node box: ES, Dur, EF on top, LS, TF, LF on the bottom</li>
+<li>the day-0 rule, and that the day-1 rule gives the same dates but must not be mixed in</li>
+<li>the forward pass: take the largest at a merge, project duration = largest EF</li>
+<li>the backward pass: take the smallest at a burst, LS = LF − Dur, TF = LS − ES</li>
+<li>the rules for SS and FF links with lag</li>
+</ul>
+<p>Next session: what the float numbers mean on site, the critical path, and how to shorten a job.</p>
+<h2>Sources</h2>
+<ul>
+<li>Project Management Institute, "Critical path method calculations: project schedule terminology", https://www.pmi.org/learning/library/critical-path-method-calculations-scheduling-8040, checked 2026-11-08: forward and backward pass on an AON diagram, "Total Float = LS – ES (it is also calculated by LF – EF)", and the checks that "Free Float can never be larger than" Total Float, the critical path "must be continuous", and "negative numbers should not appear".</li>
+<li>Microsoft Support, "Total Slack (task field)", https://support.microsoft.com/en-us/project/total-slack-task-field, checked 2026-11-08: total slack is the time a task's finish date can be delayed without delaying the project's finish date, calculated from the early and late start and finish fields.</li>
+<li>Microsoft Support, "Link tasks in a project", https://support.microsoft.com/en-us/project/link-tasks-in-a-project, checked 2026-11-08: definitions of the FS, SS and FF link types used in the pass rules.</li>
+<li>B.C. Day, Monday, August 2, 2027, and Victoria Day, Monday, May 24, 2027: Province of British Columbia, "Statutory holidays", https://www2.gov.bc.ca/gov/content/employment-business/employment-standards-advice/employment-standards/statutory-holidays, checked 2026-11-08.</li>
+<li>Every ES, EF, LS, LF and TF in this lesson was computed by a critical path script written for this lesson set and cross-checked against a second, independent CPM engine run locally on the same networks and calendars. All values and dates matched. The node box diagrams were drawn by script from the computed numbers.</li>
+<li>The deck, garage, drywall and washroom jobs and their companies are made up for practice.</li>
+<li>Skills for Success component names: Government of Canada, "Skill components and proficiency levels", Numeracy section, https://www.canada.ca/en/services/jobs/training/initiatives/skills-success/learning-steps.html, checked 2026-11-08.</li>
+</ul></article><nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps"><li><a rel="prev" href="../19-network-diagrams-and-logic/instructor.html">← Lesson 19: Network diagrams and schedule logic<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a rel="next" href="../21-float-and-the-critical-path/instructor.html">Lesson 21: Float and the critical path →<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul></nav>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <p>ACCESS Indigenous Skills4Success. Pages marked 🔒 are for instructors and ask for the instructor code.</p>
+  </div>
+</footer>
+</body>
+</html>

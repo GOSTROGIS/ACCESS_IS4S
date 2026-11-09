@@ -1,8 +1,8 @@
 ---
 title: Saying no and setting limits at work
 summary: Say no clearly without over-explaining, offer an alternative when you want to, and refuse unsafe work the way BC law sets out.
-level: 2
-time: 60 min
+level: 2-3
+time: 70 min
 components: Speak with clarity; Speak with purpose; Adapt to your audience and contexts
 rebuilds: A - Oral Communication/Saying No-rb.docx
 ---
@@ -42,6 +42,37 @@ How it works, in three steps:
 3. **If it is still not resolved,** both you and your supervisor or employer must contact WorkSafeBC. A prevention officer investigates. The Prevention Information Line is 604.276.3100, or toll-free 1.888.621.7233.
 
 You must not be disciplined or penalized for following these steps. Your employer may move you to other work for a while, at no loss in pay. Your employer also may not give the refused task to another worker unless the matter is resolved or that worker is told in writing about the refusal, the hazard, why the employer thinks it is safe, and their own right to refuse.
+
+The same three steps as a flow chart:
+
+<div class="figure-art">
+<svg viewBox="0 0 640 576" width="100%" role="img" aria-labelledby="m04-refuse-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m04-refuse-title">Flow chart of refusing unsafe work under BC OHS Regulation section 3.12: stop and report, the supervisor investigates, a second investigation with a worker representative, then WorkSafeBC.</title>
+<defs><marker id="m04-refuse-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="576" fill="#ffffff"/>
+<rect x="60" y="20" width="520" height="96" rx="8" fill="#fbe6e4" stroke="#1f3a5f" stroke-width="2"/>
+<text x="320" y="52.7" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">1 Stop and report</text>
+<text x="320" y="73.95" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Tell your supervisor or employer</text>
+<text x="320" y="95.2" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">you refuse the work as unsafe.</text>
+<line x1="320" y1="118" x2="320" y2="146" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m04-refuse-ah)"/>
+<rect x="60" y="150" width="520" height="70" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="320" y="180.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">They investigate and fix it, or tell</text>
+<text x="320" y="201.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">you why they think it is safe.</text>
+<line x1="320" y1="222" x2="320" y2="250" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m04-refuse-ah)"/>
+<rect x="60" y="254" width="520" height="118" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="320" y="287.075" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">2 Still not agreed?</text>
+<text x="320" y="308.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Investigate again with you and a</text>
+<text x="320" y="329.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">JHSC worker member, union rep or</text>
+<text x="320" y="350.825" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">a worker you choose.</text>
+<line x1="320" y1="374" x2="320" y2="402" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m04-refuse-ah)"/>
+<rect x="60" y="406" width="520" height="118" rx="8" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="320" y="439.075" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">3 Still not resolved?</text>
+<text x="320" y="460.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">You and your supervisor or employer</text>
+<text x="320" y="481.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">must contact WorkSafeBC.</text>
+<text x="320" y="502.825" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">A prevention officer investigates.</text>
+<text x="320" y="556" font-size="17" text-anchor="middle" font-weight="bold" fill="#2a7f62">No discipline for following these steps.</text>
+</svg>
+</div>
 
 ### Worked example
 
@@ -118,6 +149,30 @@ ______________________________________________
 Thought: ______________________________________________
 
 A more realistic way to look at it: ______________________________________________
+
+**Task 6** (level 2) **Put the steps in order.** Number these from 1 to 4.
+
+____ You and your supervisor contact WorkSafeBC, and a prevention officer investigates.
+
+____ You stop and tell your supervisor you refuse the work as unsafe.
+
+____ Your supervisor investigates again, with you and a worker you choose.
+
+____ Your supervisor investigates and either fixes the problem or tells you why they think it is safe.
+
+**Task 7** (level 3) **The trench.** You work for a fictional excavation company. The foreman says, "Hop in that trench and grab the tape measure. Two minutes." The walls are wet and bits of soil keep falling in. There is no shoring.
+
+a) Write what you say to refuse. Use the words that start the refusal process.
+
+______________________________________________
+
+b) The foreman says, "It's fine. I'll get Sam to do it, then." What does the lesson say about giving refused work to another worker?
+
+______________________________________________
+
+c) The foreman still disagrees after looking again. What happens next?
+
+______________________________________________
 
 ## Check yourself
 

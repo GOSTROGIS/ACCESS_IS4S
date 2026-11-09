@@ -21,6 +21,33 @@ Job sites are full of pressure: deadlines, noise, heat, changing plans and peopl
 
 Anger shows up in the body before it shows up in words. Common signs are a hot face, a fast heartbeat, tight jaw or fists, shallow breathing, a loud voice and racing thoughts. The earlier you notice, the more choices you have.
 
+<div class="figure-art">
+<svg viewBox="0 0 720 380" width="100%" role="img" aria-labelledby="ad04-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="ad04-f1-title">A curve rises after a trigger, passes the early signs, peaks, then falls during a cool-down. The last step is to say what you need.</title>
+<defs><marker id="ad04-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="ad04-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="380" fill="#ffffff"/>
+<text x="360.0" y="30.0" font-size="21" text-anchor="middle" font-weight="bold" fill="#222222">Anger rises, then a cool-down brings it back</text>
+<line x1="70.0" y1="320.0" x2="690.0" y2="320.0" stroke="#222222" stroke-width="2"/>
+<line x1="70.0" y1="320.0" x2="70.0" y2="60.0" stroke="#222222" stroke-width="2"/>
+<text x="60.0" y="76.0" font-size="14" text-anchor="end" font-weight="normal" fill="#6b6b6b">high</text>
+<text x="60.0" y="320.0" font-size="14" text-anchor="end" font-weight="normal" fill="#6b6b6b">low</text>
+<rect x="181.6" y="65.0" width="99.2" height="255.0" rx="0" fill="#fdf3c4" stroke="none" stroke-width="0"/>
+<rect x="355.2" y="65.0" width="210.8" height="255.0" rx="0" fill="#d6e4f2" stroke="none" stroke-width="0"/>
+<path d="M70.0,300.0 L144.4,290.0 L206.4,232.5 L268.4,165.0 L318.0,120.0 L355.2,110.0 L392.4,140.0 L454.4,207.5 L528.8,257.5 L603.2,282.5 L690.0,290.0" stroke="#b3261e" stroke-width="4" fill="none"/>
+<text x="144.4" y="344.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">trigger</text>
+<text x="231.2" y="88.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#b85c00">early signs:</text>
+<text x="231.2" y="106.8" font-size="15" text-anchor="middle" font-weight="bold" fill="#b85c00">hot face,</text>
+<text x="231.2" y="125.5" font-size="15" text-anchor="middle" font-weight="bold" fill="#b85c00">tight jaw</text>
+<text x="330.4" y="344.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">step away</text>
+<text x="460.6" y="88.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#2f5d8a">cool down:</text>
+<text x="460.6" y="106.8" font-size="15" text-anchor="middle" font-weight="bold" fill="#2f5d8a">slow breath out,</text>
+<text x="460.6" y="125.5" font-size="15" text-anchor="middle" font-weight="bold" fill="#2f5d8a">drop shoulders</text>
+<text x="628.0" y="250.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#2e6b34">say what</text>
+<text x="628.0" y="268.8" font-size="15" text-anchor="middle" font-weight="bold" fill="#2e6b34">you need</text>
+<text x="690.0" y="366.0" font-size="14" text-anchor="end" font-weight="normal" fill="#6b6b6b">The earlier you notice, the more choices you have.</text>
+</svg>
+</div>
+
 ### Anger styles
 
 People learn different ways of dealing with anger from family, culture and past experience. This list comes from an ACCESS lesson.
@@ -61,6 +88,24 @@ Once you are calmer, an assertive statement has three parts:
 Example: "When my tools went missing from the gang box, I lost half an hour. I need people to sign tools out on the sheet."
 
 If you blew up, recover: own it the way you learned in lesson 2, and fix what you can.
+
+### Worked example: shouted at by the saw
+
+Kyle is a first-year carpentry apprentice. At 10:00 a.m. the foreman walks past the saw station and shouts, in front of the crew: "What a mess! Somebody's going to break an ankle on these offcuts. Clean it up!"
+
+**1. Notice.** Kyle's face goes hot and his hands close into fists. Part of the mess is his. Part is from the other crew. He wants to shout back, "It's not all mine!"
+
+**2. Step away from the argument, not the job.** The saw is off. Kyle takes one slow breath out and says only: "Okay. I'll clean it up now."
+
+**3. Cool down.** While he sweeps, he breathes out slowly, longer than he breathes in, and drops his shoulders. After a few minutes his heart rate is down.
+
+**4. Check the facts.** The foreman's point was fair. Offcuts on the floor by a saw are a trip hazard. The way he said it, in front of the crew, is what stung.
+
+**5. Say what you need, at the right time.** At break Kyle asks for a minute one-on-one:
+
+> "When you shouted at me about the saw station in front of the crew, I felt embarrassed and nearly snapped back. I'll clear my offcuts every hour from now on. I need you to tell me one-on-one next time."
+
+Kyle owned his part, kept the crew safe and said what he needed. He did not blow up, and he did not bottle it up.
 
 ### When the anger is coming at you
 

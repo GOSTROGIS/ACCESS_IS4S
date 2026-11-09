@@ -1,8 +1,8 @@
 ---
 title: Phone calls, voicemail and video calls at work
 summary: Make and answer work calls, leave a voicemail that gets returned, run a video call, and pick the right way to send a message.
-level: 1-2
-time: 75 min
+level: 1-3
+time: 85 min
 components: Speak with clarity; Speak with purpose; Adapt to other people's different communication modes and tools
 rebuilds: A - Oral Communication/Telephone Skills-rb.pdf
 ---
@@ -76,6 +76,50 @@ A crew group chat is good for quick updates, photos and times. It is not good fo
 | Detailed instruction | In person or a call, then a text or email to confirm | Two-way first, then a record |
 | Quick update that is not urgent | Text or crew chat | People can read it when they can |
 | Need to see a problem from far away | Video call or photos | The other person can see it |
+
+The same table as a chart. Start at the top and stop at the first "yes."
+
+<div class="figure-art">
+<svg viewBox="0 0 640 440" width="100%" role="img" aria-labelledby="m07-mode-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m07-mode-title">Decision chart for choosing how to send a message. Urgent or safety: in person or phone. Detailed instruction: talk, then text or email. Need to see it: video or photos. Quick update: text or crew chat.</title>
+<defs><marker id="m07-mode-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="440" fill="#ffffff"/>
+<rect x="20" y="20" width="320" height="80" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="180" y="66.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Urgent or about safety?</text>
+<line x1="342" y1="60" x2="392" y2="60" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m07-mode-ah)"/>
+<text x="367" y="50" font-size="15" text-anchor="middle" font-weight="bold" fill="#2a7f62">yes</text>
+<rect x="396" y="20" width="224" height="80" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="508" y="55.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">In person,</text>
+<text x="508" y="76.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">or a phone call</text>
+<line x1="180" y1="102" x2="180" y2="122" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m07-mode-ah)"/>
+<text x="200" y="118" font-size="15" text-anchor="start" font-weight="bold" fill="#b3261e">no</text>
+<rect x="20" y="124" width="320" height="80" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="180" y="170.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Detailed instruction?</text>
+<line x1="342" y1="164" x2="392" y2="164" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m07-mode-ah)"/>
+<text x="367" y="154" font-size="15" text-anchor="middle" font-weight="bold" fill="#2a7f62">yes</text>
+<rect x="396" y="124" width="224" height="80" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="508" y="159.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Talk first, then text</text>
+<text x="508" y="180.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">or email to confirm</text>
+<line x1="180" y1="206" x2="180" y2="226" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m07-mode-ah)"/>
+<text x="200" y="222" font-size="15" text-anchor="start" font-weight="bold" fill="#b3261e">no</text>
+<rect x="20" y="228" width="320" height="80" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="180" y="274.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Need to see the problem?</text>
+<line x1="342" y1="268" x2="392" y2="268" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m07-mode-ah)"/>
+<text x="367" y="258" font-size="15" text-anchor="middle" font-weight="bold" fill="#2a7f62">yes</text>
+<rect x="396" y="228" width="224" height="80" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="508" y="263.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Video call</text>
+<text x="508" y="284.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">or photos</text>
+<line x1="180" y1="310" x2="180" y2="330" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m07-mode-ah)"/>
+<text x="200" y="326" font-size="15" text-anchor="start" font-weight="bold" fill="#b3261e">no</text>
+<rect x="20" y="332" width="320" height="80" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="180" y="378.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Quick update, not urgent?</text>
+<line x1="342" y1="372" x2="392" y2="372" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m07-mode-ah)"/>
+<text x="367" y="362" font-size="15" text-anchor="middle" font-weight="bold" fill="#2a7f62">yes</text>
+<rect x="396" y="332" width="224" height="80" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="508" y="367.325" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Text or</text>
+<text x="508" y="388.575" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">crew chat</text>
+</svg>
+</div>
 
 ### Checking in when you work alone
 
@@ -160,6 +204,27 @@ ______________________________________________
 > - Dispatch writes down every check-in.
 
 After the role play, answer: what did Lou need to write down?
+
+______________________________________________
+
+**Task 7** (level 2) **Use the chart.** Name the mode for each situation.
+
+a) A gas smell in the basement where the plumber is working. ______________
+b) Tomorrow's start moves from 7:00 to 7:30. ______________
+c) Your foreman, at another site, needs to see a crack in a footing. ______________
+d) Long steps for setting up the rental hoist. ______________
+
+**Task 8** (level 3) **You are the lead hand.** The crane delivery of roof trusses is now 2 hours late. Your crew of six is waiting. The superintendent is in a meeting off site. The truss supplier is waiting to hear when the crane will be ready.
+
+a) Choose a mode for the crew, the superintendent and the supplier. Give a reason for each.
+
+______________________________________________
+
+b) Write the message you send to the superintendent.
+
+______________________________________________
+
+c) What will you have the crew do for two hours?
 
 ______________________________________________
 

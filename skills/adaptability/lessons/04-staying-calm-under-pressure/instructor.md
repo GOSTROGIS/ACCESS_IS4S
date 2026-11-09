@@ -1,12 +1,12 @@
 # Staying calm under pressure and handling anger
 
-Adaptability lesson 4 of 8. Total time: 90 minutes.
+Adaptability lesson 4 of 12. Total time: 90 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Tell a short story about a time pressure got to you or someone on your crew, and what happened next. Keep it light enough that nobody feels singled out. Ask: "What gets people most wound up on a job site?" Explain that this is Adaptability lesson 4 of 8, and that the session is 90 minutes.
+Welcome learners. Tell a short story about a time pressure got to you or someone on your crew, and what happened next. Keep it light enough that nobody feels singled out. Ask: "What gets people most wound up on a job site?" Explain that this is Adaptability lesson 4 of 12, and that the session is 90 minutes.
 
 ## Objective
 
@@ -45,6 +45,8 @@ Note the answers to question 2. Come back to them in step 2.3.
 | 4.2 | Summarize. | Name one thing from the cool-down list they will try. | | 3 min |
 
 Total: 5 + 5 + 10 + 15 + 10 + 15 + 10 + 12 + 5 + 3 = 90 minutes.
+
+The learner page also has a figure of anger rising and falling, and a worked example of an apprentice shouted at by the saw who notices, cools down and then says what he needs. Use it before Task 3. These fit inside the existing step times.
 
 ### Notes for the instructor
 

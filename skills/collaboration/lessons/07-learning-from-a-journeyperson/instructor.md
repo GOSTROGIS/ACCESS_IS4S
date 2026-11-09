@@ -1,12 +1,12 @@
 # Learning from a journeyperson
 
-**Collaboration lesson 7 of 8 · 60 min · Level 1-2**
+**Collaboration lesson 7 of 12 · 70 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (3 min, step 1.1)
 
-Welcome learners to session 7 of 8. This session runs 60 minutes.
+Welcome learners to session 7 of 12. This session runs 70 minutes.
 
 Hook: "Think of the best teacher, coach, Elder, boss or older worker who ever showed you how to do something. What did they do that made it stick? And what did *you* do that made them want to keep teaching you?" Take two or three answers. Point out the second half: learning is a two-way job.
 
@@ -39,9 +39,10 @@ By the end of the session, learners will be able to:
 | 2.5 | Set Task 4. Go over the arithmetic on the board. Remind learners the sponsor records hours, and the apprentice checks them | Calculate the gap, write a message to the sponsor | Learner page, calculators | 7 min |
 | 2.6 | Set Task 5 in pairs. Each person coaches, then switches. Ask two pairs what they changed after watching their partner | Coach and be coached | Learner page, string or other simple items | 9 min |
 | 2.7 | Give time for Check yourself | Answer the five questions alone | Learner page, answers page | 3 min |
+| 2.8 | Show the feedback loop. Set Task 6. Then set Task 7 and have pairs act out part b | Use the loop, plan how to teach Noor | Learner page | 10 min |
 | 3.1 | Ask the post-assessment questions | Answer aloud or on paper | Whiteboard | 5 min |
 | 3.2 | Summary and preview of lesson 8 | Name one habit they will use with their next journeyperson | None | 2 min |
-| | | | **Total** | **60 min** |
+| | | | **Total** | **70 min** |
 
 ## Post-assessment (5 min, step 3.1)
 

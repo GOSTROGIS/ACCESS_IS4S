@@ -64,6 +64,49 @@ Average for version 2: (14 + 16 + 15) ÷ 3 = 45 ÷ 3 = 15 washers.
 
 Percent improvement: (15 − 9) ÷ 9 × 100 = 6 ÷ 9 × 100 ≈ 66.7%
 
+<div class="figure-art">
+<svg viewBox="0 0 720 400" width="100%" role="img" aria-labelledby="cr06-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="cr06-f1-title">Side view of two brackets taped to a table. Version 1, a flat strip, folds at the table edge and averages 9 washers. Version 2, folded into a triangle tube, reaches 15 cm past the edge and averages 15 washers. A cup hangs from the arm over a catch box.</title>
+<defs><marker id="cr06-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="cr06-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="400" fill="#ffffff"/>
+<text x="360.0" y="28.0" font-size="20" text-anchor="middle" font-weight="bold" fill="#222222">The bracket test (side view)</text>
+<text x="185.0" y="62.0" font-size="17" text-anchor="middle" font-weight="bold" fill="#b3261e">Version 1: flat strip</text>
+<rect x="20.0" y="150.0" width="200.0" height="22.0" rx="0" fill="#d9c7a8" stroke="#222222" stroke-width="2"/>
+<rect x="30.0" y="172.0" width="16.0" height="150.0" rx="0" fill="#d9c7a8" stroke="#222222" stroke-width="1.5"/>
+<rect x="190.0" y="172.0" width="16.0" height="150.0" rx="0" fill="#d9c7a8" stroke="#222222" stroke-width="1.5"/>
+<path d="M140,147 L220,147 L260,176" stroke="#222222" stroke-width="4" fill="none"/>
+<text x="224.0" y="120.0" font-size="14" text-anchor="start" font-weight="bold" fill="#b3261e">folds at the edge</text>
+<rect x="140.0" y="140.0" width="30.0" height="8.0" rx="0" fill="#fdf3c4" stroke="#8a7a1a" stroke-width="1"/>
+<text x="155.0" y="136.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#6b6b6b">tape</text>
+<line x1="266.0" y1="180.0" x2="266.0" y2="220.0" stroke="#222222" stroke-width="1.5"/>
+<path d="M250,220 L282,220 L277,260 L255,260 z" stroke="#222222" stroke-width="2" fill="#ffffff"/>
+<text x="266.0" y="246.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#222222">cup</text>
+<rect x="226.0" y="300.0" width="80.0" height="22.0" rx="0" fill="#fbe3c8" stroke="#b85c00" stroke-width="1.5"/>
+<text x="266.0" y="340.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#6b6b6b">catch box</text>
+<text x="185.0" y="372.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">average 9 washers</text>
+<text x="535.0" y="62.0" font-size="17" text-anchor="middle" font-weight="bold" fill="#2e6b34">Version 2: triangle tube</text>
+<rect x="370.0" y="150.0" width="200.0" height="22.0" rx="0" fill="#d9c7a8" stroke="#222222" stroke-width="2"/>
+<rect x="380.0" y="172.0" width="16.0" height="150.0" rx="0" fill="#d9c7a8" stroke="#222222" stroke-width="1.5"/>
+<rect x="540.0" y="172.0" width="16.0" height="150.0" rx="0" fill="#d9c7a8" stroke="#222222" stroke-width="1.5"/>
+<path d="M490,147 L675,147" stroke="#222222" stroke-width="4" fill="none"/>
+<path d="M630,147 l-10,-18 l20,0 z" stroke="#222222" stroke-width="2" fill="#ffffff"/>
+<text x="630.0" y="108.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#6b6b6b">cross-section</text>
+<line x1="570.0" y1="140.0" x2="570.0" y2="86.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="675.0" y1="140.0" x2="675.0" y2="86.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="570.0" y1="92.0" x2="675.0" y2="92.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr06-f1-ds)" marker-end="url(#cr06-f1-ds)"/>
+<text x="622.5" y="86.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#222222">15 cm</text>
+<rect x="490.0" y="140.0" width="30.0" height="8.0" rx="0" fill="#fdf3c4" stroke="#8a7a1a" stroke-width="1"/>
+<text x="505.0" y="136.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#6b6b6b">tape</text>
+<line x1="670.0" y1="150.0" x2="670.0" y2="190.0" stroke="#222222" stroke-width="1.5"/>
+<path d="M654,190 L686,190 L681,230 L659,230 z" stroke="#222222" stroke-width="2" fill="#ffffff"/>
+<text x="670.0" y="216.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#222222">cup</text>
+<rect x="630.0" y="300.0" width="80.0" height="22.0" rx="0" fill="#fbe3c8" stroke="#b85c00" stroke-width="1.5"/>
+<text x="670.0" y="340.0" font-size="13" text-anchor="middle" font-weight="normal" fill="#6b6b6b">catch box</text>
+<text x="535.0" y="372.0" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">average 15 washers</text>
+<text x="360.0" y="395.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">One change between versions: the shape of the arm.</text>
+</svg>
+</div>
+
 Version 2 still fails, now because the tape peels off the table. For version 3 they reverse the idea: instead of a brace pushing up from below, they run a strip of cardboard from the end of the arm back to a taped spot on the table, so it pulls from above.
 
 ## Practice
@@ -108,6 +151,23 @@ c) Now do the same for your own team's best two versions.
 ______________________________________________
 
 ______________________________________________
+
+______________________________________________
+
+______________________________________________
+
+**Task 8** (level 3) A pipefitting crew at Coldwater Mechanical (a fictional company) bench-tests two designs for a temporary pipe support on a test rig. Each design is loaded until it slips.
+
+- Design A: 180, 175 and 185 kg
+- Design B, with one change (a second U-bolt): 260, 250 and 270 kg
+
+a) Find the average for each design. Show your work using BEDMAS.
+
+b) Find the percent improvement from A to B. Round to one decimal place.
+
+c) Was this a fair test? What one thing would you check?
+
+d) Why can a bench test like this not decide what goes into a real building?
 
 ______________________________________________
 

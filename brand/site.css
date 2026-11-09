@@ -83,5 +83,9 @@ main>*,nav{min-width:0}
 .sources{margin:0;padding-left:22px;max-width:78ch;overflow-wrap:anywhere;font-size:15px}
 .sources li{margin-bottom:6px}
 .lock{font-size:.85em;margin-left:3px}
+.figure-art{margin:20px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.figure-art:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.figure-art img{max-width:100%;height:auto}
+@media (max-width:640px){.figure-art>svg,.figure-art img{min-width:600px}}
 .lesson-steps{justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}

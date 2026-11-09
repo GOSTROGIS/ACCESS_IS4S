@@ -42,6 +42,18 @@ A good answer talks about the work, not the person, has all three parts and does
 5. F. Expressing a difference of opinion is not bullying.
 6. B. Yelling and threats are verbal aggression and intimidation.
 
+## Task 7 (level 2) Use the card
+
+Sample. What I saw: "The cut rebar ends by the walkway have no caps." Why it matters: "Someone could trip and fall on them and get hurt." What to do: "Cap them now, and cap every end as you cut."
+
+## Task 8 (level 3) You are the lead hand
+
+a) Sample: "Can we talk over here for a minute?" Then, away from the crew: "I want to fix it. Which areas are the problem?" (Boundaries, then Clarify.) Acknowledge also works: "You're right, the stairwell is messy."
+
+b) Sample: "What I saw: offcuts in the stairwell, a cord across the doorway and an open pail of screws. Why it matters: those are trip hazards on the way out. What to do: clear the stairwell now, run the cord along the wall and lid the pail. We check it again at lunch."
+
+c) Facts tell the crew exactly what to fix. Passing on blame or anger makes people defensive and does not say what to change. It also keeps the focus on the work, not the person.
+
 ## Check yourself
 
 1. It names exactly what the person did, and ideally why it helped.

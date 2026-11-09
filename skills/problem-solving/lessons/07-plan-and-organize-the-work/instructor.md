@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 7 of 9 in Problem Solving. Length: 60 min.**
+**Session 7 of 10 in Problem Solving. Length: 60 min.**
 
 Welcome learners. Adapted from the ACCESS warm-up "This represents me": ask each learner to find one thing in a pocket, bag or phone that shows how they keep themselves organized, such as a calendar, a list, a key ring or a bus pass. Go around the room and have each person say in one sentence how it helps them.
 

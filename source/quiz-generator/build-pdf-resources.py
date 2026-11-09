@@ -16,7 +16,8 @@ def main() -> None:
     files = {
         'vendor/DejaVuSans.ttf': args.font_directory / 'DejaVuSans.ttf',
         'vendor/DejaVuSans-Bold.ttf': args.font_directory / 'DejaVuSans-Bold.ttf',
-        '../../../brand/is4s-badge-512.png': root / 'brand/is4s-badge-512.png',
+        # Symbolic key read by generator-pdf.js as asset('logo').
+        'logo': root / 'brand/is4s-badge-512.png',
     }
     files.update({f'assets/{image.name}': image for image in sorted((quizzes / 'assets').glob('*.png'))})
     resources = {name: base64.b64encode(path.read_bytes()).decode('ascii') for name, path in files.items()}

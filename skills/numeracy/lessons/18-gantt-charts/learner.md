@@ -1,0 +1,759 @@
+---
+title: Read and draw a Gantt chart
+summary: Read a Gantt chart's bars, summary bars, milestones, today line and percent complete, compare the baseline with the current schedule, use a three-week look-ahead, and draw your own bars on a time scale.
+level: 1-3
+time: 90 min
+components: Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information; Share the mathematical information, results and implications
+---
+
+# Read and draw a Gantt chart
+
+## Why this matters on the job
+
+The Gantt chart is the schedule picture you see most on site. It is pinned up in the site office, shown at the toolbox talk and printed for the weekly coordination meeting. A foreman reads it to know when the crew starts, what must be done first and whether the job is on time. It turns the dates from lesson 17 into bars you can see at a glance.
+
+## Key ideas
+
+**Parts of a Gantt chart.**
+
+- **Activities** are listed down the left side, one per row.
+- The **time scale** runs across the top: months, dates and weekdays. Weekends and holidays are shaded because no work is planned on them.
+- Each **bar** starts at the start of its first working day and ends at the end of its last working day. A bar that crosses a weekend still counts only the working days.
+- **Critical** activities are drawn in a different colour or pattern. If one of them is late, the whole job finishes late. Lesson 21 shows how to find them.
+- A **summary bar** is a thick black bar with pointed ends. It runs from the earliest start to the latest finish of the activities under it.
+- A **milestone** is a diamond. It marks an event that takes no time, for example "Footings poured" or "Garage complete". Its duration is 0.
+- The **today line** is a vertical line at the status date. Everything left of it should be done. Everything right of it is still planned.
+- **Percent complete** is shown as a dark strip inside the bar, with a number such as 50%.
+- The **baseline** is the plan you saved before work started. A tracking Gantt chart draws a thin grey baseline bar under each current bar, so you can see what has slipped.
+- A **three-week look-ahead** is a short Gantt chart taken from the full schedule. It shows only the next three weeks, in more detail, so the foremen can line up crews, material, equipment and inspections.
+
+**Reading a bar.**
+
+- Start date: read the date under the left end of the bar.
+- Finish date: read the date under the right end of the bar.
+- Working days: count the unshaded day columns under the bar.
+- Calendar days: finish date − start date + 1.
+
+**Drawing a bar.**
+
+1. Draw the time scale with one column per day. Shade weekends and statutory holidays.
+2. Write the activities down the left in the order the work happens.
+3. For each activity, start the bar at the left edge of the start date and end it at the right edge of the finish date.
+4. Draw milestones as diamonds at the end of the day they happen.
+5. Add a legend so a reader knows what each colour and symbol means.
+
+### Worked example: the garage job
+
+Northshore Garage Builders (a fictional company) is building a detached garage with a slab on grade. Work starts on Monday, May 10, 2027. The Gantt chart below shows the plan, with a today line at the start of Thursday, May 20.
+
+<div class="figure-art" style="overflow-x:auto" tabindex="0" role="region" aria-label="Gantt chart of the garage job, scrolls sideways">
+<svg viewBox="0 0 1040 658" width="100%" role="img" aria-labelledby="n18-garage-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="n18-garage-title">Gantt chart of the garage job from May 10 to June 7, 2027, with three summary bars, two milestones, a today line at the start of May 20 and percent complete on the first eight activities. Victoria Day, May 24, is hatched.</title>
+<rect x="0" y="0" width="1040" height="658" fill="#ffffff"/>
+<defs><marker id="n18-garage-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555555"/></marker><marker id="n18-garage-ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a3271d"/></marker><pattern id="n18-garage-hol" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#eeeeee"/><line x1="0" y1="0" x2="0" y2="8" stroke="#9a9a9a" stroke-width="3"/></pattern><pattern id="n18-garage-crit" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#a3271d"/><line x1="0" y1="0" x2="0" y2="10" stroke="#7a1a13" stroke-width="4"/></pattern></defs>
+<line x1="300" y1="36" x2="300" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="312.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="312.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">10</text>
+<text x="302.0" y="16.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">May 2027</text>
+<line x1="324" y1="36" x2="324" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="336.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="336.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">11</text>
+<line x1="348" y1="36" x2="348" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="360.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="360.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">12</text>
+<line x1="372" y1="36" x2="372" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="384.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="384.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">13</text>
+<line x1="396" y1="36" x2="396" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="408.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="408.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">14</text>
+<rect x="420" y="58" width="24" height="540" fill="#e2e2e2"/>
+<line x1="420" y1="36" x2="420" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="432.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="432.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">15</text>
+<rect x="444" y="58" width="24" height="540" fill="#e2e2e2"/>
+<line x1="444" y1="36" x2="444" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="456.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="456.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">16</text>
+<line x1="468" y1="36" x2="468" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="480.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="480.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">17</text>
+<line x1="492" y1="36" x2="492" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="504.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="504.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">18</text>
+<line x1="516" y1="36" x2="516" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="528.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="528.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">19</text>
+<line x1="540" y1="36" x2="540" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="552.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="552.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">20</text>
+<line x1="564" y1="36" x2="564" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="576.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="576.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">21</text>
+<rect x="588" y="58" width="24" height="540" fill="#e2e2e2"/>
+<line x1="588" y1="36" x2="588" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="600.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="600.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">22</text>
+<rect x="612" y="58" width="24" height="540" fill="#e2e2e2"/>
+<line x1="612" y1="36" x2="612" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="624.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="624.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">23</text>
+<rect x="636" y="58" width="24" height="540" fill="url(#n18-garage-hol)"/>
+<line x1="636" y1="36" x2="636" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="648.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="648.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">24</text>
+<line x1="660" y1="36" x2="660" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="672.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="672.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">25</text>
+<line x1="684" y1="36" x2="684" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="696.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="696.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">26</text>
+<line x1="708" y1="36" x2="708" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="720.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="720.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">27</text>
+<line x1="732" y1="36" x2="732" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="744.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="744.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">28</text>
+<rect x="756" y="58" width="24" height="540" fill="#e2e2e2"/>
+<line x1="756" y1="36" x2="756" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="768.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="768.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">29</text>
+<rect x="780" y="58" width="24" height="540" fill="#e2e2e2"/>
+<line x1="780" y1="36" x2="780" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="792.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="792.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">30</text>
+<line x1="804" y1="36" x2="804" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="816.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="816.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">31</text>
+<line x1="828" y1="36" x2="828" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="840.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="840.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">1</text>
+<text x="830.0" y="16.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">June 2027</text>
+<line x1="852" y1="36" x2="852" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="864.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="864.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">2</text>
+<line x1="876" y1="36" x2="876" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="888.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="888.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">3</text>
+<line x1="900" y1="36" x2="900" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="912.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="912.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">4</text>
+<rect x="924" y="58" width="24" height="540" fill="#e2e2e2"/>
+<line x1="924" y1="36" x2="924" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="936.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="936.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">5</text>
+<rect x="948" y="58" width="24" height="540" fill="#e2e2e2"/>
+<line x1="948" y1="36" x2="948" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="960.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="960.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">6</text>
+<line x1="972" y1="36" x2="972" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="984.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="984.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">7</text>
+<line x1="996" y1="36" x2="996" y2="598" stroke="#d0d0d0" stroke-width="1"/>
+<text x="1008.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="1008.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">8</text>
+<rect x="0" y="58" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="8.0" y="78.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">Foundations</text>
+<rect x="300" y="67" width="216" height="8" fill="#222222"/>
+<path d="M300,67 l0,14 l7,-6 z" fill="#222222"/><path d="M516,67 l0,14 l-7,-6 z" fill="#222222"/>
+<text x="22.0" y="108.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">1  Layout and excavate</text>
+<rect x="301" y="93" width="46" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="301.0" y="97" width="46.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="352.0" y="107.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<rect x="0" y="118" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="138.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">2  Form footings</text>
+<rect x="349" y="123" width="46" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="349.0" y="127" width="46.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="400.0" y="137.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<text x="22.0" y="168.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">3  Place footing rebar</text>
+<rect x="397" y="153" width="22" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="397.0" y="157" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="424.0" y="167.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<rect x="0" y="178" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="198.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">4  Footing inspection</text>
+<rect x="469" y="183" width="22" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="469.0" y="187" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="496.0" y="197.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<text x="22.0" y="228.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">5  Pour footings</text>
+<rect x="493" y="213" width="22" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="493.0" y="217" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="520.0" y="227.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<rect x="0" y="238" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="258.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">M1  Footings poured</text>
+<path d="M516.0,242.0 l9,9 l-9,9 l-9,-9 z" fill="#3d5f86" stroke="#222222"/>
+<text x="529.0" y="256.0" font-size="12" text-anchor="start" font-weight="normal" fill="#555555">May 18</text>
+<text x="8.0" y="288.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">Under-slab and slab</text>
+<rect x="516" y="277" width="168" height="8" fill="#222222"/>
+<path d="M516,277 l0,14 l7,-6 z" fill="#222222"/><path d="M684,277 l0,14 l-7,-6 z" fill="#222222"/>
+<rect x="0" y="298" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="318.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">7  Under-slab electrical conduit</text>
+<rect x="517" y="303" width="46" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<text x="568.0" y="317.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">0%</text>
+<text x="22.0" y="348.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">8  Under-slab plumbing</text>
+<rect x="517" y="333" width="22" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<rect x="517.0" y="337" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="544.0" y="347.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<rect x="0" y="358" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="378.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">9  Pour slab</text>
+<rect x="565" y="363" width="118" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<text x="8.0" y="408.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">Framing and roof</text>
+<rect x="348" y="397" width="648" height="8" fill="#222222"/>
+<path d="M348,397 l0,14 l7,-6 z" fill="#222222"/><path d="M996,397 l0,14 l-7,-6 z" fill="#222222"/>
+<rect x="0" y="418" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="438.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">6  Order and deliver roof trusses</text>
+<rect x="349" y="423" width="358" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<rect x="349.0" y="427" width="70.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="469.0" y="427" width="46.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="712.0" y="437.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">50%</text>
+<text x="22.0" y="468.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">10  Frame walls</text>
+<rect x="685" y="453" width="142" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="0" y="478" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="498.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">11  Set trusses and sheathe roof</text>
+<rect x="829" y="483" width="70" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<text x="22.0" y="528.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">12  Shingles</text>
+<rect x="901" y="513" width="94" height="15" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="0" y="538" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="558.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">13  Install overhead door</text>
+<rect x="901" y="543" width="22" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="22.0" y="588.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">M2  Garage complete</text>
+<path d="M996.0,572.0 l9,9 l-9,9 l-9,-9 z" fill="#a3271d" stroke="#222222"/>
+<text x="1009.0" y="586.0" font-size="12" text-anchor="start" font-weight="normal" fill="#555555">Jun 7</text>
+<line x1="540" y1="28" x2="540" y2="602" stroke="#0a7a3a" stroke-width="3" stroke-dasharray="8 4"/>
+<rect x="513" y="602" width="54" height="18" fill="#0a7a3a"/>
+<text x="540.0" y="615.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#ffffff">Today</text>
+<rect x="8" y="628" width="30" height="14" fill="url(#n18-garage-crit)" stroke="#222222" stroke-width="2"/>
+<text x="44.0" y="640.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Critical</text>
+<rect x="108" y="628" width="30" height="14" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="144.0" y="640.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Not critical</text>
+<rect x="228" y="631" width="30" height="8" fill="#222222"/>
+<text x="264.0" y="640.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Summary</text>
+<path d="M336,627 l8,8 l-8,8 l-8,-8 z" fill="#a3271d" stroke="#222222"/>
+<text x="350.0" y="640.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Milestone</text>
+<rect x="432" y="632" width="30" height="6" fill="#111111"/>
+<text x="468.0" y="640.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Work done</text>
+<rect x="542" y="628" width="16" height="14" fill="#e2e2e2"/>
+<text x="564.0" y="640.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Weekend</text>
+<rect x="632" y="628" width="16" height="14" fill="url(#n18-garage-hol)"/>
+<text x="654.0" y="640.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Stat holiday</text>
+</svg>
+</div>
+
+Read activity 9, Pour slab:
+
+1. The bar starts on Friday, May 21 and ends on Tuesday, May 25.
+2. Under the bar are Friday, Saturday, Sunday, Monday and Tuesday. Saturday and Sunday are a weekend, and Monday, May 24 is Victoria Day.
+3. Working days: Friday and Tuesday, so **2 working days**.
+4. Calendar days: 25 − 21 + 1 = **5 calendar days**.
+
+Read the today line:
+
+- Activities 1 to 5 and 8 end before the line and show 100%. They are done, as planned.
+- Activity 7, Under-slab electrical conduit, should have started on May 19, so half of it should be done. It shows 0%. It is critical, so it is a warning sign for the finish date.
+- Activity 6, the roof trusses, is at 50%. The plan puts it at 6 of its 10 working days, which is 60%. It is a little behind, but trusses are not critical, so there is time to catch up.
+
+The plan for the whole job is in this table.
+
+| ID | Activity | Start | Finish |
+|---|---|---|---|
+| 1 | Layout and excavate | Mon May 10, 2027 | Tue May 11, 2027 |
+| 2 | Form footings | Wed May 12, 2027 | Thu May 13, 2027 |
+| 3 | Place footing rebar | Fri May 14, 2027 | Fri May 14, 2027 |
+| 4 | Footing inspection | Mon May 17, 2027 | Mon May 17, 2027 |
+| 5 | Pour footings | Tue May 18, 2027 | Tue May 18, 2027 |
+| 6 | Order and deliver roof trusses | Wed May 12, 2027 | Wed May 26, 2027 |
+| 7 | Under-slab electrical conduit | Wed May 19, 2027 | Thu May 20, 2027 |
+| 8 | Under-slab plumbing | Wed May 19, 2027 | Wed May 19, 2027 |
+| 9 | Pour slab | Fri May 21, 2027 | Tue May 25, 2027 |
+| 10 | Frame walls | Wed May 26, 2027 | Mon May 31, 2027 |
+| 11 | Set trusses and sheathe roof | Tue Jun 1, 2027 | Thu Jun 3, 2027 |
+| 12 | Shingles | Fri Jun 4, 2027 | Mon Jun 7, 2027 |
+| 13 | Install overhead door | Fri Jun 4, 2027 | Fri Jun 4, 2027 |
+| M1 | Footings poured (milestone) | Tue May 18, 2027 | Tue May 18, 2027 |
+| M2 | Garage complete (milestone) | Mon Jun 7, 2027 | Mon Jun 7, 2027 |
+
+## Practice
+
+**Task 1** (level 1). Use the garage Gantt chart.
+
+a) On what date does activity 2, Form footings, start and finish?  
+b) Frame walls runs from May 26 to May 31. How many working days is that? How many calendar days?  
+c) On what date is the milestone "Garage complete"?  
+d) Which date is shaded with hatching, and why?
+
+______________________________________________
+
+**Task 2** (level 1-2). Summary bars and critical activities.
+
+a) Give the start and finish dates of the Foundations summary bar.  
+b) Why does the "Framing and roof" summary bar start on May 12, before the walls are framed?  
+c) List the activities that are not critical.
+
+______________________________________________
+
+**Task 3** (level 2). The status date is the start of Thursday, May 20.
+
+a) Which activities should be 100% complete?  
+b) Which activity is behind and on the critical path? What should the site supervisor do today?  
+c) The trusses show 50%. What percent should they show by the plan? Show your work.
+
+______________________________________________
+
+**Task 4** (level 2). This tracking Gantt chart shows the same garage job on Monday, May 31. Rain stretched two activities. The grey bars are the baseline.
+
+<div class="figure-art" style="overflow-x:auto" tabindex="0" role="region" aria-label="Tracking Gantt chart of the garage job, scrolls sideways">
+<svg viewBox="0 0 1112 568" width="100%" role="img" aria-labelledby="n18-track-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="n18-track-title">Tracking Gantt chart of the garage job. Each activity has a grey baseline bar under its current bar. The today line is at the start of May 31, 2027. Garage complete has moved from June 7 to June 9.</title>
+<rect x="0" y="0" width="1112" height="568" fill="#ffffff"/>
+<defs><marker id="n18-track-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555555"/></marker><marker id="n18-track-ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a3271d"/></marker><pattern id="n18-track-hol" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#eeeeee"/><line x1="0" y1="0" x2="0" y2="8" stroke="#9a9a9a" stroke-width="3"/></pattern><pattern id="n18-track-crit" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#a3271d"/><line x1="0" y1="0" x2="0" y2="10" stroke="#7a1a13" stroke-width="4"/></pattern></defs>
+<line x1="300" y1="36" x2="300" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="312.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="312.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">10</text>
+<text x="302.0" y="16.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">May 2027</text>
+<line x1="324" y1="36" x2="324" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="336.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="336.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">11</text>
+<line x1="348" y1="36" x2="348" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="360.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="360.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">12</text>
+<line x1="372" y1="36" x2="372" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="384.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="384.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">13</text>
+<line x1="396" y1="36" x2="396" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="408.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="408.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">14</text>
+<rect x="420" y="58" width="24" height="450" fill="#e2e2e2"/>
+<line x1="420" y1="36" x2="420" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="432.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="432.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">15</text>
+<rect x="444" y="58" width="24" height="450" fill="#e2e2e2"/>
+<line x1="444" y1="36" x2="444" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="456.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="456.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">16</text>
+<line x1="468" y1="36" x2="468" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="480.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="480.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">17</text>
+<line x1="492" y1="36" x2="492" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="504.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="504.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">18</text>
+<line x1="516" y1="36" x2="516" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="528.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="528.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">19</text>
+<line x1="540" y1="36" x2="540" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="552.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="552.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">20</text>
+<line x1="564" y1="36" x2="564" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="576.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="576.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">21</text>
+<rect x="588" y="58" width="24" height="450" fill="#e2e2e2"/>
+<line x1="588" y1="36" x2="588" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="600.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="600.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">22</text>
+<rect x="612" y="58" width="24" height="450" fill="#e2e2e2"/>
+<line x1="612" y1="36" x2="612" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="624.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="624.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">23</text>
+<rect x="636" y="58" width="24" height="450" fill="url(#n18-track-hol)"/>
+<line x1="636" y1="36" x2="636" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="648.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="648.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">24</text>
+<line x1="660" y1="36" x2="660" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="672.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="672.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">25</text>
+<line x1="684" y1="36" x2="684" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="696.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="696.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">26</text>
+<line x1="708" y1="36" x2="708" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="720.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="720.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">27</text>
+<line x1="732" y1="36" x2="732" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="744.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="744.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">28</text>
+<rect x="756" y="58" width="24" height="450" fill="#e2e2e2"/>
+<line x1="756" y1="36" x2="756" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="768.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="768.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">29</text>
+<rect x="780" y="58" width="24" height="450" fill="#e2e2e2"/>
+<line x1="780" y1="36" x2="780" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="792.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="792.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">30</text>
+<line x1="804" y1="36" x2="804" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="816.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="816.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">31</text>
+<line x1="828" y1="36" x2="828" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="840.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="840.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">1</text>
+<text x="830.0" y="16.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">June 2027</text>
+<line x1="852" y1="36" x2="852" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="864.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="864.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">2</text>
+<line x1="876" y1="36" x2="876" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="888.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="888.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">3</text>
+<line x1="900" y1="36" x2="900" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="912.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="912.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">4</text>
+<rect x="924" y="58" width="24" height="450" fill="#e2e2e2"/>
+<line x1="924" y1="36" x2="924" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="936.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="936.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">5</text>
+<rect x="948" y="58" width="24" height="450" fill="#e2e2e2"/>
+<line x1="948" y1="36" x2="948" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="960.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="960.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">6</text>
+<line x1="972" y1="36" x2="972" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="984.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="984.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">7</text>
+<line x1="996" y1="36" x2="996" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="1008.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="1008.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">8</text>
+<line x1="1020" y1="36" x2="1020" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="1032.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="1032.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">9</text>
+<line x1="1044" y1="36" x2="1044" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="1056.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="1056.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">10</text>
+<line x1="1068" y1="36" x2="1068" y2="508" stroke="#d0d0d0" stroke-width="1"/>
+<text x="1080.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="1080.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">11</text>
+<rect x="0" y="58" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="78.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">1  Layout and excavate</text>
+<rect x="301" y="80" width="46" height="6" fill="#8a8a8a"/>
+<rect x="301" y="63" width="46" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="301.0" y="67" width="46.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="352.0" y="77.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<text x="22.0" y="108.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">2  Form footings</text>
+<rect x="349" y="110" width="46" height="6" fill="#8a8a8a"/>
+<rect x="349" y="93" width="70" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="349.0" y="97" width="70.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="424.0" y="107.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<rect x="0" y="118" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="138.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">3  Place footing rebar</text>
+<rect x="397" y="140" width="22" height="6" fill="#8a8a8a"/>
+<rect x="469" y="123" width="22" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="469.0" y="127" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="496.0" y="137.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<text x="22.0" y="168.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">4  Footing inspection</text>
+<rect x="469" y="170" width="22" height="6" fill="#8a8a8a"/>
+<rect x="493" y="153" width="22" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="493.0" y="157" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="520.0" y="167.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<rect x="0" y="178" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="198.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">5  Pour footings</text>
+<rect x="493" y="200" width="22" height="6" fill="#8a8a8a"/>
+<rect x="517" y="183" width="22" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="517.0" y="187" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="544.0" y="197.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<text x="22.0" y="228.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">M1  Footings poured</text>
+<path d="M516.0,225.0 l6,6 l-6,6 l-6,-6 z" fill="#9a9a9a"/>
+<path d="M540.0,212.0 l9,9 l-9,9 l-9,-9 z" fill="#3d5f86" stroke="#222222"/>
+<text x="553.0" y="226.0" font-size="12" text-anchor="start" font-weight="normal" fill="#555555">May 19</text>
+<rect x="0" y="238" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="258.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">7  Under-slab electrical conduit</text>
+<rect x="517" y="260" width="46" height="6" fill="#8a8a8a"/>
+<rect x="541" y="243" width="46" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="541.0" y="247" width="46.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="592.0" y="257.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<text x="22.0" y="288.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">8  Under-slab plumbing</text>
+<rect x="517" y="290" width="22" height="6" fill="#8a8a8a"/>
+<rect x="541" y="273" width="22" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<rect x="541.0" y="277" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="568.0" y="287.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<rect x="0" y="298" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="318.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">9  Pour slab</text>
+<rect x="565" y="320" width="118" height="6" fill="#8a8a8a"/>
+<rect x="661" y="303" width="70" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="661.0" y="307" width="70.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="736.0" y="317.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<text x="22.0" y="348.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">6  Order and deliver roof trusses</text>
+<rect x="349" y="350" width="358" height="6" fill="#8a8a8a"/>
+<rect x="349" y="333" width="358" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<rect x="349.0" y="337" width="70.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="469.0" y="337" width="118.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="661.0" y="337" width="46.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="712.0" y="347.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">100%</text>
+<rect x="0" y="358" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="378.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">10  Frame walls</text>
+<rect x="685" y="380" width="142" height="6" fill="#8a8a8a"/>
+<rect x="733" y="363" width="142" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="733.0" y="367" width="22.0" height="7" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
+<text x="880.0" y="377.0" font-size="12" text-anchor="start" font-weight="bold" fill="#222222">25%</text>
+<text x="22.0" y="408.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">11  Set trusses and sheathe roof</text>
+<rect x="829" y="410" width="70" height="6" fill="#8a8a8a"/>
+<rect x="877" y="393" width="118" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="0" y="418" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="438.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">12  Shingles</text>
+<rect x="901" y="440" width="94" height="6" fill="#8a8a8a"/>
+<rect x="997" y="423" width="46" height="15" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<text x="22.0" y="468.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">13  Install overhead door</text>
+<rect x="901" y="470" width="22" height="6" fill="#8a8a8a"/>
+<rect x="997" y="453" width="22" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<rect x="0" y="478" width="300" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="498.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">M2  Garage complete</text>
+<path d="M996.0,495.0 l6,6 l-6,6 l-6,-6 z" fill="#9a9a9a"/>
+<path d="M1044.0,482.0 l9,9 l-9,9 l-9,-9 z" fill="#a3271d" stroke="#222222"/>
+<text x="1057.0" y="496.0" font-size="12" text-anchor="start" font-weight="normal" fill="#555555">Jun 9</text>
+<line x1="804" y1="28" x2="804" y2="512" stroke="#0a7a3a" stroke-width="3" stroke-dasharray="8 4"/>
+<rect x="777" y="512" width="54" height="18" fill="#0a7a3a"/>
+<text x="804.0" y="525.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#ffffff">Today</text>
+<rect x="8" y="538" width="30" height="14" fill="url(#n18-track-crit)" stroke="#222222" stroke-width="2"/>
+<text x="44.0" y="550.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Critical</text>
+<rect x="108" y="538" width="30" height="14" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="144.0" y="550.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Not critical</text>
+<path d="M236,537 l8,8 l-8,8 l-8,-8 z" fill="#a3271d" stroke="#222222"/>
+<text x="250.0" y="550.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Milestone</text>
+<rect x="332" y="542" width="30" height="6" fill="#111111"/>
+<text x="368.0" y="550.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Work done</text>
+<rect x="442" y="542" width="30" height="6" fill="#8a8a8a"/>
+<text x="478.0" y="550.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Baseline</text>
+<rect x="538" y="538" width="16" height="14" fill="#e2e2e2"/>
+<text x="560.0" y="550.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Weekend</text>
+<rect x="628" y="538" width="16" height="14" fill="url(#n18-track-hol)"/>
+<text x="650.0" y="550.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Stat holiday</text>
+</svg>
+</div>
+
+a) Which two activities took longer than planned, and by how many working days each?  
+b) "Garage complete" was planned for Monday, June 7. When is it now? How many working days late is that?  
+c) Frame walls shows 25%. Explain what that means in days.  
+d) The trusses did not slip. Why did their late finish not matter?
+
+______________________________________________
+
+**Task 5** (level 2). This is the three-week look-ahead for a parkade foundation, from Monday, June 28 to Friday, July 16, 2027. Its activities and logic come from a real Microsoft Project schedule for a six-storey wood-frame building over a concrete parkade. The dates are set for this lesson.
+
+<div class="figure-art" style="overflow-x:auto" tabindex="0" role="region" aria-label="Three-week look-ahead, scrolls sideways">
+<svg viewBox="0 0 910 358" width="100%" role="img" aria-labelledby="n18-look-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif" style="min-width:700px">
+<title id="n18-look-title">Three-week look-ahead for the parkade foundation, June 28 to July 16, 2027. Canada Day, July 1, is hatched. The today line is at the start of June 28.</title>
+<rect x="0" y="0" width="910" height="358" fill="#ffffff"/>
+<defs><marker id="n18-look-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555555"/></marker><marker id="n18-look-ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a3271d"/></marker><pattern id="n18-look-hol" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#eeeeee"/><line x1="0" y1="0" x2="0" y2="8" stroke="#9a9a9a" stroke-width="3"/></pattern><pattern id="n18-look-crit" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#a3271d"/><line x1="0" y1="0" x2="0" y2="10" stroke="#7a1a13" stroke-width="4"/></pattern></defs>
+<line x1="320" y1="36" x2="320" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="335.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="335.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">28</text>
+<text x="322.0" y="16.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">June 2027</text>
+<line x1="350" y1="36" x2="350" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="365.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="365.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">29</text>
+<line x1="380" y1="36" x2="380" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="395.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="395.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">30</text>
+<rect x="410" y="58" width="30" height="240" fill="url(#n18-look-hol)"/>
+<line x1="410" y1="36" x2="410" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="425.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="425.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">1</text>
+<text x="412.0" y="16.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">July 2027</text>
+<line x1="440" y1="36" x2="440" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="455.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="455.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">2</text>
+<rect x="470" y="58" width="30" height="240" fill="#e2e2e2"/>
+<line x1="470" y1="36" x2="470" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="485.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="485.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">3</text>
+<rect x="500" y="58" width="30" height="240" fill="#e2e2e2"/>
+<line x1="500" y1="36" x2="500" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="515.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="515.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">4</text>
+<line x1="530" y1="36" x2="530" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="545.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="545.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">5</text>
+<line x1="560" y1="36" x2="560" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="575.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="575.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">6</text>
+<line x1="590" y1="36" x2="590" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="605.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="605.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">7</text>
+<line x1="620" y1="36" x2="620" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="635.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="635.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">8</text>
+<line x1="650" y1="36" x2="650" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="665.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="665.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">9</text>
+<rect x="680" y="58" width="30" height="240" fill="#e2e2e2"/>
+<line x1="680" y1="36" x2="680" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="695.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="695.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">10</text>
+<rect x="710" y="58" width="30" height="240" fill="#e2e2e2"/>
+<line x1="710" y1="36" x2="710" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="725.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="725.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">11</text>
+<line x1="740" y1="36" x2="740" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="755.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="755.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">12</text>
+<line x1="770" y1="36" x2="770" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="785.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="785.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">13</text>
+<line x1="800" y1="36" x2="800" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="815.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="815.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">14</text>
+<line x1="830" y1="36" x2="830" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="845.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="845.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">15</text>
+<line x1="860" y1="36" x2="860" y2="298" stroke="#d0d0d0" stroke-width="1"/>
+<text x="875.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="875.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">16</text>
+<rect x="0" y="58" width="320" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="78.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">47  Pour footings grid E-H</text>
+<rect x="321" y="63" width="28" height="15" fill="url(#n18-look-crit)" stroke="#222222" stroke-width="2"/>
+<text x="22.0" y="108.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">48  Footings complete</text>
+<path d="M350.0,92.0 l9,9 l-9,9 l-9,-9 z" fill="#a3271d" stroke="#222222"/>
+<text x="363.0" y="106.0" font-size="12" text-anchor="start" font-weight="normal" fill="#555555">Jun 28</text>
+<rect x="0" y="118" width="320" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="138.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">50  Form foundation walls north</text>
+<rect x="351" y="123" width="268" height="15" fill="url(#n18-look-crit)" stroke="#222222" stroke-width="2"/>
+<text x="22.0" y="168.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">51  Rebar walls north</text>
+<rect x="441" y="153" width="208" height="15" fill="url(#n18-look-crit)" stroke="#222222" stroke-width="2"/>
+<rect x="0" y="178" width="320" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="198.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">52  Pour walls north</text>
+<rect x="651" y="183" width="238" height="15" fill="url(#n18-look-crit)" stroke="#222222" stroke-width="2"/>
+<text x="22.0" y="228.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">53  Form foundation walls south</text>
+<rect x="351" y="213" width="268" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<rect x="0" y="238" width="320" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="258.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">54  Rebar walls south</text>
+<rect x="441" y="243" width="178" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="22.0" y="288.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">55  Pour walls south</text>
+<rect x="621" y="273" width="238" height="15" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<line x1="320" y1="28" x2="320" y2="302" stroke="#0a7a3a" stroke-width="3" stroke-dasharray="8 4"/>
+<rect x="293" y="302" width="54" height="18" fill="#0a7a3a"/>
+<text x="320.0" y="315.0" font-size="12" text-anchor="middle" font-weight="bold" fill="#ffffff">Today</text>
+<rect x="8" y="328" width="30" height="14" fill="url(#n18-look-crit)" stroke="#222222" stroke-width="2"/>
+<text x="44.0" y="340.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Critical</text>
+<rect x="108" y="328" width="30" height="14" fill="#cfe0f2" stroke="#3d5f86" stroke-width="1.5"/>
+<text x="144.0" y="340.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Not critical</text>
+<path d="M236,327 l8,8 l-8,8 l-8,-8 z" fill="#a3271d" stroke="#222222"/>
+<text x="250.0" y="340.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Milestone</text>
+<rect x="332" y="328" width="16" height="14" fill="#e2e2e2"/>
+<text x="354.0" y="340.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Weekend</text>
+<rect x="422" y="328" width="16" height="14" fill="url(#n18-look-hol)"/>
+<text x="444.0" y="340.0" font-size="13" text-anchor="start" font-weight="normal" fill="#222222">Stat holiday</text>
+</svg>
+</div>
+
+a) Which activities are planned during the week of July 5 to July 9?  
+b) On which dates does a concrete pour start in this window? Who needs to know?  
+c) From June 29 to July 7, two forming activities run at the same time. What does that mean for the forming crews?  
+d) Why is there no work on July 1?
+
+______________________________________________
+
+**Task 6** (level 2-3). Riverbend Decks (a fictional company) has this plan for a deck. Draw the bars on the blank grid, or copy the grid onto graph paper. Shade the bars of activities A, B, C, D, E, H and I as critical. Then add a milestone diamond "Deck complete" at the end of the last day.
+
+| ID | Activity | Start | Finish |
+|---|---|---|---|
+| A | Lay out and dig post holes | Tue Jul 27, 2027 | Tue Jul 27, 2027 |
+| B | Pour pier footings | Wed Jul 28, 2027 | Wed Jul 28, 2027 |
+| C | Set posts and beams | Tue Aug 3, 2027 | Wed Aug 4, 2027 |
+| D | Install joists | Thu Aug 5, 2027 | Fri Aug 6, 2027 |
+| E | Install decking | Mon Aug 9, 2027 | Tue Aug 10, 2027 |
+| F | Cut stair stringers | Wed Jul 28, 2027 | Wed Jul 28, 2027 |
+| G | Build stairs | Wed Aug 11, 2027 | Wed Aug 11, 2027 |
+| H | Install railings | Wed Aug 11, 2027 | Thu Aug 12, 2027 |
+| I | Final inspection | Fri Aug 13, 2027 | Fri Aug 13, 2027 |
+
+<div class="figure-art" style="overflow-x:auto" tabindex="0" role="region" aria-label="Blank Gantt grid, scrolls sideways">
+<svg viewBox="0 0 940 350" width="100%" role="img" aria-labelledby="n18-blank-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif" style="min-width:700px">
+<title id="n18-blank-title">Blank Gantt grid from July 26 to August 15, 2027, for the deck job. B.C. Day, August 2, is hatched.</title>
+<rect x="0" y="0" width="940" height="350" fill="#ffffff"/>
+<defs><marker id="n18-blank-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555555"/></marker><marker id="n18-blank-ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a3271d"/></marker><pattern id="n18-blank-hol" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#eeeeee"/><line x1="0" y1="0" x2="0" y2="8" stroke="#9a9a9a" stroke-width="3"/></pattern><pattern id="n18-blank-crit" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#a3271d"/><line x1="0" y1="0" x2="0" y2="10" stroke="#7a1a13" stroke-width="4"/></pattern></defs>
+<line x1="290" y1="36" x2="290" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="305.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="305.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">26</text>
+<text x="292.0" y="16.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">July 2027</text>
+<line x1="320" y1="36" x2="320" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="335.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="335.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">27</text>
+<line x1="350" y1="36" x2="350" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="365.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="365.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">28</text>
+<line x1="380" y1="36" x2="380" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="395.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="395.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">29</text>
+<line x1="410" y1="36" x2="410" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="425.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="425.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">30</text>
+<rect x="440" y="58" width="30" height="270" fill="#e2e2e2"/>
+<line x1="440" y1="36" x2="440" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="455.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="455.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">31</text>
+<rect x="470" y="58" width="30" height="270" fill="#e2e2e2"/>
+<line x1="470" y1="36" x2="470" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="485.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="485.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">1</text>
+<text x="472.0" y="16.0" font-size="14" text-anchor="start" font-weight="bold" fill="#222222">August 2027</text>
+<rect x="500" y="58" width="30" height="270" fill="url(#n18-blank-hol)"/>
+<line x1="500" y1="36" x2="500" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="515.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="515.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">2</text>
+<line x1="530" y1="36" x2="530" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="545.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="545.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">3</text>
+<line x1="560" y1="36" x2="560" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="575.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="575.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">4</text>
+<line x1="590" y1="36" x2="590" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="605.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="605.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">5</text>
+<line x1="620" y1="36" x2="620" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="635.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="635.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">6</text>
+<rect x="650" y="58" width="30" height="270" fill="#e2e2e2"/>
+<line x1="650" y1="36" x2="650" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="665.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="665.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">7</text>
+<rect x="680" y="58" width="30" height="270" fill="#e2e2e2"/>
+<line x1="680" y1="36" x2="680" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="695.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="695.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">8</text>
+<line x1="710" y1="36" x2="710" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="725.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">M</text>
+<text x="725.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">9</text>
+<line x1="740" y1="36" x2="740" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="755.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="755.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">10</text>
+<line x1="770" y1="36" x2="770" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="785.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">W</text>
+<text x="785.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">11</text>
+<line x1="800" y1="36" x2="800" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="815.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">T</text>
+<text x="815.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">12</text>
+<line x1="830" y1="36" x2="830" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="845.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">F</text>
+<text x="845.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">13</text>
+<rect x="860" y="58" width="30" height="270" fill="#e2e2e2"/>
+<line x1="860" y1="36" x2="860" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="875.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="875.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">14</text>
+<rect x="890" y="58" width="30" height="270" fill="#e2e2e2"/>
+<line x1="890" y1="36" x2="890" y2="328" stroke="#d0d0d0" stroke-width="1"/>
+<text x="905.0" y="52.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">S</text>
+<text x="905.0" y="34.0" font-size="12" text-anchor="middle" font-weight="normal" fill="#555555">15</text>
+<rect x="0" y="58" width="290" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="78.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">A  Lay out and dig post holes</text>
+<text x="22.0" y="108.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">B  Pour pier footings</text>
+<rect x="0" y="118" width="290" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="138.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">C  Set posts and beams</text>
+<text x="22.0" y="168.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">D  Install joists</text>
+<rect x="0" y="178" width="290" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="198.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">E  Install decking</text>
+<text x="22.0" y="228.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">F  Cut stair stringers</text>
+<rect x="0" y="238" width="290" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="258.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">G  Build stairs</text>
+<text x="22.0" y="288.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">H  Install railings</text>
+<rect x="0" y="298" width="290" height="30" fill="#f6f6f6" fill-opacity="0.6"/>
+<text x="22.0" y="318.0" font-size="14" text-anchor="start" font-weight="normal" fill="#222222">I  Final inspection</text>
+</svg>
+</div>
+
+______________________________________________
+
+**Task 7** (level 3). Use the tracking Gantt chart from Task 4. Write a short update (3 or 4 sentences) to the garage owner. Say what slipped, by how much, why, and the new date for "Garage complete".
+
+______________________________________________
+
+______________________________________________
+
+## Check yourself
+
+1. What does a diamond mean on a Gantt chart?
+2. What does the today line show?
+3. A bar runs from a Thursday to the next Tuesday with no holidays. How many working days is it?
+4. What is a baseline?
+5. Why do foremen use a three-week look-ahead and not only the full schedule?

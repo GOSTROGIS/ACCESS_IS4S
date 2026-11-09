@@ -1,12 +1,12 @@
 # Respecting differences on a job site
 
-**Collaboration lesson 3 of 8 · 90 min · Level 1-2**
+**Collaboration lesson 3 of 12 · 100 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 3 of 8. This session runs 90 minutes.
+Welcome learners to session 3 of 12. This session runs 100 minutes.
 
 Hook: "How many languages can the people in this room speak, or speak a few words of? Count them with me." Write the count on the board. Include English, French, sign languages, Indigenous languages, family languages, and a few words learned on a job site. Then ask: "On a crew, is that a problem or an advantage?"
 
@@ -41,9 +41,10 @@ Learners can answer on paper and keep it private.
 | 2.6 | Set Task 4. Pairs write their responses, then share one response per situation. Prompt for responses that are short and calm | Write four responses, share one | Learner page | 12 min |
 | 2.7 | Read the section 13 grounds and the duty to accommodate. Set Task 5. Go over the answers | Do Task 5, check answers | Learner page, BC Laws page on screen if possible | 10 min |
 | 2.8 | Give time for Check yourself | Answer the five questions alone | Learner page, answers page | 3 min |
+| 2.9 | Show the grounds cards. Set Task 6. Then set Task 7 and take two answers for part c | Name the grounds, plan the accommodation | Learner page | 10 min |
 | 3.1 | Ask the post-assessment questions | Answer aloud or on paper | Whiteboard | 5 min |
 | 3.2 | Summary and preview of lesson 4 | Name one habit they will change or keep | None | 2 min |
-| | | | **Total** | **90 min** |
+| | | | **Total** | **100 min** |
 
 ## Post-assessment (5 min, step 3.1)
 

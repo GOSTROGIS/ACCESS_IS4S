@@ -43,6 +43,26 @@ Sample answers.
 
 A good answer removes the slang, gives one idea at a time and adds a way to show or check.
 
+## Task 6 (level 2) Read the figure
+
+a) Arms crossed. The body is turned away. (Also accept "not facing the speaker.")
+
+b) Any two: cold, tired, sore back, thinking, shy, comfortable that way, culture or habit, worried about something else.
+
+c) Sample: "You've gone quiet. Does the plan work for you?"
+
+## Task 7 (level 3) You are the lead hand
+
+Sample plan:
+
+a) Move the crew away from the generator, or have it shut off for two minutes. Stand where everyone can see your face and the drawing.
+
+b) Write the time, grid and quantity on a board or the drawing and point to it. Say each number and its digits.
+
+c) Any gesture the crew agrees on, such as a raised fist for "stop work" or a thumbs-up for "ready." It must be agreed before work starts.
+
+d) Ask each worker to say back their own task, or to point to their area on the drawing. Give one idea at a time.
+
 ## Check yourself
 
 1. Any four of: body language or posture, facial expression, eye contact, gestures, tone of voice, how close you stand.

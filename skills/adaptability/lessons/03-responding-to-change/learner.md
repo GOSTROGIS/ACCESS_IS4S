@@ -29,6 +29,41 @@ Some changes you can see coming: a rain forecast, a drawing with a new revision 
 4. **Adjust.** Rebuild your plan. Keep everything that still works.
 5. **Check.** At the end, confirm the new plan did what it needed to.
 
+<div class="figure-art">
+<svg viewBox="0 0 720 300" width="100%" role="img" aria-labelledby="ad03-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="ad03-f1-title">Flow of five boxes: notice, sort, ask, adjust, check, with an arrow from check back to notice.</title>
+<defs><marker id="ad03-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="ad03-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="300" fill="#ffffff"/>
+<text x="360.0" y="34.0" font-size="22" text-anchor="middle" font-weight="bold" fill="#222222">Five steps when something changes</text>
+<rect x="16.0" y="70.0" width="122.0" height="120.0" rx="8" fill="#d6e4f2" stroke="#2f5d8a" stroke-width="2"/>
+<text x="77.0" y="116.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">1 Notice</text>
+<text x="77.0" y="135.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">whole change,</text>
+<text x="77.0" y="155.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">latest version</text>
+<line x1="140.0" y1="130.0" x2="156.0" y2="130.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad03-f1-ar)"/>
+<rect x="158.0" y="70.0" width="122.0" height="120.0" rx="8" fill="#fbe3c8" stroke="#b85c00" stroke-width="2"/>
+<text x="219.0" y="116.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">2 Sort</text>
+<text x="219.0" y="135.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">changed, same,</text>
+<text x="219.0" y="155.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">don't know</text>
+<line x1="282.0" y1="130.0" x2="298.0" y2="130.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad03-f1-ar)"/>
+<rect x="300.0" y="70.0" width="122.0" height="120.0" rx="8" fill="#d8ecd5" stroke="#2e6b34" stroke-width="2"/>
+<text x="361.0" y="116.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">3 Ask</text>
+<text x="361.0" y="135.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">the right</text>
+<text x="361.0" y="155.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">person</text>
+<line x1="424.0" y1="130.0" x2="440.0" y2="130.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad03-f1-ar)"/>
+<rect x="442.0" y="70.0" width="122.0" height="120.0" rx="8" fill="#e4dcf2" stroke="#5b3f8c" stroke-width="2"/>
+<text x="503.0" y="116.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">4 Adjust</text>
+<text x="503.0" y="135.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">keep what</text>
+<text x="503.0" y="155.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">still works</text>
+<line x1="566.0" y1="130.0" x2="582.0" y2="130.0" stroke="#222222" stroke-width="2.5" marker-end="url(#ad03-f1-ar)"/>
+<rect x="584.0" y="70.0" width="122.0" height="120.0" rx="8" fill="#f4f1ea" stroke="#222222" stroke-width="2"/>
+<text x="645.0" y="116.1" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">5 Check</text>
+<text x="645.0" y="135.6" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">did the plan</text>
+<text x="645.0" y="155.1" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">work?</text>
+<path d="M645.0,192 L645.0,245 L77.0,245 L77.0,198" stroke="#222222" stroke-width="2" fill="none" marker-end="url(#ad03-f1-ar)"/>
+<text x="360.0" y="270.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#6b6b6b">If the check finds a problem, start again with what you notice.</text>
+</svg>
+</div>
+
 ### Keep trying, or change the approach?
 
 Ask yourself:
@@ -41,6 +76,58 @@ Ask yourself:
 ### Steady anchors
 
 When a lot is changing, it helps to know what stays steady. The writer Alvin Toffler called these "personal stability zones": the people, places, routines and beliefs that stay the same while other parts of life change. A morning routine, a family call every Sunday or a weekly hockey game can all be anchors. The ACCESS lesson this page replaces put it this way: we need both roots and wings.
+
+### Worked example: a plumbing crew's change memo
+
+This memo is for a different crew than the one in the practice tasks.
+
+> **Salal Creek Mechanical Ltd. · Site memo 9**
+>
+> **Project:** Harbour Road Clinic
+> **Date:** Tuesday, May 5, 6:45 a.m.
+> **From:** Angela Moss, foreman
+> **To:** Plumbing crew
+>
+> 1. The Level 2 washroom fixtures arrive Thursday, not Wednesday.
+> 2. The Level 1 rough-in inspection stays Wednesday at 1:00 p.m.
+> 3. Drawing P-201 is now revision D. Floor drain FD-3 moves 600 mm north.
+> 4. Hot work permits now come from the site office, not the trailer.
+
+The crew's plan for Wednesday before the memo:
+
+| Time | Task |
+|---|---|
+| 7:00 to 7:15 | Toolbox talk |
+| 7:15 to 10:00 | Set Level 2 washroom fixtures |
+| 10:15 to 12:00 | Set Level 2 washroom fixtures |
+| 12:30 to 1:00 | Prepare for the Level 1 inspection |
+| 1:00 to 2:00 | Level 1 inspection |
+| 2:00 to 3:30 | Install FD-3 |
+
+**Step 1. Notice.** Read all four items. Check that P-201 on the table is revision D.
+
+**Step 2. Sort.**
+
+| Changed | Stays the same | Still do not know |
+|---|---|---|
+| Fixtures arrive Thursday | Inspection Wednesday at 1:00 | Is the old FD-3 sleeve already cast in the slab? |
+| FD-3 moves 600 mm north (rev D) | Toolbox talk, breaks and lunch | |
+| Hot work permits come from the site office | | |
+
+**Step 3. Ask.** One question for Angela: "Rev D moves FD-3 600 mm north. Is the old sleeve already in the slab, and do we core a new hole or wait for the engineer?"
+
+**Step 4. Adjust.** Setting fixtures is gone on Wednesday. That frees 7:15 to 10:00 and 10:15 to 12:00. FD-3 waits for an answer. The new plan:
+
+| Time | Task |
+|---|---|
+| 7:00 to 7:15 | Toolbox talk. Ask Angela about FD-3. |
+| 7:15 to 10:00 | Prepare the Level 1 inspection: check every joint, test, label |
+| 10:15 to 12:00 | Stage the Level 2 washrooms for Thursday's fixtures |
+| 12:30 to 1:00 | Walk the Level 1 rough-in with Angela |
+| 1:00 to 2:00 | Level 1 inspection |
+| 2:00 to 3:30 | Install FD-3 at the rev D location if Angela says go. If not, mark the old revision C prints SUPERSEDED and keep staging. |
+
+**Step 5. Check.** At 3:30 the crew checks: inspection done, Level 2 ready for Thursday, FD-3 question answered.
 
 ## The change notice
 

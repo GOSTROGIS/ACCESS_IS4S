@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 1 of 9 in Problem Solving. Length: 60 min.**
+**Session 1 of 10 in Problem Solving. Length: 60 min.**
 
 Welcome learners. Write two words, one under the other, on the flip chart: **NEW** and **DEER**. Say: "Rearrange the letters in these two words to spell one word. Stand up when you have it." Give about a minute, then confirm RENEWED. Now write **NEW** and **DOOR** and give the same instruction: "Rearrange the letters in these two words to spell one word." After a minute, write ONE WORD on the flip chart.
 

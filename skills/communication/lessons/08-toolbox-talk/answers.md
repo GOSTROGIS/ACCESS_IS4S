@@ -56,6 +56,18 @@ Sample openings for a talk on the right to refuse unsafe work:
 
 Note on the experienced-crew example: WorkSafeBC states that amendments to the refusal rules took effect on August 22, 2022. Learners do not need to include that date. A good answer changes the level of detail and the words for each audience while keeping the facts the same.
 
+## Task 7 (level 3) Fix the talk
+
+Missing or weak: the open does not say why ladders matter today or here. The key points are vague ("lots of rules"). Nothing is shown. The check ("Any questions?") gets a yes or no. There is no closing action.
+
+Sample rewrite: "We're on ladders all day today, hanging the soffit. Two points. One, set the ladder on firm, level ground and tie it off. Two, keep three points of contact when you climb. Here's the tie-off strap we're using. Jess, what do you check before you climb? Before you climb today, check your footing with me."
+
+## Task 8 (level 2) Time it
+
+a) 30 + 180 + 45 + 45 + 15 = 315 seconds = **5 minutes 15 seconds**.
+b) Over by **15 seconds**.
+c) Sample: cut each key point to 55 seconds (saves 15 seconds), or cut the talk to two key points. Key points are the longest part, so a small cut there is easiest. Do not cut the check or the close.
+
 ## Check yourself
 
 1. Open, two or three key points, show something, check, close with one action.

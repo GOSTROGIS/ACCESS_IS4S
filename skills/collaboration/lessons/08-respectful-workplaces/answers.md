@@ -58,6 +58,19 @@ c) A Bullying and Harassment Questionnaire.
 
 **Steps:** open the page, read the numbered steps in order.
 
+## Task 6 (level 2)
+
+**a)** Report it to her employer as soon as possible, using the employer's procedures.
+**b)** Call WorkSafeBC's Prevention Information Line (604.276.3100 or 1.888.621.7233) and speak with a prevention officer.
+**c)** She can send WorkSafeBC a Bullying and Harassment Questionnaire.
+
+## Task 7 (level 3)
+
+**a)** Yes, it could be. It is conduct toward a worker that the person reasonably ought to have known would humiliate or intimidate him. Hiding tools every day for a week, from a new worker, is not reasonable management of work. Calling it a joke does not change that.
+**b)** Not bully or harass, and follow the employer's policy and procedures. That includes reporting it and dealing with it the way the policy says.
+**c)** Sample: "The tools stop going missing today. It's not a joke to him, and it's costing us time every morning." A good answer is short, private if possible, names the behaviour and says it stops.
+**d)** Sample: "I've seen what's been happening with your tools. It stops now, and I'm reporting it the way our policy says. If anything like it happens again, tell me or the foreman." A good answer checks on the apprentice and tells him how to report.
+
 ## Check yourself 1
 
 Any inappropriate conduct or comment toward a worker that the person knew, or should have known, would humiliate or intimidate that worker. It does not include reasonable action by an employer or supervisor to manage and direct the work.

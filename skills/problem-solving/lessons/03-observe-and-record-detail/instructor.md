@@ -2,7 +2,7 @@
 
 ## Opening (5 min)
 
-**Session 3 of 9 in Problem Solving. Length: 60 min.**
+**Session 3 of 10 in Problem Solving. Length: 60 min.**
 
 Welcome learners. Before they arrive, set out ten everyday shop items on a table under a cloth (for example a tape measure, a pencil, a utility knife, safety glasses, a 3/8-inch socket, a zip tie, a roll of tape, a marker, a pair of gloves and a level). Lift the cloth for 30 seconds, cover it again, and ask learners to write down as many items as they can. Reveal and count.
 

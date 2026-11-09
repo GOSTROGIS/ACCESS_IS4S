@@ -1,8 +1,10 @@
 # Giving a short toolbox talk
 
+**Session:** Communication lesson 8 of 13.
+
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 8 of the Communication series. The session runs 90 minutes. Ask who recorded a voicemail greeting or made a work-style call since last session.
+Welcome learners to session 8 of the Communication series. The session runs 100 minutes. Ask who recorded a voicemail greeting or made a work-style call since last session.
 
 Hook: "Think of the best toolbox talk, safety meeting or class you ever sat through, and the worst. What was the difference?" Take answers and flipchart them in two columns. Keep the list up for the whole session.
 
@@ -33,9 +35,10 @@ By the end of the session, learners will be able to:
 | 3.2 | Task 6. Take two examples of each version. | Rewrite the opening for two audiences. | Learner page | 5 min |
 | 3.3 | Task 4. Split into groups of four. Each learner gives a three-minute talk and receives about a minute and a half of feedback from the checklist. Keep time and call each switch. | Deliver, listen, give one "worked" and one "try next time" to each speaker. | Learner page, timer | 18 min |
 | 3.4 | Task 5. | Fill in the record for their group. | Learner page | 3 min |
+| 3.5 | Show the toolbox talk card. Set Task 7 in pairs and hear two rewrites. Set Task 8 and check the sum on the board | Rewrite a weak talk, time a talk | Learner page | 10 min |
 | 4.1 | Post-assessment questions. | Answer. | None | 3 min |
 | 4.2 | Summary and action plan. | Offer to lead, or help lead, one real toolbox talk or class opening before the series ends. | None | 3 min |
-| | | | **Total** | **90 min** |
+| | | | **Total** | **100 min** |
 
 Notes for the instructor:
 

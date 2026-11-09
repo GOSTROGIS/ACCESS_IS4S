@@ -1,8 +1,8 @@
 ---
 title: Asking good questions on a new crew
 summary: Introduce yourself, ask open questions to learn and closed questions to confirm, and keep a work conversation going.
-level: 1-2
-time: 60 min
+level: 1-3
+time: 70 min
 components: Listen to understand; Speak with purpose
 rebuilds: A - Oral Communication/Powerful Questions-rb.xlsx; A - Oral Communication/Communication Series-rb.docx; A - Writing/A - Thinking Skills/Assertiveness-rb.docx
 ---
@@ -38,6 +38,27 @@ Your first week on a new site, you do not know where the tools live, who signs o
 **Watch how a "why" question sounds.** "Why did you do it that way?" can sound like you think they did it wrong. "Can you walk me through how you set that up?" asks the same thing without judgement.
 
 **Pick your moment.** Do not interrupt someone in the middle of a cut or a lift. Wait for a pause. The exception is safety: if you see a hazard, speak up right away.
+
+Think of questions as a funnel. Start wide with open questions to learn. Finish narrow with closed questions to confirm.
+
+<div class="figure-art">
+<svg viewBox="0 0 640 398" width="100%" role="img" aria-labelledby="m02-funnel-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m02-funnel-title">A funnel. Open questions at the wide top help you learn. Closed questions at the narrow bottom confirm. Together they give a clear plan.</title>
+<defs><marker id="m02-funnel-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="398" fill="#ffffff"/>
+<path d="M40,30 L600,30 L420,190 L220,190 Z" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="320" y="70" font-size="17" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Open questions: learn</text>
+<text x="320" y="91.25" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">&quot;What do you need from me first?&quot;</text>
+<text x="320" y="112.5" font-size="17" text-anchor="middle" font-weight="normal" fill="#2b2b2b">&quot;How does the crew sign out tools?&quot;</text>
+<path d="M220,200 L420,200 L380,290 L260,290 Z" fill="#fdf1d8" stroke="#c98a12" stroke-width="2"/>
+<text x="320" y="228" font-size="16" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Closed: confirm</text>
+<text x="320" y="248" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">&quot;Gate two?&quot;</text>
+<text x="320" y="268" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">&quot;By 10?&quot;</text>
+<line x1="320" y1="294" x2="320" y2="332" stroke="#2b2b2b" stroke-width="2.5" marker-end="url(#m02-funnel-ah)"/>
+<rect x="200" y="336" width="240" height="48" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<text x="320" y="366.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Clear plan</text>
+</svg>
+</div>
 
 ### Worked example
 
@@ -128,6 +149,32 @@ Observer checklist:
 ______________________________________________
 
 2. "Why is this taking so long?"
+
+______________________________________________
+
+**Task 7** (level 2) **Fill the funnel.** It is your first morning on a pipefitting crew. Write three open questions to learn about the job, then two closed questions to confirm what you heard.
+
+Open 1: ______________________________________________
+
+Open 2: ______________________________________________
+
+Open 3: ______________________________________________
+
+Closed 1: ______________________________________________
+
+Closed 2: ______________________________________________
+
+**Task 8** (level 3) **You are the lead hand.** A new labourer, Tavi (fictional), joins your framing crew today. You have five minutes before work starts.
+
+a) Write three open questions to find out what Tavi has done before and what Tavi is not sure about.
+
+______________________________________________
+
+b) Write two closed questions to confirm Tavi is ready to start, such as gear or where to meet.
+
+______________________________________________
+
+c) Tavi answers "yes" to everything and looks at the ground. What do you do next?
 
 ______________________________________________
 

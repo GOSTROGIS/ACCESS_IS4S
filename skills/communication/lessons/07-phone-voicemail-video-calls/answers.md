@@ -53,6 +53,21 @@ A good check-in call gives everything the card asks for: "Lou, it's [name] at th
 
 What Lou needs to write down: the worker's name, the site, the time of the check-in, the status (okay or the problem) and the next stop. Under section 4.21(3) of the BC OHS Regulation, the designated person must record the results of each check.
 
+## Task 7 (level 2) Use the chart
+
+a) In person, and get people out, or a phone call. It is urgent and about safety. Follow the site's emergency plan.
+b) Text or crew chat, since it is a quick update that is not urgent. A call to anyone who may not read it in time also works.
+c) Video call or photos.
+d) Talk first, then text or email the steps to confirm.
+
+## Task 8 (level 3) You are the lead hand
+
+a) Sample: crew, in person, because they are on site and need new tasks. Superintendent, text, because they are in a meeting and need a record (a call if a decision is needed now). Supplier, phone call, because they are waiting on a time and may have questions.
+
+b) Sample: "Crane delivery is 2 hours late, new time 10:00. Crew is on other work until then. Truss supplier told. Call me if you want a different plan."
+
+c) Any useful work that does not need the crane, such as layout of the truss positions on the top plates, staging the bracing, or cleaning up. A good answer keeps the crew working safely.
+
 ## Check yourself
 
 1. Who you are, and why you are calling.

@@ -45,6 +45,18 @@ Answers are personal. A good response names a real thought and offers a realisti
 - Thought: "I'll lose the job." Realistic view: "Turning down one extra shift is unlikely to cost me the job, and a clear answer helps the foreman plan."
 - Thought: "It's rude to say no to someone older." Realistic view: "I can say no respectfully, and I can choose the situations where I do."
 
+## Task 6 (level 2) Put the steps in order
+
+4, 1, 3, 2. (Stop and report, supervisor investigates, second investigation with a worker you choose, then WorkSafeBC.)
+
+## Task 7 (level 3) The trench
+
+a) Sample: "I'm refusing to go in. I believe it's unsafe. The walls are wet, soil is falling in and there's no shoring." A good answer says "refuse" and "unsafe" clearly and gives the reason.
+
+b) The employer may not give the refused task to another worker unless the matter is resolved or that worker is told in writing about the refusal, the hazard, why the employer thinks it is safe, and their own right to refuse.
+
+c) The supervisor or employer investigates again with you and a worker member of the joint health and safety committee, a union representative or another worker you choose. If it is still not resolved, you and the supervisor or employer must contact WorkSafeBC.
+
 ## Check yourself
 
 1. A flat no, over-explaining, and an assertive no. The assertive no is clear, short and respectful, with a short reason only if you choose.

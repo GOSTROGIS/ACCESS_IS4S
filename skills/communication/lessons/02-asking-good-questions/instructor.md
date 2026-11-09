@@ -1,8 +1,10 @@
 # Asking good questions on a new crew
 
+**Session:** Communication lesson 2 of 13.
+
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 2 of the Communication series. The session runs 60 minutes. Ask who tried a repeat-back since last session and what happened.
+Welcome learners to session 2 of the Communication series. The session runs 70 minutes. Ask who tried a repeat-back since last session and what happened.
 
 Hook: "Think about the most useful question you have ever asked. At work, at school, anywhere. What made it useful?" Give learners one minute to think. Take two answers. Point out that a good question usually got them something they needed to act on.
 
@@ -31,9 +33,10 @@ By the end of the session, learners will be able to:
 | 3.2 | Task 6 and a short talk on judgement: how a "why" question can sound like blame. Ask: "How does it feel when someone asks 'why would you do it like that?'" | Rewrite two questions, share how blame questions feel. | Learner page | 5 min |
 | 3.3 | Task 4. Circulate and check each list has both kinds. | Write five first-day questions and mark them. | Learner page | 5 min |
 | 3.4 | Task 5 in triads. Time two-minute rounds and call rotations. | Play crew member, new worker and observer once each. | Cards and checklist on learner page, timer | 9 min |
+| 3.5 | Show the funnel. Set Task 7 alone and Task 8 in pairs. One partner plays Tavi | Write funnel questions, plan the lead hand check-in | Learner page | 10 min |
 | 4.1 | Post-assessment questions. | Answer out loud or in writing. | None | 5 min |
 | 4.2 | Summary and action plan. | Commit to introducing themselves to one new person and asking one open question before next session. | None | 3 min |
-| | | | **Total** | **60 min** |
+| | | | **Total** | **70 min** |
 
 Note: in Task 5, coach the new worker to keep to work topics. The original ACCESS lesson said "do not ask personal questions, especially if you do not know the person well." Keep that rule. Do not require learners to share personal or family details in any round.
 

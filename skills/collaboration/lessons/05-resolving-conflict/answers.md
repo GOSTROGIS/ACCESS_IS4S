@@ -58,6 +58,21 @@ c) "When I get talked over at the toolbox talk, I can't get my point across, and
 
 **Open task.** A good plan names a specific outcome, gives a W.I.N. statement that describes behaviour and not the person, and sets a real time and place (for example, "at coffee break Tuesday, away from the crew").
 
+## Task 7 (level 2)
+
+**a)** Give in (accommodate).
+**b)** Push until you win (compete).
+**c)** Meet halfway (compromise).
+**d)** Work it out together (collaborate).
+**e)** Put it off (avoid).
+
+## Task 8 (level 3)
+
+**a)** Sample (attend and value): "Hold on, both of you. Let's take two minutes. I want to hear each of you."
+**b)** Sample: "So, Kim, you need the lift at 7:00 because the inspector is coming at 10:00 to look at your hangers. Is that right?"
+**c)** Sample: "When the lift is taken first thing, I can't finish my hangers before the 10:00 inspection. I need it from 7:00 to 9:00."
+**d)** Sample: "Kim takes the lift from 7:00 to 9:00. Raj sets up his materials and does layout on the floor until 9:00, then takes the lift." This is work it out together if both people's needs are met (Kim makes the inspection and Raj loses no working time). If one person gives up something, it is meet halfway. Either is correct if the learner names it to match their agreement.
+
 ## Check yourself 1
 
 Opinions, facts, perceptions and values.

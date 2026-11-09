@@ -40,6 +40,36 @@ A good call says who is calling whom, waits for an answer, gives one short messa
 3. Section 14.47(2). The operator must stop. A stop signal from any person must be obeyed.
 4. Section 14.49(2). Multi-channel radios are not permitted for directing crane or hoist movement.
 
+## Task 6 (level 1) Name the signal
+
+A: Hoist. B: Dog (stop) everything. C: Lower boom. D: Stop. E: Retract boom. F: Swing.
+
+Check each answer against the printed WorkSafeBC chart as well.
+
+## Task 7 (level 2) Which signal?
+
+a) Move slowly, given with hoist (one hand gives the hoist signal, the other is held still in front of it).
+b) Dog (stop) everything.
+c) Stop. (Emergency stop if it is an emergency.)
+d) Lower the boom and raise the load. (The thumb points down and the fingers flex, so the load does not drop as the boom comes down.)
+e) Retract boom (both fists in front of the body, thumbs pointing toward each other).
+
+## Task 8 (level 3) The blind spot
+
+a) Section 14.47(1). The operator must act only on the directions of a qualified signaller who has a clear view of what the operator cannot see.
+
+b) Section 14.48(1). A two-way radio, or another audio or video system acceptable to WorkSafeBC. Section 14.49(2): multi-channel radios are not permitted for directing crane movement.
+
+c) Give the stop signal, or shout stop, right away. Section 14.47(2): the operator must stop on a stop signal from any person.
+
+d) Sample:
+
+> Signaller: "Swing stop. Swing stop."
+>
+> Operator: "Swing stop. Holding."
+
+The read-back confirms the operator heard it. Follow your site's radio rules for crane calls.
+
 ## Check yourself
 
 1. So the operator acts on directions from a qualified person who knows the signals and can see what the operator cannot, instead of guessing or following whoever happens to wave.

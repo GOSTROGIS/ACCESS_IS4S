@@ -64,6 +64,19 @@ There is no correct corner for any statement. The point is to notice how fast we
 
 Do not mark this task for content. The learner keeps it.
 
+## Task 6 (level 2)
+
+**a)** The panel cover is off. Tyler is on his phone.
+**b)** Any assumption, such as "He's not working" or "He left a live panel open."
+**c)** Sample: "Ask Tyler: Is that panel locked out? Are you on a call about this job?" Or check the lockout tag on the panel. A good answer checks with a question or a look before telling anyone else.
+
+## Task 7 (level 3)
+
+**a)** Stereotype: "Those guys from up north are always like that." It applies a belief to every person from a place. Fact: Dale arrived 15 minutes late two days in a row. "He's lazy" is an assumption.
+**b)** Any two: the time sheet, whether his start time or location changed, whether he was told the new start time, how far he drives, whether the roller was fuelled and ready, whether something has changed at home. Then ask Dale.
+**c)** Sample: "Dale, you've been 15 minutes late two days running. What's going on?" A good opening states the fact and asks an open question, with no label.
+**d)** Sample: "I'll talk to Dale about being on time. Leave where he's from out of it." A good answer deals with the comment, without blaming the whole crew.
+
 ## Check yourself 1
 
 An observation is something you can see, hear or measure. An assumption is what you think it means, filling a gap in what you know.

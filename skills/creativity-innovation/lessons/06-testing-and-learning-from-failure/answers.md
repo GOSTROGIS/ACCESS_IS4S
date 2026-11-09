@@ -47,6 +47,16 @@ Open task. A good test report:
 - proposes a next change
 - the team shares one useful tip with another team
 
+## Task 8 (level 3)
+
+a) Design A: (180 + 175 + 185) ÷ 3 = 540 ÷ 3 = **180 kg**. Design B: (260 + 250 + 270) ÷ 3 = 780 ÷ 3 = **260 kg**.
+
+b) (260 − 180) ÷ 180 × 100 = 80 ÷ 180 × 100 = 44.44..., about **44.4%**.
+
+c) Yes, if only the second U-bolt changed. Check that the pipe size, the rig, the way the load was added and the tightening of the bolts were the same for both designs.
+
+d) Supports in a real building must follow the engineered drawings, the specifications and the manufacturer's ratings. A bench test helps compare ideas, but it does not replace the approved design.
+
 ## Check yourself
 
 **1.** So you know which change caused the difference. If you change several things at once, you cannot tell which one helped or hurt. Level 2.

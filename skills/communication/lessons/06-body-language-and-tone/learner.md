@@ -1,8 +1,8 @@
 ---
 title: Body language, tone and talking across a crew
 summary: Notice what people say without words, check what a cue means instead of guessing, and make yourself understood across PPE, noise and different first languages.
-level: 1-2
-time: 60 min
+level: 1-3
+time: 70 min
 components: Listen with intention; Listen to understand; Adapt to your audience and contexts
 rebuilds: A - Oral Communication/Communication Series-rb.docx; A - Oral Communication/Oral Communication-rb.pub
 ---
@@ -37,6 +37,45 @@ A lot of meaning travels without words: a sigh, a shrug, a raised voice, a step 
 - Show as well as tell: point, hold up the part, mark the drawing.
 - Do not ask "Do you understand?" Many people say yes to be polite. Ask them to say it back or show you.
 - An accent is not a mistake. The Skills for Success description of speaking clearly includes pronunciation "even with accent." Listen for the meaning.
+
+The two figures below show cues that can look open or closed. They are clues, not facts.
+
+<div class="figure-art">
+<svg viewBox="0 0 640 490" width="100%" role="img" aria-labelledby="m06-body-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="m06-body-title">Two figures side by side. On the left, a worker facing the speaker with arms loose looks open. On the right, a worker with arms crossed looks closed. A note says a cue is a clue, not a fact.</title>
+<defs><marker id="m06-body-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="490" fill="#ffffff"/>
+<rect x="10" y="10" width="305" height="430" rx="8" fill="#e6f3ec" stroke="#2a7f62" stroke-width="2"/>
+<rect x="325" y="10" width="305" height="430" rx="8" fill="#fbe6e4" stroke="#b3261e" stroke-width="2"/>
+<text x="162" y="44" font-size="21" text-anchor="middle" font-weight="bold" fill="#2a7f62">Looks open</text>
+<text x="477" y="44" font-size="21" text-anchor="middle" font-weight="bold" fill="#b3261e">Can look closed</text>
+<circle cx="162" cy="100" r="17" fill="#ffffff" stroke="#1f3a5f" stroke-width="4"/>
+<path d="M142,94 Q162,68 182,94 Z" fill="#f2b705" stroke="#2b2b2b" stroke-width="2"/>
+<line x1="138" y1="94" x2="186" y2="94" stroke="#2b2b2b" stroke-width="3"/>
+<polyline points="136.0,132.0 162.0,122.0 188.0,132.0" fill="none" stroke="#1f3a5f" stroke-width="7" stroke-linecap="round"/>
+<line x1="162" y1="118" x2="162" y2="210" stroke="#1f3a5f" stroke-width="7" stroke-linecap="round"/>
+<polyline points="142.0,282.0 162.0,210.0 182.0,282.0" fill="none" stroke="#1f3a5f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="136.0,132.0 132.0,170.0 128.0,206.0" fill="none" stroke="#1f3a5f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="188.0,132.0 192.0,170.0 196.0,206.0" fill="none" stroke="#1f3a5f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="477" cy="100" r="17" fill="#ffffff" stroke="#1f3a5f" stroke-width="4"/>
+<path d="M457,94 Q477,68 497,94 Z" fill="#f2b705" stroke="#2b2b2b" stroke-width="2"/>
+<line x1="453" y1="94" x2="501" y2="94" stroke="#2b2b2b" stroke-width="3"/>
+<polyline points="451.0,132.0 477.0,122.0 503.0,132.0" fill="none" stroke="#1f3a5f" stroke-width="7" stroke-linecap="round"/>
+<line x1="477" y1="118" x2="477" y2="210" stroke="#1f3a5f" stroke-width="7" stroke-linecap="round"/>
+<polyline points="457.0,282.0 477.0,210.0 497.0,282.0" fill="none" stroke="#1f3a5f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="451.0,132.0 447.0,172.0 493.0,160.0" fill="none" stroke="#1f3a5f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="503.0,132.0 507.0,172.0 461.0,156.0" fill="none" stroke="#1f3a5f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="162" y="330" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Faces the speaker</text>
+<text x="162" y="350" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Arms loose, hands free</text>
+<text x="162" y="370" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Nods, says &quot;yep&quot;</text>
+<text x="162" y="390" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Says the key point back</text>
+<text x="477" y="330" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Arms crossed</text>
+<text x="477" y="350" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Turned away, eyes on phone</text>
+<text x="477" y="370" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">Keeps working</text>
+<text x="477" y="390" font-size="16" text-anchor="middle" font-weight="normal" fill="#2b2b2b">No reply or repeat-back</text>
+<text x="320" y="470" font-size="17" text-anchor="middle" font-weight="normal" fill="#6b6b6b" font-style="italic">A cue is a clue, not a fact. Check it with a question.</text>
+</svg>
+</div>
 
 ### Worked example
 
@@ -112,6 +151,32 @@ ______________________________________________
 3. "That's way out of whack. Tweak it a hair."
 
 ______________________________________________
+
+**Task 6** (level 2) **Read the figure.** Look at the "can look closed" figure.
+
+a) Name two cues you see.
+
+______________________________________________
+
+b) Give two other reasons, not "he isn't listening," that could explain those cues.
+
+______________________________________________
+
+c) Write one question that checks.
+
+______________________________________________
+
+**Task 7** (level 3) **You are the lead hand.** You give the morning plan to six workers on a slab. A generator is running. Everyone wears hearing protection. Two workers have a first language other than English.
+
+Plan how you will deliver it. Write one line for each:
+
+a) Where you stand and where the crew stands:
+
+b) How you show the numbers (time, grid, quantity):
+
+c) One gesture the crew agrees on, and what it means:
+
+d) How you check each worker understood, without asking "Do you understand?":
 
 ## Check yourself
 

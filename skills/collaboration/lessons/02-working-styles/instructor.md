@@ -1,12 +1,12 @@
 # Working styles and style-stepping
 
-**Collaboration lesson 2 of 8 · 90 min · Level 1-2**
+**Collaboration lesson 2 of 12 · 100 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 2 of 8. This session runs 90 minutes.
+Welcome learners to session 2 of 12. This session runs 100 minutes.
 
 Hook (adapted from the ACCESS working styles lesson): "A journeyperson tells an apprentice to clean up the area. The apprentice sweeps and says done. The journeyperson says it's not done: cords aren't coiled, tools aren't away. They argue about what 'clean' means." Ask: "Who is right?" Let learners see that both are describing a real standard. They just have different ideas of done. Today is about noticing those differences and working with them.
 
@@ -42,9 +42,10 @@ Keep answers general. No names of real people.
 | 2.7 | Set Task 5 in small groups | Name two risks and two habits | Learner page | 5 min |
 | 2.8 | Set up Task 4. Hand out style cards. Pairs pick a situation or write their own from their trade. Each pair acts out a short scene. Point out the style-step in each | Write and act a 3 to 5 line scene | Style cards (one style name and the "Working with this style" line from the table, on an index card), hats or props if wanted | 12 min |
 | 2.9 | Give time for Check yourself | Answer the five questions alone | Learner page, answers page | 3 min |
+| 2.10 | Show the grid figure. Set Task 6 alone, then Task 7 in pairs. Take two pairings and ask for the reasons | Rewrite the message, plan the two jobs | Learner page | 10 min |
 | 3.1 | Ask the post-assessment questions | Answer aloud or on paper | Whiteboard | 6 min |
 | 3.2 | Summary and preview of lesson 3 | Name one person they will try style-stepping with this week | None | 3 min |
-| | | | **Total** | **90 min** |
+| | | | **Total** | **100 min** |
 
 ## Post-assessment (6 min, step 3.1)
 

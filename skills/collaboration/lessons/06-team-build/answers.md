@@ -57,6 +57,20 @@ After the change order: 8. A handrail on one side, at least 3 cm high, in place 
 - e) gives one specific, doable suggestion, such as "Next time we will test a small piece before building the whole deck"
 - f) names real feedback and a real action in response
 
+## Task 6 (level 2)
+
+**a)** 2,400 ÷ 400 = 6 spaces. A stud at each end means 6 + 1 = **7 studs**.
+**b)** 2,400 − 38 − 38 = **2,324 mm**.
+**c)** 7 studs + 2 plates = **9 lengths**. Each stud and each plate needs its own 2,440 mm length.
+**d)** 9 × $5.25 = **$47.25**. Left: $50.00 − $47.25 = **$2.75**.
+**e)** Open. Every person has a named role.
+
+## Task 7 (level 3)
+
+**a)** No. Each stud offcut is 2,440 − 2,324 = 116 mm. Each plate offcut is 2,440 − 2,400 = 40 mm. Neither is long enough for a 2,324 mm stud.
+**b)** One more length costs $5.25. The team has $2.75 left. $5.25 − $2.75 = **$2.50 over budget**.
+**c)** Sample: "We can add the stud. It needs one more 2x4, and that takes us $2.50 over the $50 budget. Do you approve the extra $2.50?" A good answer says yes to the work, states the cost clearly and asks for approval before buying. A change order usually changes the price or the time.
+
 ## Check yourself 1
 
 Each card had only part of the brief. A person with only Card A would not know the budget, the load test, the deck width or the client explanation. Missing any card means missing specs.

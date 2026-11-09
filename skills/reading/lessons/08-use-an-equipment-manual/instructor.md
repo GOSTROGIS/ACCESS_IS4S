@@ -1,12 +1,12 @@
 # Use an equipment manual
 
-Session 8 of 10 in the Reading lessons · 75 minutes
+Session 8 of 18 in the Reading lessons · 75 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Put a real tool manual on the table, the thicker the better. Ask: "Who has ever read one of these cover to cover?" Then tell a short story, like the one in the old ACCESS electrical lesson: a boss at the top of a ladder yells "Check my power!" and the helper has no idea where to start. The manual's troubleshooting table would have told them, in order. Today is about getting to the right page of a manual fast.
 
-This is session 8 of 10 in the Reading lessons. It runs 75 minutes.
+This is session 8 of 18 in the Reading lessons. It runs 75 minutes.
 
 ## Objective (3 min)
 

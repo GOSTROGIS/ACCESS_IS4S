@@ -2,9 +2,9 @@
 
 Learning materials for ACCESS Indigenous Skills4Success, organized by the nine Skills for Success.
 
-**Website:** https://gostrogis.github.io/ACCESS_IS4S/ (the 9 Skills hub)
+**Website:** https://gostrogis.github.io/ACCESS_IS4S/ (the IS4S Skills for Success hub)
 
-## The 9 Skills
+## IS4S Skills for Success
 
 Each skill has its own folder with a skill page, the learner chapter, the teaching chapter and answer guidance from the nine-skills books, plus any tools for that skill.
 
@@ -25,7 +25,7 @@ The complete books are in [`textbook/`](textbook/): the [learner textbook](textb
 ## Repository layout
 
 ```
-index.html                 9 Skills hub (the website's home page)
+index.html                 IS4S Skills for Success hub (the website's home page)
 404.html                   forwards addresses from before the nine-skills layout
 brand/                     IS4S badge, logos and the shared site stylesheet
 skills/
@@ -46,7 +46,7 @@ source/                    build scripts and tests (not part of the website)
 
 1. Click the green **Code** button at the top of this page, then **Download ZIP**.
 2. Unzip the folder.
-3. Open `index.html` in a web browser (double-click it) for the 9 Skills hub, or `skills/numeracy/index.html` for the Numeracy page.
+3. Open `index.html` in a web browser (double-click it) for the IS4S Skills for Success hub, or `skills/numeracy/index.html` for the Numeracy page.
 
 Everything runs in the browser. Once the folder is downloaded, the hub, the canvas and the calculators work with no internet connection. When there is an update, download the ZIP again and replace your old folder.
 

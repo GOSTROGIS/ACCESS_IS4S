@@ -25,6 +25,39 @@ A good idea that stays in your head does not change anything. On a crew, ideas g
 5. **Safety**: how it keeps or improves safety, and how it follows the site rules
 6. **Ask**: a small, clear request ("Can we try it for one week on Building C?")
 
+<div class="figure-art">
+<svg viewBox="0 0 720 330" width="100%" role="img" aria-labelledby="cr07-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="cr07-f1-title">Six boxes in order: problem with a number, idea, test, cost and time, safety, ask.</title>
+<defs><marker id="cr07-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="cr07-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="330" fill="#ffffff"/>
+<text x="360.0" y="28.0" font-size="20" text-anchor="middle" font-weight="bold" fill="#222222">The two-minute pitch in six parts</text>
+<rect x="20.0" y="50.0" width="212.0" height="100.0" rx="8" fill="#f6d6d3" stroke="#b3261e" stroke-width="2"/>
+<text x="126.0" y="95.6" font-size="17" text-anchor="middle" font-weight="bold" fill="#222222">1 Problem</text>
+<text x="126.0" y="116.3" font-size="17" text-anchor="middle" font-weight="normal" fill="#222222">with a number</text>
+<line x1="234.0" y1="100.0" x2="250.0" y2="100.0" stroke="#222222" stroke-width="2.5" marker-end="url(#cr07-f1-ar)"/>
+<rect x="252.0" y="50.0" width="212.0" height="100.0" rx="8" fill="#d6e4f2" stroke="#2f5d8a" stroke-width="2"/>
+<text x="358.0" y="95.6" font-size="17" text-anchor="middle" font-weight="bold" fill="#222222">2 Idea</text>
+<text x="358.0" y="116.3" font-size="17" text-anchor="middle" font-weight="normal" fill="#222222">one or two sentences</text>
+<line x1="466.0" y1="100.0" x2="482.0" y2="100.0" stroke="#222222" stroke-width="2.5" marker-end="url(#cr07-f1-ar)"/>
+<rect x="484.0" y="50.0" width="212.0" height="100.0" rx="8" fill="#fbe3c8" stroke="#b85c00" stroke-width="2"/>
+<text x="590.0" y="95.6" font-size="17" text-anchor="middle" font-weight="bold" fill="#222222">3 Test</text>
+<text x="590.0" y="116.3" font-size="17" text-anchor="middle" font-weight="normal" fill="#222222">what you tried</text>
+<rect x="20.0" y="180.0" width="212.0" height="100.0" rx="8" fill="#fdf3c4" stroke="#8a7a1a" stroke-width="2"/>
+<text x="126.0" y="225.6" font-size="17" text-anchor="middle" font-weight="bold" fill="#222222">4 Cost and time</text>
+<text x="126.0" y="246.3" font-size="17" text-anchor="middle" font-weight="normal" fill="#222222">what it takes and saves</text>
+<line x1="234.0" y1="230.0" x2="250.0" y2="230.0" stroke="#222222" stroke-width="2.5" marker-end="url(#cr07-f1-ar)"/>
+<rect x="252.0" y="180.0" width="212.0" height="100.0" rx="8" fill="#d8ecd5" stroke="#2e6b34" stroke-width="2"/>
+<text x="358.0" y="225.6" font-size="17" text-anchor="middle" font-weight="bold" fill="#222222">5 Safety</text>
+<text x="358.0" y="246.3" font-size="17" text-anchor="middle" font-weight="normal" fill="#222222">site rules kept</text>
+<line x1="466.0" y1="230.0" x2="482.0" y2="230.0" stroke="#222222" stroke-width="2.5" marker-end="url(#cr07-f1-ar)"/>
+<rect x="484.0" y="180.0" width="212.0" height="100.0" rx="8" fill="#e4dcf2" stroke="#5b3f8c" stroke-width="2"/>
+<text x="590.0" y="225.6" font-size="17" text-anchor="middle" font-weight="bold" fill="#222222">6 Ask</text>
+<text x="590.0" y="246.3" font-size="17" text-anchor="middle" font-weight="normal" fill="#222222">small and clear</text>
+<path d="M594,150 L594,165 L126,165 L126,178" stroke="#6b6b6b" stroke-width="1.5" fill="none" marker-end="url(#cr07-f1-ar)"/>
+<text x="360.0" y="318.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#6b6b6b">Then listen to the questions and try their ideas on.</text>
+</svg>
+</div>
+
 **Listen to the answer.** The supervisor's questions are not an attack. They are checking things you may not have thought of. Answer what you can. If you do not know, say "I don't know yet. I'll find out."
 
 **Be open to their ideas.** The Skills for Success model describes being "open to new ideas without judging." If the supervisor suggests a change, try it on before you defend your version.

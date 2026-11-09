@@ -4,7 +4,7 @@
  let current=null,showKey=false,busy=false;
  const versionControls=['lecture-select','question-count','generate','rebuild','rebuild-code','download-quiz','download-key'];
  function setBusy(value){busy=value;versionControls.forEach(id=>$(id).disabled=value);}
- const params=new URLSearchParams(location.search),dateLabel=s=>new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'}).format(new Date(s+'T12:00:00Z'));
+ const params=new URLSearchParams(location.search),dateLabel=s=>window.QuizShared.lectureDate(s,true);
  function node(tag,text,cls){const e=document.createElement(tag);if(text!=null)e.textContent=text;if(cls)e.className=cls;return e;}
  function status(text,error){$('generator-status').textContent=text;$('generator-status').setAttribute('role',error?'alert':'status');}
  for(let week=1;week<=8;week++){const group=document.createElement('optgroup');group.label='Week '+week;data.lectures.filter(l=>l.week===week).forEach(l=>{const o=document.createElement('option');o.value=l.id;o.textContent=`${l.id} · Day ${l.day} · ${l.topic}`;group.append(o);});$('lecture-select').append(group);}

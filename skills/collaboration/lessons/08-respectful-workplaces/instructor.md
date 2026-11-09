@@ -1,12 +1,12 @@
 # Respectful workplaces, bullying and harassment
 
-**Collaboration lesson 8 of 8 · 60 min · Level 2**
+**Collaboration lesson 8 of 12 · 70 min · Level 2-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (3 min, step 1.1)
 
-Welcome learners to the last of the eight Collaboration sessions. This session runs 60 minutes.
+Welcome learners to session 8 of 12, the last of the first eight Collaboration sessions. This session runs 70 minutes.
 
 Say at the start: this topic can bring up hard memories. Learners can step out at any time, and no one has to share a personal story. The support line is at the end of the learner page.
 
@@ -41,9 +41,10 @@ By the end of the session, learners will be able to:
 | 2.6 | Set Task 5. Learners use phones or computers to find the page. If devices are not available, show the page on screen | Find three answers on worksafebc.com | Devices or projector | 5 min |
 | 2.7 | Explain the Builders Code and the link to the *Human Rights Code* (lesson 3) | Listen, ask questions | Learner page | 3 min |
 | 2.8 | Give time for Check yourself | Answer the five questions alone | Learner page, answers page | 3 min |
+| 2.9 | Show the reporting chart. Set Task 6. Then set Task 7 and talk through what a supervisor must do | Follow the chart, plan the lead hand response | Learner page | 10 min |
 | 3.1 | Ask the post-assessment questions | Answer aloud or on paper | Whiteboard | 3 min |
-| 3.2 | Summary and close of the Collaboration series | Name one thing from the eight sessions they will use on a crew | None | 2 min |
-| | | | **Total** | **60 min** |
+| 3.2 | Summary, review of sessions 1 to 8 and preview of lesson 9 | Name one thing from the eight sessions they will use on a crew | None | 2 min |
+| | | | **Total** | **70 min** |
 
 ## Post-assessment (3 min, step 3.1)
 
@@ -61,7 +62,9 @@ During this session we covered:
 - how to report: employer first, then WorkSafeBC's Prevention Information Line, then the questionnaire
 - the Builders Code and the link to the BC *Human Rights Code*
 
-Across the eight Collaboration sessions we covered doing your share, working styles, respecting differences, checking assumptions, resolving conflict, building as a team, learning from a journeyperson and respectful workplaces.
+Across the first eight Collaboration sessions we covered doing your share, working styles, respecting differences, checking assumptions, resolving conflict, building as a team, learning from a journeyperson and respectful workplaces.
+
+Next session: who does what on a job site. Lessons 9 to 12 take these skills onto a real site with other trades.
 
 ## Notes for the instructor
 

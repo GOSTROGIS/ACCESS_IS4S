@@ -1,12 +1,12 @@
 # Showing up and managing your time on a job site
 
-Adaptability lesson 1 of 8. Total time: 75 minutes.
+Adaptability lesson 1 of 12. Total time: 75 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Tell a short story from your own work life about a day when one late person, or one early call, changed how a crew's morning went. Keep it to two minutes. Then ask: "Who has waited on someone who did not show up? How did it feel?" Explain that this is the first of eight Adaptability lessons, that Adaptability now includes what used to be called Continuous Learning, and that today's session runs 75 minutes.
+Welcome learners. Tell a short story from your own work life about a day when one late person, or one early call, changed how a crew's morning went. Keep it to two minutes. Then ask: "Who has waited on someone who did not show up? How did it feel?" Explain that this is the first of twelve Adaptability lessons, that Adaptability now includes what used to be called Continuous Learning, and that today's session runs 75 minutes.
 
 Start from strength. Learners already juggle buses, family, appointments and money. Use language of building on what they do well rather than fixing a problem.
 
@@ -36,7 +36,7 @@ Write the answers on the whiteboard. Return to them at the post-assessment.
 |---|---|---|---|---|
 | 1.1 | Opening story, objectives, session length. | Listen. Share one experience of waiting for someone. | Whiteboard | 5 min |
 | 1.2 | Ask the two pre-assessment questions. | Answer aloud or on a sticky note. | Sticky notes | 5 min |
-| 2.1 | Walk through Dale's worked example on the board, one subtraction at a time. Ask learners to check each time. | Follow the example. Complete Task 1 and compare with a partner. | Learner page, whiteboard | 12 min |
+| 2.1 | Walk through Dale's worked example on the board, one subtraction at a time. Ask learners to check each time. Show the timeline figure and point out that it is read from right to left. Point fast finishers to the second worked example (Marie's cancelled bus) as a model for Task 2. | Follow the example. Complete Task 1 and compare with a partner. | Learner page, whiteboard | 12 min |
 | 2.2 | Explain what a good late or sick message contains. Share the BC sick leave facts: 5 paid and 3 unpaid days after 90 days, proof on request, no doctor's note for the first two short absences. Remind learners that union agreements and employer policies can add rules. | Write Task 2. Two volunteers read theirs aloud. | Learner page | 10 min |
 | 2.3 | Explain the young and new worker orientation required in BC. Ask who has had one and what it covered. | List what they were told at a past orientation, or what they would ask. | Learner page | 8 min |
 | 3.1 | Draw the four boxes. Use the definitions from the ACCESS time management lesson: urgent is "of critical time value", important is "of great value". Stress that no box is "bad". The aim is balance, so box B gets time. | Complete Task 3 in pairs. Share one item the pair disagreed on. | Learner page | 12 min |

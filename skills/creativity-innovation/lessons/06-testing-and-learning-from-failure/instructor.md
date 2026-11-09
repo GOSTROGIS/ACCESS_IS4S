@@ -1,6 +1,6 @@
 # Testing an idea and learning from what fails
 
-Session 6 of 8 in the Creativity and Innovation lessons. Total length 90 minutes.
+Session 6 of 12 in the Creativity and Innovation lessons. Total length 90 minutes.
 
 ## Opening (5 min)
 
@@ -40,6 +40,8 @@ The table covers the whole session, including the opening, objective, pre-assess
 | 2.8 | Set Task 7. Have teams pair up to swap one tip. Collect knives and count blades. | Write the test report and share a tip. | Learner page | 7 min |
 | 3.1 | Run the post-assessment. | Answer the three questions. | Paper | 5 min |
 | 3.2 | Summarize the session. Tell learners the next session is pitching an idea to a supervisor, using test results like these. | Keep the test table and report. | None | 2 min |
+
+**Extension.** Task 8 is a level 3 trade task for fast finishers or homework, with averages and percent improvement on a pipe support test. It is not timed in the table above.
 
 **Safety.** You may pre-cut cardboard or limit cutting to scissors for any group. If utility knives are used, only one person at a time cuts, on a mat, with glasses on. Collect and count knives and blades at the end. Keep washer loads small and the floor under the test clear of feet.
 

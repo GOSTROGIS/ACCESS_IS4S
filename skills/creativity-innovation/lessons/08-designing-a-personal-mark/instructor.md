@@ -1,6 +1,6 @@
 # Designing your own personal mark
 
-Session 8 of 8 in the Creativity and Innovation lessons. Total length 90 minutes.
+Session 8 of 12 in the Creativity and Innovation lessons. Total length 90 minutes.
 
 ## Opening (5 min)
 
@@ -37,7 +37,7 @@ The table covers the whole session, including the opening, objective, pre-assess
 | 2.6 | Set Task 5. Learners without a computer make a one-page poster. | Build slides or a poster. | Computers with PowerPoint or Google Slides, or poster paper | 15 min |
 | 2.7 | Set Task 6. Split into groups of 4 or 5 so everyone presents. | Present and give feedback. | Slides or posters | 10 min |
 | 3.1 | Run the post-assessment. | Answer the three questions. | Paper | 5 min |
-| 3.2 | Summarize the session and the eight lessons. | Add the mark and slides to the portfolio. | None | 2 min |
+| 3.2 | Summarize the session and the first eight lessons. Tell learners the next session builds a jig or template. | Add the mark and slides to the portfolio. | None | 2 min |
 
 **Respectful framing.** The original ACCESS assignment asked learners to choose a "totem animal". This version keeps the research and branding parts and drops the totem framing, because clans and crests belong to specific families and Nations. Do not offer examples drawn from any Nation's crests or art style. If a learner raises their own family's clan or crest, let them lead. They are not required to share it, and it is not to be graded. Do not teach or explain any Nation's clan or crest system yourself beyond the sourced points on the learner page. If learners want to learn more, point them to the Nation's own cultural centre or knowledge keepers, or to the sources below.
 
@@ -60,7 +60,7 @@ During this session we covered:
 - testing at small size and from a distance, then improving
 - presenting your mark and giving feedback
 
-Across the eight Creativity and Innovation lessons we covered all six components: imagination and curiosity, finding opportunities, generating ideas, developing ideas, applying ideas and learning from failure, and building a creative environment for yourself and others.
+Across the first eight Creativity and Innovation lessons we covered all six components: imagination and curiosity, finding opportunities, generating ideas, developing ideas, applying ideas and learning from failure, and building a creative environment for yourself and others.
 
 ## Sources
 

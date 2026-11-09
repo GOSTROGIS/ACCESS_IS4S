@@ -1,12 +1,12 @@
 # Keep learning as an apprentice in BC
 
-Adaptability lesson 7 of 8. Total time: 90 minutes.
+Adaptability lesson 7 of 12. Total time: 90 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Share how you got into your trade: the first job, the sponsor, a level you found hard. Ask: "How is this session going to be useful to you?" (the opening question from the ACCESS occupations lesson). Explain that this is Adaptability lesson 7 of 8, and that the session is 90 minutes. Learners will need a computer or phone for step 3.1.
+Welcome learners. Share how you got into your trade: the first job, the sponsor, a level you found hard. Ask: "How is this session going to be useful to you?" (the opening question from the ACCESS occupations lesson). Explain that this is Adaptability lesson 7 of 12, and that the session is 90 minutes. Learners will need a computer or phone for step 3.1.
 
 ## Objective
 
@@ -43,6 +43,8 @@ By the end of the session learners will be able to:
 | 4.2 | Summarize. | Name the next step in their own plan. | | 3 min |
 
 Total: 5 + 5 + 12 + 10 + 13 + 7 + 15 + 5 + 10 + 5 + 3 = 90 minutes.
+
+The learner page also has a figure of the eight apprenticeship steps and a second worked example on hours to the next level (1,200 of 1,500 hours at 38 hours a week). Use it with Task 4. These fit inside the existing step times.
 
 ### Notes for the instructor
 

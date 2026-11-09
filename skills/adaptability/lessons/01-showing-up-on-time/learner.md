@@ -35,6 +35,44 @@ Do not plan from the time you wake up. Plan from the time you must be ready to w
 - The 5:50 bus is too late. He takes the 5:30 bus.
 - The 5:30 bus gets him off at 6:15, to the gate at 6:27 and ready at 6:37. That leaves 13 minutes of buffer before the talk.
 
+<div class="figure-art">
+<svg viewBox="0 0 720 300" width="100%" role="img" aria-labelledby="ad01-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="ad01-f1-title">Timeline of Dale's morning from the 5:30 bus to the 6:50 toolbox talk: bus 45 minutes, walk 12, sign in 10, buffer 13.</title>
+<defs><marker id="ad01-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="ad01-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="300" fill="#ffffff"/>
+<text x="360.0" y="32.0" font-size="22" text-anchor="middle" font-weight="bold" fill="#222222">Dale's morning, planned back from 6:50</text>
+<text x="360.0" y="60.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#6b6b6b">Read right to left: start at the toolbox talk and count back.</text>
+<line x1="60.0" y1="102.0" x2="60.0" y2="174.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="60.0" y="192.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">5:30</text>
+<line x1="212.5" y1="102.0" x2="212.5" y2="174.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="212.5" y="192.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">5:50</text>
+<line x1="403.1" y1="102.0" x2="403.1" y2="174.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="403.1" y="192.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">6:15</text>
+<line x1="494.6" y1="102.0" x2="494.6" y2="174.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="494.6" y="192.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">6:27</text>
+<line x1="570.9" y1="102.0" x2="570.9" y2="174.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="570.9" y="192.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">6:37</text>
+<line x1="670.0" y1="102.0" x2="670.0" y2="174.0" stroke="#bdb6aa" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="670.0" y="192.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#6b6b6b">6:50</text>
+<rect x="60.0" y="110.0" width="343.1" height="56.0" rx="3" fill="#d6e4f2" stroke="#2f5d8a" stroke-width="1.5"/>
+<text x="231.6" y="134.6" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">Bus ride</text>
+<text x="231.6" y="151.9" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">45 min</text>
+<rect x="403.1" y="110.0" width="91.5" height="56.0" rx="3" fill="#fbe3c8" stroke="#b85c00" stroke-width="1.5"/>
+<text x="448.9" y="134.6" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">Walk</text>
+<text x="448.9" y="151.9" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">12</text>
+<rect x="494.6" y="110.0" width="76.2" height="56.0" rx="3" fill="#d8ecd5" stroke="#2e6b34" stroke-width="1.5"/>
+<text x="532.8" y="134.6" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">Sign</text>
+<text x="532.8" y="151.9" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">in 10</text>
+<rect x="570.9" y="110.0" width="99.1" height="56.0" rx="3" fill="#fdf3c4" stroke="#8a7a1a" stroke-width="1.5"/>
+<text x="620.4" y="134.6" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">Buffer</text>
+<text x="620.4" y="151.9" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">13</text>
+<line x1="670.0" y1="92.0" x2="670.0" y2="186.0" stroke="#b3261e" stroke-width="4"/>
+<text x="670.0" y="86.0" font-size="16" text-anchor="end" font-weight="bold" fill="#b3261e">Toolbox talk</text>
+<line x1="666.0" y1="250.0" x2="64.0" y2="250.0" stroke="#6b6b6b" stroke-width="2" marker-end="url(#ad01-f1-ar)"/>
+<text x="365.0" y="274.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#6b6b6b">count back from the start time</text>
+</svg>
+</div>
+
 ### Tell your supervisor early
 
 Plans change: a sick child, a flat tire, a fever. What matters is that your supervisor hears it from you, before your shift, in the way your employer asks (a call, a text or an app). A good message says who you are, what is happening, and when you expect to be back or arrive.
@@ -55,7 +93,62 @@ In BC, your employer must give a young or new worker a health and safety orienta
 | **Important** | A: Do it now. | B: Plan a time for it. |
 | **Not important** | C: Deal with it fast or pass it on. | D: Leave it for later or drop it. |
 
+<div class="figure-art">
+<svg viewBox="0 0 640 420" width="100%" role="img" aria-labelledby="ad01-f2-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="ad01-f2-title">Two by two grid. Urgent and important is A, do it now. Important but not urgent is B, plan a time. Urgent but not important is C. Neither is D.</title>
+<defs><marker id="ad01-f2-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="ad01-f2-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="640" height="420" fill="#ffffff"/>
+<text x="270.0" y="58.0" font-size="18" text-anchor="middle" font-weight="bold" fill="#222222">Urgent</text>
+<text x="510.0" y="58.0" font-size="18" text-anchor="middle" font-weight="bold" fill="#222222">Not urgent</text>
+<text x="136.0" y="145.0" font-size="18" text-anchor="end" font-weight="bold" fill="#222222">Important</text>
+<text x="136.0" y="295.0" font-size="18" text-anchor="end" font-weight="bold" fill="#222222">Not</text>
+<text x="136.0" y="317.0" font-size="18" text-anchor="end" font-weight="bold" fill="#222222">important</text>
+<rect x="150.0" y="70.0" width="240.0" height="150.0" rx="0" fill="#f6d6d3" stroke="#b3261e" stroke-width="2"/>
+<text x="270.0" y="129.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#222222">A: Do it now</text>
+<text x="270.0" y="151.3" font-size="18" text-anchor="middle" font-weight="normal" fill="#222222">Fix a loose guardrail</text>
+<text x="270.0" y="173.3" font-size="18" text-anchor="middle" font-weight="normal" fill="#222222">before the crew goes up</text>
+<rect x="390.0" y="70.0" width="240.0" height="150.0" rx="0" fill="#d8ecd5" stroke="#2e6b34" stroke-width="2"/>
+<text x="510.0" y="129.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#222222">B: Plan a time</text>
+<text x="510.0" y="151.3" font-size="18" text-anchor="middle" font-weight="normal" fill="#222222">Study for next week</text>
+<text x="510.0" y="173.3" font-size="18" text-anchor="middle" font-weight="normal" fill="#222222">ticket course</text>
+<rect x="150.0" y="220.0" width="240.0" height="150.0" rx="0" fill="#fbe3c8" stroke="#b85c00" stroke-width="2"/>
+<text x="270.0" y="279.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#222222">C: Deal fast or pass on</text>
+<text x="270.0" y="301.3" font-size="18" text-anchor="middle" font-weight="normal" fill="#222222">Courier at the gate</text>
+<text x="270.0" y="323.3" font-size="18" text-anchor="middle" font-weight="normal" fill="#222222">wants a signature</text>
+<rect x="390.0" y="220.0" width="240.0" height="150.0" rx="0" fill="#f4f1ea" stroke="#6b6b6b" stroke-width="2"/>
+<text x="510.0" y="290.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#222222">D: Later or drop it</text>
+<text x="510.0" y="312.3" font-size="18" text-anchor="middle" font-weight="normal" fill="#222222">Scroll social media</text>
+<text x="320.0" y="408.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#6b6b6b">Box B is where your goals live. Give it planned time.</text>
+</svg>
+</div>
+
 Many people spend their days in boxes A and C and never get to box B. Box B is where goals like your tickets, your technical training and your health live. Planning time for box B stops those tasks from turning into emergencies later.
+
+### Worked example: plan B when the bus is cancelled
+
+Marie is a first-year electrical apprentice at Coastline Electrical Contractors. Her start time is 7:00 a.m. She needs 15 minutes for coffee and to put on her gear at the site. The bus trip, door to door, takes 45 minutes. She wants a 10-minute buffer.
+
+**Step 1. Work back from the start.**
+
+- Ready to work at 7:00.
+- At the gate by 7:00 − 15 min = 6:45.
+- Leave home by 6:45 − 45 min = 6:00.
+- Take off the buffer: leave home at 6:00 − 10 min = 5:50.
+
+**Step 2. Set the alarm.** Marie needs 40 minutes to get up, eat and get dressed. 5:50 − 40 min = 5:10. Her alarm is set for 5:10.
+
+**Step 3. The change.** At 5:40 her transit app says her bus is cancelled. The next one means she leaves home 20 minutes later, at 6:10.
+
+- At the gate: 6:10 + 45 min = 6:55.
+- Ready: 6:55 + 15 min = 7:10.
+- The 10-minute buffer covers half of the 20-minute delay. She would still be 10 minutes late.
+
+**Step 4. Look for a better option.** Her cousin can drive her. The drive takes 25 minutes, and they can leave at 6:00.
+
+- At the gate: 6:00 + 25 min = 6:25.
+- Ready: 6:25 + 15 min = 6:40, which is 20 minutes early.
+
+**Step 5. Tell the supervisor early anyway.** At 5:45 Marie texts her foreman: "Hi Lou, it's Marie. My 5:50 bus is cancelled. My cousin is driving me and I'll be on time. If that falls through I'll take the next bus and be about 10 minutes late, and I'll text you again." The foreman knows the plan before 6:00, whatever happens.
 
 ## Practice
 

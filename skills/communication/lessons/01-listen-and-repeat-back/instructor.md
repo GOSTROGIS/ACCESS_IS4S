@@ -1,8 +1,10 @@
 # Listening and repeating back instructions
 
+**Session:** Communication lesson 1 of 13.
+
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 1 of the Communication series. The session runs 60 minutes.
+Welcome learners to session 1 of the Communication series. The session runs 70 minutes.
 
 Hook (a fictional story): "A new apprentice was told to cut a stack of blocking at fourteen and a half. Over the saw, he heard forty and a half. He cut the whole stack before anyone checked. One sentence, said back, would have saved a morning of material." Ask: "Has an instruction ever gone sideways on you because of one word or one number?" Take two or three answers. No one has to share.
 
@@ -32,9 +34,10 @@ Listen for whether learners already use a repeat-back or only say "okay."
 | 3.1 | Set up Task 2 in pairs. Remind listeners not to look at the card. | One reads a card once, the other fills in the table, then switch. | Learner page | 7 min |
 | 3.2 | Set up Task 3. Circulate and listen for questions that target the missing part. | Say Cards C and D back and ask one question each. | Learner page | 7 min |
 | 3.3 | Run Tasks 4 and 5 quickly as a whole group. | Mark F or A, rewrite the three phrases, compare. | Learner page | 5 min |
+| 3.4 | Show the read-back loop. Set Tasks 6 and 7. Read the Task 7 say-back aloud so learners hear "fifteen" and "fifty" | Fill the six parts, catch two errors, correct them out loud | Learner page | 10 min |
 | 4.1 | Post-assessment. Read a new instruction (below) once. | Each learner says it back to a partner, then answers the three post-assessment questions. | None | 5 min |
 | 4.2 | Summary and action plan. | Commit to one repeat-back at work or home this week and report next session. | None | 3 min |
-| | | | **Total** | **60 min** |
+| | | | **Total** | **70 min** |
 
 ### Drawing instructions (Task 1)
 

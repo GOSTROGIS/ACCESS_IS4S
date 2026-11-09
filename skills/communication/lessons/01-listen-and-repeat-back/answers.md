@@ -61,6 +61,27 @@ Sample answers. Accept any version that removes the confusion.
 2. "Bring thirteen, one-three, of the ..." and name the item. Or ask what "the thirteen ones" means: thirteen of something, or parts marked 13?
 3. "Move it 2 inches toward the window." Give a distance and a direction instead of "a bit."
 
+## Task 6 (level 2) Find the six parts
+
+| Part | What the instruction says |
+|---|---|
+| WHAT | Pave, starting the north lane |
+| WHERE | North lane, from the first manhole |
+| HOW MUCH | A 50 mm lift |
+| WHEN | Once the tack coat is dry. Done by noon. |
+| WHO | Ken is flagging at the east end |
+| SAFETY | Roller stays 10 metres back. Ken is flagging. |
+
+Some learners put "tack coat dry" under SAFETY. Accept it if they explain why.
+
+## Task 7 (level 3) Catch the errors
+
+a) "South lane" should be north lane. "Fifteen-millimetre lift" should be fifty.
+
+b) Sample: "Two changes. North lane, not south. Fifty millimetres, five-zero, not fifteen."
+
+c) Say the whole instruction back again, with the two changes, before starting. A good answer closes the loop with a second read-back.
+
 ## Check yourself
 
 1. What, where, how much, when, who and safety.

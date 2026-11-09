@@ -1,6 +1,6 @@
 # Metric prefixes from nano to giga
 
-**Session:** Numeracy lesson 7 of 8. **Total length:** 60 minutes. This lesson extends Textbook Section 7.1 (kilo to micro) and Section 7.7 (powers of ten) to the larger and smaller prefixes used on nameplates, bills and data plans.
+**Session:** Numeracy lesson 7 of 21. **Total length:** 60 minutes. This lesson extends Textbook Section 7.1 (kilo to micro) and Section 7.7 (powers of ten) to the larger and smaller prefixes used on nameplates, bills and data plans.
 
 ## Opening (5 min)
 

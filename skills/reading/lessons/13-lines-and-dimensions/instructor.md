@@ -1,0 +1,75 @@
+# The alphabet of lines and reading dimensions
+
+Session 13 of 18 in the Reading lessons · 90 minutes
+
+## Opening (5 min)
+
+Welcome learners. Draw three lines on the board: a thick solid line, a thin dashed line, and a thin line with an arrow at each end. Ask: "Are these the same?" Each one means something different: an edge, a hidden edge, and a size. Tell a short story: a concrete crew forms a slab from a dimension string without adding it up. The string is 100 mm short of the overall. The error shows up when the steel arrives and does not fit. The fix took a day. Adding the string took one minute.
+
+This is session 13 of 18 in the Reading lessons. It runs 90 minutes. It follows lessons 11 (views) and 12 (pictorial drawings).
+
+Before the session: bring a tape measure, a calculator for each pair, and if possible a real shop drawing or framing elevation with a dimension string. Draw a 6-metre line on the floor with tape for Task 10, with four marks for anchor bolts, if you have room.
+
+## Objective (3 min)
+
+By the end of the session, learners will be able to:
+
+- name each line in the alphabet of lines and say if it is thick or thin (Identify the information)
+- connect a dimension to the edges it measures using extension lines, and follow a cutting-plane line to its section view (Make connections between different parts of the document(s))
+- add chain dimensions in feet and inches or millimetres, and find a missing dimension (Understand and apply the information)
+- check whether a dimension string adds up, and decide what to do when it does not (Evaluate the document(s))
+
+## Pre-assessment (5 min)
+
+1. "How do you write five feet three inches on a drawing?"
+2. Show Figure 2 for 20 seconds. "How many different kinds of line can you see?"
+
+## Learning tasks (62 min)
+
+| Step | Instructor activities | Learner activities | Resources | Time |
+|---|---|---|---|---|
+| 1.1 | Walk through Key ideas 1 and 2 with Figure 1. Draw each line on the board, thick or thin. | Copy each line and its name into notes. | Figure 1, Key ideas 1 and 2 | 8 min |
+| 1.2 | Set Tasks 1 and 2. | Do Tasks 1 and 2 on Figure 2. | Figure 2, Tasks 1 and 2 | 7 min |
+| 1.3 | Explain Key idea 3 and the parts of a dimension with Figure 3. Set Tasks 4 and 5. | Do Tasks 4 and 5. | Figures 2 and 3, Tasks 4 and 5 | 8 min |
+| 2.1 | Explain Key ideas 4 and 5. Set Task 3. | Do Task 3. | Key ideas 4 and 5, Task 3 | 4 min |
+| 2.2 | Explain Key idea 6 with Figure 4. Model Worked example 1. | Follow the worked example. | Figure 4, Worked example 1 | 5 min |
+| 2.3 | Model Worked example 2 (carrying inches). Ask a carpenter in the group how they add feet and inches on site. | Follow the worked example. | Worked example 2 | 4 min |
+| 2.4 | Set Tasks 6 and 8. | Do Tasks 6 and 8. | Tasks 6 and 8 | 7 min |
+| 2.5 | Model Worked example 3. Set Task 7. | Do Task 7. | Figure 5, Worked example 3, Task 7 | 5 min |
+| 3.1 | Set Task 9 in pairs. Do not hint that the string is short. | Add the string and decide what to do. | Task 9 | 4 min |
+| 3.2 | Set Task 10. If you taped a line on the floor, have two pairs mark it both ways and compare. | Do Task 10. | Task 10, tape measure | 6 min |
+| 3.3 | Set Task 11. Go over the answers. | Do Task 11 and check answers. | Task 11, answers.md | 4 min |
+
+## Post-assessment (9 min)
+
+1. Point at three lines on Figure 2 and ask learners to name them.
+2. "Add 6'-9 1/2" and 2'-4". Write the answer the way it goes on a drawing." (9'-1 1/2")
+3. "An overall dimension is 4800 and the string reads 1200, 1200, 1200, 1100. What do you do?" (It adds to 4700, 100 short. Ask in writing.)
+
+## Summary (6 min)
+
+During this session we covered:
+
+- the alphabet of lines: object, hidden, centre, dimension, extension, leader, cutting-plane, section, break and phantom lines
+- thick and thin line weights
+- break lines and why the written dimension still gives the full length
+- feet-and-inch notation with a dash, and millimetres on metric drawings
+- chain and baseline dimensions
+- adding a dimension string, finding a missing size and catching a string that does not add up
+
+Next session (lesson 14) covers drawing scales and the scale rule.
+
+Total time: 5 + 3 + 5 + 62 + 9 + 6 = 90 minutes.
+
+## Sources
+
+- The six Reading components and their wording, the Reading proficiency levels 1 to 3, and the definition of reading as finding, understanding and using information presented through words, symbols and images. Government of Canada, "Skill components and proficiency levels", https://www.canada.ca/en/services/jobs/training/initiatives/skills-success/learning-steps.html, checked 2026-11-08.
+- The "alphabet of lines" and the meaning of object, hidden, centre, dimension, extension, leader, phantom, cutting-plane, section and break lines. Long break lines are thin with zigzags. Short break lines are thick, wavy and freehand. Phantom lines show alternate positions of moving parts and the positions of related or adjacent parts. Extension lines start about 3 mm (1/8") from the object. Dimensions should not be repeated. All metric drawings should carry a note that dimensions are in millimetres. Imperial building dimensions are written in feet and inches, such as 2'-6". New Brunswick Community College and Camosun College, "Lines, lettering, and Dimensions", *Technically Drawn* (open textbook, CC BY-NC-SA 4.0, adapted from BC Trades Access Common Core Competency D-3), https://pressbooks.atlanticoer-relatlantique.ca/lined/chapter/d3-12/, checked 2026-11-08.
+- Feet and inches are written with the foot and inch symbols separated by a dash, such as 4'-3 1/2" and 7'-0". New Brunswick Community College and Camosun College, "Determine Dimensions from Drawings", *Technically Drawn*, https://pressbooks.atlanticoer-relatlantique.ca/lined/chapter/d3-16/, checked 2026-11-08.
+- Line weights: ASME Y14.2 recommends at least two line widths, with thick lines twice as thick as thin lines, thick at least 0.6 mm and thin at least 0.3 mm. SDC Publications, *Engineering Graphics Essentials*, chapter 2 sample, https://static.sdcpublications.com/pdfsample/978-1-63057-052-1-2.pdf, checked 2026-11-08.
+- Hidden lines are thin, evenly spaced dashes. Cutting-plane lines are thick, with arrowheads that show the viewing direction. Section lines are thin and normally at 45°. Richard Gentry, Sacramento City College, "4.1: Line styles and types", *Blueprint Reading and Technical Sketching* (Workforce LibreTexts), https://workforce.libretexts.org/Courses/Sacramento_City_College/Blueprint_Reading_and_Technical_Sketching_(Gentry)/04:_Lines_Styles_and_Types/6.01:_Line_styles_and_types, checked 2026-11-08. Border lines are very thick continuous lines: Ric Costin, "Chapter 1: The Language of Lines", *Basic Blueprint Reading for Welders* (Clover Park Technical College, Pressbooks), https://openwa.pressbooks.pub/cloverpark/chapter/unit-1-the-language-of-lines, checked 2026-11-08.
+- Datum (baseline) dimensioning gives each distance from the same datum. Chain dimensioning goes from one feature to the next. In broken-chain dimensioning one size is left out and is found by taking the other steps from the overall length. WisTech Open, "5. Dimensioning Systems", *Blueprint Reading*, https://wtcs.pressbooks.pub/blueprintreading/chapter/4-objects-in-different-views, checked 2026-11-08.
+- Chain dimensioning can cause an accumulation of tolerances between features. McGill University, Engineering Design, "Principles of Dimensioning", https://www.mcgill.ca/engineeringdesign/step-step-design-process/basics-graphics-communication/principles-dimensioning, checked 2026-11-08.
+- Canadian drafting standards for lines and dimensioning: CSA CAN3-B78.1-M83 (R2002), *Technical Drawings - General Principles*, which covers format, lines, lettering, views and conventions, and CAN/CSA-B78.2-M91 (R2002), *Dimensioning and Tolerancing of Technical Drawings*, which shows dimensions in SI units. CSA lists both as withdrawn, so they are cited for background only. CSA Group store, https://www.csagroup.org/store/product/2411816 and https://www.csagroup.org/store/product/2410216, checked 2026-11-08.
+- 1 inch = 25.4 mm exactly: the Weights and Measures Act, Schedule II, defines the yard as 9144/10 000 metre and the inch as 1/36 yard (0.9144 m ÷ 36 = 25.4 mm). Government of Canada, Justice Laws, *Weights and Measures Act*, Schedule II, https://laws-lois.justice.gc.ca/eng/acts/W-6/page-7.html, checked 2026-11-08.
+- The hinge strap, sill plate, wall, slab and all their sizes are fictional and were drawn for this lesson by a script. Every number in the worked examples and answers was computed in a script and checked.

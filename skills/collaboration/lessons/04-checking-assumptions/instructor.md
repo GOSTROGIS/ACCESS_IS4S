@@ -1,12 +1,12 @@
 # Checking assumptions before you act
 
-**Collaboration lesson 4 of 8 · 90 min · Level 1-2**
+**Collaboration lesson 4 of 12 · 100 min · Level 1-3**
 
 Every minute of the session is in the Learning tasks table. The blocks below point to their step numbers.
 
 ## Opening (6 min, step 1.1)
 
-Welcome learners to session 4 of 8. This session runs 90 minutes.
+Welcome learners to session 4 of 12. This session runs 100 minutes.
 
 Hook, "Choose someone" (adapted from the ACCESS biases lesson, with written descriptions in place of the magazine collage). Read these four co-workers aloud and write them on the board:
 
@@ -47,9 +47,10 @@ By the end of the session, learners will be able to:
 | 2.7 | Set Task 4. Have two learners read their rewrite | Rewrite the text | Learner page | 6 min |
 | 2.8 | Set Task 5. Say clearly that it is private | Complete the plan | Learner page | 6 min |
 | 2.9 | Give time for Check yourself | Answer the five questions alone | Learner page, answers page | 3 min |
+| 2.10 | Show the four-step figure. Set Task 6. Then set Task 7 and model a private opening line for part c | Separate saw and think, plan the talk with Dale | Learner page | 10 min |
 | 3.1 | Ask the post-assessment questions | Answer aloud or on paper | Whiteboard | 4 min |
 | 3.2 | Summary and preview of lesson 5 | Name one assumption they will check this week | None | 2 min |
-| | | | **Total** | **90 min** |
+| | | | **Total** | **100 min** |
 
 ### Task 3 statements
 

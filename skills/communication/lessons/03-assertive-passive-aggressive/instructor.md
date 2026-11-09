@@ -1,8 +1,10 @@
 # Assertive, passive and aggressive responses
 
+**Session:** Communication lesson 3 of 13.
+
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 3 of the Communication series. The session runs 75 minutes. Ask who introduced themselves to someone new since last session.
+Welcome learners to session 3 of the Communication series. The session runs 85 minutes. Ask who introduced themselves to someone new since last session.
 
 Hook: "Picture a co-worker who leaves a mess in your work area every single day. What would you do on day one? On day ten?" Take a few answers. Point out that many people say nothing on day one and blow up on day ten. Today is about the middle path.
 
@@ -32,9 +34,10 @@ By the end of the session, learners will be able to:
 | 3.2 | Task 2. Circulate and check each rewrite has all three parts. | Rewrite three responses. | Learner page | 7 min |
 | 3.3 | Task 3 in pairs. Ask two volunteers to show their assertive version to the group. Group gives feedback on what worked first. | Act one card three ways, give and receive feedback. | Learner page | 8 min |
 | 3.4 | Tasks 4 and 5. Say clearly that Task 4 is not a test and there is no score. Collect goal sheets if learners agree, to hand back at the end of the series. | Rate the statements privately, write three goals. | Learner page | 8 min |
+| 3.5 | Show the line figure. Set Task 6. Then act out Task 7 in pairs, with one learner as the journeyperson | Label four lines, practise staying assertive under pushback | Learner page | 10 min |
 | 4.1 | Post-assessment questions. | Answer. | None | 4 min |
 | 4.2 | Summary and action plan. | Choose one of their three goals to try before next session. | None | 3 min |
-| | | | **Total** | **75 min** |
+| | | | **Total** | **85 min** |
 
 Notes for the instructor:
 

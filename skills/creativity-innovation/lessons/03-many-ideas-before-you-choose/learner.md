@@ -21,6 +21,26 @@ Shops and sites are full of repeated tasks: marking the same hole on 40 plates, 
 
 If you judge while you generate, people stop offering ideas and you end up with the first, most familiar one.
 
+<div class="figure-art">
+<svg viewBox="0 0 640 360" width="100%" role="img" aria-labelledby="cr03-f2-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="cr03-f2-title">A funnel. The wide top is the generate phase with many ideas and no judging. The narrow part is choosing the top 3 with criteria. At the bottom one idea is tried first.</title>
+<defs><marker id="cr03-f2-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="cr03-f2-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="640" height="360" fill="#ffffff"/>
+<text x="320.0" y="28.0" font-size="20" text-anchor="middle" font-weight="bold" fill="#222222">Generate first, then choose</text>
+<path d="M60,50 L580,50 L400,230 L240,230 z" stroke="#2f5d8a" stroke-width="2.5" fill="#d6e4f2"/>
+<path d="M190,236 L450,236 L390,300 L250,300 z" stroke="#2e6b34" stroke-width="2.5" fill="#d8ecd5"/>
+<text x="320.0" y="86.0" font-size="17" text-anchor="middle" font-weight="bold" fill="#222222">Generate: as many ideas as you can</text>
+<text x="320.0" y="112.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">no judging, "Yes, and ..."</text>
+<text x="320.0" y="140.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">combine, reverse, expand,</text>
+<text x="320.0" y="162.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#222222">do it differently, ask a question</text>
+<text x="320.0" y="214.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#2f5d8a">10 ideas</text>
+<text x="320.0" y="262.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#222222">Choose with criteria</text>
+<text x="320.0" y="288.0" font-size="14" text-anchor="middle" font-weight="normal" fill="#2e6b34">top 3</text>
+<rect x="250.0" y="312.0" width="140.0" height="40.0" rx="8" fill="#fbe3c8" stroke="#b85c00" stroke-width="2"/>
+<text x="320.0" y="337.6" font-size="16" text-anchor="middle" font-weight="bold" fill="#222222">Try 1 first</text>
+</svg>
+</div>
+
 **Prompts that help you think differently.** These come from the Skills for Success description of creativity and innovation:
 
 - **Do it differently**: what if we changed the usual process, the tool, or who does the task?
@@ -41,6 +61,49 @@ Where the holes are:
 
 - across the width: 100 ÷ 2 = 50 mm from either long edge
 - between the two hole centres: 150 − 25 − 25 = 100 mm
+
+<div class="figure-art">
+<svg viewBox="0 0 640 470" width="100%" role="img" aria-labelledby="cr03-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="cr03-f1-title">Top view of a plate 150 mm long and 100 mm wide. Two holes sit on the centreline, 25 mm in from each short end and 100 mm apart. The centreline is 50 mm from a long edge.</title>
+<defs><marker id="cr03-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="cr03-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="640" height="470" fill="#ffffff"/>
+<text x="320.0" y="30.0" font-size="20" text-anchor="middle" font-weight="bold" fill="#222222">North Arm plate: hole layout (sizes in mm)</text>
+<rect x="150.0" y="110.0" width="390.0" height="260.0" rx="0" fill="#eef1f4" stroke="#222222" stroke-width="3"/>
+<circle cx="215.0" cy="240.0" r="9.0" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+<line x1="193.0" y1="240.0" x2="237.0" y2="240.0" stroke="#2f5d8a" stroke-width="1" stroke-dasharray="12 4 3 4"/>
+<line x1="215.0" y1="218.0" x2="215.0" y2="262.0" stroke="#2f5d8a" stroke-width="1" stroke-dasharray="12 4 3 4"/>
+<circle cx="475.0" cy="240.0" r="9.0" fill="#ffffff" stroke="#222222" stroke-width="2.5"/>
+<line x1="453.0" y1="240.0" x2="497.0" y2="240.0" stroke="#2f5d8a" stroke-width="1" stroke-dasharray="12 4 3 4"/>
+<line x1="475.0" y1="218.0" x2="475.0" y2="262.0" stroke="#2f5d8a" stroke-width="1" stroke-dasharray="12 4 3 4"/>
+<line x1="129.2" y1="240.0" x2="560.8" y2="240.0" stroke="#2f5d8a" stroke-width="1" stroke-dasharray="16 4 4 4"/>
+<text x="566.0" y="245.0" font-size="13" text-anchor="start" font-weight="normal" fill="#2f5d8a">CL</text>
+<line x1="150.0" y1="106.0" x2="150.0" y2="74.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="215.0" y1="106.0" x2="215.0" y2="74.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="150.0" y1="80.0" x2="215.0" y2="80.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr03-f1-ds)" marker-end="url(#cr03-f1-ds)"/>
+<text x="182.5" y="74.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">25</text>
+<line x1="215.0" y1="216.0" x2="215.0" y2="74.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="475.0" y1="216.0" x2="475.0" y2="74.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="215.0" y1="80.0" x2="475.0" y2="80.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr03-f1-ds)" marker-end="url(#cr03-f1-ds)"/>
+<text x="345.0" y="74.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">100</text>
+<line x1="475.0" y1="106.0" x2="475.0" y2="74.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="540.0" y1="106.0" x2="540.0" y2="74.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="475.0" y1="80.0" x2="540.0" y2="80.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr03-f1-ds)" marker-end="url(#cr03-f1-ds)"/>
+<text x="507.5" y="74.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">25</text>
+<line x1="150.0" y1="374.0" x2="150.0" y2="422.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="540.0" y1="374.0" x2="540.0" y2="422.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="150.0" y1="416.0" x2="540.0" y2="416.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr03-f1-ds)" marker-end="url(#cr03-f1-ds)"/>
+<text x="345.0" y="410.0" font-size="16" text-anchor="middle" font-weight="normal" fill="#222222">150</text>
+<line x1="146.0" y1="110.0" x2="110.0" y2="110.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="146.0" y1="370.0" x2="110.0" y2="370.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="116.0" y1="110.0" x2="116.0" y2="370.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr03-f1-ds)" marker-end="url(#cr03-f1-ds)"/>
+<text x="108.0" y="245.6" font-size="16" text-anchor="end" font-weight="normal" fill="#222222">100</text>
+<line x1="544.0" y1="240.0" x2="592.0" y2="240.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="544.0" y1="370.0" x2="592.0" y2="370.0" stroke="#6b6b6b" stroke-width="1"/>
+<line x1="586.0" y1="240.0" x2="586.0" y2="370.0" stroke="#222222" stroke-width="1.2" marker-start="url(#cr03-f1-ds)" marker-end="url(#cr03-f1-ds)"/>
+<text x="594.0" y="310.6" font-size="16" text-anchor="start" font-weight="normal" fill="#222222">50</text>
+<text x="320.0" y="456.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#6b6b6b">Both holes sit on the centreline (CL) of the 100 mm width.</text>
+</svg>
+</div>
 
 Ideas from a 10-minute generate round, with no judging:
 
@@ -112,6 +175,18 @@ a) How far is each hole from a long edge? ______________
 b) How far apart are the hole centres? ______________
 
 c) Measuring each plate takes 2.5 minutes. A template takes 0.5 minutes. How many minutes does the template save on 40 plates? Use BEDMAS. ______________
+
+**Task 7** (level 3) Northline Electric (a fictional company) must mount 48 receptacle boxes in a new daycare. The drawings call for the bottom of every box to be 450 mm above the finished floor, and the floor is not finished yet. Measuring each box from the subfloor with a tape is slow, and two boxes on the last job were set at the wrong height.
+
+a) Generate at least 6 ideas for setting every box at the same height, faster. Use at least two of the five prompts.
+
+b) Score your top 3 ideas from 1 to 3 against three criteria you choose. Pick one to try first.
+
+c) Write one thing you do not know yet that could change your choice. Who would you ask?
+
+______________________________________________
+
+______________________________________________
 
 ## Check yourself
 

@@ -1,6 +1,6 @@
 # Pitching an improvement to a supervisor
 
-Session 7 of 8 in the Creativity and Innovation lessons. Total length 75 minutes.
+Session 7 of 12 in the Creativity and Innovation lessons. Total length 75 minutes.
 
 ## Opening (5 min)
 
@@ -36,7 +36,7 @@ The table covers the whole session, including the opening, objective, pre-assess
 | 2.5 | Set Task 5. | Write a response to "not yet". | Learner page | 6 min |
 | 2.6 | Set Task 6. Ask two learners to share an idea they took from their partner. | Write one idea to add. | Learner page | 5 min |
 | 3.1 | Run the post-assessment. | Answer the three questions. | Paper | 5 min |
-| 3.2 | Summarize the session. Tell learners the last session is designing a personal mark. | Keep the pitch planner for the portfolio. | None | 2 min |
+| 3.2 | Summarize the session. Tell learners the next session is designing a personal mark. | Keep the pitch planner for the portfolio. | None | 2 min |
 
 **Coaching tip.** Learners playing card C often enjoy the role a bit too much. Remind them the goal is realistic questions, not winning. After each pair, ask the presenter which question helped them most.
 

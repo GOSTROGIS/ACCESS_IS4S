@@ -1,12 +1,12 @@
 # Owning your work and your mistakes
 
-Adaptability lesson 2 of 8. Total time: 75 minutes.
+Adaptability lesson 2 of 12. Total time: 75 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Share a time you made a mistake at work and what happened when you reported it, or when you did not. Keep it short and honest. Ask: "Who would you rather work beside: someone who never admits a mistake, or someone who tells you right away?" Explain that this is Adaptability lesson 2 of 8, and that the session is 75 minutes.
+Welcome learners. Share a time you made a mistake at work and what happened when you reported it, or when you did not. Keep it short and honest. Ask: "Who would you rather work beside: someone who never admits a mistake, or someone who tells you right away?" Explain that this is Adaptability lesson 2 of 12, and that the session is 75 minutes.
 
 ## Objective
 
@@ -44,6 +44,8 @@ These are the brainstorm questions from the original ACCESS lesson. Write answer
 | 4.2 | Summarize. | Name one tool they will try this week. | | 3 min |
 
 Total: 5 + 5 + 8 + 7 + 10 + 13 + 10 + 9 + 5 + 3 = 75 minutes.
+
+The learner page also has the control, influence and no-control circles, and a worked example of a strong and a weak report about six studs cut short. Use the worked example as the model before Task 3. These fit inside the existing step times.
 
 ### Notes for the instructor
 

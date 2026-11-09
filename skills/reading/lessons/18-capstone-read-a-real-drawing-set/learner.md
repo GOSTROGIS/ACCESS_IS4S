@@ -1,0 +1,199 @@
+---
+title: Capstone: read a real drawing set
+summary: Work a real job through one drawing set, from the drawing list to the plan, section, wall section, schedules and plumbing sheets, then do the math and flag the problems you find.
+level: 2-3
+time: 120 min
+components: Identify the information, Make connections between different parts of the document(s), Understand and apply the information, Evaluate the document(s)
+---
+
+# Capstone: read a real drawing set
+
+## Why this matters on the job
+
+On a real job nobody hands you one tidy drawing. You get a set, a question and a deadline. You have to find the right sheets, follow the marks from one sheet to the next, read the schedules, do the math with the written dimensions, and notice when two sheets do not agree. That is what this capstone asks you to do, on a real set.
+
+This lesson pulls together:
+- [Reading lesson 05](../05-read-a-floor-plan/learner.html): title block, legend, schedules, notes and "do not scale"
+- Reading lessons [11 (views)](../11-orthographic-projection/learner.html), [12 (pictorial drawings)](../12-pictorial-drawings/learner.html), [13 (lines and dimensions)](../13-lines-and-dimensions/learner.html), [14 (scales)](../14-drawing-scales/learner.html) and [15 (sections, details and callouts)](../15-sections-details-and-callouts/learner.html)
+- [Reading lesson 16](../16-title-blocks-sheet-sets-and-the-drawing-index/learner.html): title blocks, sheet sets and the drawing list
+- [Reading lesson 17](../17-symbols-legends-grids-and-schedules/learner.html): symbols, legends, grids and schedules
+- [Numeracy lesson 11](../../../numeracy/lessons/11-fractions-decimals-and-metric/learner.html) and [Numeracy lesson 13](../../../numeracy/lessons/13-perimeter-and-area/learner.html): fractions, converting to metric, and area
+
+## The job
+
+You are on the crew that will fit out the **Level 4 washrooms** at **London Square**, a mixed-use building at 828 Kingston Blvd. The set is imperial (feet and inches). The firm names on it, such as Athena Architecture Ltd. and Oslo Mechanical, are made up (fictional). The drawings are real.
+
+Your foreman wants a short report before the crew starts:
+- which sheets you need
+- the grid layout and one bay area
+- the floor heights and the wall build-up at the east wall
+- the washroom doors and fixtures
+- anything on the drawings that does not add up
+
+## How to work through a set
+
+1. **Start at the drawing list.** Write down every sheet you think you need.
+2. **Check each title block.** Note the scale and the latest issue.
+3. **Find your area on the plan by grid lines.** Read the written dimensions.
+4. **Follow every marker.** A section mark sends you to a section. A callout on the section sends you to a wall section or detail.
+5. **Follow every tag to its schedule.** Door tags to the door schedule, wall tags to the wall types, fixture tags to the plumbing sheets.
+6. **Check the trades against each other.** The plumbing plan and the architectural plan should show the same fixtures.
+7. **Write down anything that does not agree,** and ask in writing before you build.
+
+### Worked example
+
+**Question:** What is the scale of the Level 4 plan, and how long would the 25'-6" bay between grids 4 and 3 be on a full-size print?
+
+1. The A-241 title block says "As indicated" (lesson 16, Figure 4). So look under the plan. The view title in Figure 2 says **LEVEL 4, 1/8" = 1'-0"**.
+2. At 1/8" = 1'-0", every foot is drawn 1/8" long.
+3. 25'-6" = 25.5 feet. 25.5 × 1/8" = 25.5 ÷ 8 = 3.1875".
+4. 0.1875" = 3/16" (3 ÷ 16 = 0.1875). So the bay is drawn **3 3/16"** long on a full-size print.
+5. That is only a check. London Square project note 3 says no dimension shall be taken (scaled) from the drawings. **Build to the written 25'-6".**
+
+## The drawing set
+
+Tap a figure to open it full size, then zoom in. Figure 1 is the same drawing list used in lesson 16.
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 1, scroll sideways on a small screen" style="margin:16px 0"><a href="../16-title-blocks-sheet-sets-and-the-drawing-index/figures/ls-a100-drawing-list.png"><img src="../16-title-blocks-sheet-sets-and-the-drawing-index/figures/ls-a100-drawing-list.png" alt="The London Square drawing list from the cover sheet, all disciplines: Architectural A-100 to A-910, AC-1, AC-2, ID-1 to ID-5. Structural S100 to S702. Mechanical M-1 to M-9 and Plumbing P-1 to P-9. Electrical E-1.0 to E-6.0. Planting sheets L1 to L7. Civil sheets." width="860" height="1800" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 1.</strong> London Square, sheet A-100 Cover sheet and code review, drawing list. Athena Architecture Ltd. (fictional).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 2, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a241-level4-overview.png"><img src="figures/ls-a241-level4-overview.png" alt="The London Square Level 4 floor plan. Grid lines 5, 4, 3, 2, 1 run left to right across the top and bottom, and grid lines G to A run top to bottom. Office units 401 to 411 surround a central core with a women&#x27;s washroom 403, a men&#x27;s washroom 404, stair 1, stair 2, a mechanical shaft, an elevator shaft and an electrical room 402. Section and wall section markers sit around the edge. The view title reads 1 LEVEL 4, 1/8&quot; = 1&#x27;-0&quot;." width="819" height="999" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 2.</strong> London Square, sheet A-241 Floor plan Level L3 and L4 office plan, the Level 4 plan (view 1). Athena Architecture Ltd. (fictional).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 3, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a241-grid-dimensions.png"><img src="figures/ls-a241-grid-dimensions.png" alt="The top dimension strings of the Level 4 plan between grid bubbles 5, 4, 3 and 2. The first string reads 7&#x27;-3 1/2&quot;, then 25&#x27;-6&quot; between grids 5 and 4, 25&#x27;-6&quot; between 4 and 3, and 25&#x27;-6&quot; between 3 and 2. Below are a longer overall string of 102&#x27;-11 1/8&quot; and strings to the columns and walls." width="860" height="124" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 3.</strong> London Square, sheet A-241, Level 4 plan, dimension strings at grids 5 to 2.</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 4, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a241-right-dimensions.png"><img src="figures/ls-a241-right-dimensions.png" alt="The right-hand dimension strings of the Level 4 plan between grid bubble C and grid bubble B. The grid-to-grid dimension reads 29&#x27;-8&quot;." width="360" height="719" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 4.</strong> London Square, sheet A-241, Level 4 plan, dimension string between grids C and B.</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 5, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a241-core.png"><img src="figures/ls-a241-core.png" alt="The core of the Level 4 plan. The women&#x27;s washroom 403 has two sinks on the left wall, two toilets in stalls and one accessible toilet, with door tag 403. The men&#x27;s washroom 404 has two sinks on the right wall, two urinals and one accessible toilet, with door tag 404. A callout 2 over A-262 circles both washrooms. Below are stair 1 and stair 2 with door tags 4ST2 and 4ST1, the mechanical shaft with door 401, the elevator shaft and electrical room 402 with door 402. On the right, unit 406 and unit 405, window tags W12b, W12a, W22 and W18b, and markers 08 over A-602, 07 over A-602, 01 over A-401, 06 over A-602 and 02 over A-401." width="860" height="735" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 5.</strong> London Square, sheet A-241, Level 4 plan, the washroom core and the east wall.</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 6, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a401-section-1.png"><img src="figures/ls-a401-section-1.png" alt="London Square Building Section 1 at 1/8&quot; = 1&#x27;-0&quot;, right (east) part. General office 401 and 301, general office or retail 208 and general retail 114 are stacked, with part of stair 1 on the left. Level marks on the right: Roof Plan 288&#x27;-6&quot;, Level 4 276&#x27;-2&quot;, Level 3 264&#x27;-2&quot;, Level 2 248&#x27;-2&quot;, Level 1 / P1 236&#x27;-8&quot;. Dimensions between levels read 12&#x27;-4&quot;, 12&#x27;-0&quot;, 16&#x27;-0&quot; and 11&#x27;-6&quot;. Callouts 7 over A-501 and 07 over A-602 sit at the top. The words 828 Kingston Blvd. run up beside the east wall." width="860" height="738" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 6.</strong> London Square, sheet A-401 Building sections, Building Section 1, east part (title moved under the view to fit). Athena Architecture Ltd. (fictional).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 7, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a602-wall-section-07.png"><img src="figures/ls-a602-wall-section-07.png" alt="London Square wall section 07, Wall - EAST - Brick Pier @ 137th St., scale 1/2&quot; = 1&#x27;-0&quot;, from Level 3 up past the roof. Level marks: Roof Plan 288&#x27;-6&quot;, Level 4 276&#x27;-2&quot;, Level 3 264&#x27;-2&quot;. Wall tags W4 near the top and W2 twice lower down. Detail callouts 3 over A-713 SIM., 2 over A-713 and 3 over A-712. Dimensions 12&#x27;-4&quot; and 12&#x27;-0&quot; between levels." width="557" height="998" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 7.</strong> London Square, sheet A-602 Wall sections, wall section 07, top part with its title. Athena Architecture Ltd. (fictional).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 8, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a101-wall-type-w2.png"><img src="figures/ls-a101-wall-type-w2.png" alt="London Square wall type W2, Brick veneer cladding (typical): 3 1/2&quot; brick veneer, 1&quot; air space, 1 1/2&quot; foil face polyisocyanurate insulation (R9 + about R6), tape all seams, 1/2&quot; exterior sheathing (fiberglass faced, typ.), 6&quot; engineered metal studs complete with 6&quot; batt insulation (R20, R16 effective), 6 mil poly vapour barrier, 1/2&quot; gypsum board. R-value column: R25 cold (R31 hot)." width="860" height="212" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 8.</strong> London Square, sheet A-101 "Construction schedule" (a schedule of wall, floor and roof assemblies), wall type W2. Athena Architecture Ltd. (fictional).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 9, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a901-door-schedule-l3-l4.png"><img src="figures/ls-a901-door-schedule-l3-l4.png" alt="The London Square door schedule header and the rows from 3ST2 (Level 3) to 404 (Level 4). Columns: level, mark, location, width, height, hardware type, hardware finish, door type, door material, door finish, frame material, frame finish, fire rating. Level 4 rows: 4ST1 Stair #1 3&#x27;-0&quot; by 7&#x27;-0&quot;, 3A, type A, B, 1.5 HR. 4ST2 Stair #2 3&#x27;-0&quot; by 7&#x27;-0&quot;, 3B, 1.5 HR. 401 Mechanical shaft access 2&#x27;-6&quot; by 7&#x27;-0&quot;, 1C, 1.5 HR. 402 Electrical closet 5&#x27;-0&quot; by 7&#x27;-0&quot;, 1D, 2 x A, no rating. 403 Womens WC 3&#x27;-0&quot; by 7&#x27;-0&quot;, 6B, type A, door type A, PS, PT, PS, PT, no rating. 404 Mens WC 3&#x27;-0&quot; by 7&#x27;-0&quot;, 6B, type A, door type A, PS, PT, PS, PT, no rating." width="860" height="203" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 9.</strong> London Square, sheet A-901 Door schedule, header and the rows from 3ST2 to 404 on Levels 3 and 4 (the rows in between are left out). Athena Architecture Ltd. (fictional).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 10, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-a901-door-type-a-hardware-6b.png"><img src="figures/ls-a901-door-type-a-hardware-6b.png" alt="Left: door type A, a plain single door elevation with WIDTH, HEIGHT and a lever at 3&#x27;-1 1/4&quot;. Right: hardware type 6B, Typical lockset: 1 1/2&quot; pair NRP hinges, lever, lockset, door closer, kickplate and pushplate, floor stop or wall stop." width="860" height="424" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 10.</strong> London Square, sheet A-901 Door schedule, door type A (from Door Types, 1/4" = 1'-0") and hardware type 6B (from Door Hardware Types).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 11, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-p6-washrooms.png"><img src="figures/ls-p6-washrooms.png" alt="The London Square plumbing plan at the washrooms. Women&#x27;s WashRm 403: WB-1 and WB-2 point to the two basins, WC-1 points to two toilets, WC-2 points to one toilet, and a 3&quot; FD floor drain with FD-1. Men&#x27;s WashRm 404: WB-1 and WB-2 point to two basins, U-1 is tagged twice for two urinals, WC-2 points to one toilet, and a 3&quot; FD with FD-1. Rain water leaders 4&quot; RWL, a 6&quot; SAN FA/DN (183 FU), key notes 1 and 2 and wall standpipes WSP 1 and WSP 2 near the stairs." width="860" height="538" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 11.</strong> London Square, sheet P-6 Floor plan Level L3 and L4 office plan - plumbing, the washroom core of the left plan. Oslo Mechanical (fictional).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 12, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-p6-plan-titles.png"><img src="figures/ls-p6-plan-titles.png" alt="Two strips from the London Square P-6 plumbing sheet. Top strip: the left plan, with units 401, 402, 403 and 404, the room tag General Office 401 and a floor elevation of 276.17&#x27;, and under it the view title 2, 5 Level 3, 1/8&quot; = 1&#x27;-0&quot;. Bottom strip: the right plan, with units 301, 302, 303 and 304, the room tag General Office 301 and a floor elevation of 264.17&#x27;, and under it the view title 1, 6 Level 4, 1/8&quot; = 1&#x27;-0&quot;." width="860" height="334" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 12.</strong> London Square, sheet P-6, unit labels and view titles of both plans (strips cut from the bottom of each plan). Oslo Mechanical (fictional).</figcaption></figure>
+
+<figure class="figure-art" tabindex="0" aria-label="Figure 13, scroll sideways on a small screen" style="margin:16px 0"><a href="figures/ls-p1-drains-and-list.png"><img src="figures/ls-p1-drains-and-list.png" alt="Top: the London Square drains and hose bibbs schedule, rows RD-1 and FD-1. FD-1 serves finished areas and public washrooms: epoxy coated cast iron floor drain with anchor flange, reversible membrane clamp with weep holes, 6&quot; dia. adjustable nickel bronze strainer, with three makers&#x27; model numbers. Bottom: the plumbing drawing list with scales: P-1 site plan 1/16&quot;, P-2 to P-7 plans at 1/8&quot;, P-8 details N.T.S., P-9 wet standpipe diagram, water riser diagram and washroom details N.T.S." width="860" height="306" loading="lazy" style="max-width:100%;height:auto;border:1px solid #cfc8c0;background:#fff"></a><figcaption><strong>Figure 13.</strong> London Square, sheet P-1 Site plan - plumbing, drains schedule (top rows) and plumbing drawing list. Oslo Mechanical (fictional).</figcaption></figure>
+
+## Tasks
+
+### Part A: find your sheets (level 2)
+
+**Task 1** (level 2)
+Use Figure 1. Write the sheet number for each thing the crew needs.
+a) The Level 4 floor plan
+b) The building sections
+c) The door schedule
+d) The wall, floor and roof assemblies (careful: look at the name of A-101)
+e) The plumbing plan for Levels 3 and 4
+f) The plumbing washroom details
+g) The electrical floor plan for Levels 3 and 4
+
+**Task 2** (level 2)
+Use Figures 2, 7 and 13.
+a) What is the scale of the Level 4 plan? Of wall section 07?
+b) Which plumbing sheets in Figure 13 are not to scale? What does N.T.S. tell you about measuring them?
+
+### Part B: grids, dimensions and scale (level 2)
+
+**Task 3** (level 2)
+Use Figures 2 and 3.
+a) How far is it from grid 5 to grid 2? Show your adding.
+b) On a full-size print at 1/8" = 1'-0", how long is the 29'-8" bay between grids C and B (Figure 4)? Give your answer to the nearest 1/16".
+
+**Task 4** (level 2)
+A drywall crew is pricing an open office bay. Use Figures 3 and 4. The bay runs from grid 4 to grid 3 and from grid C to grid B.
+a) What is the area of the bay, measured grid to grid, in square feet?
+b) Convert it to square metres. (1 foot = 304.8 mm.) Round to one decimal.
+
+### Part C: follow the marks (level 2)
+
+**Task 5** (level 2)
+Use Figures 5 and 6.
+a) On the plan, what does the marker "01 over A-401" near grid D tell you?
+b) On Building Section 1, what is the elevation of Level 4? Of Level 3?
+c) What is the floor-to-floor height from Level 3 to Level 4? Check it by subtracting the two elevations.
+d) What is the floor-to-floor height from Level 4 to the roof?
+
+**Task 6** (level 2)
+Use Figures 5, 6, 7 and 8. You are a framer working on the east wall.
+a) On Building Section 1, which callout sends you to a wall section? On which sheet?
+b) What is the full title and scale of that wall section?
+c) Which wall type tag is on the wall between Level 3 and Level 4?
+d) List the layers of that wall type from outside to inside. What is its total thickness, not counting the poly?
+
+### Part D: doors and fixtures (level 2)
+
+**Task 7** (level 2)
+Use Figures 5, 9 and 10. You are hanging door 403.
+a) What room is door 403, and what size is it? Give the size in millimetres too (1 inch = 25.4 mm).
+b) What hardware type, door type and fire rating does it have?
+c) List the hardware in that hardware type.
+d) Door 402 is listed with door type "2 x A". What do you think that means?
+
+**Task 8** (level 2)
+Use Figures 5 and 11. You are a plumber taking off fixtures for Level 4.
+a) Count the toilets, urinals and basins in the women's washroom 403 and in the men's washroom 404. Fill in the table.
+
+| Room | Toilets (WC) | Urinals (U) | Basins (WB) | Floor drains |
+|---|---|---|---|---|
+| 403 Women's | | | | |
+| 404 Men's | | | | |
+| Total | | | | |
+
+b) Does the architectural plan (Figure 5) show the same fixtures as the plumbing plan (Figure 11)?
+c) What kind of floor drain is FD-1, and what size is its strainer? (Figure 13)
+
+### Part E: check the set (level 3)
+
+**Task 9** (level 3)
+Use Figures 2, 6 and 12.
+a) The left plan on P-6 is titled "Level 3". Which unit numbers and which floor elevation does it show?
+b) Which level does that floor elevation belong to on Building Section 1? (276.17 feet = 276'-2".)
+c) What is wrong on P-6, and why does it matter to a plumber?
+d) Write a short request for information (RFI) to the mechanical engineer. Say what you found, on which sheets, and what you need.
+
+_______________________________________________
+
+_______________________________________________
+
+_______________________________________________
+
+**Task 10** (level 3)
+Use Figures 2, 5 and 7.
+a) Wall section 07 is titled "Wall - EAST - Brick Pier @ 137th St." What address does the plan show beside the east side of the building?
+b) How do you still know which wall section 07 is? Name the mark on the plan that points to it.
+c) What would you do about the street name?
+
+_______________________________________________
+
+_______________________________________________
+
+**Task 11** (level 3)
+Put it all together. Write a short job card for the foreman for the women's washroom 403 on Level 4. Use at least five sheets. Include:
+- the door: mark, size, door type, hardware type
+- the fixtures and floor drain, with their tags
+- the floor-to-floor height of Level 4 (to the roof)
+- the sheets you used
+- one thing you would ask about before starting
+
+_______________________________________________
+
+_______________________________________________
+
+_______________________________________________
+
+_______________________________________________
+
+## Check yourself
+
+1. Where do you start when you get a new drawing set?
+2. A plan shows "07 over A-602". What do you do next?
+3. Why do you add written dimensions instead of measuring the print?
+4. Two trades' sheets show different things for the same room. What do you do?
+5. What makes an RFI clear enough that the designer can answer it fast?

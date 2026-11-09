@@ -1,12 +1,12 @@
 # Skim, scan and read closely
 
-Session 1 of 10 in the Reading lessons · 60 minutes
+Session 1 of 18 in the Reading lessons · 60 minutes
 
 ## Opening (5 min)
 
 Welcome learners. Ask: "When was the last time someone handed you a sheet at work and said, 'Read this'? Did you read every word?" Take two or three answers. Tell a short story: a new hire is given a ten-page site safety package on day one and told to sign it before lunch. Most people flip through it. The skill today is how to flip through on purpose, so that the one rule that matters to you is not missed.
 
-This is session 1 of 10 in the Reading lessons. It runs 60 minutes.
+This is session 1 of 18 in the Reading lessons. It runs 60 minutes.
 
 ## Objective (2 min)
 

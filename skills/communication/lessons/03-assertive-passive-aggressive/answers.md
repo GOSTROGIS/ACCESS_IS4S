@@ -45,6 +45,18 @@ Goals vary. A good goal names what the learner will do, with whom and when. Exam
 
 A goal such as "be more confident" is not specific enough. Ask the learner: "What will you do, with whom and when?"
 
+## Task 6 (level 2) Place it on the line
+
+1. P 2. Ag 3. As 4. P (hinting)
+
+## Task 7 (level 3) You are the lead hand
+
+a) Sample: "When you grind on this side, the sparks land by the fuel cans. That could start a fire. Can you turn the work around or put up a screen?"
+
+b) Sample: "I respect the 30 years. This is about the fuel cans, not your skill. I need the sparks pointed away from them." A good answer stays calm, does not argue about experience and repeats the request.
+
+c) This is now a safety issue. Stop the work if you can do it safely, and report it to the supervisor right away. A good answer moves from asking to reporting.
+
 ## Check yourself
 
 1. Both say what is on the person's mind. Aggressive aims to hurt or put down. Assertive is clear and calm with no intention to hurt.

@@ -57,6 +57,20 @@ Sample answers.
 
 A good answer asks for information and does not suggest the other person made a mistake.
 
+## Task 7 (level 2) Fill the funnel
+
+Open: any three questions starting with what, where, when, who, why or how, such as "What do you need me to do first?", "Where do we keep the threading machine?", "How does the crew sign out tools?"
+
+Closed: any two that confirm one fact, such as "So I start in the mechanical room?" or "Lunch is at 11:30?"
+
+## Task 8 (level 3) You are the lead hand
+
+a) Sample: "What kind of work have you done before?", "What tools are you comfortable with?", "What would you like me to show you first?"
+
+b) Sample: "Do you have your boots, hard hat and glasses with you?" and "Can you meet me at the east gate at 7:00?"
+
+c) Do not take "yes" as understanding. Ask Tavi to say back the plan, or show you, in their own words. Give one task at a time and check after it. Keep the tone friendly. Looking down can be respect or nerves, so do not read it as a "no."
+
 ## Check yourself
 
 1. A closed question gets a short answer, often yes or no. An open question gets an explanation and usually starts with what, where, when, who, why or how.

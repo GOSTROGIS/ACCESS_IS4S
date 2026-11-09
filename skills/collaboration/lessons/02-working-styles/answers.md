@@ -52,6 +52,16 @@ Electrician: "By 3. I'll text you if anything changes."
 
 **Habits to add** (any two): a quick check against the drawing before cutting, one person checks the work before the next step, a 2-minute crew check-in at the start, the lead asks each person by name for their view, someone checks on the newest crew member.
 
+## Task 6 (level 2)
+
+Sample: "Mo, we're behind, so I need this tacked by 10. The tack locations are marked on the drawing. Check the fit-up once before you tack, and tell me if anything is off." It gives a fact (time), what is needed and a moment to check. Any answer that gives facts, time to check and a clear ask is correct.
+
+## Task 7 (level 3)
+
+**a)** Open, if it is explained. A strong answer puts Rose on Job 1 (accuracy, checking) and Kai on Job 2 (speed, decisions). Sam or Jo can go with either. One good pairing: Rose and Sam on Job 1 (careful and patient), Kai and Jo on Job 2 (fast, and Jo keeps the driver and crew talking).
+**b)** Sample for Rose and Sam: "Here's the drawing and the bolt list. Take the time you need to check each bolt against the gridlines. Tell me by 9:00 if the drawing doesn't match the site." It gives facts and time to check.
+**c)** Risk: rushing leads to skipped steps, such as a load moved without a spotter or a strap left loose. A good answer names one action, such as "I'll stand with them for the first lift and remind Kai that we stop if anything looks unsafe."
+
 ## Check yourself 1
 
 No. It was written for this lesson as a way to talk about how you like to work. It is not a scientific test and does not measure personality. Everyone uses all four styles, and people change with the situation.

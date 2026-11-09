@@ -48,6 +48,18 @@ c) "The north wall is sheeted and I've cleaned up the offcuts. Should I start th
 - the partner says the steps back
 - the coach changes something after watching, such as slowing down, showing instead of telling, or splitting a step in two
 
+## Task 6 (level 2)
+
+**a)** "Thanks for checking them."
+**b)** Sample: "Can you show me where the undercut is, and what I should change, the angle or the travel speed?"
+**c)** "I redid them. Is this better?"
+
+## Task 7 (level 3)
+
+**a)** Sample: 1. I show one cut while Noor watches. 2. Noor says the steps back. 3. Noor marks and cuts one while I watch. 4. I check it against the tape and we talk about what to change. A good plan has show, say back, try while watched and check.
+**b)** Sample: "This one is 3 mm long. Your line is right, so the blade is cutting on the wrong side of it. Next one, keep the blade on the waste side of the line." It names the fact, the likely cause and one thing to do.
+**c)** Sample: Noor cuts three pieces in a row to length without help, and can explain the steps to someone else.
+
 ## Check yourself 1
 
 About 80%. The other 20% is in-class technical training.

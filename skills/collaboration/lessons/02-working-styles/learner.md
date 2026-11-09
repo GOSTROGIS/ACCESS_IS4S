@@ -1,8 +1,8 @@
 ---
 title: Working styles and style-stepping
 summary: Talk about how you like to work, notice how others like to work, and adjust your approach so the job goes smoothly.
-level: 1-2
-time: 90 min
+level: 1-3
+time: 100 min
 components: Work well with other people; Value diversity and inclusivity of others
 rebuilds: A - Working with Others/personality styles instructions ik.docx; A - Working with Others/perssonality types lesson ik.docx
 ---
@@ -28,6 +28,35 @@ Put them together and you get four working styles:
 |---|---|---|
 | **Quick** | Get it done | Get people going |
 | **Steady** | Get it right | Keep the crew together |
+
+Here is the same grid as a picture. Pace runs down the side. Focus runs across the top.
+
+<div class="figure-art">
+<svg viewBox="0 0 640 460" width="100%" role="img" aria-labelledby="c02-grid-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="c02-grid-title">Grid of four working styles. Quick and task first: Get it done. Quick and people first: Get people going. Steady and task first: Get it right. Steady and people first: Keep the crew together.</title>
+<defs><marker id="c02-grid-ah" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker></defs>
+<rect x="0" y="0" width="640" height="460" fill="#ffffff"/>
+<text x="370" y="30" font-size="18" text-anchor="middle" font-weight="bold" fill="#6b6b6b">FOCUS</text>
+<text x="28" y="260" font-size="18" font-weight="bold" fill="#6b6b6b" text-anchor="middle" transform="rotate(-90 28 260)">PACE</text>
+<text x="245" y="58" font-size="18" text-anchor="middle" font-weight="bold" fill="#1f3a5f">Task first</text>
+<text x="495" y="58" font-size="18" text-anchor="middle" font-weight="bold" fill="#1f3a5f">People first</text>
+<text x="108" y="171" font-size="18" text-anchor="end" font-weight="bold" fill="#1f3a5f">Quick</text>
+<text x="108" y="361" font-size="18" text-anchor="end" font-weight="bold" fill="#1f3a5f">Steady</text>
+<rect x="124" y="74" width="242" height="182" rx="8" fill="#eaf1f8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="245" y="160.05" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Get it done</text>
+<text x="245" y="182.55" font-size="18" text-anchor="middle" font-weight="normal" fill="#2b2b2b">speed, decisions</text>
+<rect x="374" y="74" width="242" height="182" rx="8" fill="#e6f3ec" stroke="#1f3a5f" stroke-width="2"/>
+<text x="495" y="160.05" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Get people going</text>
+<text x="495" y="182.55" font-size="18" text-anchor="middle" font-weight="normal" fill="#2b2b2b">energy, ideas</text>
+<rect x="124" y="264" width="242" height="182" rx="8" fill="#fdf1d8" stroke="#1f3a5f" stroke-width="2"/>
+<text x="245" y="350.05" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Get it right</text>
+<text x="245" y="372.55" font-size="18" text-anchor="middle" font-weight="normal" fill="#2b2b2b">accuracy, checking</text>
+<rect x="374" y="264" width="242" height="182" rx="8" fill="#fbe6e4" stroke="#1f3a5f" stroke-width="2"/>
+<text x="495" y="338.8" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">Keep the crew</text>
+<text x="495" y="361.3" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b2b2b">together</text>
+<text x="495" y="383.8" font-size="18" text-anchor="middle" font-weight="normal" fill="#2b2b2b">patience, listening</text>
+</svg>
+</div>
 
 **What each style brings, and what can go wrong when it is overused:**
 
@@ -120,6 +149,35 @@ One person plays the customer or superintendent and picks a style card. The othe
 
 **Task 5** (level 2)
 A crew of four are all *get it done* people. Name two things that could go wrong. Name two habits the crew could add to cover the gaps.
+
+______________________________________________
+
+______________________________________________
+
+**Task 6** (level 2) **Style-step a message.**
+At Tidal Steel Fab (a fictional shop), Lee the lead hand is a "Get it done" person. Mo the fitter is a "Get it right" person. Lee says to Mo:
+
+> "Just tack it. We're late. Go."
+
+Rewrite Lee's message so it works for Mo. Use the "Working with this style" column.
+
+______________________________________________
+
+______________________________________________
+
+**Task 7** (level 3) **You are the lead hand.**
+Two jobs must start at 7:00:
+
+- **Job 1:** lay out anchor bolt locations from the drawing. Every bolt must be within the tolerance on the drawing.
+- **Job 2:** unload a steel delivery fast. The truck driver has another drop at 8:00.
+
+Your crew: Kai (Get it done), Rose (Get it right), Sam (Keep the crew together), and Jo (Get people going).
+
+a) Put two people on each job. Explain each choice.
+b) Write one sentence you would say to brief the Job 1 pair. Style-step it for them.
+c) What risk do you watch for on Job 2, and what will you do about it?
+
+______________________________________________
 
 ______________________________________________
 

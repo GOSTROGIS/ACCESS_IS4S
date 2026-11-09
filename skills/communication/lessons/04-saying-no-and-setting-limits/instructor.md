@@ -1,8 +1,10 @@
 # Saying no and setting limits at work
 
+**Session:** Communication lesson 4 of 13.
+
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 4 of the Communication series. The session runs 60 minutes. Ask who tried one of their assertiveness goals and how it went.
+Welcome learners to session 4 of the Communication series. The session runs 70 minutes. Ask who tried one of their assertiveness goals and how it went.
 
 Hook: "Put up your hand if you have ever said yes to something and regretted it before you finished the sentence." Most hands go up. "Today we practise the other answer."
 
@@ -31,9 +33,10 @@ By the end of the session, learners will be able to:
 | 2.4 | Task 1, round 3: assertive no, with steady voice and posture. Ask: "Would you do this for real? If not, what stops you?" Run Task 5 here. Flipchart blocks and realistic alternatives. Ask two volunteers to show their round 3, and give positive feedback first. | Role play round 3, discuss blocks, complete Task 5. | Flipchart, markers | 9 min |
 | 3.1 | Teach "keep it short" and "offer an alternative." Read the worked example. Run Tasks 2 and 3. | Rewrite the over-explained answer, write three refusals. | Learner page | 8 min |
 | 3.2 | Teach refusing unsafe work from the learner page. Show the WorkSafeBC "Refusing unsafe work" page on screen if available. Run Task 4 and take answers. | Read the three steps, answer Task 4, practise saying the refusal out loud to a partner. | Learner page, screen | 10 min |
+| 3.3 | Show the flow chart. Set Task 6. Then set Task 7 and take two refusal lines out loud | Order the steps, write and say a refusal | Learner page | 10 min |
 | 4.1 | Post-assessment questions. | Answer. | None | 5 min |
 | 4.2 | Summary and action plan. | Choose one situation to say no assertively before next session. | None | 3 min |
-| | | | **Total** | **60 min** |
+| | | | **Total** | **70 min** |
 
 Notes for the instructor:
 

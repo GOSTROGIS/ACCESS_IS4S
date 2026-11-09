@@ -1,6 +1,6 @@
 # Spotting a better way on the job site
 
-Session 2 of 8 in the Creativity and Innovation lessons. Total length 60 minutes.
+Session 2 of 12 in the Creativity and Innovation lessons. Total length 60 minutes.
 
 ## Opening (5 min)
 

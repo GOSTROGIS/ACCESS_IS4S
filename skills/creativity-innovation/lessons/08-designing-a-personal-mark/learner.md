@@ -32,6 +32,100 @@ So in this lesson:
 - **works in one colour**: so it can be stamped, engraved or photocopied
 - **original**: your own drawing, not copied from a company logo, clip art or someone else's culture
 
+<div class="figure-art">
+<svg viewBox="0 0 720 400" width="100%" role="img" aria-labelledby="cr08-f1-title" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="cr08-f1-title">Two marks drawn at three sizes. The detailed mark with many thin lines becomes a smudge when small. The simple three-line mark on a level line stays clear at about 2 cm.</title>
+<defs><marker id="cr08-f1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222222"/></marker><marker id="cr08-f1-ds" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="720" height="400" fill="#ffffff"/>
+<text x="360.0" y="28.0" font-size="20" text-anchor="middle" font-weight="bold" fill="#222222">Test a mark big and small</text>
+<text x="200.0" y="70.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#6b6b6b">large</text>
+<text x="400.0" y="70.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#6b6b6b">medium</text>
+<text x="600.0" y="70.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#6b6b6b">about 2 cm</text>
+<text x="20.0" y="160.0" font-size="16" text-anchor="start" font-weight="bold" fill="#b3261e">Detailed</text>
+<text x="20.0" y="300.0" font-size="16" text-anchor="start" font-weight="bold" fill="#2e6b34">Simple</text>
+<line x1="200.0" y1="150.0" x2="224.0" y2="108.4" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="230.2" y2="112.7" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="235.7" y2="117.9" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="240.3" y2="123.9" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="243.9" y2="130.5" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="246.4" y2="137.6" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="247.7" y2="145.0" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="247.9" y2="152.5" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="247.0" y2="160.0" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="244.8" y2="167.2" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="241.6" y2="174.0" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="237.3" y2="180.2" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="232.1" y2="185.7" stroke="#222222" stroke-width="1.6"/>
+<line x1="200.0" y1="150.0" x2="226.1" y2="190.3" stroke="#222222" stroke-width="1.6"/>
+<circle cx="216.0" cy="114.8" r="9.6" fill="none" stroke="#222222" stroke-width="1.6"/>
+<line x1="155.2" y1="198.0" x2="164.8" y2="178.8" stroke="#222222" stroke-width="1.2800000000000002"/>
+<line x1="161.6" y1="198.0" x2="171.2" y2="178.8" stroke="#222222" stroke-width="1.2800000000000002"/>
+<line x1="168.0" y1="198.0" x2="177.6" y2="178.8" stroke="#222222" stroke-width="1.2800000000000002"/>
+<line x1="174.4" y1="198.0" x2="184.0" y2="178.8" stroke="#222222" stroke-width="1.2800000000000002"/>
+<line x1="180.8" y1="198.0" x2="190.4" y2="178.8" stroke="#222222" stroke-width="1.2800000000000002"/>
+<line x1="187.2" y1="198.0" x2="196.8" y2="178.8" stroke="#222222" stroke-width="1.2800000000000002"/>
+<circle cx="200.0" cy="150.0" r="54.4" fill="none" stroke="#222222" stroke-width="1.6" stroke-dasharray="2 2"/>
+<line x1="400.0" y1="150.0" x2="415.0" y2="124.0" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="418.9" y2="126.7" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="422.3" y2="129.9" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="425.2" y2="133.7" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="427.4" y2="137.8" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="429.0" y2="142.2" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="429.8" y2="146.9" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="430.0" y2="151.6" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="429.3" y2="156.2" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="428.0" y2="160.8" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="426.0" y2="165.0" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="423.3" y2="168.9" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="420.1" y2="172.3" stroke="#222222" stroke-width="1.0"/>
+<line x1="400.0" y1="150.0" x2="416.3" y2="175.2" stroke="#222222" stroke-width="1.0"/>
+<circle cx="410.0" cy="128.0" r="6.0" fill="none" stroke="#222222" stroke-width="1.0"/>
+<line x1="372.0" y1="180.0" x2="378.0" y2="168.0" stroke="#222222" stroke-width="0.8"/>
+<line x1="376.0" y1="180.0" x2="382.0" y2="168.0" stroke="#222222" stroke-width="0.8"/>
+<line x1="380.0" y1="180.0" x2="386.0" y2="168.0" stroke="#222222" stroke-width="0.8"/>
+<line x1="384.0" y1="180.0" x2="390.0" y2="168.0" stroke="#222222" stroke-width="0.8"/>
+<line x1="388.0" y1="180.0" x2="394.0" y2="168.0" stroke="#222222" stroke-width="0.8"/>
+<line x1="392.0" y1="180.0" x2="398.0" y2="168.0" stroke="#222222" stroke-width="0.8"/>
+<circle cx="400.0" cy="150.0" r="34.0" fill="none" stroke="#222222" stroke-width="1.0" stroke-dasharray="2 2"/>
+<line x1="600.0" y1="150.0" x2="606.0" y2="139.6" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="607.6" y2="140.7" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="608.9" y2="142.0" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="610.1" y2="143.5" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="611.0" y2="145.1" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="611.6" y2="146.9" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="611.9" y2="148.7" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="612.0" y2="150.6" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="611.7" y2="152.5" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="611.2" y2="154.3" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="610.4" y2="156.0" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="609.3" y2="157.6" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="608.0" y2="158.9" stroke="#222222" stroke-width="0.6"/>
+<line x1="600.0" y1="150.0" x2="606.5" y2="160.1" stroke="#222222" stroke-width="0.6"/>
+<circle cx="604.0" cy="141.2" r="2.4" fill="none" stroke="#222222" stroke-width="0.6"/>
+<line x1="588.8" y1="162.0" x2="591.2" y2="157.2" stroke="#222222" stroke-width="0.5"/>
+<line x1="590.4" y1="162.0" x2="592.8" y2="157.2" stroke="#222222" stroke-width="0.5"/>
+<line x1="592.0" y1="162.0" x2="594.4" y2="157.2" stroke="#222222" stroke-width="0.5"/>
+<line x1="593.6" y1="162.0" x2="596.0" y2="157.2" stroke="#222222" stroke-width="0.5"/>
+<line x1="595.2" y1="162.0" x2="597.6" y2="157.2" stroke="#222222" stroke-width="0.5"/>
+<line x1="596.8" y1="162.0" x2="599.2" y2="157.2" stroke="#222222" stroke-width="0.5"/>
+<circle cx="600.0" cy="150.0" r="13.6" fill="none" stroke="#222222" stroke-width="0.6" stroke-dasharray="2 2"/>
+<line x1="158.0" y1="332.0" x2="242.0" y2="332.0" stroke="#222222" stroke-width="7.0"/>
+<line x1="200.0" y1="332.0" x2="200.0" y2="276.0" stroke="#222222" stroke-width="7.0"/>
+<line x1="200.0" y1="276.0" x2="222.4" y2="248.0" stroke="#222222" stroke-width="7.0"/>
+<line x1="222.4" y1="248.0" x2="242.0" y2="253.6" stroke="#222222" stroke-width="7.0"/>
+<line x1="373.0" y1="317.0" x2="427.0" y2="317.0" stroke="#222222" stroke-width="4.5"/>
+<line x1="400.0" y1="317.0" x2="400.0" y2="281.0" stroke="#222222" stroke-width="4.5"/>
+<line x1="400.0" y1="281.0" x2="414.4" y2="263.0" stroke="#222222" stroke-width="4.5"/>
+<line x1="414.4" y1="263.0" x2="427.0" y2="266.6" stroke="#222222" stroke-width="4.5"/>
+<line x1="588.0" y1="302.0" x2="612.0" y2="302.0" stroke="#222222" stroke-width="2.0"/>
+<line x1="600.0" y1="302.0" x2="600.0" y2="286.0" stroke="#222222" stroke-width="2.0"/>
+<line x1="600.0" y1="286.0" x2="606.4" y2="278.0" stroke="#222222" stroke-width="2.0"/>
+<line x1="606.4" y1="278.0" x2="612.0" y2="279.6" stroke="#222222" stroke-width="2.0"/>
+<line x1="20.0" y1="220.0" x2="700.0" y2="220.0" stroke="#bdb6aa" stroke-width="1"/>
+<text x="360.0" y="385.0" font-size="15" text-anchor="middle" font-weight="normal" fill="#6b6b6b">At 2 cm the detailed mark turns to a smudge. The simple mark still reads.</text>
+</svg>
+</div>
+
 **Research what you chose.** If your mark comes from an animal or plant, find out about it from a reliable source, the way the original ACCESS assignment asked:
 
 - its attributes (what it looks like and does)

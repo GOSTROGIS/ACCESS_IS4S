@@ -1,12 +1,12 @@
 # Looking after yourself with wellness and support in BC
 
-Adaptability lesson 8 of 8. Total time: 90 minutes.
+Adaptability lesson 8 of 12. Total time: 90 minutes.
 
 ## Opening
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Share how you look after yourself through hard stretches of work, such as a long project, shift work or time away at camp. Keep it practical. Ask: "What helps you get through a tough week?" Explain that this is the last of eight Adaptability lessons, and that the session is 90 minutes.
+Welcome learners. Share how you look after yourself through hard stretches of work, such as a long project, shift work or time away at camp. Keep it practical. Ask: "What helps you get through a tough week?" Explain that this is Adaptability lesson 8 of 12, and that the session is 90 minutes.
 
 Before the session, check whether an Elder or ACCESS cultural support person can join for step 2.3. If one can, give them that time and follow their lead.
 
@@ -49,6 +49,8 @@ Keep the papers. Learners compare them with their answers at the post-assessment
 | 4.2 | Summarize. | Name one thing they will do for themselves this week. | | 3 min |
 
 Total: 5 + 5 + 10 + 10 + 15 + 15 + 10 + 12 + 5 + 3 = 90 minutes.
+
+The learner page also has a figure of the three kinds of support for Task 4, and a worked example of a 168-hour week plan with one boundary said out loud. Use the worked example before Task 3. These fit inside the existing step times.
 
 ### Notes for the instructor
 

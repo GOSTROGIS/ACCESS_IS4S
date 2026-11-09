@@ -1,8 +1,10 @@
 # Phone calls, voicemail and video calls at work
 
+**Session:** Communication lesson 7 of 13.
+
 ## Opening (5 min, step 1.1)
 
-Welcome learners to session 7 of the Communication series. The session runs 75 minutes. Ask who checked a cue out loud since last session.
+Welcome learners to session 7 of the Communication series. The session runs 85 minutes. Ask who checked a cue out loud since last session.
 
 Hook: play, or read aloud, two voicemails you write yourself in advance: one rambling with the phone number said once, fast, in the middle, and one clear. Ask: "Which one would you call back? Can you write down the number from the first one?" Most cannot.
 
@@ -31,9 +33,10 @@ By the end of the session, learners will be able to:
 | 2.4 | Task 4 role play in pairs. Remind learners to follow their own employer's rules for calling in when they have a job. | Make the call-in, switch. | Learner page | 7 min |
 | 2.5 | Teach video calls, group chats and choosing the mode. If possible, demonstrate muting, captions and switching cameras on a video app the group uses, using that app's official help page if needed. Run Task 5. | Watch, ask questions, choose a mode for five situations. | Screen or phone, learner page | 12 min |
 | 2.6 | Teach the working alone check-in points from section 4.21. Make clear that the procedure card in Task 6 is fictional and that real intervals are set by each employer with the worker and the joint committee or worker representative. Run Task 6. | Role play the check-in, answer the question. | Learner page | 10 min |
+| 2.7 | Show the mode chart. Set Task 7. Then set Task 8 and compare the modes groups chose | Choose modes, write the superintendent message | Learner page | 10 min |
 | 4.1 | Post-assessment. | Leave a 20-second voicemail out loud for a scenario the instructor gives, then answer the questions. | None | 5 min |
 | 4.2 | Summary and action plan. | Record a clear voicemail greeting on their own phone, or make one work-style call, before next session. | None | 3 min |
-| | | | **Total** | **75 min** |
+| | | | **Total** | **85 min** |
 
 ### Caller script for Task 2
 
