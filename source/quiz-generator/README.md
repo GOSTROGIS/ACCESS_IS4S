@@ -26,3 +26,9 @@ python source/quiz-generator/build-pdf-resources.py
 ```
 
 The resource script needs DejaVu Sans regular and bold, either in the system font directory or supplied with `--font-directory`.
+
+## Jeopardy player counts
+
+The shared game supports solo play and 2–16 players or teams, including the Numeracy board. Existing 1–4-team round codes and saved rounds remain compatible.
+
+Run `node source/quiz-generator/test-players.cjs` for player-count, round-code and setup regressions. Add `--browser` to check all counts through the setup controls, URL parameters, saved-round reload, replay, turn wrapping and mobile layout. Browser checks require Playwright and Chromium (`/usr/bin/chromium`, or set `CHROMIUM_PATH`).

@@ -51,10 +51,12 @@
     s.eventsOff = EVENT_IDS.filter((id, i) => bit(14 + i));
     return normalizeSettings(s);
   }
+  const MAX_TEAMS = 16;
+  const validTeamCount = n => Number.isInteger(n) && n >= 1 && n <= MAX_TEAMS;
   const boardKey = id => String(id).toUpperCase().replace(/[^A-Z0-9]/g, '');
   function encodeCode(boardId, teams, settings, seed) { return 'J2-' + boardKey(boardId) + '-T' + teams + '-' + packSettings(settings) + '-' + String(seed).toUpperCase(); }
   function decodeCode(code) {
-    const m = String(code || '').trim().toUpperCase().match(/^J2-([A-Z0-9]{2,40})-T([1-4])-([0-9A-Z]{1,8})-([0-9A-Z]{1,8})$/);
+    const m = String(code || '').trim().toUpperCase().match(/^J2-([A-Z0-9]{2,40})-T([1-9]|1[0-6])-([0-9A-Z]{1,8})-([0-9A-Z]{1,8})$/);
     if (!m) throw new Error('Use a full round code, such as J2-W03L01-T2-3DZ-ABC123.');
     return { key: m[1], teams: Number(m[2]), settings: unpackSettings(m[3]), seed: m[4] };
   }
@@ -249,7 +251,7 @@
     return { ok: board.questions.length > 0 && thin.length < board.categories.length - 2, problems, thin, board };
   }
 
-  const api = { hash, stream, DEFAULTS, FLAG_KEYS, NUMBER_KEYS, normalizeSettings, packSettings, unpackSettings, boardKey, encodeCode, decodeCode,
+  const api = { MAX_TEAMS, validTeamCount, hash, stream, DEFAULTS, FLAG_KEYS, NUMBER_KEYS, normalizeSettings, packSettings, unpackSettings, boardKey, encodeCode, decodeCode,
     boardCategories, boardRows, makeBoard, assignModifiers, eventDeck, rollEvent, eventRandom, pickFinal, pickTiebreak, pickStandDown, wagerLimits, finalWagerMax,
     parseNumber, grade, mentionsUnit, closest, ranking, validateBoard };
   if (node) module.exports = api;

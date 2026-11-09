@@ -94,7 +94,7 @@
   /* v1 rounds keep their questions and answers. They have no hidden tiles or events. */
   function migrateV1(id, r) {
     const lec = data.lectures.find(l => l.id === id);
-    if (!lec || !r || !Array.isArray(r.tiles) || !r.results || ![1, 2, 3, 4].includes(r.teams)) return null;
+    if (!lec || !r || !Array.isArray(r.tiles) || !r.results || !engine.validTeamCount(r.teams)) return null;
     const settings = engine.normalizeSettings({ secret: false, pitfalls: false, events: false, final: false });
     const scores = Array(r.teams).fill(0);
     const tiles = r.tiles.map(t => {
@@ -133,7 +133,7 @@
   let fromUrl = {};
   function currentSettings() { return engine.normalizeSettings(Object.assign({}, prefs.settings, fromUrl)); }
   if (params.has('sounds')) prefs.effects = !['0', 'false', 'off'].includes(params.get('sounds'));
-  if (params.has('teams')) { const t = Number(params.get('teams')); if ([1, 2, 3, 4].includes(t)) $('team-count').value = String(t); }
+  if (params.has('teams')) { const t = Number(params.get('teams')); if (engine.validTeamCount(t)) $('team-count').value = String(t); }
 
   /* ---------- round state ---------- */
   let board = data.lectures.find(l => l.id === params.get('lecture')) || data.lectures.find(l => l.id === prefs.board) || data.lectures[0];
@@ -242,7 +242,7 @@
   function loadRound() {
     round = null; undo = []; play = null;
     const c = readStore(ROUND_KEY + board.id);
-    if (c && c.v === 2 && Array.isArray(c.tiles) && Array.isArray(c.scores) && [1, 2, 3, 4].includes(c.teams) && c.tiles.every(t => question(t.questionId))) { round = c; round.settings = engine.normalizeSettings(round.settings); round.log = round.log || []; }
+    if (c && c.v === 2 && Array.isArray(c.tiles) && Array.isArray(c.scores) && engine.validTeamCount(c.teams) && c.tiles.every(t => question(t.questionId))) { round = c; round.settings = engine.normalizeSettings(round.settings); round.log = round.log || []; }
     if (round) $('team-count').value = String(round.teams);
   }
 
@@ -346,7 +346,8 @@
 
   /* ---------- start a round ---------- */
   function startRound(codeText) {
-    let teams = Math.min(4, Math.max(1, Number($('team-count').value) || 1)), settings = currentSettings(), seed = pendingSeed;
+    const selectedTeams = Number($('team-count').value);
+    let teams = engine.validTeamCount(selectedTeams) ? selectedTeams : 1, settings = currentSettings(), seed = pendingSeed;
     if (codeText) {
       try {
         const c = engine.decodeCode(codeText);
