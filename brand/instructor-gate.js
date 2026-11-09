@@ -18,7 +18,7 @@
   if (window.ACCESSInstructorGate) return;
 
   var CODE_LENGTH = 3;
-  var CODE_HASH = 'e6fff51f292a88024eb78275a8ea313dc1cccff8e23b72ae8bfa539e51ba014f';
+  var CODE_HASH = '9cb2d3a776c2071b1573d2436429f60fc315034a2cf8e268d0171c58fcd4e490';
   var PREFIX = 'access-is4s-instructor:';
   var STORAGE_KEY = 'access-is4s-instructor-unlocked';
   var doc = document;
