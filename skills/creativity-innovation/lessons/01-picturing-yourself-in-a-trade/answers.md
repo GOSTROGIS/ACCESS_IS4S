@@ -39,7 +39,7 @@ Open task. Good scribe notes:
 
 Answers will vary. A good response:
 
-- picks an idea the learner had not considered before
+- picks an idea from the scribe notes or their Task 1 list; a familiar idea needing further investigation is also suitable
 - asks three questions that would really help decide fit, such as what a normal day looks like, whether the work is shift work or travel, how long the apprenticeship takes, what the physical demands are
 - names a real place to look: a WorkBC career profile, a SkilledTradesBC trade profile, an instructor, or a person working in the trade
 

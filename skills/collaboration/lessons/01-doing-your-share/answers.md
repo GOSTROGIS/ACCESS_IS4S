@@ -26,11 +26,11 @@
 **What a good text covers**
 
 - what is late: the cut list
-- when it will be done: about 12:30, or after lunch
-- what the crew can do meanwhile: a part that is ready, or a suggestion for Priya and Tomas
+- when it will be done: about 13:00, allowing for the 12:00–12:30 lunch break
+- what the crew can do meanwhile: ask Dana to confirm another suitable task; do not claim materials are ready without checking
 - it is sent now, at 11:15, not at 12:00
 
-**Example:** "Dana, cut list won't be done by 12. Need about 30 more min, so done by 12:30. Studs for the north wall are cut and stacked by the saw, Priya can start on those."
+**Example:** "Dana, the cut list will be late. I need 30 minutes beyond noon plus our 12:00–12:30 lunch break, so I expect to finish at 13:00. Can you confirm another suitable task for Priya and Tomas while they wait?"
 
 ## Task 4 (level 2)
 

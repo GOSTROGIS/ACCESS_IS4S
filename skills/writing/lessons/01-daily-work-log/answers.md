@@ -22,8 +22,8 @@ Steps: find the time and place in the brackets, put them first, then say what wa
 
 Rewrites of the opinion lines:
 
-- Line 2: The line gives no facts about the night crew. A factual version describes what was seen, for example: "6:50 am. Offcuts and empty boxes left on the floor in Room 112." If you did not see anything specific, leave it out.
-- Line 4: "Probably going to break down" is a guess. Use the fact from line 5 instead: "Forklift reverse alarm sounded twice, then stopped working at 2:20 pm. Reported to foreman."
+- Line 2: The line gives no observable facts about the night crew. Find out what was actually seen, where and when, and who observed it before writing a factual entry. Do not invent an observation.
+- Line 4: "Probably going to break down" is a guess. Use the fact from line 5 instead: "Forklift reverse alarm sounded twice, then stopped working at 2:20 pm."
 
 Steps: ask "Did someone see, hear, measure or do this?" If yes, it is a fact. Words like "lazy", "probably", "never" and "always" usually signal opinion.
 

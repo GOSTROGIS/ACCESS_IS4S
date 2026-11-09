@@ -87,7 +87,7 @@ Dale had never thought about mill work. He says the conveyor idea surprised him.
 
 **Task 4** (level 1) When you are the scribe, write each idea in the speaker's own words, then hand the notes to the person in the chair.
 
-**Task 5** (level 2) Choose one idea from your scribe notes that you had not thought of before. Write three questions you would need answered to know if it fits you. Name one place to look for answers, such as a WorkBC career profile (https://www.workbc.ca/plan-career/explore-careers/career-profiles), a SkilledTradesBC trade profile (https://skilledtradesbc.ca/find-your-trade) or a person who works in that trade.
+**Task 5** (level 2) Choose one idea from your scribe notes or your Task 1 list if you did not take a turn in the career chair. The idea may be new to you or one you already know but want to investigate further. Write three questions you would need answered to know if it fits you. Name one place to look for answers, such as a WorkBC career profile (https://www.workbc.ca/plan-career/explore-careers/career-profiles), a SkilledTradesBC trade profile (https://skilledtradesbc.ca/find-your-trade) or a person who works in that trade.
 
 Idea: ______________________________________________
 

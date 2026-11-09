@@ -113,7 +113,7 @@ g) Finishing your part and asking the lead what is next
 h) Arriving on time but without your safety boots
 
 **Task 3** (level 2)
-You are Marcus. It is 11:15 and you will not finish the cut list before lunch at 12:00. You need about 30 more minutes. Write a text to Dana. Say what is late, when it will be done, and what the crew can do in the meantime.
+You are Marcus. It is 11:15 and the cut list is due at 12:00. You need 30 minutes beyond that deadline, plus your planned lunch break from 12:00 to 12:30. Your revised finish time is 13:00. You do not know which other materials are ready. Write a text to Dana. Say what is late, when it will be done, and ask Dana to confirm suitable work for the crew in the meantime.
 
 ______________________________________________
 

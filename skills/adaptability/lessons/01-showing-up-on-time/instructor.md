@@ -6,7 +6,7 @@ Adaptability lesson 1 of 14. Total time: 75 minutes.
 
 **Time:** 5 minutes (step 1.1)
 
-Welcome learners. Tell a short story from your own work life about a day when one late person, or one early call, changed how a crew's morning went. Keep it to two minutes. Then ask: "Who has waited on someone who did not show up? How did it feel?" Explain that this is the first of twelve Adaptability lessons, that Adaptability now includes what used to be called Continuous Learning, and that today's session runs 75 minutes.
+Welcome learners. Tell a short story from your own work life about a day when one late person, or one early call, changed how a crew's morning went. Keep it to two minutes. Then ask: "Who has waited on someone who did not show up? How did it feel?" Explain that this is the first of fourteen Adaptability lessons, that Adaptability now includes what used to be called Continuous Learning, and that today's session runs 75 minutes.
 
 Start from strength. Learners already juggle buses, family, appointments and money. Use language of building on what they do well rather than fixing a problem.
 
