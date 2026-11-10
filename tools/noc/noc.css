@@ -86,3 +86,20 @@ mark{background:var(--gold-tint);color:var(--ink);box-shadow:inset 0 -3px 0 var(
 #occupation-directory .code-link{min-height:44px;text-align:left;overflow-wrap:anywhere;padding:8px}
 #occupation-directory .code-link span{white-space:nowrap}
 @media(min-width:720px){#occupation-directory ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.noc-red-seal{display:grid;gap:14px;min-width:0}
+.noc-red-seal h2,.noc-red-seal p{margin:0}
+#red-seal-filter-controls{display:grid;gap:10px}
+#red-seal-filter-controls label{font-weight:600}
+#red-seal-list{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+#red-seal-list>li{min-width:0;border:1px solid var(--line);border-left:4px solid var(--red);background:var(--surface);padding:14px;border-radius:var(--radius);overflow-wrap:anywhere}
+#red-seal-list h3{font-family:var(--font-display);font-size:19px;margin:0 0 6px}
+#red-seal-list a{display:inline-block;min-height:44px;padding:10px 0}
+#red-seal-list summary{cursor:pointer;min-height:44px;padding:10px 0}
+#red-seal-list summary:focus-visible,#red-seal-list a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+#red-seal-list details p{font-size:14px;color:var(--muted)}
+.noc-red-seal-matches h4{margin:8px 0}
+.noc-red-seal-matches ul{margin:0;padding-left:20px}
+@media(min-width:720px){#red-seal-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){#red-seal-filter-controls .noc-field{flex-direction:column}}
+@media print{#red-seal-filter-controls{display:none}}

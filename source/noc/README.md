@@ -26,3 +26,21 @@ Full browser interaction and mobile-width tests (requires Playwright and Chromiu
     node source/noc/test-finder.cjs
 
 If needed, set `PLAYWRIGHT_MODULE` to the installed Playwright module and `CHROMIUM_PATH` to the browser executable. The browser test covers directory selection, query links, cross-category trades, French search, codes with leading zeroes, pagination, clear and mobile overflow.
+
+## Dedicated Red Seal directory (2026-11-10)
+
+The new directory is a separate list of all **54 current official Red Seal trade names**, not an inference from the NOC trades category. It contains 54 distinct entries, including both gasfitter classes, all three heavy equipment operator variants, all three ironworker variants, and both crane operator trades. They map to **41 distinct NOC 2021 groups**.
+
+Authoritative list: https://red-seal.ca/eng/trades/trades-list.shtml
+
+Every trade's official profile was checked on 2026-11-10 for its stated five-digit NOC code and its jurisdiction text. The source URL and jurisdiction text are retained per entry in `tools/noc/red-seal-data.js`. The directory's HTML includes every trade and profile link even without JavaScript. Main search indexes these names separately from Statistics Canada's example titles, and displays the associated Red Seal names on result cards. The separate directory filter supports trade-name tokens and NOC codes.
+
+Do not treat NOC groups as certification designations. Several Red Seal trades share a NOC group. Codes displayed here are the official Red Seal profile's mapping, not a determination of the correct code for an individual's duties. Provincial designation lists are a dated copy of the trade pages, not proof of current apprenticeship or exam availability. The Machinist page's `YK` spelling is preserved and explained as Yukon; other pages use `YT`. Historical trade names or discontinued designations absent from the current official list are not added as current Red Seal trades.
+
+When updating, compare the entire official trade list, check each linked profile, update `red-seal-data.js` and the matching static directory in `index.html`, then run:
+
+    node source/noc/test-red-seal.cjs
+    node source/noc/test-data-search.cjs
+    node --check tools/noc/noc.js
+
+`test-red-seal.cjs` verifies all 54 names rank their official mapping first, all mappings exist in the NOC dataset, all static entries have official sources, filter behavior, variants, no-match, reset, Escape and preservation of the 516-group directory. The browser suite also covers directory filtering and link navigation. Browser execution may require an environment that permits Chromium's sockets.

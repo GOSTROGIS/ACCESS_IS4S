@@ -51,6 +51,11 @@
       it: entry(u[1]), ifr: entry(u[2] || ''), iex: u[4].map(entry)
     };
   });
+  var RS = window.RED_SEAL_DATA ? window.RED_SEAL_DATA.trades : [];
+  U.forEach(function (u) {
+    u.rs = RS.filter(function (r) { return r.code === u.code; });
+    u.irs = u.rs.map(function (r) { return entry(r.name); });
+  });
   var byCode = {};
   U.forEach(function (u) { byCode[u.code] = u; });
 
@@ -58,7 +63,7 @@
   function buildVocab() {
     vocab = {};
     U.forEach(function (u) {
-      [u.it, u.ifr].concat(u.iex).forEach(function (e) {
+      [u.it, u.ifr].concat(u.iex, u.irs).forEach(function (e) {
         e.w.forEach(function (w) { if (w.length > 2) vocab[w] = (vocab[w] || 0) + 1; });
       });
     });
@@ -101,7 +106,8 @@
         .map(function (u) { return { u: u, matches: [], score: u.code === codeQ ? 1000 : 500, via: 'code' }; });
       return { kind: 'code', items: items, code: codeQ };
     }
-    var toks = qn.split(' ').map(stem);
+    var rawToks = qn.split(' ').map(stem), rawJoined = rawToks.join(' ');
+    var toks = rawToks.slice();
     var kept = toks.filter(function (t) { return !STOP[t]; });
     if (kept.length) toks = kept;
     var qj = toks.join(' ');
@@ -121,13 +127,18 @@
           if (l === 4 && u.ill[k]) illExact = 1;
         }
       }
-      if (!lt && !lf && !ms.length) continue;
+      var sRS = 0;
+      u.irs.forEach(function (e) {
+        var match = level(e, rawToks, rawJoined);
+        sRS = Math.max(sRS, match === 4 ? 1200 : match ? match * 200 + phraseBonus(e, rawJoined) : 0);
+      });
+      if (!lt && !lf && !ms.length && !sRS) continue;
       var sTitle = lt === 4 ? 1000 : lt ? lt * 200 + phraseBonus(u.it, qj) : 0;
       var sEx = bestEx === 4 ? 950 + illExact * 20 : bestEx ? bestEx * 180 + bestExBonus : 0;
       var sFr = lf === 4 ? 800 : lf ? lf * 150 + phraseBonus(u.ifr, qj) : 0;
-      var score = Math.max(sTitle, sEx, sFr) + Math.min(ms.length, 15);
+      var score = Math.max(sTitle, sEx, sFr, sRS) + Math.min(ms.length, 15);
       ms.sort(function (a, b) { return (b.l - a.l) || (b.b - a.b) || (a.i - b.i); });
-      out.push({ u: u, matches: ms, score: score, via: sTitle >= sEx && sTitle >= sFr ? 'title' : sEx >= sFr ? 'example' : 'fr' });
+      out.push({ u: u, matches: ms, score: score, via: sRS > Math.max(sTitle, sEx, sFr) ? 'red-seal' : sTitle >= sEx && sTitle >= sFr ? 'title' : sEx >= sFr ? 'example' : 'fr' });
     }
     out.sort(function (a, b) { return (b.score - a.score) || (a.u.code < b.u.code ? -1 : 1); });
     return { kind: 'text', items: out, toks: toks };
@@ -196,6 +207,11 @@
       h += '</ul>';
       if (item.matches.length > top.length) h += '<p class="ex-note">and ' + fmt(item.matches.length - top.length) + ' more matching ' + plural(item.matches.length - top.length, 'title', 'titles') + ' in the full list.</p>';
       h += '</div>';
+    }
+    if (u.rs.length) {
+      h += '<div class="noc-red-seal-matches"><h4>Red Seal trades linked to this NOC group</h4><ul>';
+      u.rs.forEach(function (r) { h += '<li><a href="' + esc(r.url) + '">' + esc(r.name) + '</a></li>'; });
+      h += '</ul><p class="ex-note">Codes are listed on the official Red Seal trade pages. Match your job duties and check provincial requirements.</p></div>';
     }
     h += '<button type="button" class="btn btn-toggle" aria-expanded="false" aria-controls="more-' + c + '" data-code="' + c + '">Show all ' + fmt(u.ex.length) + ' example titles</button>';
     h += '<div class="noc-more" id="more-' + c + '" hidden></div>';
@@ -275,7 +291,7 @@
     h += '<li>Check the spelling, or type only the start of the word, such as <em>weld</em> or <em>electric</em>.</li>';
     h += '<li>Use the main task of the job, such as <em>drywall</em>, <em>roofing</em> or <em>forklift</em>.</li>';
     h += '<li>Use the English job title. French unit group titles also work, such as <em>électricien</em>.</li>';
-    h += '<li>Tap one of the common trades above.</li>';
+    h += '<li>Browse the complete Red Seal trade list below.</li>';
     h += '<li>Search the <a href="https://noc.esdc.gc.ca/?GoCTemplateCulture=en-CA" target="_blank" rel="noopener">official NOC website<span class="sr-only"> (opens in a new tab)</span></a>.</li>';
     h += '</ul></div>';
     return h;
@@ -430,7 +446,29 @@
     directory += '</ul></details>';
   });
   $('occupation-directory').innerHTML = directory;
-  $('coverage-summary').textContent = 'Search the complete NOC 2021 list, not just these quick picks: ' + fmt(U.length) + ' occupation groups and ' + fmt(D.meta.exampleTitles) + ' official example job titles.';
+  $('coverage-summary').textContent = 'Search all 54 Red Seal trade names and the complete NOC 2021 list: ' + fmt(U.length) + ' occupation groups and ' + fmt(D.meta.exampleTitles) + ' official example job titles.';
+
+  // The full Red Seal directory is present in HTML even if JavaScript is unavailable.
+  var rsFilter = $('red-seal-filter');
+  function filterRedSeal(q) {
+    var tokens = words(q), count = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('#red-seal-list > li'), function (item) {
+      var indexed = entry(item.getAttribute('data-red-seal-name') + ' ' + item.getAttribute('data-red-seal-code'));
+      var visible = !tokens.length || !!level(indexed, tokens, tokens.join(' '));
+      item.hidden = !visible;
+      if (visible) count++;
+    });
+    $('red-seal-status').textContent = count + ' of ' + RS.length + ' Red Seal trades' + (count ? '' : '. No matching trade. Try a shorter name or select Show all trades.');
+  }
+  if (rsFilter && RS.length) {
+    $('red-seal-filter-controls').hidden = false;
+    rsFilter.addEventListener('input', function () { filterRedSeal(rsFilter.value); });
+    rsFilter.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { rsFilter.value = ''; filterRedSeal(''); }
+    });
+    $('red-seal-clear').addEventListener('click', function () { rsFilter.value = ''; filterRedSeal(''); rsFilter.focus(); });
+    filterRedSeal('');
+  }
 
   // TEER table
   var tb = document.querySelector('#teer-table tbody'), rows = '';

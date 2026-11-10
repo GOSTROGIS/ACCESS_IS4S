@@ -29,18 +29,8 @@
       <input id="q" name="q" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-describedby="q-hint" aria-controls="results" placeholder="e.g. carpenter">
       <button type="button" class="btn btn-clear" id="clear" aria-label="Clear the search">Clear</button>
     </div>
-    <p class="chips-label" id="chips-label">Quick picks (not the full list)</p>
-    <ul class="chips" aria-labelledby="chips-label">
-      <li><button type="button" class="chip" data-q="carpenter">Carpenter</button></li>
-      <li><button type="button" class="chip" data-q="electrician">Electrician</button></li>
-      <li><button type="button" class="chip" data-q="plumber">Plumber</button></li>
-      <li><button type="button" class="chip" data-q="welder">Welder</button></li>
-      <li><button type="button" class="chip" data-q="heavy equipment operator">Heavy equipment operator</button></li>
-      <li><button type="button" class="chip" data-q="construction labourer">Construction labourer</button></li>
-      <li><button type="button" class="chip" data-q="millwright">Millwright</button></li>
-      <li><button type="button" class="chip" data-q="cook">Cook</button></li>
-    </ul>
-    <p class="noc-hint" id="coverage-summary">Search the complete NOC 2021 list, not just these quick picks: 516 occupation groups and 27,935 official example job titles.</p>
+    <p><a href="#red-seal-trades">Browse all 54 Red Seal trades</a>, or type any trade name above.</p>
+    <p class="noc-hint" id="coverage-summary">Search all 54 Red Seal trade names and the complete NOC 2021 list: 516 occupation groups and 27,935 official example job titles.</p>
     <details class="noc-browse" id="browse-all">
       <summary>Browse all trades and occupations</summary>
       <p>Choose a category, then an occupation to see its code and job titles. Trades are spread across categories: cooks, bakers and hairstylists are under Sales and service; horticulturists are under Natural and applied sciences.</p>
@@ -55,6 +45,291 @@
     <ol class="noc-results" id="results"></ol>
     <button type="button" class="btn noc-more-results" id="more" hidden>Show more results</button>
     <noscript><p>This finder needs JavaScript. You can search the same list on the <a href="https://noc.esdc.gc.ca/?GoCTemplateCulture=en-CA">Government of Canada NOC website</a>.</p></noscript>
+  </section>
+
+  <section class="noc-red-seal" id="red-seal-trades" aria-labelledby="red-seal-heading">
+    <h2 id="red-seal-heading">All 54 Red Seal trades</h2>
+    <p>Every trade on the <a href="https://red-seal.ca/eng/trades/trades-list.shtml">official Red Seal list</a>, checked November 10, 2026. Each NOC code below is the one listed on that trade’s official Red Seal page. Different trades can share one NOC group; a NOC code is not a trade certificate or a Red Seal endorsement.</p>
+    <p>Designation, trade names, eligibility and training availability vary by province and territory. Jurisdiction lists below reproduce the official trade pages, not a guarantee that training or exams are currently offered. Confirm current requirements with your provincial or territorial apprenticeship authority.</p>
+    <div id="red-seal-filter-controls" hidden>
+      <label for="red-seal-filter">Filter the Red Seal list by trade name or NOC code</label>
+      <div class="noc-field"><input id="red-seal-filter" type="search" autocomplete="off" aria-controls="red-seal-list" placeholder="e.g. gasfitter, crane or 72302"><button type="button" class="btn" id="red-seal-clear">Show all trades</button></div>
+      <p id="red-seal-status" role="status" aria-live="polite">54 of 54 Red Seal trades</p>
+    </div>
+    <ul id="red-seal-list">
+      <li data-red-seal-name="Agricultural Equipment Technician" data-red-seal-code="72401">
+        <h3>Agricultural Equipment Technician</h3>
+        <p><a class="red-seal-code" href="?q=72401#results">Find NOC 72401</a> · <a href="https://red-seal.ca/eng/trades/agri-equip-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, ON, PE, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Appliance Service Technician" data-red-seal-code="72421">
+        <h3>Appliance Service Technician</h3>
+        <p><a class="red-seal-code" href="?q=72421#results">Find NOC 72421</a> · <a href="https://red-seal.ca/eng/trades/appliance-serv-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, NB, NL, NS, NT, NU, ON, PE. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Auto Body and Collision Technician" data-red-seal-code="72411">
+        <h3>Auto Body and Collision Technician</h3>
+        <p><a class="red-seal-code" href="?q=72411#results">Find NOC 72411</a> · <a href="https://red-seal.ca/eng/trades/auto-body-col-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, NB, NL, NS, NT, NU, ON, PE, MB, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Automotive Refinishing Technician" data-red-seal-code="72411">
+        <h3>Automotive Refinishing Technician</h3>
+        <p><a class="red-seal-code" href="?q=72411#results">Find NOC 72411</a> · <a href="https://red-seal.ca/eng/trades/auto-refinish-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Automotive Service Technician" data-red-seal-code="72410">
+        <h3>Automotive Service Technician</h3>
+        <p><a class="red-seal-code" href="?q=72410#results">Find NOC 72410</a> · <a href="https://red-seal.ca/eng/trades/auto-serv-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Baker" data-red-seal-code="63202">
+        <h3>Baker</h3>
+        <p><a class="red-seal-code" href="?q=63202#results">Find NOC 63202</a> · <a href="https://red-seal.ca/eng/trades/baker.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Boilermaker" data-red-seal-code="72103">
+        <h3>Boilermaker</h3>
+        <p><a class="red-seal-code" href="?q=72103#results">Find NOC 72103</a> · <a href="https://red-seal.ca/eng/trades/boilermaker.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, ON, PE, QC, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Bricklayer" data-red-seal-code="72320">
+        <h3>Bricklayer</h3>
+        <p><a class="red-seal-code" href="?q=72320#results">Find NOC 72320</a> · <a href="https://red-seal.ca/eng/trades/bricklayer.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Cabinetmaker" data-red-seal-code="72311">
+        <h3>Cabinetmaker</h3>
+        <p><a class="red-seal-code" href="?q=72311#results">Find NOC 72311</a> · <a href="https://red-seal.ca/eng/trades/cabinetmaker.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Carpenter" data-red-seal-code="72310">
+        <h3>Carpenter</h3>
+        <p><a class="red-seal-code" href="?q=72310#results">Find NOC 72310</a> · <a href="https://red-seal.ca/eng/trades/carpenter.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Concrete Finisher" data-red-seal-code="73100">
+        <h3>Concrete Finisher</h3>
+        <p><a class="red-seal-code" href="?q=73100#results">Find NOC 73100</a> · <a href="https://red-seal.ca/eng/trades/concrete-finisher.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, ON, PE, QC. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Construction Craft Worker" data-red-seal-code="75110">
+        <h3>Construction Craft Worker</h3>
+        <p><a class="red-seal-code" href="?q=75110#results">Find NOC 75110</a> · <a href="https://red-seal.ca/eng/trades/const-craft-work.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, ON, PE, QC, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Construction Electrician" data-red-seal-code="72200">
+        <h3>Construction Electrician</h3>
+        <p><a class="red-seal-code" href="?q=72200#results">Find NOC 72200</a> · <a href="https://red-seal.ca/eng/trades/const-elect.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Cook" data-red-seal-code="63200">
+        <h3>Cook</h3>
+        <p><a class="red-seal-code" href="?q=63200#results">Find NOC 63200</a> · <a href="https://red-seal.ca/eng/trades/cook.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Drywall Finisher and Plasterer" data-red-seal-code="73102">
+        <h3>Drywall Finisher and Plasterer</h3>
+        <p><a class="red-seal-code" href="?q=73102#results">Find NOC 73102</a> · <a href="https://red-seal.ca/eng/trades/drywall-fin-plast.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: BC, NL, NS, ON, PE, QC. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Floorcovering Installer" data-red-seal-code="73113">
+        <h3>Floorcovering Installer</h3>
+        <p><a class="red-seal-code" href="?q=73113#results">Find NOC 73113</a> · <a href="https://red-seal.ca/eng/trades/floorcover-install.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Gasfitter — Class A" data-red-seal-code="72302">
+        <h3>Gasfitter — Class A</h3>
+        <p><a class="red-seal-code" href="?q=72302#results">Find NOC 72302</a> · <a href="https://red-seal.ca/eng/trades/gasfitter-a.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, PE, QC, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Gasfitter — Class B" data-red-seal-code="72302">
+        <h3>Gasfitter — Class B</h3>
+        <p><a class="red-seal-code" href="?q=72302#results">Find NOC 72302</a> · <a href="https://red-seal.ca/eng/trades/gasfitter-b.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, PE, QC, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Glazier" data-red-seal-code="73111">
+        <h3>Glazier</h3>
+        <p><a class="red-seal-code" href="?q=73111#results">Find NOC 73111</a> · <a href="https://red-seal.ca/eng/trades/glazier.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Hairstylist" data-red-seal-code="63210">
+        <h3>Hairstylist</h3>
+        <p><a class="red-seal-code" href="?q=63210#results">Find NOC 63210</a> · <a href="https://red-seal.ca/eng/trades/hairstylist.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Heavy Duty Equipment Technician" data-red-seal-code="72401">
+        <h3>Heavy Duty Equipment Technician</h3>
+        <p><a class="red-seal-code" href="?q=72401#results">Find NOC 72401</a> · <a href="https://red-seal.ca/eng/trades/heavy-duty-equip-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Heavy Equipment Operator (Dozer)" data-red-seal-code="73400">
+        <h3>Heavy Equipment Operator (Dozer)</h3>
+        <p><a class="red-seal-code" href="?q=73400#results">Find NOC 73400</a> · <a href="https://red-seal.ca/eng/trades/heo-dozer.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: NB, NL, NS, NU, ON, PE, QC. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Heavy Equipment Operator (Excavator)" data-red-seal-code="73400">
+        <h3>Heavy Equipment Operator (Excavator)</h3>
+        <p><a class="red-seal-code" href="?q=73400#results">Find NOC 73400</a> · <a href="https://red-seal.ca/eng/trades/heo-excavator.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: NB, NL, NS, NU, ON, PE, QC. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Heavy Equipment Operator (Tractor-Loader-Backhoe)" data-red-seal-code="73400">
+        <h3>Heavy Equipment Operator (Tractor-Loader-Backhoe)</h3>
+        <p><a class="red-seal-code" href="?q=73400#results">Find NOC 73400</a> · <a href="https://red-seal.ca/eng/trades/heo-tlb.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: NB, NL, NS, NU, ON, PE, QC. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Industrial Electrician" data-red-seal-code="72201">
+        <h3>Industrial Electrician</h3>
+        <p><a class="red-seal-code" href="?q=72201#results">Find NOC 72201</a> · <a href="https://red-seal.ca/eng/trades/indust-elect.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: BC, MB, NB, NL, NS, NT, ON, PE, QC, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Industrial Mechanic (Millwright)" data-red-seal-code="72400">
+        <h3>Industrial Mechanic (Millwright)</h3>
+        <p><a class="red-seal-code" href="?q=72400#results">Find NOC 72400</a> · <a href="https://red-seal.ca/eng/trades/indust-mech-mill.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Instrumentation and Control Technician" data-red-seal-code="22312">
+        <h3>Instrumentation and Control Technician</h3>
+        <p><a class="red-seal-code" href="?q=22312#results">Find NOC 22312</a> · <a href="https://red-seal.ca/eng/trades/instrument-cntl-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Insulator (Heat and Frost)" data-red-seal-code="72321">
+        <h3>Insulator (Heat and Frost)</h3>
+        <p><a class="red-seal-code" href="?q=72321#results">Find NOC 72321</a> · <a href="https://red-seal.ca/eng/trades/insulator-heat-frost.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Ironworker (Generalist)" data-red-seal-code="72105">
+        <h3>Ironworker (Generalist)</h3>
+        <p><a class="red-seal-code" href="?q=72105#results">Find NOC 72105</a> · <a href="https://red-seal.ca/eng/trades/ironwork-gen.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: BC, MB, NB, NL, NS, ON, PE. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Ironworker (Reinforcing)" data-red-seal-code="72105">
+        <h3>Ironworker (Reinforcing)</h3>
+        <p><a class="red-seal-code" href="?q=72105#results">Find NOC 72105</a> · <a href="https://red-seal.ca/eng/trades/ironwork-reinforce.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, NB, NL, NS, ON, PE, QC, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Ironworker (Structural/Ornamental)" data-red-seal-code="72105">
+        <h3>Ironworker (Structural/Ornamental)</h3>
+        <p><a class="red-seal-code" href="?q=72105#results">Find NOC 72105</a> · <a href="https://red-seal.ca/eng/trades/ironwork-struct.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, NB, NL, NS, ON, PE, QC, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Landscape Horticulturist" data-red-seal-code="22114">
+        <h3>Landscape Horticulturist</h3>
+        <p><a class="red-seal-code" href="?q=22114#results">Find NOC 22114</a> · <a href="https://red-seal.ca/eng/trades/landscape-hort.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, ON, PE, QC, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Lather (Interior Systems Mechanic)" data-red-seal-code="73102">
+        <h3>Lather (Interior Systems Mechanic)</h3>
+        <p><a class="red-seal-code" href="?q=73102#results">Find NOC 73102</a> · <a href="https://red-seal.ca/eng/trades/lather-int-sys-mech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Machinist" data-red-seal-code="72100">
+        <h3>Machinist</h3>
+        <p><a class="red-seal-code" href="?q=72100#results">Find NOC 72100</a> · <a href="https://red-seal.ca/eng/trades/machinist.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Metal Fabricator (Fitter)" data-red-seal-code="72104">
+        <h3>Metal Fabricator (Fitter)</h3>
+        <p><a class="red-seal-code" href="?q=72104#results">Find NOC 72104</a> · <a href="https://red-seal.ca/eng/trades/metal-fab-fit.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, NB, NL, NS, ON, PE, QC, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Mobile Crane Operator" data-red-seal-code="72500">
+        <h3>Mobile Crane Operator</h3>
+        <p><a class="red-seal-code" href="?q=72500#results">Find NOC 72500</a> · <a href="https://red-seal.ca/eng/trades/mobile-crane-op.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: (AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK). Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Motorcycle Technician" data-red-seal-code="72423">
+        <h3>Motorcycle Technician</h3>
+        <p><a class="red-seal-code" href="?q=72423#results">Find NOC 72423</a> · <a href="https://red-seal.ca/eng/trades/motorcycle-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: NL, NS, PE, NB, ON, AB, BC. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Oil Heat System Technician" data-red-seal-code="72420">
+        <h3>Oil Heat System Technician</h3>
+        <p><a class="red-seal-code" href="?q=72420#results">Find NOC 72420</a> · <a href="https://red-seal.ca/eng/trades/oil-heat-sys-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: BC, NB, NL, NS, NT, NU, PE, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Painter and Decorator" data-red-seal-code="73112">
+        <h3>Painter and Decorator</h3>
+        <p><a class="red-seal-code" href="?q=73112#results">Find NOC 73112</a> · <a href="https://red-seal.ca/eng/trades/painter-decorator.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Parts Technician" data-red-seal-code="14401">
+        <h3>Parts Technician</h3>
+        <p><a class="red-seal-code" href="?q=14401#results">Find NOC 14401</a> · <a href="https://red-seal.ca/eng/trades/parts-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Plumber" data-red-seal-code="72300">
+        <h3>Plumber</h3>
+        <p><a class="red-seal-code" href="?q=72300#results">Find NOC 72300</a> · <a href="https://red-seal.ca/eng/trades/plumber.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Powerline Technician" data-red-seal-code="72203">
+        <h3>Powerline Technician</h3>
+        <p><a class="red-seal-code" href="?q=72203#results">Find NOC 72203</a> · <a href="https://red-seal.ca/eng/trades/powerline-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Recreation Vehicle Service Technician" data-red-seal-code="72423">
+        <h3>Recreation Vehicle Service Technician</h3>
+        <p><a class="red-seal-code" href="?q=72423#results">Find NOC 72423</a> · <a href="https://red-seal.ca/eng/trades/rvst.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Refrigeration and Air Conditioning Mechanic" data-red-seal-code="72402">
+        <h3>Refrigeration and Air Conditioning Mechanic</h3>
+        <p><a class="red-seal-code" href="?q=72402#results">Find NOC 72402</a> · <a href="https://red-seal.ca/eng/trades/refrig-ac-mech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Roofer" data-red-seal-code="73110">
+        <h3>Roofer</h3>
+        <p><a class="red-seal-code" href="?q=73110#results">Find NOC 73110</a> · <a href="https://red-seal.ca/eng/trades/roofer.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Sheet Metal Worker" data-red-seal-code="72102">
+        <h3>Sheet Metal Worker</h3>
+        <p><a class="red-seal-code" href="?q=72102#results">Find NOC 72102</a> · <a href="https://red-seal.ca/eng/trades/sheet-metal-work.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Sprinkler Fitter" data-red-seal-code="72301">
+        <h3>Sprinkler Fitter</h3>
+        <p><a class="red-seal-code" href="?q=72301#results">Find NOC 72301</a> · <a href="https://red-seal.ca/eng/trades/sprinkler-fitter.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Steamfitter/Pipefitter" data-red-seal-code="72301">
+        <h3>Steamfitter/Pipefitter</h3>
+        <p><a class="red-seal-code" href="?q=72301#results">Find NOC 72301</a> · <a href="https://red-seal.ca/eng/trades/steamfitter-pipefitter.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Tilesetter" data-red-seal-code="73101">
+        <h3>Tilesetter</h3>
+        <p><a class="red-seal-code" href="?q=73101#results">Find NOC 73101</a> · <a href="https://red-seal.ca/eng/trades/tilesetter.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: BC, NB, NL, NS, ON, PE, QC, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Tool and Die Maker" data-red-seal-code="72101">
+        <h3>Tool and Die Maker</h3>
+        <p><a class="red-seal-code" href="?q=72101#results">Find NOC 72101</a> · <a href="https://red-seal.ca/eng/trades/tool-die-maker.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: BC, MB, NB, NL, NS, ON, PE, QC. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Tower Crane Operator" data-red-seal-code="72500">
+        <h3>Tower Crane Operator</h3>
+        <p><a class="red-seal-code" href="?q=72500#results">Find NOC 72500</a> · <a href="https://red-seal.ca/eng/trades/tower-crane-op.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NL, NS, ON, PE, QC, SK. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Transport Trailer Technician" data-red-seal-code="72410">
+        <h3>Transport Trailer Technician</h3>
+        <p><a class="red-seal-code" href="?q=72410#results">Find NOC 72410</a> · <a href="https://red-seal.ca/eng/trades/transp-trailer-tech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: BC, MB, NB, NL, NS, ON, PE, QC, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Truck and Transport Mechanic" data-red-seal-code="72410">
+        <h3>Truck and Transport Mechanic</h3>
+        <p><a class="red-seal-code" href="?q=72410#results">Find NOC 72410</a> · <a href="https://red-seal.ca/eng/trades/truck-transp-mech.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+      <li data-red-seal-name="Welder" data-red-seal-code="72106">
+        <h3>Welder</h3>
+        <p><a class="red-seal-code" href="?q=72106#results">Find NOC 72106</a> · <a href="https://red-seal.ca/eng/trades/welder.shtml">Official trade profile</a></p>
+        <details><summary>Where it is designated</summary><p>Jurisdictions listed on the official trade page: AB, BC, MB, NB, NL, NS, NT, NU, ON, PE, QC, SK, YT. Checked 2026-11-10. Verify current availability with the apprenticeship authority.</p></details>
+      </li>
+    </ul>
+    <p class="ex-note">AB: Alberta; BC: British Columbia; MB: Manitoba; NB: New Brunswick; NL: Newfoundland and Labrador; NS: Nova Scotia; NT: Northwest Territories; NU: Nunavut; ON: Ontario; PE: Prince Edward Island; QC: Quebec; SK: Saskatchewan; YT (also shown as YK on the Machinist source page): Yukon.</p>
+    <noscript><p>The complete list and official profile links work without JavaScript. Local NOC search and list filtering need JavaScript.</p></noscript>
   </section>
 
   <section class="noc-info" aria-labelledby="why-heading">
@@ -111,6 +386,7 @@
   </div>
 </footer>
 <script src="noc-data.js"></script>
+<script src="red-seal-data.js"></script>
 <script src="noc.js"></script>
 </body>
 </html>
