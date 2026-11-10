@@ -2,6 +2,10 @@
 
 Session 10 of 26 in the Reading lessons · 75 minutes
 
+## Accessible participation
+
+Prepare accessible saved copies or permitted printouts of the official pages with their source URLs, titles and dates for an offline or device-free route. Learners can compare authority, purpose and evidence using the same questions. Permit screen readers, magnification or a partner navigating under the learner's direction. Record live navigation as not observed when there is no internet; do not treat a saved page as evidence of what the site says today.
+
 ## Opening (5 min)
 
 Welcome learners to Reading lesson 10. Ask: "When you need to know something on the job, what do you do first?" Many will say "Google it" or "ask my phone". Ask: "How do you know the answer is right?" Tell a short story: a crew finds a post online saying a product is safe to use indoors. The post was about a different product from another country. The SDS for theirs says use with good ventilation. Today is about reading on a screen and checking the source.

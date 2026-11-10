@@ -2,6 +2,10 @@
 
 **Session:** Communication lesson 1 of 13.
 
+## Accessible participation
+
+Agree on access before both rounds. Provide instruction cards, captions or an interpreter when needed, and accept a read-back through speech, signing or AAC. The first round limits questions, not access to the instruction. For drawing, offer tactile materials or a partner who draws from the learner's directions. Judge the details understood and the checking questions, not hearing, handwriting or drawing speed.
+
 ## Opening (5 min, step 1.1)
 
 Welcome learners to session 1 of the Communication series. The session runs 70 minutes.
@@ -28,13 +32,13 @@ Listen for whether learners already use a repeat-back or only say "okay."
 |---|---|---|---|---|
 | 1.1 | Opening story and objective. | Listen, share an example if they choose. | None | 5 min |
 | 1.2 | Ask the two pre-assessment questions. | Answer out loud or on a sticky note. | Sticky notes | 5 min |
-| 2.1 | Drawing round 1 (Task 1). Read the drawing instructions below quickly, looking down at the page, with no repeats and no questions allowed. | Draw what they hear without asking questions. | Plain paper, pencils, rulers | 5 min |
+| 2.1 | Drawing round 1 (Task 1). Give the drawing instructions once, without clarification questions, using the agreed accessible format. Do not remove captions, interpreter support or other access to create difficulty. | Draw what they hear without asking questions. | Plain paper, pencils, rulers | 5 min |
 | 2.2 | Drawing round 2. Read slowly, look up at the group where that suits the group, invite questions, ask a learner to say each step back. Show the intended drawing. Debrief: "What made round 1 hard? What helped in round 2?" Flipchart the answers. | Draw again, ask questions, say steps back, compare drawings, answer the debrief questions and the Task 1 lines. | Flipchart, markers, drawing from the answers file | 10 min |
 | 2.3 | Teach the six parts table and the repeat-back. Act out the worked example with a learner reading Dana's part, then a version where the listener only says "okay." | Follow the learner page, read Dana's part, point out what the "okay" version missed. | Learner page | 8 min |
-| 3.1 | Set up Task 2 in pairs. Remind listeners not to look at the card. | One reads a card once, the other fills in the table, then switch. | Learner page | 7 min |
+| 3.1 | Set up Task 2 in pairs. For the listening-memory version, ask listeners not to look at the card; keep the card available when it is their agreed access route. | One reads a card once, the other fills in the table, then switch. | Learner page | 7 min |
 | 3.2 | Set up Task 3. Circulate and listen for questions that target the missing part. | Say Cards C and D back and ask one question each. | Learner page | 7 min |
 | 3.3 | Run Tasks 4 and 5 quickly as a whole group. | Mark F or A, rewrite the three phrases, compare. | Learner page | 5 min |
-| 3.4 | Show the read-back loop. Set Tasks 6 and 7. Read the Task 7 say-back aloud so learners hear "fifteen" and "fifty" | Fill the six parts, catch two errors, correct them out loud | Learner page | 10 min |
+| 3.4 | Show the read-back loop. Set Tasks 6 and 7. Read the Task 7 say-back aloud so learners hear "fifteen" and "fifty" | Fill the six parts, catch two wrong details and the missing condition, then correct the full read-back | Learner page | 10 min |
 | 4.1 | Post-assessment. Read a new instruction (below) once. | Each learner says it back to a partner, then answers the three post-assessment questions. | None | 5 min |
 | 4.2 | Summary and action plan. | Commit to one repeat-back at work or home this week and report next session. | None | 3 min |
 | | | | **Total** | **70 min** |

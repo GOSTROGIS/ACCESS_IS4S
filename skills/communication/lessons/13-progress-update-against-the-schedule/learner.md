@@ -75,7 +75,7 @@ Every morning someone asks, "Where are we?" A foreman asks the lead hand. A supe
 - Framing was planned for days 5 to 8, which is 4 days of work.
 - Today is the end of day 7. By plan, 3 of the 4 days of framing should be done. That is 3 ÷ 4 = 75%.
 - The crew has done 2 days' worth of framing. That is 2 ÷ 4 = 50%.
-- 75% − 50% = 25% of the framing, which is 1 day of work. Framing is **1 day behind**.
+- 75% − 50% is a gap of 25 percentage points, representing 25% of the total framing work, or 1 day. Framing is **1 day behind**.
 
 **The effect.** The roof cannot start until framing is done. Windows cannot go in until the roof is on. So if nothing changes, framing ends on day 9, the roof moves to days 10 and 11, and windows move to day 12. The whole job is one day late.
 
@@ -154,7 +154,7 @@ ______________________________________________
 
 ______________________________________________
 
-**Task 4** (level 2) **Vague to clear.** Rewrite each update so it states where we are in days.
+**Task 4** (level 2) **Vague to clear.** Rewrite each update so it states where we are in days. You may invent details for this practice, but label them as fictional; a real update needs verified facts.
 
 a) "Drywall's going okay, a little slow maybe."
 b) "We're kind of ahead on the paving."
@@ -169,7 +169,7 @@ ______________________________________________
 
 ______________________________________________
 
-**Task 7** (level 3) **Write the update.** Electrical rough-in at a fictional duplex was planned for days 10 to 13 (4 days). Today is the end of day 12. The crew is 25% done because the panel was back-ordered. The inspection is booked for day 14 and drywall for day 15. Write a five-part update to the superintendent. Offer two options.
+**Task 7** (level 3) **Write the update.** Electrical rough-in at a fictional duplex was planned for days 10 to 13 (4 days). Today is the end of day 12. The crew is 25% done because the panel was back-ordered. The inspection is booked for day 14 and drywall for day 15. Write a five-part update to the superintendent. Offer two options. For the arithmetic, assume the panel is now available and two crews can work independently at the same rate, so two crews do twice the work in a day. These are exercise assumptions, not a guarantee on a real job. Crew availability, costs, revised inspection bookings and the effect on move-in are not confirmed. Ask for a decision before the start of day 13 if a second crew is to start then.
 
 ______________________________________________
 

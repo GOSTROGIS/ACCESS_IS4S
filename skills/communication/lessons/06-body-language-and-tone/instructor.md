@@ -2,6 +2,10 @@
 
 **Session:** Communication lesson 6 of 13.
 
+## Accessible participation
+
+Provide neutral descriptions of visible cues without naming an assumed emotion. Offer captioned examples and the written stress-marked sentence for tone work. Learners may respond seated, through signing, AAC or writing, and may describe a cue rather than perform it. Judge the interpretation and checking question, not eye contact, posture, hearing or ability to imitate an expression.
+
 ## Opening (5 min, step 1.1)
 
 Welcome learners to session 6 of the Communication series. The session runs 70 minutes. Ask who gave a specific compliment since last session and how it was received.

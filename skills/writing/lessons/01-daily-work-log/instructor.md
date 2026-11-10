@@ -2,6 +2,10 @@
 
 Session length: 60 min. All times below are part of the 60 minutes and match the steps in the learning tasks table.
 
+## Accessible participation
+
+For the walk-in observation, offer an equivalent neutral written event record, description or interpreter support without supplying the finished log. Permit typing, dictation or a scribe, with the learner checking the final entry. Assess selection and ordering of facts, not unaided hearing, sight or handwriting.
+
 ## Opening (5 min, step 1.1)
 
 Welcome learners. Tell a short story: a millwright comes in on Monday to finish a pump job. The pump is half assembled on the bench. There are no notes. Nobody knows which bolts were torqued, whether the seal kit was the right one, or who had the job on Friday. The crew loses two hours checking work that was already done.

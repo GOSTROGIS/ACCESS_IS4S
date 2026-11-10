@@ -46,7 +46,7 @@ a) **Step 3.4**: "Do not go on to Section 4 until the guard is installed." The t
 b) Points a good answer covers:
 - The procedure says the guard goes on before any test. It is a hold point, not a suggestion.
 - Watch and listen from a safe place with the guard on.
-- If someone thinks the coupling needs to be seen running, that is the supervisor's call, not the crew's. Ask before doing anything different.
+- If visibility is insufficient, keep the hold point in place and ask the supervisor for a safe inspection method that complies with the procedure and applicable requirements. A verbal instruction does not authorize running without the guard.
 
 ## Task 8 (level 3)
 

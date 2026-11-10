@@ -64,7 +64,7 @@ d) Talk first, then text or email the steps to confirm.
 
 a) Sample: crew, in person, because they are on site and need new tasks. Superintendent, text, because they are in a meeting and need a record (a call if a decision is needed now). Supplier, phone call, because they are waiting on a time and may have questions.
 
-b) Sample: "Crane delivery is 2 hours late, new time 10:00. Crew is on other work until then. Truss supplier told. Call me if you want a different plan."
+b) Sample: "Crane delivery is 2 hours late. I will confirm the revised arrival time and tell the truss supplier. I propose safe work that does not need the crane while we wait. Please confirm the plan." Do not invent an arrival time or report the supplier as notified until that has happened.
 
 c) Any useful work that does not need the crane, such as layout of the truss positions on the top plates, staging the bracing, or cleaning up. A good answer keeps the crew working safely.
 

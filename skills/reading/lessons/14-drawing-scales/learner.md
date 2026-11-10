@@ -483,7 +483,7 @@ c) What should the electrician do before cutting the hole in the ceiling?
 You must draw a deck 4800 mm by 3600 mm in a space on the sheet that is 150 mm by 100 mm.
 a) Will it fit at 1:20? Show your work.
 b) Will it fit at 1:50? Show your work.
-c) The same deck is 16'-0" by 12'-0". Will it fit at 1/4" = 1'-0" in a space 6" by 4"?
+c) A different deck is 16'-0" by 12'-0". Will it fit at 1/4" = 1'-0" in a space 6" by 4"?
 
 _______________________________________________
 

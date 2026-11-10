@@ -21,7 +21,7 @@ a) Any three:
 
 b) Sample:
 
-> Hi, thanks for asking about the holes in your unit. Our crew is only booked for the hallways in this building, so we can't patch your unit as part of this job. If you'd like a price to have it done, you can call our office at the number on our truck and they will set it up. Thanks, and sorry for the noise this week.
+> Hi, thanks for asking about the holes in your unit. Our crew is only booked for the hallways in this building, so we can't patch your unit as part of this job. If you'd like a price to have it done, I can give you our office number to arrange a price. Thanks, and sorry for the noise this week.
 
 A good answer has thanks, a short true reason, a clear no, the offer of a price through the office, and a friendly close. It does not blame the tenant or complain about the crew.
 
@@ -55,7 +55,7 @@ Sample:
 |---|---|
 | Who is the reader, and what is their job? | Ruth Adeyemi, Operations Manager. She runs the crews and the schedule. |
 | What do they care about? | Keeping crews productive, material arriving on time, the cost of short orders |
-| What will they likely object to? | Losing 10 hours of an apprentice's time on the tools in December |
+| What will they likely object to? | Losing 10 hours of an apprentice's time on the tools across December and January |
 | What is in it for them? | An apprentice who can help check takeoffs, so orders come in short less often |
 
 ## Task 5 (level 3)

@@ -28,7 +28,7 @@ d) If you see this sign, then do not enter, because it is a confined space.
 
 ## Task 3 (level 2)
 
-a) False. Counter-example: brass fittings, nylon cable ties, aluminum rivets or any fastener not made of steel.
+a) False. Counter-example: brass screws, nylon cable ties, aluminum rivets or any fastener not made of steel.
 b) True.
 c) True. A square is a rectangle with four equal sides.
 d) False. Counter-example: a rectangle 2 m by 4 m has sides that are not all equal, so it is not a square.
@@ -46,7 +46,7 @@ Sample answer:
 > 2. Close the gas cylinder valve.
 > 3. If you used the plasma table and the dross tray is more than half full, empty the dross tray.
 > 4. Put aluminum offcuts in the blue bin.
-> 5. Put all other offcuts in the steel scrap bin.
+> 5. Put steel offcuts in the steel scrap bin.
 > 6. Sweep your bay.
 > 7. Coil the extension cords and hang them up.
 > 8. If anything is broken, write it in the shop log.

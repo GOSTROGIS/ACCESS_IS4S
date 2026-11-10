@@ -76,11 +76,11 @@ Some learners put "tack coat dry" under SAFETY. Accept it if they explain why.
 
 ## Task 7 (level 3) Catch the errors
 
-a) "South lane" should be north lane. "Fifteen-millimetre lift" should be fifty.
+a) "South lane" should be north lane. "Fifteen-millimetre lift" should be fifty. The operator also left out the condition: **wait until the tack coat is dry**.
 
-b) Sample: "Two changes. North lane, not south. Fifty millimetres, five-zero, not fifteen."
+b) Sample: "North lane, not south. Fifty millimetres, five-zero, not fifteen. Start only once the tack coat is dry."
 
-c) Say the whole instruction back again, with the two changes, before starting. A good answer closes the loop with a second read-back.
+c) Ask for the whole instruction again before starting: "Once the tack coat is dry, start the north lane at the first manhole. Fifty-millimetre lift. Roller stays ten metres back. Ken is flagging at the east end. Done by noon. Is that right?" Confirm or correct the read-back.
 
 ## Check yourself
 

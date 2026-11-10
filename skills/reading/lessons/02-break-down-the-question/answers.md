@@ -35,7 +35,7 @@ The words **"trained on this model"** and **"training records"** match "signed o
 
 a) **No.** Item 4 says "Charge it in the charging bay only." Wait for the bay or ask the lead hand.
 b) **No.** Item 5 says "Both must stop all movement." One working is not enough. Tag the lift and tell the lead hand.
-c) **Yes.** Item 4 says do not start "if fewer than 2 bars show". Two bars is not fewer than 2, so you can start. This is a close-reading point: "fewer than 2" means 0 or 1.
+c) **Yes for the battery criterion only.** Item 4 says do not start "if fewer than 2 bars show". Two bars is not fewer than 2. The worker must still be trained on this model and complete all other required checks before starting. This is a close-reading point: "fewer than 2" means 0 or 1.
 
 ## Task 6 (level 1)
 

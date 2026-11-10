@@ -160,7 +160,7 @@ ______________________________________________
 
 > "Start the south lane at the first manhole, fifteen-millimetre lift, roller ten metres back, Ken's at the east end, done by noon."
 
-a) Find the two errors.
+a) Find the two wrong details and the missing condition.
 
 ______________________________________________
 

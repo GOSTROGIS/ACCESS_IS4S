@@ -24,11 +24,11 @@ Answers vary. A good answer names a real skill an employer can use and backs it 
 
 ## Task 3 (level 2)
 
-Samples:
+Samples use fictional practice numbers; they are not facts supplied by the duties.
 
 a) "Ran the tool crib for a 20-person crew, signing out and checking in tools every shift."
 b) "Loaded 4 to 6 delivery trucks a day, checking each load against the order."
-c) "Completed pre-use safety checks on the forklift at the start of every shift."
+c) "Completed 1 pre-use safety check on the forklift at the start of every shift."
 
 A good line starts with a past-tense action verb, includes a number, and has no "I". Numbers can be estimates if they are honest.
 
@@ -44,7 +44,7 @@ A good résumé for posting FBF-26-14:
 
 - fits on one page and has contact information
 - has a summary that names the shop helper job
-- shows each posting requirement: reliable attendance, tape measure, hand and power tools, steel-toed boots, forklift (as an asset)
+- matches the posting requirements to evidence the character actually has; identifies missing information rather than inventing qualifications (forklift experience is an asset, not a requirement)
 - uses achievement lines with numbers and action verbs, without "I"
 - lists education and certificates with dates
 - has no SIN
@@ -67,9 +67,9 @@ Sample for Marnie Paul (about 170 words):
 > Sincerely,
 > Marnie Paul
 
-Marnie and her contact details are fictional.
+Marnie and her contact details are fictional. The sample also adds illustrative details not supplied in her profile: specific metalwork tools, tape-measure ability, boots and availability. Label these additions in class; confirm such details before using them in a real application.
 
-A good letter follows the three-part plan, names the job and posting number, matches two or three requirements with proof, gives the start date and contact information, stays under 250 words, and uses "I" naturally (a cover letter, unlike a résumé, is written in the first person).
+A good letter follows the three-part plan, names the job and posting number, matches two or three requirements with proof, gives the start date and contact information, uses 150 to 250 words, and uses "I" naturally (a cover letter, unlike a résumé, is written in the first person).
 
 ## Task 6 (level 2)
 

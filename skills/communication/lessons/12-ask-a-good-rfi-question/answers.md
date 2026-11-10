@@ -3,7 +3,7 @@
 ## Task 1 (level 2) Clear or vague?
 
 a) "Window W3. Plan A2.2 shows it 1,200 wide. The window schedule on A6.2 says 1,500 wide."
-b) "At grid C-4, mechanical plan M2.1 runs a 400 mm duct. Structural drawing S2.1 shows a beam at grid C that sits 300 mm lower than the duct. The duct can't pass at that height."
+b) "At grid C-4, mechanical plan M2.1 runs a 400 mm duct. Structural drawing S2.1 shows a beam at grid C that sits 300 mm lower than the duct. Please confirm the duct and beam elevations and required clearance; the reference surfaces are not specified, so these numbers alone do not prove a clash."
 
 Any answer that names the sheets, the tag or gridline and both numbers is correct.
 
@@ -38,8 +38,8 @@ Sample:
 - **RFI No. / Date:** 021 / today's date
 - **To / From:** Mechanical engineer, through the architect / Site superintendent
 - **Drawings:** M2.1 mechanical plan, S2.1 structural plan, grid C-4
-- **Question:** M2.1 runs a 400 mm duct through grid C-4. S2.1 shows a beam at grid C that sits 300 mm below the duct elevation. How should the duct pass the beam?
-- **Our suggestion:** Drop the duct below the beam, or change to a flatter duct of the same area. Please confirm the size.
+- **Question:** M2.1 runs a 400 mm duct through grid C-4. S2.1 shows a beam at grid C that sits 300 mm below the duct elevation. Please confirm which surfaces these elevations refer to, the available clearance, and the approved duct route.
+- **Our suggestion:** Ask the designer to review a revised route or duct shape if clearance is insufficient, and confirm the dimensions and performance requirements. Equal area alone does not establish a suitable replacement duct.
 - **Answer needed by:** Monday 2026-11-16, end of day. Duct work starts 2026-11-20 and a size change needs three working days to reorder.
 
 ## Task 7 (level 3) Answer-needed date

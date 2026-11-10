@@ -19,12 +19,12 @@ c) $1,200 − $960 = **$240 more** each week, before any deductions.
 |---|---|---|
 | Control | "I'll tell you where and when each day." Ray decides. | Employee |
 | Tools and equipment | "Use my tools and my van." Ray supplies them. | Employee |
-| Helpers | Nothing says Jordan can hire or send someone else. The offer is to Jordan. | Employee |
-| Financial risk | Jordan pays no costs of his own. | Employee |
-| Investment and management | Jordan has no business, truck or tools in this. | Employee |
-| Chance of profit | Paid by the hour. No way to make a profit or a loss. | Employee |
+| Helpers | Not stated. Ask whether Jordan can hire or send a helper. | Unknown |
+| Financial risk | No deductions are mentioned, but expenses and liability are not explained. Ask what costs or losses Jordan would bear. | Unknown |
+| Investment and management | Ray supplies tools and a van. Jordan's own business investment and management responsibilities are not stated. | Need more information |
+| Chance of profit | Hourly pay is stated. It does not establish all expenses, profit opportunities or risk of loss. Ask about these. | Need more information |
 
-**It looks like employee work.** Every one of the six questions points to employee, even though Ray calls it contractor work. Only the CRA, Employment Standards or a court can make the final decision, but the facts do not match the label.
+**The supplied control and equipment facts suggest employee work**, despite the contractor label. The other factors cannot all be decided from this message. Gather the missing facts and seek advice from the relevant authority; this exercise is not a final legal determination.
 
 ## Task 4 (level 2)
 

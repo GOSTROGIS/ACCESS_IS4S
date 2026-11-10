@@ -143,16 +143,19 @@ List three things you do outside paid work. You may use a made-up person instead
 | ______ | ______ | ______ |
 | ______ | ______ | ______ |
 | ______ | ______ | ______ |
+| ______ | ______ | ______ |
+| ______ | ______ | ______ |
+| ______ | ______ | ______ |
 
 **Task 3** (level 2)
-Rewrite each duty as an achievement line. Start with an action verb, add a number, and do not use "I".
+Rewrite each duty as an achievement line. Start with an action verb, add a number, and do not use "I". For these fictional practice duties, label any numbers you invent. In a real résumé, use only facts and honest estimates you can explain.
 
 a) I was in charge of the tool crib.
 b) Responsible for loading trucks.
 c) I did safety checks on the forklift.
 
 **Task 4** (level 3)
-In a group of two or three, choose one character. Choose a résumé format and say why. Write a one-page résumé for the character for posting FBF-26-14. Present it to the class.
+In a group of two or three, choose one character. Choose a résumé format and say why. Write a one-page résumé for the character for posting FBF-26-14. Present it to the class. Mark any extra fictional details you add for practice; do not claim missing qualifications as established facts. A real résumé must describe your own experience accurately.
 
 - **Sky Morin**, 24. Finished a trades preparation program in 2026. Two summers at a tree-planting camp (planted about 2,000 trees a day by the second summer). Fixes small engines for family and neighbours. Has a first aid certificate.
 - **Lou Antoine**, 41. Twelve years as a line cook, the last four as kitchen lead, trained new staff. Built his own backyard deck. Coached a youth soccer team for three seasons. Wants to change careers into the trades.
@@ -178,7 +181,7 @@ Swap your Task 5 letter with another group. Check it against this list and mark 
 - two or three requirements matched with proof
 - start date and contact information
 - no spelling errors, no "I am a hard worker" without proof
-- under 250 words
+- 150 to 250 words
 
 ## Check yourself
 

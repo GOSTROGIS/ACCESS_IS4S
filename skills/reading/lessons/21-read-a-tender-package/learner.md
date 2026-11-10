@@ -151,7 +151,7 @@ c) On March 4, a site visitor tells the estimator, "Don't worry about the paint,
 
 **Task 8** (level 3)
 Section 05 50 00 says the fabricator shop primes the guard. Section 09 91 00 says the painter primes all bare steel on site.
-a) Why does the order of precedence in Document A not settle this?
+a) Do these instructions necessarily conflict? What handover detail about bare or damaged areas would you clarify before pricing?
 b) Today is March 2. Write the question you would send to the architect.
 
 ______________________________________________________

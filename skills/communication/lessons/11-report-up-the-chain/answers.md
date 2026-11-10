@@ -10,14 +10,14 @@ a) As soon as you know. b) Before it gets covered or built on, so right away. c)
 
 ## Task 3 (level 2) Fill the card
 
-Sample. What: "A junction box with live wires hanging out and no cover." Where: "Unit 310." When: "Found at 2:10." What I did: "I stayed back, kept people out of the unit and put tape across the door." What I need: "Someone qualified to make it safe, and a decision on whether we keep working on that floor."
+Role-play sample. The protective actions below are proposed choices for this exercise, not facts supplied in the case. In a real report, state only what you actually did. What: "A junction box with live wires hanging out and no cover." Where: "Unit 310." When: "Found at 2:10." What I did: "I stayed back, kept people out of the unit and put tape across the door." What I need: "Someone qualified to make it safe, and a decision on whether we keep working on that floor."
 
 A good answer does not touch the wires and does not leave the hazard unguarded while reporting. It reports in person or by phone because it is urgent.
 
 ## Task 4 (level 2) Take out the blame
 
-a) Sample: "There's scrap and offcuts on the east stairs, levels 2 to 3. It's a trip hazard."
-b) Sample: "The stringers for stair B are 30 mm short at the top landing. Can you check the measurement with me?" (Any fact-based version with no insult is correct.)
+a) Sample: "There is material on the stairs. Can we check whether it blocks the route?" Confirm the exact material and location rather than adding a floor or blaming a trade.
+b) Sample: "The stringers appear to be cut incorrectly. Can you check the measurement with me against the drawing?" The prompt gives no stair identifier, dimension or measured error; do not invent them.
 
 ## Task 5 (level 2) The rule
 
@@ -30,18 +30,18 @@ Sample: a) call or text. b) in person, so you can show it. c) in person, right a
 
 ## Task 7 (level 3) Own the mistake
 
-Say it today, as soon as you find it, not tomorrow at 7:00. Sample: "I framed the window opening in the north bedroom 50 mm too narrow. The window comes at 7:00 tomorrow. I can reframe it this afternoon. It'll take about an hour. Do you want me to start now?" A good answer gives the facts, owns the mistake, offers a fix and asks for a decision.
+Say it today, as soon as you find it, not tomorrow at 7:00. Sample: "I framed a window opening 50 mm too narrow. The window installer arrives tomorrow at 7:00. Can you check the opening with me and agree on the repair before then?" Give the actual location when reporting. Do not invent a room, repair duration or promise that a repair can be completed without checking.
 
 ## Task 8 (level 3) Your supervisor is not there
 
 a) Make it safe if you can do so without danger: keep people away, put up any barrier, cones or tape you have. Do not go into the trench.
 b) The next person up who can act: another supervisor, the superintendent or the employer. Section 3.10 says a supervisor or the employer.
-c) Sample: "6:30, open trench by the sidewalk at the north end of Main St. No barrier overnight. I put cones and tape around it. Told [name] at the trailer. Please call me."
+c) Sample: "At 6:30 a.m. I found the trench next to the sidewalk at [confirm exact location] left open overnight with no barrier. I could not reach you by phone. [State protective actions actually taken and who was reached, if anyone.] Please call me urgently." Do not claim barriers were placed or someone was told unless that happened.
 
 ## Task 9 (level 3) Near miss
 
 a) Yes. A load falling near a worker is an unsafe condition, and it could have caused a serious injury. Employers must investigate incidents like this.
-b) Sample: "At 10:20 a bundle of rebar slipped out of the sling on the level 2 pick and landed about a metre from Jo. Nobody was hurt. We stopped lifting. The sling is set aside. We need the rigging checked before we lift again."
+b) Sample: "A bundle of rebar slipped from a sling and landed one metre from a worker. Nobody was hurt. The crew suggested continuing. We need the lifting operation made safe and the cause checked before work resumes. [Add the actual location, time and actions taken.]" Do not invent a worker name or claim the crew stopped and isolated the sling unless confirmed.
 c) A small change in where someone stood would have meant a serious injury. Reporting it lets the cause be fixed before it happens again.
 
 ## Task 10 (level 3) Report on a call

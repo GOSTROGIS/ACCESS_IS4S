@@ -16,7 +16,8 @@ Errors and added promises:
 4. Arrival time is wrong: 7:30 am should be 8:00 to 8:30 am.
 5. Finish time is wrong: noon should be about 4:00 pm.
 6. The 10% discount is a promise nobody agreed to. Remove it.
-7. Missing: the reason (furnace arrives November 16), that the heat will be off, the request to reply by Friday, and a signature.
+7. "Licensed crew" is not supported by the source facts. Remove it unless verified.
+8. Missing: the reason (furnace arrives November 16), that the heat will be off, the request to reply by Friday, and a signature.
 
 Corrected email:
 
@@ -44,18 +45,18 @@ e) **Do not paste,** unless your employer has approved the tool for that use. Pr
 
 Sample:
 
-> **Subject:** Willow Creek Unit 6 drywall start moved to Monday, November 16
+> **Subject:** Request to move Willow Creek Unit 6 drywall start to Monday, November 16
 >
 > Hi Marie,
 >
 > The drywall start at the Willow Creek duplex, Unit 6, set for Thursday, November 12, needs to move to **Monday, November 16**. The framing inspection has not passed yet.
 >
-> Can you confirm Monday, November 16 works for your crew?
+> Could your crew start Monday, November 16, provided the framing inspection has passed by then? Please confirm availability; we will confirm clearance before work starts.
 >
 > Thanks,
 > Sam Ortiz
 
-A good answer: puts the job, unit and new date in the subject line, names the drywall start instead of "it", gives both dates in full, gives the reason in plain words, and asks a clear question.
+A good answer: puts the job, unit and proposed date in the subject line, names the drywall start instead of "it", gives both dates in full, gives the reason in plain words, and asks a clear question.
 
 ## Check yourself
 

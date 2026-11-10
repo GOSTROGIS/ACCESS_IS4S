@@ -2,6 +2,10 @@
 
 Session 6 of 26 in the Reading lessons · 90 minutes
 
+## Accessible participation
+
+Arrange a shared device, accessible official excerpt or permitted printed copy for learners who cannot use the PDF or do not have a device. Include the relevant headings, numbering and revision information so they can trace the answer. For offline work, record which version was supplied; an older excerpt does not establish the current rule. Assess source navigation separately if live access cannot be demonstrated.
+
 ## Opening (5 min)
 
 Welcome learners. Ask: "Who has heard someone on a site say 'Code says…'? Did anyone check?" Hold up a phone and say the whole BC Building Code is free on it. Tell a short story: two carpenters argue about how far a handrail can stick out into a stair. One says 4 inches, one says 6. Neither looks it up. The inspector does. Today learners find the exact rule in less time than the argument takes.

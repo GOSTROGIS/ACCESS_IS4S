@@ -35,13 +35,13 @@ Sample questions. A good answer describes what was noticed and asks, without acc
 
 ## Task 5 (level 2) Plain words
 
-Sample answers.
+Sample answers. Preserve the original meaning without inventing a setting or measurement.
 
-1. "Finish this one before lunch. After lunch, we start the next one." Show: point to the next one. Check: "Which one is next?"
-2. "Tighten it by hand until it stops. Do not use the wrench." Show: tighten one yourself. Check: ask them to do the next one while you watch.
-3. "That one is not straight. Move it a little, about 1/8 inch, this way." Show: point to the direction. Check: look at it together after the move.
+1. "Finish this one before lunch. Then we start the next one." Show: point to the next one. Check: "Which one is next?" The original does not say to wait until after lunch.
+2. "Tighten it, but do not overtighten it. What tightness or torque and tool are required?" Once confirmed, demonstrate the approved method and ask the learner to show it back. The original does not specify hand-tightening or prohibit a wrench.
+3. "That needs a small adjustment. Which way and how far should it move?" Confirm the direction and amount, demonstrate, then check together. The original supplies neither a distance nor the exact fault.
 
-A good answer removes the slang, gives one idea at a time and adds a way to show or check.
+A good answer removes slang, uses one idea at a time, and asks for missing technical details rather than guessing.
 
 ## Task 6 (level 2) Read the figure
 

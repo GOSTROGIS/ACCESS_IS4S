@@ -13,7 +13,7 @@ Steps: use the "who writes what" table. Form 6A is filled in by the worker and g
 ## Task 2 (level 2)
 
 1. F
-2. O. Blame. Leave it out. If something about how Dakota carried the sheet matters, describe it as a fact, for example "He was carrying the sheet in front of him with both hands."
+2. O. Blame. Leave it out. Use only a supplied fact instead, for example "Dakota was carrying a sheet of 3/4-inch plywood down the temporary ramp." The case does not say he used both hands.
 3. F
 4. F
 5. O. Blame and a generalization. Leave it out. If there is a specific hazard, describe it: "Two cleats were missing from the lower part of the ramp."
@@ -37,15 +37,15 @@ A good answer:
 
 Sample answers:
 
-a) Injury: 3 cm cut on the left shin. Right knee painful, worker reports he landed on it.
+a) Injury: 3 cm cut on the left shin. The case says Dakota landed on his right knee, but does not give Ray's knee assessment or a report of pain. Do not add symptoms or findings that are not supplied.
 b) Treatment: cleaned and bandaged the cut on the left shin at 10:50 am. Applied ice to the right knee.
 c) After treatment: worker returned to light duty at 11:30 am.
 
-A good answer describes only what Ray saw, was told and did. Ray does not know about the swelling at 3:00 pm or the clinic visit at the time he writes the record, so those are not in his entry.
+A good answer separates the treatment stated in the case from any assessment findings that are missing. It describes only what Ray saw, was told and did. Ray does not know about the swelling at 3:00 pm or the clinic visit at the time he writes the record, so those are not in his entry.
 
 ## Task 5 (level 3)
 
-Sample answer:
+Sample answer. The cone and warning below are chosen hypothetical actions for this exercise; they are not facts supplied in the case. In a real report, say only what you actually did:
 
 > Leah, at 8:00 am I saw that two cleats are missing from the lower part of the temporary ramp on the north side. The ramp is wet from the rain and slippery. I put a cone at the top of the ramp and told the two carpenters working nearby. Can the cleats be replaced before anyone carries material down it?
 

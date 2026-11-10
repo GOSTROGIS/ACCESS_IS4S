@@ -47,20 +47,16 @@ c) **No.** Document A, item 3: only a written addendum from the architect change
 
 ## Task 8 (level 3)
 
-a) Both instructions are in the **specifications**. The order of precedence ranks specs above drawings, but here two spec sections disagree with each other. Both have the same date. Nothing in Document A says which spec section wins.
+a) The requirements can work together: the fabricator shop primes the guard, and the painter primes any bare steel on site before finish coats. A shop-primed surface is not bare steel. Do not assume the two sections conflict or that one must replace the other. Clarify responsibility for any bare or damaged areas at handover if that scope is uncertain.
 
 b) A sample question:
 
 > **To:** Alder & Moss Architects
 > **Job:** Tool library fit-out, Unit 4
 > **Date:** March 2
-> **Question:** Section 05 50 00 says the fabricator shop primes the steel guard with one coat of grey primer. Section 09 91 00 says the painter primes all bare steel on site before finish coats. Please confirm who primes the guard, and whether shop primer must also be applied, so both trades price it once.
+> **Question:** Section 05 50 00 requires shop primer on the steel guard; section 09 91 00 requires the painter to prime bare steel on site. Please confirm the handover condition and who prepares and primes any bare or damaged areas after delivery and installation, so each trade prices its scope.
 
-Points a good question covers:
-- names the job and the date
-- names both spec sections and says exactly what each one says
-- asks one clear question
-- sent in writing before the March 5 deadline
+A good question names the job and date, quotes both requirements accurately, asks about the uncertain handover scope, and is sent in writing before March 5. It does not claim that all shop primer must be applied twice.
 
 ## Check yourself 1
 

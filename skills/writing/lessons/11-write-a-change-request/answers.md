@@ -65,15 +65,15 @@ Any four:
 
 Sample text:
 
-> Hi Marta, happy to move the partition 300 mm north. Price is $860 and 1 extra day. I'll bring the change request to the site office at 1:00 so you can sign it, then we'll start right after.
+> Hi, moving the partition 300 mm north costs $860 and adds 1 day. Who is authorized to approve it? I can bring the change request to the site office for their signature. We will wait for written approval before starting.
 
 Sample change log line:
 
 | CR | Date | Description | Amount | Status |
 |---|---|---|---|---|
-| CR-04 | 2026-11-18 | Move partition 300 mm north, requested by Marta Kowal on site | $860, 1 day | Waiting for signature |
+| CR-04 | 2026-11-18 | Move partition 300 mm north, requested by [confirm name] on site | $860, 1 day | Waiting for signature |
 
-A good answer is polite, says yes to the work, gives the price and the days, asks for a signature before starting and makes signing easy. Any date and CR number that fit the learner's log are fine.
+A good answer is polite, says yes to the work, gives the price and the days, asks for written approval from the authorized signer before starting and makes signing easy. A superintendent's title alone does not establish approval authority. Any date and CR number that fit the learner's log are fine.
 
 ## Check yourself
 

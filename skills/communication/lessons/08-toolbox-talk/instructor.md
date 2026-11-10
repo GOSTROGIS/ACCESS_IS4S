@@ -2,6 +2,10 @@
 
 **Session:** Communication lesson 8 of 13.
 
+## Accessible participation
+
+Use captions, an interpreter or a permitted accessible transcript when needed; the no-transcript exercise must not remove access. A learner may deliver a talk seated, with AAC or with a co-presenter. Agree on extra time for interpretation or assistive communication. Assess the message, structure and audience check, not a particular posture or unaided speaking speed.
+
 ## Opening (5 min, step 1.1)
 
 Welcome learners to session 8 of the Communication series. The session runs 100 minutes. Ask who recorded a voicemail greeting or made a work-style call since last session.
@@ -27,7 +31,7 @@ By the end of the session, learners will be able to:
 |---|---|---|---|---|
 | 1.1 | Opening, action plan check, best and worst talk hook, objective. | Report back, add to the two lists. | Flipchart | 5 min |
 | 1.2 | Pre-assessment questions. | Answer out loud. | None | 5 min |
-| 2.1 | Task 1. Give the date and setting of the "I Have a Dream" speech, then play a short excerpt of the recording from a source your organization is permitted to use. Do not hand out a transcript. Ask: "What makes him a strong speaker?" | Watch, take notes on voice, pauses, repetition, body and face, discuss. | Internet, projector, speakers | 12 min |
+| 2.1 | Task 1. Give the date and setting of the "I Have a Dream" speech, then play a short excerpt of the recording from a source your organization is permitted to use. Do not hand out a transcript unless it is needed for access; provide captions or another permitted accessible version. Ask: "What makes him a strong speaker?" | Watch, take notes on voice, pauses, repetition, body and face, discuss. | Internet, projector, speakers | 12 min |
 | 2.2 | Ask: "Who is a speaker you respect from your own Nation, family or community? What makes people listen to them?" This is optional. Only use names and examples learners offer. Flipchart what gives a speaker presence. | Share if they choose. | Flipchart | 6 min |
 | 2.3 | Teach the delivery points. Run Task 2 with three volunteers, or with the whole group standing. | Try the three postures, say which worked and why. | Learner page | 8 min |
 | 2.4 | Teach the five-part shape, preparing, audience and the section 3.2 record requirement. Read the worked example aloud and time it. Show worksafebc.com/toolbox-meeting-guides on screen. | Follow the example, name the five parts. | Learner page, screen | 10 min |

@@ -61,6 +61,10 @@ During this session we covered:
 
 Total time: 5 + 3 + 5 + 62 + 9 + 6 = 90 minutes.
 
+## Optional extension: Task 12 (15 min beyond the core session)
+
+Task 12 is an additional CAD concepts exercise, not part of the 90-minute core above. If using it, allow 5 minutes to teach model space, layouts, layers, blocks and external references, 7 minutes for the task and 3 minutes to compare answers. Otherwise assign it separately or omit it. The extended session is 105 minutes.
+
 ### Notes for the instructor
 
 - **The sets are real.** The site owner holds the rights to all three drawing sets and directed that they be published. Treat them with respect. The leləm̓ Community Centre is a Musqueam-associated project. Use the name as printed and do not make jokes about the project or the people on it.

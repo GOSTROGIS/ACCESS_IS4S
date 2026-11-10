@@ -34,7 +34,7 @@ Steps: the week ends on Friday, November 6, so Monday is November 2. Write each 
 - Material: 3 coils, 3/4" PEX pipe
 - What you saw: "On 2026-11-03 at 3:30 pm I counted 8 coils of 3/4" PEX in the cage. On 2026-11-04 at 7:10 am the cage lock was hanging open and 5 coils were left."
 - Other information: "When I arrived at 6:50 am a white pickup truck was parked beside the cage. It left at 7:00 am. I did not see the licence plate or the driver. I told Carla Ng at 7:20 am."
-- Signatures: Jesse Lim (employee reporting), Carla Ng (supervisor receiving)
+- Signatures: Jesse signs the employee-reporting field. Leave the supervisor-receiving field for Carla Ng to sign herself; Jesse must not sign for Carla.
 
 A good answer works out the quantity (8 − 5 = 3 coils), keeps the times in order, and mentions the truck only as something seen. It does not say the truck driver took the pipe, because Jesse did not see that.
 

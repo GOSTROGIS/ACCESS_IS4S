@@ -2,6 +2,10 @@
 
 **Session:** Communication lesson 9 of 13.
 
+## Accessible participation
+
+Keep all practice in the classroom, with no live equipment or traffic. Provide neutral descriptions of the official chart and large-print or accessible digital copies. Learners may identify a signal by its description instead of performing it, and use written call cards, captions, signing or AAC for the radio exchange. Record what was demonstrated; this communication lesson does not qualify anyone to direct a crane or authorize an alternative signal system on a job site.
+
 ## Opening (5 min, step 1.1)
 
 Welcome learners to session 9 of the Communication series. The session runs 75 minutes. Ask who led or helped lead a talk since last session.

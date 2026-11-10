@@ -5,16 +5,16 @@
 Samples:
 
 a) "Photo 1. Loading door, Fraser Bend Fabrication, from inside the shop looking west, 2026-11-25, 7:40 am."
-b) "Photo 2. Cracked weld on the top hinge of the loading door, looking west, 2026-11-25, 7:42 am. Tape shows 40 mm."
+b) "Photo 2. Cracked weld on the top hinge of the loading door, direction not recorded, 2026-11-25, 7:42 am. Tape shows 40 mm."
 c) "Photo 3. Stack of steel plate on the floor in front of Bay 3, looking south, 2026-11-25, 7:50 am."
 
-A good caption has a number, says what is in the photo, where, which way the camera faces, and the date and time. The close-up mentions the tape for scale.
+A good caption has a number, says what is in the photo, where, which way the camera faces, and the date and time. The close-up mentions the tape for scale. Its camera direction is not given; do not borrow the wide shot's direction.
 
 ## Task 2 (level 2)
 
 Sample:
 
-> **What I saw:** The metal corner bead on the washroom wall beside the door is dented for about 300 mm, at about hip height. There is drywall dust on the floor below it. Possible cause: a cart hit the corner. Not confirmed.
+> **What I saw:** The corner bead on the washroom wall beside the door is dented for an estimated 300 mm, at about hip height. There is dust on the floor. The length is an estimate from the rough notes, not a verified measurement.
 >
 > **Steps:**
 > 1. Remove the dented section of corner bead.
@@ -26,7 +26,7 @@ Sample:
 A good answer:
 
 - keeps the facts (where, how long, how high, the dust)
-- labels the cart as a possible cause, not a fact
+- leaves the cart hypothesis out of the facts-only paragraph and does not identify the dust as drywall dust without evidence
 - writes each step as a command that starts with a verb
 - ends with a step that hands the work on to the next trade
 

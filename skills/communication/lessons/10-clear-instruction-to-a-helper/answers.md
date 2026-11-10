@@ -35,15 +35,15 @@ a) "Set it at fifteen, one-five." (Add the unit: "fifteen millimetres" or "fifte
 
 ## Task 7 (level 3) Plain words for a new helper
 
-Sample:
+Sample for a classroom simulation, away from traffic and any real opening:
 
-1. **Tell and show:** "Luis, cones. Around this manhole." Point to the manhole and the cone stack.
-2. **Show:** Place the first two cones and pace off 2 m between them. Hold up two fingers and say "two metres."
-3. **Check:** "Show me where the next cone goes." Luis places it.
-4. **Watch:** Watch him place two more. "Good. All the way around." Point in a circle.
-5. **Safety, as its own step:** "Watch for cars. Face the traffic." Point to your eyes, then the cars.
+1. **Safety, first:** "Stay in this safe practice area." Identify its boundary and check that Luis knows where not to go. On a real site, follow the approved traffic-control and opening-protection plan before setup; this exercise is not that plan.
+2. **Tell and show:** "Luis, cones. Around this marked practice manhole." Point to the marking and cone stack.
+3. **Show:** Place the first two cones and measure 2 m between them. Say "two metres" and show the measurement; do not substitute an approximate pace.
+4. **Check:** "Show me where the next cone goes." Luis places it.
+5. **Watch:** Watch him place two more. "Good. All the way around." Point in a circle.
 
-A good answer uses short plain words, one idea per step, pointing and showing, a show-me check and a separate safety step. It does not ask "Do you understand?"
+A good answer uses plain words, one idea per step, a show-me check and a separate safety step before the activity. It does not ask only "Do you understand?"
 
 ## Task 8 (level 3) What went wrong?
 
