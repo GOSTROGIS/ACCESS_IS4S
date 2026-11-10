@@ -78,6 +78,8 @@ After adding lessons or rebuilding the site, run:
 python3 source/lessons/check_curriculum.py
 python3 -m unittest discover -s source/lessons -p 'test_*.py'
 python3 source/check-links.py skills
+python3 source/site/build_downloads.py
+python3 source/site/test_downloads.py
 ```
 
 The curriculum check inspects every lesson directory, including folders the page builder would otherwise skip. It requires all three source and HTML roles, complete metadata, valid levels and duration, an instructor Sources section, links from the skill index, and navigation between lesson roles. It also requires the three core chapters for each of the nine skills. A failure exits nonzero.
@@ -85,3 +87,5 @@ The curriculum check inspects every lesson directory, including folders the page
 Passing these checks confirms structural consistency, not factual accuracy, source currency, learning quality, full accessibility, or correctness of every answer. Review those separately. Core chapter corrections belong in the canonical Business curriculum followed by `source/textbook/sync.py`; locally authored lesson corrections belong in their Markdown sources followed by the site build.
 
 The [systematic review record](REVIEW-SYSTEMATIC-2026-11-10.md) lists per-lesson coverage, corrections and remaining verification. Duplicate task numbers and learner/answer task-number parity are now checked automatically; this does not replace reviewing what an answer says.
+
+The download tests compare every packaged lesson and shared asset with current sources, accounting for offline-link rewriting. They reject stale text or assets even when the links still work. Rebuild the packs after source changes and publish the matching ZIPs with the generated pages.
