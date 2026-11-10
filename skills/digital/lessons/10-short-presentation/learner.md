@@ -82,7 +82,7 @@ ______________________________________________________________
 
 **Task 6** (level 1) Start the slide show with F5. Move forward with N and back with P. Press Esc to stop.
 
-**Task 7** (level 2) Give your presentation to your group in two minutes or less. Ask one person to time you and one person to tell you one thing that worked and one thing to change.
+**Task 7** (level 2) Explain what the tool, part or process is, how it is used, and one safety or quality point supported by your source. Give your presentation to your group in two minutes or less. Ask one person to time you and one person to tell you one thing that worked and one thing to change.
 
 ______________________________________________________________
 

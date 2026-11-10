@@ -32,7 +32,7 @@ Complexity: level 1, with Task 5 at level 2.
 | 1.1 | Explain device, app, file and folder with the job-box comparison. Point to each on the projected screen. | 1.1 Listen, then complete Task 1 (match the four words). | Learner page, projector | 5 min |
 | 1.2 | Model the worked example: a folder for the Riverbend job and the name `material-request_riverbend_2026-11-06_v1`. Show the characters Windows does not allow. | 1.2 Watch. Say out loud what each part of the example name tells a reader. | Projector, Word, File Explorer | 6 min |
 | 2.1 | Show the class practice location. Demonstrate Windows logo key + E, then **New** > **Folder**. Circulate. | 2.1 Complete Task 2: make the two folders. | One computer per learner | 8 min |
-| 2.2 | Demonstrate **File** > **Save As**, browse to the folder, type the name, **Save**. If the file is in OneDrive with AutoSave on, show **File** > **Save a Copy** for a new version. | 2.2 Complete Task 3. Write the name and the location. | Word | 10 min |
+| 2.2 | Demonstrate **File** > **Save As**, browse to the folder, type the name, **Save**. If the file is in OneDrive with AutoSave on, show **File** > **Save a Copy** before editing to protect the original. Confirm the new file name before making the change. | 2.2 Complete Task 3. Write the name and the location. | Word | 10 min |
 | 3.1 | Demonstrate the File Explorer search box. Explain the three OneDrive icons on the board. | 3.1 Complete Tasks 4 and 5: find the file, make `v2`, open both and compare. | File Explorer, OneDrive if used | 10 min |
 | 3.2 | Write the three poor names on the board. Take answers from the group. | 3.2 Complete Task 6. Share one improved name. | Whiteboard | 5 min |
 
@@ -61,6 +61,10 @@ Time check: 3 + 2 + 3 + 44 + 5 + 3 = 60 min.
 - Learners who already manage files well can help a partner, then try Task 5 with a second change and `v3`.
 - The OneDrive icons only appear if the computer is signed in to OneDrive. If it is not, teach the icons from the table and leave the live check for later.
 - The Digital chapter's [Control one action and check its effect](../../learner.md) and the [practice desk](../../practice-desk/setup.html) give more save-and-reopen practice.
+
+## Evidence to check
+
+Observe the learner reopen both files and compare their contents, not only their names. Record whether the original stayed unchanged.
 
 ## Sources
 

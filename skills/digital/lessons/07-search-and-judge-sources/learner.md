@@ -24,19 +24,21 @@ A web address (URL) is the location of a page. Example:
 `https://www.worksafebc.com/en/health-safety/hazards-exposures/ergonomics`
 
 - `https://` means the connection is encrypted. It does not prove the site is honest.
-- `www.worksafebc.com` is the **domain**: who runs the site.
+- `www.worksafebc.com` is the **domain**: the site host name. The registered domain and the organization behind it need checking.
 - Everything after the first single `/` is the page inside that site.
 
 To find the real owner, look at the part just before the first single `/`, and read it from the right. The Canadian Centre for Cyber Security warns that fake sites use addresses like `login.google.com.example.com`. That page belongs to `example.com`, not Google.
 
 Examples of official addresses you will use in these lessons:
 
-| Address ends in | Who runs it |
+| Exact domain or a subdomain of it | Organization to check |
 |---|---|
 | `canada.ca` or `.gc.ca` (for example `cyber.gc.ca`) | Government of Canada |
 | `gov.bc.ca` | Government of British Columbia |
 | `worksafebc.com` | WorkSafeBC |
 | `vancouver.ca` | City of Vancouver |
+
+Check the hostname, not words later in the URL. For example, `notcanada.ca` is not `canada.ca`, and `example.com/canada.ca` is still on `example.com`. Read the suspicious examples below as text only; do not visit them.
 
 ### Search smarter
 
@@ -73,7 +75,7 @@ Kai needs WorkSafeBC's guide on setting up a computer workstation.
 
 ## Practice
 
-**Task 1** (level 1) For each address, write who runs the site.
+**Task 1** (level 1) For each address, write the site host name. The registered domain and the organization behind it need checking.
 
 - `https://www.canada.ca/en/services/jobs/training/initiatives/skills-success.html` ______________
 - `https://www.cyber.gc.ca/en/guidance/best-practices-passphrases-and-passwords-itsap30032` ______________

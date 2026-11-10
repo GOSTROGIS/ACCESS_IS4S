@@ -92,7 +92,7 @@ Open a new blank Word document. Type or paste this text exactly. It is for a fic
 
 **Task 4** (level 1) Make the sentence `Do not take a damaged tool.` bold.
 
-**Task 5** (level 2) The return time has changed. Use Find and Replace (Ctrl + H) to change `3:30 p.m.` to `3:00 p.m.` Then use Find (Ctrl + F) to count how many times the word `tool` appears. Write the count Word shows.
+**Task 5** (level 2) The return time has changed. Use Find and Replace (Ctrl + H) to change `3:30 p.m.` to `3:00 p.m.` Then use Find (Ctrl + F) to count matches for `tool`, including `tools`, with case matching and whole-word matching off. Do this before adding the title page in Task 6. Write the count Word shows.
 
 _______
 

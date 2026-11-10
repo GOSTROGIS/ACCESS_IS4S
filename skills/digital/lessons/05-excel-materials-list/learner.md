@@ -70,7 +70,7 @@ Do not type fractions like 1/2 into a number cell. Excel may turn them into a da
 
 ### Worked example
 
-Line total for the studs: in E2, type `=B2*D2` and press Enter. Excel shows 230.4, because 48 × 4.80 = 230.40. Now change B2 from 48 to 50. E2 changes to 240 by itself. That is the point of a formula.
+Line total for the studs: in E2, type `=B2*D2` and press Enter. Excel shows 230.4, because 48 × 4.80 = 230.40. Now change B2 from 48 to 50. E2 changes to 240 by itself. That is the point of a formula. Restore B2 to 48 before starting the practice tasks.
 
 ## Practice
 
@@ -117,7 +117,7 @@ Put `=E6*1.1` into E8 when you are done.
 
 **Task 7** (level 1) Format D2:D7 and E2:E8 as money with **Accounting Number Format**. If you see `#####`, widen the column.
 
-**Task 8** (level 2) The foreman adds four more studs. Change B2 from 48 to 52. Which cells changed by themselves? Write their new values. Save as `v2`.
+**Task 8** (level 2) The foreman adds four more studs. First save a copy as `v2` and confirm it is open. Change B2 from 48 to 52. Which cells changed by themselves? Write their new values. Save as `v2`.
 
 ______________________________________________________________
 

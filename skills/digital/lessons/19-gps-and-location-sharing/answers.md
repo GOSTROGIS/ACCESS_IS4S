@@ -38,7 +38,7 @@ A good response says how to fix it: `49.2767, -123.1119`, and adds the habit of 
 
 Answer: depends on the phone and the building. A typical response: "Inside the classroom there was a wide light blue circle around the dot, so the phone was not sure where I was. By the window the circle got smaller, so the location was more certain."
 
-A good response explains that the circle shows where you could be, that a smaller circle is more certain, and that buildings block GPS. If the dot was grey or missing, Maps could not find the phone and was showing the last known place.
+A good response explains that the circle estimates uncertainty, does not guarantee a boundary, and a smaller circle indicates greater estimated certainty, and that buildings block GPS. If the dot was grey or missing, Maps could not find the phone and was showing the last known place.
 
 ## Task 6 (level 2)
 
@@ -71,4 +71,4 @@ The easting is less than 500 000. Zone 10's centre line is at 123°W and has an 
 2. BC is west of Greenwich, England, and decimal degrees show west as negative.
 3. Google Maps is not sure where you are. You could be anywhere inside the circle.
 4. The coordinates, a landmark a person can see, and the time.
-5. Distance in metres north of the equator.
+5. In BC, grid distance in metres north of the equator. Record the zone and hemisphere too.

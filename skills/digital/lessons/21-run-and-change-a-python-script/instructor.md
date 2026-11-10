@@ -67,9 +67,14 @@ Time check: 3 + 2 + 2 + 45 + 4 + 4 = 60 min.
 - Before class, check that Python with IDLE is installed on the class computers. The python.org installer for Windows installs IDLE (the "Tcl/Tk support and IDLE" option) by default. Test [grade_check.py](grade_check.py) with the worked example. If Python cannot be installed, run the script on the projector and let learners call out the inputs.
 - The script was written for ACCESS and tested with Python 3.13. Error messages can be worded a little differently in other Python versions. The error name on the last line (`ValueError`, `ZeroDivisionError`, `SyntaxError`) stays the same.
 - The grade limits in the tasks (5%, 2%) are practice job data. They are not code requirements for drains, ramps or paths. If a learner asks what the real limit is, the answer is "whatever the drawings, specifications and the authority having jurisdiction say for that job", and it gets checked there.
+- IDLE may show syntax errors in a dialog instead of a Shell traceback. Accept the observed message and highlighted line. The script is intentionally minimal, not a validated site calculator: keep all inputs fictional.
 - Keep the AI task to the single line of code. Do not let learners paste work files, client names, addresses or passwords into a chatbot (Lesson 16).
 - Learners who finish early can change the script to ask for the distance in feet and convert it to metres before the grade line. They must decide where the conversion goes and test it with numbers they can check by hand.
 - Links: Excel IF in [Lesson 17](../17-excel-if-vlookup-and-pmt/learner.html), AI tools in Lessons 11 to 16, BEDMAS in the [numeracy lessons](../../../numeracy/learner.html).
+
+## Evidence to check
+
+Keep the original script and separate edited practice copy. Record inputs, outputs, observed errors and the restored formula; rerun a known-good case after each fix. An instructor demo is an alternative if no AI account is available.
 
 ## Sources
 

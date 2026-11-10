@@ -53,7 +53,7 @@ Open task. A good message:
 - is short enough to read on a phone
 - has no private information
 
-Example: "Hi Dale, the lumber for Alder Street came at 7:10. The slip says 60 studs but only 40 came. Do you want me to call the yard, or keep going with what we have? Thanks, Sam"
+Example: "Hi Dale, the lumber for Alder Street came at 7:10. The slip says 60 studs but only 40 came. Do you want me to call the yard, or keep going with what we have? Thanks, [your practice name]"
 
 If ChatGPT added facts that were not in the scenario (a driver's name, a reason for the shortage, a new delivery time), the learner should take them out.
 

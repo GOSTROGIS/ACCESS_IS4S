@@ -67,6 +67,7 @@ One very expensive item pulls the average up a lot. It moves the median much les
 
 `=PMT(rate per payment, number of payments, amount borrowed)`
 
+- For this practice loan, assume a fixed nominal annual rate divided by 12, equal payments at the end of each month, no fees and no balance remaining after the last payment. Real loan terms may differ.
 - Keep the units the same. For monthly payments, divide the yearly rate by 12 and multiply the years by 12.
 - PMT shows the payment as a negative number, because it is money going out. Put a minus sign in front, `=-PMT(...)`, to show it as a positive number.
 - PMT includes principal and interest. It does not include taxes or fees.
@@ -96,7 +97,7 @@ ______________________________________________________________
 
 ______________________________________________________________
 
-**Task 4** (level 2) The foreman says one box of deck screws is enough. Change the quantity in B4 from 2 to 1. Write the new total and what E9 shows now. Save as `v2`.
+**Task 4** (level 2) The foreman says one box of deck screws is enough. Save a copy as `v2` before editing and confirm it is open. Change the quantity in B4 from 2 to 1. Write the new total and what E9 shows now. Save as `v2`.
 
 ______________________________________________________________
 

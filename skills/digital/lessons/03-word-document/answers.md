@@ -40,7 +40,7 @@ If the learner typed the text differently, accept the count Word shows and ask t
 
 ## Task 6 (level 2)
 
-Answer: page 1 holds four centred lines (title, prepared by, ACCESS Indigenous Skills4Success, Digital, date). The procedure starts at the top of page 2.
+Answer: page 1 holds four centred lines (title; prepared by; ACCESS Indigenous Skills4Success, Digital; date). The procedure starts at the top of page 2.
 
 Steps: Ctrl + Home to go to the start. Type the four lines, pressing Enter after each. Select the four lines, Ctrl + E. Click at the end of the date line, Ctrl + Enter. If the four new lines took the Heading 1 style from the title, change them to Normal (Ctrl + Shift + N) before centring.
 

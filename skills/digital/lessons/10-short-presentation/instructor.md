@@ -42,7 +42,7 @@ Complexity: levels 1 and 2.
 ## Post-assessment (5 min)
 
 1. Show me your source slide. How do you know that source is reliable?
-2. Show me one alt text you wrote and read it aloud. Does it say what the picture shows?
+2. If you used a picture, show me its alt text. If you used no pictures, explain when alt text would be needed.
 3. Which feature did you learn from the help pages, and did it work the first time?
 
 ## Summary (4 min)
@@ -65,6 +65,10 @@ Time check: 3 + 2 + 2 + 59 + 5 + 4 = 75 min.
 - If a learner wants to talk about a cultural object, tool or practice, they present only what they have the right to share and name the person, family or Nation it comes from. Offer a trade topic as the default.
 - Learners who are nervous about presenting can present to the instructor only, or record a voice-over. Record what they did.
 - This lesson links back to Lesson 6 (sharing a PowerPoint in Teams) and forward to the [AI literacy sequence](../../ai-literacy/learner.md), where learners use AI to prepare documents and then check them against the facts.
+
+## Evidence to check
+
+Reopen the final presentation and inspect slide text, notes and source details. Save changes after the new-feature task. Record the timed presentation and specific peer feedback.
 
 ## Sources
 

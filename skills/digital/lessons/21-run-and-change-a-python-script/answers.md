@@ -41,15 +41,15 @@ Answer: the script prints `Rise: 1.5 m`, `Grade: 7.5 %`, uphill, and `Too steep 
 
 By hand: rise = 51.50 − 50.00 = 1.50 m. Grade = 1.50 ÷ 20 × 100 = 0.075 × 100 = 7.5%. 7.5 is greater than 5.
 
-To reach exactly 5%: the length must be rise ÷ 0.05 = 1.50 ÷ 0.05 = 30 m. So the ramp needs to be 10 m longer, or the height difference smaller.
+To reach exactly 5%: the horizontal run must be rise ÷ 0.05 = 1.50 ÷ 0.05 = 30 m. That is 10 m more horizontal run, not 10 m more sloping surface length. Alternatively, reduce the height difference.
 
 ## Task 4 (level 3)
 
-(a) Last line: `ValueError: could not convert string to float: 'twelve'`. `float()` can only turn digits into a number. Fix: run again and type `12`.
+(a) Last line: `ValueError: could not convert string to float: 'twelve'`. `float()` accepts numeric text such as `12` or `12.5`, not the word `twelve` or a unit such as `12m`. Fix: run again and type `12`.
 
 (b) Last line: `ZeroDivisionError: float division by zero`. The grade line divides by `run`, and nothing can be divided by zero. Fix: run again with a real distance. On site, a distance of 0 means the two points were recorded at the same spot.
 
-(c) Last line: `SyntaxError: '(' was never closed`, pointing at the grade line. Python reads the code before running it and stops at the open bracket, so no questions are asked at all. Fix: put the `)` back after `start`, save and run.
+(c) A syntax error points to the unclosed bracket in the grade line. A terminal run may show `SyntaxError: '(' was never closed`; IDLE may instead display a syntax-error dialog and highlight the editor. Record what your environment actually shows. Python reads the code before running it and stops at the open bracket, so no questions are asked at all. Fix: put the `)` back after `start`, save and run.
 
 The exact words after the error name can differ a little between Python versions. The error names stay the same.
 

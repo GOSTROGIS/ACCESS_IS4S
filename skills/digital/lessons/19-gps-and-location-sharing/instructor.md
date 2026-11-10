@@ -47,7 +47,7 @@ Complexity: level 2, with Tasks 1 and 5 at level 1 and Task 8 at level 3.
 2. Your blue dot sits inside a circle as wide as a city block. Can you use it to stake a fence line? Why not?
 3. Name one thing a person you share your live location with can see besides where you are.
 
-(Answers: 49.5, −122.75. No, the circle means you could be anywhere inside it, and a phone fix is not a survey. Any of: name, photo, battery level, recent location even when you are not using Google apps.)
+(Answers: 49.5, −122.75. No, the circle is only an uncertainty estimate, and a phone fix is not a survey. Any of: name, photo, battery level, recent location even when you are not using Google apps.)
 
 ## Summary (4 min)
 
@@ -66,10 +66,15 @@ Time check: 3 + 2 + 2 + 45 + 4 + 4 = 60 min.
 
 - Before class, type both `49°16'36"N 123°06'43"W` and `49.2767, -123.1119` into Google Maps on the class computers and a phone, and check both land on BC Place. Google Maps Help lists DMS as a format that works, but its example is in the eastern hemisphere.
 - Google Earth Pro must be installed for Task 8. If it is not, demonstrate on the projector and let learners read the numbers off the screen. The web and phone versions of Google Earth were not checked for a UTM display.
+- Offer an instructor phone demonstration or a public landmark exercise for Task 5 if a learner has no phone or prefers not to enable location access. Do not require a personal account or personal location disclosure.
 - Learners do not need to turn on Location sharing in Task 7. Do not ask anyone to share their live location in class. Some learners may have personal safety reasons to keep their location private, and they do not need to explain that.
 - Do not ask learners to drop a pin on their own home. Use the training site entrance or a public landmark.
 - Which UTM zones cover all of BC was not checked for this lesson. Only zone 10 for the Vancouver area is stated.
 - The [Numeracy Hub Construction Operations tab](../../../numeracy/hub/index.html#conops) and the numeracy lessons on BEDMAS support the conversion arithmetic. Lesson 20, [Put your community on the map](../20-your-community-on-the-map/learner.html), uses these skills next.
+
+## Evidence to check
+
+Collect converted practice coordinates and an explanation of uncertainty. Observe a public meeting-point pin and read-back; do not require live location sharing or personal location screenshots.
 
 ## Sources
 

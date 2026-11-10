@@ -151,8 +151,8 @@ Use invented details only. Never type a real SIN, client or employer document.
 
 **Task 1** (level 2) Which assistant and which account? For each case, write the best choice and one reason.
 
-- a. Your employer uses Microsoft 365. Your work account shows Copilot Chat in Teams. You need a short summary of a long email from the general contractor.
-- b. Your employer runs on Google Workspace with Gemini. You want to shorten a site safety notice in Google Docs.
+- a. Your employer has approved Copilot Chat for summarizing non-confidential work emails in your work account. Your account shows Copilot Chat in Teams. You need a short summary of a long email from the general contractor.
+- b. Your employer has approved Gemini in the work Google Workspace account for editing non-confidential notices. You want to shorten a site safety notice in Google Docs.
 - c. At home, you want to practise for your Level 1 exam by talking, with your phone in your hand.
 - d. A coworker says to paste the company's bid into your personal chatbot to check the math.
 
@@ -165,7 +165,7 @@ ______________________________________________________________
 - c. A client's name, address and door code, to write a schedule. ___
 - d. The section number of a WorkSafeBC regulation you want explained. ___
 - e. A coworker's injury details, to write an incident report. ___
-- f. Your own notes about a late delivery, with no names. ___
+- f. Invented notes about a late delivery, with no personal, identifying or confidential details. ___
 - g. A drawing stamped "Confidential" by the owner. ___
 - h. A job posting from a public job board. ___
 
@@ -200,7 +200,7 @@ Your truth list (use these facts only):
 - Volunteered setting up lights and power for a community event
 - No paid electrical work experience yet
 
-Ask an AI assistant to write two résumé bullets that match the posting using only the truth list. Then make a table of every claim in the AI bullets and mark each one true or false. Write your final two bullets. Use the ACCESS [résumé builder](../../../writing/resume-builder/) to add them to your résumé.
+Ask an AI assistant to write two résumé bullets that match the posting using only the truth list. Then make a table of every claim in the AI bullets and mark each one true or false. Write your final two bullets. If you use the ACCESS [résumé builder](../../../writing/resume-builder/), keep these invented bullets in a clearly labelled practice résumé, not your real résumé. Add only your own verified experience to a real application.
 
 ______________________________________________________________
 

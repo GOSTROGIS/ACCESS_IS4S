@@ -13,7 +13,7 @@ Steps checked in Word for Microsoft 365 on Windows 11, 2026-11-06.
 
 ## Why this matters on the job
 
-Sign-out sheets, crew lists, inspection checklists and material orders are all tables. When you send one to a supplier, an owner or a WorkSafeBC officer, a PDF is safer than a Word file: it looks the same on every phone and computer, and the reader does not need Word. You keep the Word file so you can still edit it.
+Sign-out sheets, crew lists, inspection checklists and material orders are all tables. When you send one to a supplier, an owner or a WorkSafeBC officer, a PDF usually preserves the page layout better than an editable Word file, and the reader does not need Word. Check the PDF before sharing it; a PDF is not automatically accessible or protected from editing. You keep the Word file so you can still edit it.
 
 ## Key ideas
 
@@ -73,7 +73,7 @@ A crew lead at the fictional Riverbend Builders needs a sign-out table for three
 
 **Task 3** (level 1) Tick **Header Row** on the table **Design** tab. Then run **Review** > **Check Accessibility** and fix anything it lists.
 
-**Task 4** (level 2) Open your `tool-crib-procedure_[initials]_v1` from Lesson 3. Under "Taking a tool", add a table with the columns `Tool number`, `Name`, `Date out`, `Date back`, and four rows for tools T-01 to T-04 (leave Name and dates for the crew to fill). Save as `v2`.
+**Task 4** (level 2) Open your `tool-crib-procedure_[initials]_v1` from Lesson 3. Save a copy as `v2` before editing, and confirm `v2` is open. Under "Taking a tool", add a table with the columns `Tool number`, `Name`, `Date out`, `Date back`, and four rows for tools T-01 to T-04 (leave Name and dates for the crew to fill). Save as `v2`.
 
 **Task 5** (level 2) Save a PDF copy of your Task 4 document. Open the PDF. Check the title page, the table and the last line. Write one thing you checked and what you found.
 

@@ -65,6 +65,10 @@ Time check: 3 + 2 + 2 + 46 + 4 + 3 = 60 min.
 - Before class, take your own screenshots of the VanMap Viewer tool bar and a Property Viewer Report so learners can match the tool names in this lesson to the screen.
 - Links: the GIS and numeracy work in the [numeracy chapter](../../../numeracy/learner.md) uses the same distances and scale ideas.
 
+## Evidence to check
+
+Record the exact map points, units, layer/legend used and access date. Inspect the live property report rather than grading a remembered zoning code. Do not treat the exercise as excavation clearance.
+
 ## Sources
 
 - Google. *Search by latitude & longitude in Google Maps* (Computer): enter coordinates in the search box, right-click to get decimal coordinates, latitude first, period for decimals. https://support.google.com/maps/answer/18539, checked 2026-11-06.

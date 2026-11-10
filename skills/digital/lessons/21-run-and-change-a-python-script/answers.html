@@ -66,11 +66,11 @@ Within the limit for this job.
 <h2>Task 3 (level 3)</h2>
 <p>Answer: the script prints <code>Rise: 1.5 m</code>, <code>Grade: 7.5 %</code>, uphill, and <code>Too steep for this job. Tell the foreman.</code></p>
 <p>By hand: rise = 51.50 − 50.00 = 1.50 m. Grade = 1.50 ÷ 20 × 100 = 0.075 × 100 = 7.5%. 7.5 is greater than 5.</p>
-<p>To reach exactly 5%: the length must be rise ÷ 0.05 = 1.50 ÷ 0.05 = 30 m. So the ramp needs to be 10 m longer, or the height difference smaller.</p>
+<p>To reach exactly 5%: the horizontal run must be rise ÷ 0.05 = 1.50 ÷ 0.05 = 30 m. That is 10 m more horizontal run, not 10 m more sloping surface length. Alternatively, reduce the height difference.</p>
 <h2>Task 4 (level 3)</h2>
-<p>(a) Last line: <code>ValueError: could not convert string to float: 'twelve'</code>. <code>float()</code> can only turn digits into a number. Fix: run again and type <code>12</code>.</p>
+<p>(a) Last line: <code>ValueError: could not convert string to float: 'twelve'</code>. <code>float()</code> accepts numeric text such as <code>12</code> or <code>12.5</code>, not the word <code>twelve</code> or a unit such as <code>12m</code>. Fix: run again and type <code>12</code>.</p>
 <p>(b) Last line: <code>ZeroDivisionError: float division by zero</code>. The grade line divides by <code>run</code>, and nothing can be divided by zero. Fix: run again with a real distance. On site, a distance of 0 means the two points were recorded at the same spot.</p>
-<p>(c) Last line: <code>SyntaxError: '(' was never closed</code>, pointing at the grade line. Python reads the code before running it and stops at the open bracket, so no questions are asked at all. Fix: put the <code>)</code> back after <code>start</code>, save and run.</p>
+<p>(c) A syntax error points to the unclosed bracket in the grade line. A terminal run may show <code>SyntaxError: '(' was never closed</code>; IDLE may instead display a syntax-error dialog and highlight the editor. Record what your environment actually shows. Python reads the code before running it and stops at the open bracket, so no questions are asked at all. Fix: put the <code>)</code> back after <code>start</code>, save and run.</p>
 <p>The exact words after the error name can differ a little between Python versions. The error names stay the same.</p>
 <h2>Task 5 (level 3)</h2>
 <p>Answer: with the drain-pipe numbers the script prints <code>Grade: -732.11 %</code> and says it is too steep. The rise line is still correct (−0.24 m), because it is a separate line.</p>

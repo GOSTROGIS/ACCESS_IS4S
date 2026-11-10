@@ -34,7 +34,7 @@ Complexity: levels 1 and 2.
 | 1.2 | Work through Task 3 on the board: 600 × 100 ÷ 75. Point out BEDMAS (multiply and divide left to right). | 1.2 Complete Task 3. | Whiteboard | 4 min |
 | 1.3 | Explain model vs app, web search and the knowledge cutoff. Ask why a wage or a rule could be out of date. | 1.3 Complete Task 5. | Learner page | 6 min |
 | 2.1 | Read the good and poor jobs table. Take answers. | 2.1 Complete Task 2. | Learner page | 5 min |
-| 2.2 | Explain memory and why a chatbot does not know you unless you share or memory is on. | 2.2 Complete Task 6. | Learner page | 4 min |
+| 2.2 | Explain memory, files, connected apps and other context. Memory off does not guarantee that an app has no personal information. | 2.2 Complete Task 6. | Learner page | 4 min |
 | 3.1 | Model the worked example live: open Part 11 on worksafebc.com, find 11.2(1), compare it with the chatbot answer. Show the check-it loop diagram. | 3.1 Follow on their own browser. | worksafebc.com, projector | 8 min |
 | 3.2 | Circulate while learners check the claim in Task 4. Ask them to point to the exact words in 11.2(7). | 3.2 Complete Task 4. | Browser | 7 min |
 | 3.3 | Pairs swap Task 4 answers and check each other's section number. | 3.3 Check a partner's answer. | Learner page | 3 min |
@@ -67,6 +67,10 @@ Time check: 3 + 2 + 2 + 45 + 5 + 3 = 60 min.
 - Lessons 12 to 15 cover Claude, ChatGPT, Microsoft Copilot and Gemini with the same task structure. Lesson 16 compares them and covers privacy and workplace policy.
 - The older [AI literacy sequence](../../ai-literacy/learner.md) goes further into briefs, file formats and auditing AI work. Use it for learners who want more.
 - Lesson 07, [Search and judge online information](../07-search-and-judge-sources/learner.md), teaches `site:` searches and reading web addresses, which learners use in the check-it loop.
+
+## Evidence to check
+
+Collect the claim, exact official section, access date, comparison and decision. A chatbot citation without opening the source is not sufficient evidence.
 
 ## Sources
 

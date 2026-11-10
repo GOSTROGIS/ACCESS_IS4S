@@ -42,7 +42,7 @@ MFA means you need two or more different things to sign in:
 - something you **have** (your phone or a security key)
 - something you **are** (a fingerprint or face)
 
-So a stolen password alone is not enough. Turn MFA on for email, banking and any work account. If you get a sign-in approval request you did not start, deny it: it means someone else has your password. Some MFA asks you to match a number shown on screen, which helps stop that trick. The Cyber Centre suggests avoiding text-message (SMS) codes as an MFA method where a better option is offered.
+So a stolen password alone is not enough. Turn MFA on for email, banking and any work account. If you get a sign-in approval request you did not start, deny it: it may mean someone is trying to access your account. Treat it as suspicious and report it; the prompt alone does not prove how it was triggered. Some MFA asks you to match a number shown on screen, which helps stop that trick. The Cyber Centre suggests avoiding text-message (SMS) codes as an MFA method where a better option is offered.
 
 ### Passkeys
 

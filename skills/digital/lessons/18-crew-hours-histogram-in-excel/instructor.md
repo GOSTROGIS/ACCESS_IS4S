@@ -68,6 +68,10 @@ Time check: 3 + 2 + 2 + 44 + 5 + 4 = 60 min.
 - Level 3 extension: add a column for labour cost per day at a practice rate the class agrees on, and total it. Any real BC wage figure must be checked on an official source before it goes on the board.
 - The [Numeracy Hub Construction Operations tab](../../../numeracy/hub/index.html#conops) has scheduling and estimating practice that pairs with this lesson.
 
+## Evidence to check
+
+Save the completed baseline before creating v2. Inspect formulas and chart range, record the day totals before/after moving F and G, and confirm person-hours stay 272. Restoring G after its trial should be recorded.
+
 ## Sources
 
 - Microsoft Support. *Create a chart from start to finish* (Excel for Microsoft 365, Windows): select data, **Insert** > **Recommended Charts**, **All Charts** tab, **OK**. Clustered column chart described for categories. https://support.microsoft.com/en-us/office/create-a-chart-from-start-to-finish-0baf399e-dd61-4e18-8a73-b3fd5d5680c2, checked 2026-11-08.

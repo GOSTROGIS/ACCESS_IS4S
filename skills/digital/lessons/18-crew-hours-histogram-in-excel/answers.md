@@ -52,7 +52,7 @@ Why float is not enough: H Railings is critical and runs on both Day 11 and Day 
 
 Two choices a good response names, with the cost:
 
-1. Bring in a fifth person for one day (a helper from another crew or a hired labourer). Cost: one extra day of wages, 8 person-hours.
+1. Bring in a fifth person for one day (a helper from another crew or a hired labourer). Capacity needed: one additional qualified person for that day. Hiring or borrowing may add cost or affect another job, but the scheduled work still totals 34 person-days (272 person-hours); this does not automatically add 8 hours of work.
 2. Let G slip to Day 13 and the inspection to Day 14. Cost: the job finishes one day late, which can upset the client or the next job.
 
 Another reasonable answer is to ask the client whether the finish date can move, which is choice 2 with the client's agreement. The answer must say that each choice costs money or time.

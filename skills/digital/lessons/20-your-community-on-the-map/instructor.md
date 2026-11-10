@@ -47,7 +47,7 @@ Complexity: levels 1 and 2.
 2. On the demo map, Harbour is darkest. Does that mean apprentices are most common there? Explain.
 3. Name one thing you would do before putting a classmate's community on a shared map.
 
-(Answers: south-east, because B's latitude is smaller and its longitude is less negative. No, Harbour has the biggest count but the lowest rate, 2 per 1,000, because it has the most people. Ask the classmate first and tell them who will see it.)
+(Answers: south-east, because B's latitude is smaller and its longitude is less negative. No, Harbour has the biggest count but a rate tied for lowest with East Hills, 2 per 1,000, because it has the most people. Ask the classmate first and tell them who will see it.)
 
 ## Summary (4 min)
 
@@ -70,6 +70,10 @@ Time check: 3 + 2 + 2 + 44 + 5 + 4 = 60 min.
 - OCAP®: use only the FNIGC page for definitions. FNIGC asks that any publication using the OCAP® name include the line "OCAP® is a registered trademark of the First Nations Information Governance Centre (FNIGC)" and a link to https://fnigc.ca/ocap-training/, which the learner page does. FNIGC also notes that OCAP® is specifically First Nations, not Indigenous, principles. For Métis or Inuit learners, do not stretch OCAP® to cover them. Say that this lesson only covers what FNIGC says.
 - Post-assessment question 1 uses practice numbers only. Do not name a place for them. Only the direction matters.
 - Links: Lessons [9](../09-maps-and-site-location/learner.html) and [19](../19-gps-and-location-sharing/learner.html). Rates per 1,000 tie to the percent and ratio work in the [numeracy lessons](../../../numeracy/learner.html).
+
+## Evidence to check
+
+Collect the chosen public-place sentence, fictional rate calculations and consent decisions. Do not retain home addresses or community knowledge shared orally without permission.
 
 ## Sources
 

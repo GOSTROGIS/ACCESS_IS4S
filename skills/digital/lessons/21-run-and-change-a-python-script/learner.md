@@ -12,7 +12,7 @@ This is an optional lesson for learners who want a first look at coding. Steps c
 
 ## Why this matters on the job
 
-Survey crews, estimators and site engineers use small scripts to do the same calculation hundreds of times without a mistake. Machines on site, from a CNC table to a total station, run on code someone wrote. You do not need to become a programmer. Being able to open a short script, read what it does, change a number and see what breaks is a skill that makes new tools less scary.
+Survey crews, estimators and site engineers use small scripts to repeat a calculation hundreds of times. A wrong formula or input can repeat the same mistake hundreds of times too, so testing matters. Machines on site, from a CNC table to a total station, run on code someone wrote. You do not need to become a programmer. Being able to open a short script, read what it does, change a number and see what breaks is a skill that makes new tools less scary.
 
 ## Key ideas
 
@@ -74,11 +74,13 @@ ______________________________________________________________
 
 ______________________________________________________________
 
-**Task 3** (level 3) On this fictional job, the site super wants the temporary wheelbarrow ramp no steeper than 5%. Run the script for a ramp from 50.00 m to 51.50 m over 20 m with a limit of 5%. What does it say? By hand, how long would the ramp need to be to reach exactly 5%?
+**Task 3** (level 3) On this fictional job, the site super wants the temporary wheelbarrow ramp no steeper than 5%. Run the script for a ramp from 50.00 m to 51.50 m over 20 m with a limit of 5%. What does it say? By hand, what horizontal run would be needed to reach exactly 5%? (This is not the sloping surface length.)
 
 ______________________________________________________________
 
-**Task 4** (level 3) Break it on purpose, three ways. Run the script each time, write the last line of the error, and fix it before the next one.
+Save a separate practice copy before changing the code. Keep the downloaded original so you can restore it.
+
+**Task 4** (level 3) Break it on purpose, three ways. Run the script each time, record the error name and message (or the IDLE error dialog), and fix it before the next one.
 
 (a) Type `twelve` instead of a number for the distance.
 (b) Type `0` for the distance.

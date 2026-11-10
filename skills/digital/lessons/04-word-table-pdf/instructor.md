@@ -60,6 +60,10 @@ Time check: 3 + 2 + 2 + 45 + 5 + 3 = 60 min.
 - Task 6 is the same material list learners will use in Excel in Lesson 5.
 - The ribbon tab names for tables can show as **Table Design** and **Layout** on some screens. Point to the tabs that appear when the cursor is in the table.
 
+## Evidence to check
+
+Retain the fictional Word/PDF pair and compare the first page, table and final line. Check the original version stayed unchanged; inspect reading order and header behaviour as well as visual layout.
+
 ## Sources
 
 - Microsoft Support. *Insert a table* (Word for Microsoft 365): **Insert** > **Table** grid, **Insert Table**, **Convert Text to Table**, **Draw Table**. https://support.microsoft.com/en-us/word/training/insert-a-table, checked 2026-11-06.

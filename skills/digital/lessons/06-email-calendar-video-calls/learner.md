@@ -110,7 +110,7 @@ Use the practice account and addresses your instructor gives you. Send messages 
 
 **Task 3** (level 1) Your instructor sends one email to the whole class asking: "Who can stay late Friday for cleanup? Reply to me only." Do you use Reply or Reply all? Reply with your answer.
 
-**Task 4** (level 2) Put this in your calendar: `Site safety orientation`, next Monday 7:00 a.m. to 8:30 a.m., location `Riverbend Builders yard (fictional)`. Add a reminder note in the body: `Bring steel-toe boots and hard hat`.
+**Task 4** (level 2) Put this in your calendar: `Site safety orientation`, next Monday 7:00 a.m. to 8:30 a.m. in the training site's time zone (agree the exact date and zone with your instructor), location `Riverbend Builders yard (fictional)`. Add a reminder note in the body: `Bring steel-toe boots and hard hat`.
 
 **Task 5** (level 1) Your instructor will send you a calendar invitation. Answer it with **Accept**, **Tentative** or **Decline**, and say why you chose that one.
 

@@ -26,7 +26,7 @@ Open [deck-crew-loading.xlsx](deck-crew-loading.xlsx). Riverbend Decks is fictio
 - Column C holds the **crew available**: Riverbend Decks has 4 people.
 - Column D will say **OVER** or **OK**.
 
-Days 3 and 4 are empty. That is the 2-day lag after the footing pour (FS+2 in Numeracy 19) while the concrete cures.
+Days 3 and 4 are empty. That is the fictional schedule's 2-day lag after the footing pour (FS+2 in Numeracy 19). It is not a rule for when real concrete is ready to load; use the job specifications and responsible supervisor's direction.
 
 The activities sit on their early start days from the forward pass in Numeracy 20. An activity that starts at ES 1 is worked on working day 2.
 
@@ -74,7 +74,7 @@ ______________________________________________________________
 
 **Task 4** (level 2) Select A1:B14 and insert a Clustered Column chart. Give it the title `Deck crew per day`. Which two columns stick up above the others?
 
-**Task 5** (level 2) Day 2 is over because B Pour footings (3 people) and F Cut stair stringers (2 people) are both on Day 2. F has 9 days of float. Move F's 2 people from Day 2 to Day 3: clear J3 and type 2 in J4. What happens to D3, D4 and the chart? Did the job get longer? Save as `v2`.
+**Task 5** (level 2) Day 2 is over because B Pour footings (3 people) and F Cut stair stringers (2 people) are both on Day 2. F has 9 days of float. Save a copy as `v2` before editing and confirm it is open. Move F's 2 people from Day 2 to Day 3: clear J3 and type 2 in J4. What happens to D3, D4 and the chart? Did the job get longer? Save as `v2`.
 
 ______________________________________________________________
 

@@ -58,7 +58,7 @@ Things to close or hide before sharing at work, any of: personal email, banking 
 
 ## Check yourself
 
-1. Everyone can see who was Cc'd. Nobody can see who was Bcc'd.
+1. Recipients can see the To and Cc addresses. Bcc addresses are hidden from other recipients, but the sender can see who they Bcc'd. A Bcc recipient can reveal their involvement by replying.
 2. Only when every person on the message needs your answer.
 3. So the organizer knows whether you are coming. An ignored invitation shows no answer.
 4. It does not guarantee that everything sensitive behind you is hidden.

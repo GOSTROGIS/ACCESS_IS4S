@@ -27,7 +27,7 @@ Answer: **Header Row** is ticked. The Accessibility pane shows no table issues, 
 
 Answer: under "Taking a tool" is a 4-column, 5-row table. Row 1: `Tool number`, `Name`, `Date out`, `Date back`. Column 1, rows 2 to 5: T-01, T-02, T-03, T-04. The other cells are left for the crew. Saved as `tool-crib-procedure_[initials]_v2`, and `v1` still exists.
 
-Steps: open `v1`, click at the end of the "Taking a tool" paragraph, press Enter, **Insert** > **Table** 4 by 5, type the headings and tool numbers using Tab, tick **Header Row**, then **File** > **Save As** (or **Save a Copy**) with `v2`.
+Steps: open `v1`, save a copy as `v2` before editing, confirm `v2` is open, then click at the end of the "Taking a tool" paragraph, press Enter, **Insert** > **Table** 4 by 5, type the headings and tool numbers using Tab, tick **Header Row**, then **File** > **Save As** (or **Save a Copy**) with `v2`.
 
 Note: empty cells for the crew to fill in are fine in a form. The rule against blank cells is about whole empty rows or columns.
 
@@ -55,6 +55,6 @@ If the table comes out with one column, the parts were separated with spaces ins
 
 1. It tells Word and screen readers that the first row holds the column names, so a screen reader can say "Qty" before reading "48".
 2. Tab. Shift + Tab goes back.
-3. A PDF looks the same on any phone or computer, and the reader does not need Word.
+3. A PDF usually preserves the page layout, and the reader does not need Word. Still check its layout and accessibility before sharing.
 4. To make changes later. A PDF is a reading copy and is not meant for editing.
 5. Any of: every page is there, every row of the table is there, nothing is cut off at the edge, the title and date are right.

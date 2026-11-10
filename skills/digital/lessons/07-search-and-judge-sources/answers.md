@@ -22,7 +22,7 @@ Steps: search with `site:worksafebc.com` so every result is from WorkSafeBC, ope
 
 ## Task 4 (level 2)
 
-Answer: B, then A, then C.
+Answer: B is the best starting source. A and C are weaker evidence for a safety rule; their order cannot be established from these titles alone. Accept either order for A and C with a reason. Open and check the current official rule before applying it.
 
 - **B** is from worksafebc.com and names the Occupational Health and Safety Regulation. It is the source itself, from the agency that enforces it in BC.
 - **A** is one person's blog. It may be helpful and honest, but it repeats the rule secondhand, may be out of date and may not be about BC. Use it only to find the real rule.

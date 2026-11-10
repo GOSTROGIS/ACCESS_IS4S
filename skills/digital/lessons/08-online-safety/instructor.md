@@ -23,7 +23,7 @@ Complexity: levels 1 and 2.
 
 ## Pre-assessment (2 min)
 
-1. Hands up if you use the same password on more than one account. (No other details.)
+1. Why is reusing the same password on two accounts risky? Use a fictional example; do not ask learners to reveal their own security habits.
 2. What would make you suspicious of a text message?
 
 ## Learning tasks (45 min)
@@ -64,6 +64,10 @@ Time check: 3 + 2 + 2 + 45 + 5 + 3 = 60 min.
 - If a learner thinks they have been scammed, help them privately. Point them to their bank through a number they already have, the Canadian Anti-Fraud Centre, and local police. Do not discuss the details in front of the group.
 - Phishing examples in this lesson use the fictional Riverbend Builders and invented addresses. Do not forward real scam messages to learners' accounts.
 - The [AI literacy sequence](../../ai-literacy/learner.md) covers privacy when using AI tools. The Digital chapter's Case C in [learner.md](../../learner.md) gives another suspicious-request practice.
+
+## Evidence to check
+
+Collect only fictional examples and the learner’s verification/reporting steps. Never collect credentials or personal account security screenshots.
 
 ## Sources
 

@@ -63,9 +63,14 @@ Time check: 3 + 2 + 2 + 45 + 5 + 3 = 60 min.
 - Check the help page and the settings menus the day before class. Menu names and plans change often. If something has moved, use what the company's own page says now.
 - Do not ask learners to buy a plan or to sign up with a work email. If learners have no account, demonstrate Microsoft Copilot on the projector and have learners do the checking and the check-it card.
 - Never let a learner type a real password, SIN, health detail or real client information. Tasks use the fictional Northgate Framing Ltd. and Alder Street site.
+- Assess product cards using the official page and date the learner records. Separate retention, memory and model-training controls; one switch does not necessarily control all three. Accept a documented unavailable control.
 - Answers from Microsoft Copilot change from day to day and from person to person. Mark the checking, not Microsoft Copilot's wording.
 - Lessons 12 to 15 use the same six tasks for Claude, ChatGPT, Microsoft Copilot and Gemini so learners can compare. Lesson 16 brings the four together and covers workplace policy and job applications.
 - Lesson 11 explains how chatbots work and the check-it loop. The older [AI literacy sequence](../../ai-literacy/learner.md) goes further with briefs, files and audits.
+
+## Evidence to check
+
+Retain the fictional prompt, response excerpt, independent arithmetic and correction decision. Record the official help URL and access date for product and privacy findings.
 
 ## Sources
 

@@ -15,7 +15,7 @@ Worked check with the example `gravel kettle spruce lantern`: 6 + 6 + 6 + 7 = 25
 
 ## Task 3 (level 2)
 
-Answer: deny the request. Do not approve it to make it go away. The request means someone else has your password and is trying to sign in. Change your work email password (from a device you trust, through the normal sign-in page, not a link), and tell IT or your supervisor the same day.
+Answer: deny the request. Do not approve it to make it go away. The request may mean someone is trying to access your account. It is not proof by itself that they know your password. Change your work email password (from a device you trust, through the normal sign-in page, not a link), and tell IT or your supervisor the same day.
 
 Level 2 because the learner has to work out what the request means, not only what button to press.
 
@@ -28,7 +28,7 @@ Signs:
 - It asks for your SIN and banking details (personal and confidential information).
 - It asks you to click a link to enter them.
 - It threatens that your position will be cancelled (fear).
-- It was not expected.
+- If the learner was not expecting this request, that is another warning sign. The scenario does not establish whether HR had contacted them earlier.
 
 What to do: do not click. Phone or visit HR using a number or office you already know. Report it to your supervisor or IT.
 

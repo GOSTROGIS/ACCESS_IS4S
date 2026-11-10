@@ -22,7 +22,7 @@ For a place outside BC or outside Canada, the same rules hold as long as both pl
 
 Answer: a sentence with a distance, a unit and a direction, for example "My community is about 240 km north-west of the training site." (A learner's own numbers will differ.)
 
-Why the travel distance is longer: the straight line goes over mountains, water and private land. Roads bend around hills and lakes, ferries follow set routes, and some communities are reached only by boat or plane. A good response gives both distances and names at least one reason.
+Why the travel distance is longer: the straight line goes over mountains, water and private land. Roads bend around hills and lakes, ferries follow set routes, and some communities are reached only by boat or plane. A good response gives both distances when a route distance is available and names at least one reason. When no driving route is available, accept the straight-line distance plus the usual travel method, as the task allows; do not require an invented travel distance.
 
 ## Task 4 (level 1)
 
@@ -41,7 +41,7 @@ Answer: (a) Harbour, 41. (b) East Hills and Cedar Flats. (c) 10 to 19.
 
 Steps (division and multiplication left to right, BEDMAS): 12 ÷ 4,000 = 0.003, × 1,000 = 3. 27 ÷ 9,000 = 0.003, × 1,000 = 3. 7 ÷ 3,500 = 0.002, × 1,000 = 2. 4 ÷ 1,000 = 0.004, × 1,000 = 4. 18 ÷ 6,000 = 0.003, × 1,000 = 3. 41 ÷ 20,500 = 0.002, × 1,000 = 2.
 
-Answer: Cedar Flats has the highest rate, 4 per 1,000. The map does not show that. Cedar Flats has no shading because its count is the smallest, while Harbour, with the lowest rate, is solid. A map coloured by count shows where the most people are, not where something is most common.
+Answer: Cedar Flats has the highest rate, 4 per 1,000. The map does not show that. Cedar Flats has no shading because its count is the smallest, while Harbour, tied with East Hills for the lowest rate, is solid. A map coloured by count shows where the most people are, not where something is most common.
 
 ## Task 6 (level 2)
 

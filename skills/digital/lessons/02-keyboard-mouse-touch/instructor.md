@@ -62,6 +62,10 @@ Time check: 3 + 2 + 3 + 45 + 5 + 2 = 60 min.
 - Do not ask learners to describe injuries or health conditions. Point them to the WorkSafeBC guide and to their supervisor.
 - The Alt + X method works in Word. It does not work in every app. In other apps, copy the symbol from a Word document.
 
+## Evidence to check
+
+Observe the shortcut sequence and save/reopen the result. Record the input method used; speed is personal progress, not a pass criterion.
+
 ## Sources
 
 - WorkSafeBC. *How to Make Your Computer Workstation Fit You* (BK76, May 2023): sitting posture, wrists straight, top of screen at eye level, arm's length viewing distance, mouse beside keyboard, palm supports for rest periods, micro-pauses of 20 seconds to 2 minutes. https://www.worksafebc.com/en/resources/health-safety/books-guides/how-to-make-your-computer-workstation-fit-you, checked 2026-11-06.

@@ -67,6 +67,10 @@ Time check: 3 + 2 + 2 + 45 + 5 + 3 = 60 min.
 - Product facts in the table come from Lessons 12 to 15 and were checked 2026-11-06. Check the help pages again before class.
 - The older [AI literacy sequence](../../ai-literacy/learner.md) covers keeping an AI work record, which fits well after Task 4.
 
+## Evidence to check
+
+Collect the policy-rule references and claim-by-claim résumé check. Any résumé-builder output must be labelled fictional practice and kept separate from real applications.
+
 ## Sources
 
 - Office of the Privacy Commissioner of Canada. *Your privacy and AI chatbots*: limit personal information, do not share sensitive or identifiable information, alter personal details, review privacy settings, do not share information about other people, never share pictures or personal information of minors. https://www.priv.gc.ca/en/privacy-topics/technology/artificial-intelligence/ai-chatbots_ind/, checked 2026-11-06.

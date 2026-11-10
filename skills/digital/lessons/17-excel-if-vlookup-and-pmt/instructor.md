@@ -70,6 +70,10 @@ Time check: 3 + 2 + 5 + 70 + 6 + 4 = 90 min.
 - Level 3 extension: on the Order sheet, add a 5% discount line that applies only when the total is $500 or more, using IF. Learners decide which comparison operator to use.
 - The [numeracy lessons](../../../numeracy/learner.html) cover percent and interest by hand. The [Numeracy Hub Construction Operations tab](../../../numeracy/hub/index.html#conops) has estimating practice that suits this lesson.
 
+## Evidence to check
+
+Save the completed baseline before creating v2. Reopen the workbook and inspect the lookup range, exact-match argument, IF boundary and PMT units. Retain the before/after totals and loan table.
+
 ## Sources
 
 - Microsoft Support. *VLOOKUP function* (Excel for Microsoft 365): syntax, lookup value in the first column, column number counted from the left, FALSE for an exact match, TRUE or left out gives an approximate match, `#N/A` when an exact match is not found, absolute references for the range, XLOOKUP described as an improved version. https://support.microsoft.com/en-us/office/vlookup-function-0bbc8083-26fe-4963-8ab8-93a18ad188a1, checked 2026-11-08.

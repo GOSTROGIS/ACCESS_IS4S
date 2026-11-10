@@ -40,7 +40,7 @@ Steps: close Word. Open File Explorer, go to the `Riverbend job` folder (or the 
 
 Answer: two files, `..._v1` without the knife and `..._v2` with `1 utility knife`. The `v2` file is the one with the knife.
 
-Steps: open `v1`, add the item, then **File** > **Save As** (or **File** > **Save a Copy** if AutoSave is on) and change the end of the name to `v2`. Close. Open each file and read the list.
+Steps: open `v1` and first use **File** > **Save As** (or **File** > **Save a Copy**) to create `v2`. Confirm that `v2` is the open file before adding the knife, then save. This order protects `v1` when AutoSave is on. Close and reopen both files: only `v2` should contain the knife.
 
 Level 2 because the learner has to keep two versions apart and check content, not only the name.
 

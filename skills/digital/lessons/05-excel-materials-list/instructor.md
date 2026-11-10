@@ -67,6 +67,10 @@ Time check: 3 + 2 + 5 + 70 + 6 + 4 = 90 min.
 - For a level 3 extension, ask learners to add a waste allowance column that multiplies each quantity by 1.1 and to explain why the result for studs is not a whole number of studs.
 - The [numeracy chapter](../../../numeracy/learner.md) covers BEDMAS in more depth.
 
+## Evidence to check
+
+Save the completed baseline before creating v2. Reopen both workbooks and check formulas and the change from 48 to 52 studs; displayed totals alone are insufficient.
+
 ## Sources
 
 - Microsoft Support. *The order in which Excel performs operations in formulas* (Excel for Microsoft 365): formulas start with `=`, operator precedence, `=5+2*3` gives 11 and `=(5+2)*3` gives 21. https://support.microsoft.com/en-us/excel/the-order-in-which-excel-performs-operations-in-formulas, checked 2026-11-06.

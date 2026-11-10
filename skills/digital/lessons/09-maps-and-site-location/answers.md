@@ -35,7 +35,7 @@ What to tell the homeowner: a city map is not a locate. It may not show every bu
 Before Monday:
 
 1. Submit a locate request at bc1c.ca or call 1-800-474-6886 well ahead of Monday. Members respond within 3 business days, so a request on Friday may be too late for Monday. Move the start date if needed.
-2. Wait for all responses and follow their instructions.
+2. Wait for all responses and follow their instructions. Do not treat receipt of replies as permission to dig: confirm the full safe-dig process with the responsible supervisor, including any private or non-member services not covered by the request.
 
 Information to have ready (from the BC 1 Call checklist): street address, nearest cross street, type of work (digging post holes), activity (fence installation), where on the property (rear), whether the dig area is marked, and how to reach you.
 

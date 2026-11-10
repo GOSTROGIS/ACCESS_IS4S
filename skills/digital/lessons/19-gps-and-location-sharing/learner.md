@@ -49,9 +49,9 @@ In Google Maps: `49.2608, -123.1139`. Latitude first, a period for the decimal, 
 ### How sure is your phone?
 
 - On a phone, the **blue dot** shows where Google Maps thinks you are.
-- When Google Maps is not sure, a **light blue circle** shows around the dot. You could be anywhere inside it. The smaller the circle, the more certain the location.
+- When Google Maps is not sure, a **light blue circle** shows around the dot. It is an estimated uncertainty area, not a guaranteed boundary; the actual position can be outside it. The smaller the circle, the more certain the location.
 - A grey dot, or no dot, means Maps cannot find you and is showing your last known place.
-- GPS from satellites can find you to about 20 metres. Inside buildings or underground it is often wrong. A location from cell towers alone can be off by a few thousand metres.
+- Phone location accuracy varies with conditions; a displayed accuracy estimate is not a guaranteed maximum error. Inside buildings or underground it is often wrong. A location from cell towers alone can be off by a few thousand metres.
 
 A GPS fix on a phone is good for finding a gate or a trailer. It is not a survey, and it does not show buried lines. Before anyone digs, contact BC 1 Call (Lesson 9).
 
@@ -75,7 +75,7 @@ Before you turn it on for a boss or a crew, ask: who sees it, for how long, and 
 
 Surveyors, forestry crews and engineers often use **UTM** coordinates instead of degrees. UTM splits the world into 60 zones, each 6 degrees of longitude wide, numbered from 1 at 180° going east. The Vancouver area is in **zone 10**, which runs from 126°W to 120°W with its centre line at 123°W.
 
-- **Northing**: metres north of the equator.
+- **Northing in BC (the northern hemisphere)**: grid distance in metres north of the equator. Southern-hemisphere UTM uses a different offset, so always record the zone and hemisphere.
 - **Easting**: metres from a line set 500 000 m west of the zone's centre line. So the centre line itself has an easting of 500 000. Points west of it have eastings below 500 000, and points east of it have eastings above.
 
 Google Earth Pro on a computer can show UTM: **Tools** > **Options** > **3D View**, then under **Show Lat/Long** choose **Universal Transverse Mercator**. On a Mac it is **Google Earth** > **Preferences** > **3D View**. The coordinates show in the lower right corner as you move the mouse.

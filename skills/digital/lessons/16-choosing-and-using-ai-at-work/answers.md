@@ -16,7 +16,7 @@ A good answer always names both the tool and the account.
 - c. **NO.** Client name, address and door code identify a person and their home.
 - d. **OK.** A public regulation section number.
 - e. **NO.** Another person's health information.
-- f. **OK.** Your own notes with no names.
+- f. **OK.** Invented notes with no personal, identifying or confidential details. Removing names alone would not make real work notes safe to share.
 - g. **NO.** Confidential employer or owner documents.
 - h. **OK.** The posting is public.
 
@@ -42,12 +42,12 @@ Open task. A strong response:
 - gives the AI the truth list and the posting, and asks for bullets using only those facts
 - lists **every** claim from the AI bullets in a table and marks each true or false
 - removes anything not on the truth list. Common AI additions to catch: "paid experience", "installed wiring for clients", "journeyperson", a ticket not on the list, or a year of experience the learner does not have
-- keeps the posting's words where they are true: "electrical foundation", "WHMIS", "hand and power tools", "communication"
+- keeps the posting's words where they are true: "electrical foundation", "WHMIS", "hand and power tools". Do not claim communication skills or safe working performance solely because the posting asks for them; those are not evidenced by this truth list
 
 Example final bullets:
 
-- "Completed a 6-month electrical foundation program (2026), using drills, saws and fish tape safely in shop labs. WHMIS certified."
-- "Volunteered to set up lighting and power for a community event, working with the event crew."
+- "Completed a 6-month electrical foundation program (2026), using drills, saws and fish tape in shop labs. WHMIS certified."
+- "Volunteered to set up lighting and power for a community event."
 
 Accept other wording if every claim is on the truth list.
 

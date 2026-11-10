@@ -67,6 +67,10 @@ Time check: 3 + 2 + 3 + 72 + 6 + 4 = 90 min.
 - Learners who finish early can modify Heading 2 to a new colour and watch all three headings change, or add a numbered list for the three steps.
 - Collect `v1` for Lesson 4, where learners add a table and save a PDF.
 
+## Evidence to check
+
+Reopen the saved procedure and inspect heading styles, spacing, the replacement time and the page break. A clean Accessibility Checker report alone does not prove accessibility.
+
 ## Sources
 
 - Microsoft Support. *Keyboard shortcuts in Word* (Word for Windows): ribbon tabs, Ctrl + Alt + 1 and 2 for Heading 1 and 2, Ctrl + 1, 2, 5 for line spacing, Ctrl + E centre, Ctrl + Enter page break, Ctrl + F and Ctrl + H, Ctrl + B. https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word, checked 2026-11-06.

@@ -22,7 +22,7 @@
 <main class="wrap">
 <nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 3</li><li>Time: 60 min</li><li>Components: Update and upgrade digital skills; Use common digital tools to complete tasks; Use digital information</li></ul></nav><article class="prose"><p>This is an optional lesson for learners who want a first look at coding. Steps checked against the Python documentation for IDLE, 2026-11-08. The script was tested with Python 3.13. Lessons <a href="../05-excel-materials-list/learner.html">5</a> and <a href="../17-excel-if-vlookup-and-pmt/learner.html">17</a> (Excel) and <a href="../11-how-ai-chatbots-work/learner.html">11 to 16</a> (AI chatbots) help.</p>
 <h2>Why this matters on the job</h2>
-<p>Survey crews, estimators and site engineers use small scripts to do the same calculation hundreds of times without a mistake. Machines on site, from a CNC table to a total station, run on code someone wrote. You do not need to become a programmer. Being able to open a short script, read what it does, change a number and see what breaks is a skill that makes new tools less scary.</p>
+<p>Survey crews, estimators and site engineers use small scripts to repeat a calculation hundreds of times. A wrong formula or input can repeat the same mistake hundreds of times too, so testing matters. Machines on site, from a CNC table to a total station, run on code someone wrote. You do not need to become a programmer. Being able to open a short script, read what it does, change a number and see what breaks is a skill that makes new tools less scary.</p>
 <h2>Key ideas</h2>
 <h3>The script</h3>
 <p>Download <a href="grade_check.py">grade_check.py</a>. It asks for two elevations, the horizontal distance between them and the steepest grade the job allows. Then it works out the grade and says whether it is within the limit. The limits you type in are job data for practice, not code rules.</p>
@@ -63,9 +63,10 @@ Within the limit for this job.
 <hr />
 <p><strong>Task 2</strong> (level 3) Run the script with the worked example: 100.00, 100.45, 18, 5. Does the output match? Then run it for a drain pipe that drops from 99.80 m to 99.56 m over 12 m, with a 2% limit. Write the output and check the grade by hand.</p>
 <hr />
-<p><strong>Task 3</strong> (level 3) On this fictional job, the site super wants the temporary wheelbarrow ramp no steeper than 5%. Run the script for a ramp from 50.00 m to 51.50 m over 20 m with a limit of 5%. What does it say? By hand, how long would the ramp need to be to reach exactly 5%?</p>
+<p><strong>Task 3</strong> (level 3) On this fictional job, the site super wants the temporary wheelbarrow ramp no steeper than 5%. Run the script for a ramp from 50.00 m to 51.50 m over 20 m with a limit of 5%. What does it say? By hand, what horizontal run would be needed to reach exactly 5%? (This is not the sloping surface length.)</p>
 <hr />
-<p><strong>Task 4</strong> (level 3) Break it on purpose, three ways. Run the script each time, write the last line of the error, and fix it before the next one.</p>
+<p>Save a separate practice copy before changing the code. Keep the downloaded original so you can restore it.</p>
+<p><strong>Task 4</strong> (level 3) Break it on purpose, three ways. Run the script each time, record the error name and message (or the IDLE error dialog), and fix it before the next one.</p>
 <p>(a) Type <code>twelve</code> instead of a number for the distance.
 (b) Type <code>0</code> for the distance.
 (c) In the line <code>grade = (end - start) / run * 100</code>, delete the closing bracket after <code>start</code>. Save and run.</p>

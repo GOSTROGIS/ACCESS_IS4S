@@ -77,7 +77,7 @@ Give ChatGPT five things:
 
 ### Worked example: drywall sheets
 
-Rae, a drywall apprentice, needs sheets for one side of a wall 4.8 m long and 2.4 m high, with no openings. The sheets are 1.2 m by 2.4 m (4 ft by 8 ft).
+Rae, a drywall apprentice, needs sheets for one side of a wall 4.8 m long and 2.4 m high, with no openings. For this fictional calculation, use sheets exactly 1.2 m by 2.4 m. These are practice metric dimensions, not an exact conversion of 4 ft by 8 ft. Check actual product dimensions before ordering.
 
 Rae types: "I am a drywall apprentice in BC. One side of a wall is 4.8 m long and 2.4 m high, with no doors or windows. Sheets are 1.2 m by 2.4 m. How many sheets do I need? Show your math."
 
@@ -92,6 +92,8 @@ Another way: 4.8 ÷ 1.2 = 4 sheets standing side by side, each 2.4 m tall.
 If ChatGPT also says 4, Rae uses it. If it says something else, Rae trusts her own math and asks ChatGPT to explain the difference. Before ordering, she asks her journeyperson whether to add extra for waste.
 
 ## Practice
+
+All quantities, sites and people in the practice prompts are fictional. The fence exercise assumes no gates or waste; two bags per post is supplied practice data, not a construction specification.
 
 Do Tasks 3, 4 and 5 in ChatGPT. If you do not have an account, your instructor shows ChatGPT on the projector and you do the checking. Never type a real client's name, your SIN or your employer's private information.
 
@@ -109,7 +111,7 @@ Do Tasks 3, 4 and 5 in ChatGPT. If you do not have an account, your instructor s
 
 **Task 2** (level 1) Find two privacy settings. Write the menu path for each. Use the app if you have an account, or the help page if you do not. Do not change settings on a shared or work account without permission.
 
-- (a) The setting that controls whether your chats are kept or used to improve the AI: ______________________________
+- (a) A control or policy about chat retention or model training. State which one it affects; these are not the same. If no control is available, record that and the official help page: ______________________________
 - (b) Where you see or delete what it remembers, or delete a chat: ______________________________
 
 **Task 3** (level 2) Materials list. Type this prompt into ChatGPT:

@@ -8,7 +8,7 @@ Open answer. A good response names one real change, for example "raised the chai
 
 Answer: a saved document `shortcut-practice_[initials]_v1` with the line `Bring the 25 ft tape and the chalk line.` appearing twice (the original and one paste, because the second paste was undone).
 
-Steps: Ctrl + A selects the line. Ctrl + C copies. Click at the end of the line, press Enter, Ctrl + V. Enter, Ctrl + V again. Ctrl + Z removes the last paste. Ctrl + S, type the name, Save.
+Steps: Ctrl + A selects the line. Ctrl + C copies. Press Ctrl + End to move to the end of the line, press Enter, Ctrl + V. Enter, Ctrl + V again. Ctrl + Z removes the last paste. Ctrl + S, type the name, Save.
 
 ## Task 3 (level 1)
 

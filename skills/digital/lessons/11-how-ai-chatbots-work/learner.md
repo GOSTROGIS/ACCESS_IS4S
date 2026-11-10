@@ -21,7 +21,7 @@ AI chatbots such as Claude, ChatGPT, Microsoft Copilot and Gemini can write a ma
 A **large language model** (LLM) is the engine inside an AI chatbot.
 
 - It was **trained** on a very large amount of text. During training it learned patterns: which words tend to follow which other words.
-- It does **not** store that text like a filing cabinet or a database. It keeps patterns, not copies of pages.
+- It does **not** store that text like a filing cabinet or a database. Do not treat it as a reliable archive or an exact copy of a source.
 - When you ask a question, it **predicts the next word**, then the next, then the next, until the answer is done. Google gives this example: after "think outside the", the word "box" is more likely than "blue".
 
 ### Tokens
@@ -119,14 +119,11 @@ When a chatbot invents something, people call it a **hallucination**.
 A model only learned from text up to a certain date. This is its **knowledge cutoff**. It does not know about changes after that date unless the app uses a tool such as web search.
 
 - With web search on, the app looks up pages and the model writes an answer from them. Good apps show links. Open the links: the answer can still misread the page.
-- With web search off, the answer comes only from training patterns. For anything that changes (wages, rules, prices, forms, schedules), go to the official site.
+- With web search off, the model can still use the conversation, uploaded files and other context the app supplies, as well as training patterns. That context is not automatically current or correct. For anything that changes (wages, rules, prices, forms, schedules), go to the official site.
 
-### It does not know you unless you tell it
+### Check what information the app can use
 
-A chatbot does not know your name, your trade, your employer or your job site unless:
-
-- you type or upload it in the chat, or
-- the app's **memory** feature is on and saved it from an earlier chat.
+A chatbot may receive information about you from what you type, uploaded files, saved memory, connected apps or work files that it has permission to access. It may also infer details from context. Turning memory off is not a guarantee that the app has no information about you. Check the account, connections and content before using it.
 
 Each product has settings to see, turn off or delete memory. Lessons 12 to 15 show where. Treat anything you type as something that may be stored. Lesson 16 covers what never to paste.
 
@@ -234,7 +231,7 @@ ______________________________________________________________
 
 **Task 6** (level 1) For each case, write **Yes** or **No**: could the chatbot know this about you?
 
-- a. Your employer's name, if you have never typed it and memory is off. ___
+- a. Your employer's name, in a new chat with memory off, no connected apps or files, and no identifying information in the chat or account context. ___
 - b. Your trade, if you told it last week and memory is on. ___
 - c. Your street address, if it was in a résumé you uploaded in this chat. ___
 

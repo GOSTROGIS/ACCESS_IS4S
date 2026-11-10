@@ -59,11 +59,16 @@ Time check: 3 + 2 + 3 + 57 + 6 + 4 = 75 min.
 
 ## Notes for the instructor
 
+- Agree the exact Monday date and time zone before Task 4. Check the saved event against both, not just its displayed start time.
 - Set up practice accounts or use ACCESS training accounts. Learners should not send practice emails from personal accounts to real employers, and should not have to share personal email addresses with the class.
 - Scheduling a Teams meeting from Outlook works with work or school Microsoft 365 accounts. Personal Outlook.com, Gmail and other POP or IMAP accounts cannot use the Outlook Teams add-in to create Teams meetings. Learners on personal accounts can still join the practice meeting by link.
 - If Teams is not available, the same skills apply in Zoom or Google Meet. Use the vendor's own help page for button names.
 - Learners without a webcam or with privacy concerns can keep the camera off. Record that they joined, unmuted, used chat and raised a hand.
 - The old ESAF CP Rail exercise pointed out that employers reply only to the address you applied from and that ESAF staff would help learners set up a business email. Offer the same help.
+
+## Evidence to check
+
+Observe the sent practice email and open its attachment. Check the calendar date and zone, then observe mic, chat and stop-sharing actions without collecting private account screens.
 
 ## Sources
 

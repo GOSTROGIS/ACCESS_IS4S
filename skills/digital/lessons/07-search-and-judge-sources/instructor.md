@@ -63,6 +63,10 @@ Time check: 3 + 2 + 2 + 45 + 5 + 3 = 60 min.
 - For a job-search extension, have learners search for an employer's own careers page with `site:` and compare it with a job-board copy of the same posting.
 - Link to AI literacy: an AI answer is another source to check with the same five questions. See the [AI literacy sequence](../../ai-literacy/learner.md).
 
+## Evidence to check
+
+Collect one source note with page title, URL, date accessed and the exact claim checked. If a live page differs from the printed answer, assess the supported current finding.
+
 ## Sources
 
 - Google. *Refine Google searches* (Google Search Help): quotes, `site:`, minus, `filetype:`, `before:` and `after:`, no space after the colon. https://support.google.com/websearch/answer/2466433, checked 2026-11-06.

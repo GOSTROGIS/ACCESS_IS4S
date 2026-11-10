@@ -50,7 +50,7 @@ Two better ways (any two):
 
 ## Task 6 (level 1)
 
-- a. **No**. It cannot know a fact you never shared, and memory is off.
+- a. **No reliable basis in this scenario.** No employer information was supplied. A chatbot might guess, but a guess is not evidence. In other situations, connected apps, files or account context can supply information even when memory is off.
 - b. **Yes**. With memory on, it may have saved this from an earlier chat. You can view and delete memories in the product's settings.
 - c. **Yes**. Anything in a file you upload in that chat is part of what the model reads. Remove your address before uploading a résumé to a chatbot.
 
