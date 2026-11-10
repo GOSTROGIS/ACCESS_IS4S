@@ -57,7 +57,7 @@ c) "The north wall is sheeted and I've cleaned up the offcuts. Should I start th
 ## Task 7 (level 3)
 
 **a)** Sample: 1. I show one cut while Noor watches. 2. Noor says the steps back. 3. Noor marks and cuts one while I watch. 4. I check it against the tape and we talk about what to change. A good plan has show, say back, try while watched and check.
-**b)** Sample: "This one is 3 mm long. Your line is right, so the blade is cutting on the wrong side of it. Next one, keep the blade on the waste side of the line." It names the fact, the likely cause and one thing to do.
+**b)** Sample: "This one is 3 mm long. Let's check the mark against the cut list, then watch where the blade meets the line on the next cut." It names the measured fact and a check without assuming the cause. If the mark is correct and the blade position is wrong, show Noor how to keep the blade on the waste side.
 **c)** Sample: Noor cuts three pieces in a row to length without help, and can explain the steps to someone else.
 
 ## Check yourself 1

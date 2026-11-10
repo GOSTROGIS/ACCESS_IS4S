@@ -20,7 +20,7 @@ By the end of the session, learners will be able to:
 1. Name one thing on a job site that wastes time.
 2. A trip takes 3 minutes and happens 10 times a day. How many minutes a day is that?
 
-## Learning tasks (90 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

@@ -14,7 +14,7 @@ Sample rewrites. Accept any rule you could check.
 
 ## Task 3 (level 2)
 
-**Open task.** A good list has five rules or fewer, each one specific enough to check (a time, a place, an action), written in plain words. None of them weakens a safety rule or the company's bullying and harassment policy. Rules about the work are fine. Rules that police someone's culture, language or family duties are not.
+**Open task.** A good list has five rules, each one specific enough to check (a time, a place, an action), written in plain words. None of them weakens a safety rule or the company's bullying and harassment policy. Rules about the work are fine. Rules that police someone's culture, language or family duties are not.
 
 ## Task 4 (level 2)
 

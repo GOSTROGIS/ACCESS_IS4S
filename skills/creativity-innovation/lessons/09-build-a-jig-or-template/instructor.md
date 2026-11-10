@@ -21,7 +21,7 @@ By the end of the session, learners will be able to:
 1. Holes are 32 mm apart. The first is at 22 mm. Where is the third hole?
 2. A task takes 2 minutes by hand and 0.5 minutes with a jig. How much time does the jig save on 40 pieces?
 
-## Learning tasks (90 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

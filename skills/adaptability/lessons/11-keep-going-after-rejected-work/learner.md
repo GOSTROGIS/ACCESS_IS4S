@@ -241,7 +241,7 @@ ______________________________________________
 ______________________________________________
 
 **Task 8** (level 3)
-Plan the Unit 4 fix as a table with five rows: what, who, when, how long, and how you will check. The notice came Monday morning. Re-inspections are booked 2 business days ahead, and the crew does not work weekends. What is the earliest day the inspector can come back if Tom finishes and checks the stair on Wednesday afternoon and books it right away?
+Plan the Unit 4 fix as a table with five columns: what, who, when, how long, and how you will check. The notice came Monday morning. Re-inspections are booked 2 business days ahead, and the crew does not work weekends. What is the earliest day the inspector can come back if Tom finishes and checks the stair on Wednesday afternoon and books it right away?
 
 | What | Who | When | How long | How I will check |
 |---|---|---|---|---|

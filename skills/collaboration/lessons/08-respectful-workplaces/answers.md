@@ -43,12 +43,12 @@ The plan should not include getting even with the crew members or confronting th
 **What a good report covers:** facts only, no labels or guesses about why people did it.
 
 - what happened: Nico was taped to a column during lunch, it was filmed, and the video was posted in the crew group chat with "Welcome, rookie"
-- when and where: the day and time, the location on site, the time of the post
+- when and where: lunch on the next day of Nico's first week; exact date, times and location are not given and must be confirmed
 - who was involved: the people seen taping and filming, if known
-- who else saw it: people in the group chat or at lunch
-- what the writer has done: did not share the video, checked on Nico, is reporting now
+- who else saw it: identify only confirmed witnesses; membership in the group chat does not prove someone viewed the video
+- what the writer has done: report only actions actually taken; distinguish a plan to check on Nico from having already done so
 
-**Example:** "On Tuesday at about 12:15, during lunch at the level 2 laydown area, two crew members taped Nico to a column. One filmed it. At 12:40 the video was posted in the crew group chat with the words 'Welcome, rookie.' About 12 people are in the chat. I did not share it. I spoke to Nico at 1:00. I'm reporting it under our bullying and harassment policy."
+**Example:** "I saw a video in the crew group chat showing Nico taped to a column. The post said 'Welcome, rookie.' The case says this happened during lunch in his first week. I do not yet know the exact date, time, site location or names of everyone involved, or who else viewed it. I am reporting the video now. I will confirm the missing details and check on Nico privately."
 
 ## Task 5 (level 2)
 

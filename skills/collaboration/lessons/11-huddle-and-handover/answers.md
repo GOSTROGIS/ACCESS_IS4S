@@ -46,7 +46,7 @@ Any three, such as: ask a direct open question to one person by name ("Jess, wha
 
 ## Task 10 (level 3)
 
-**a)** Sample: "Hazards: the lane closure sign at the west end blew over at 4:00. We put it back up at 4:15 but the base is weak. Check it first thing."
+**a)** Sample: "Hazards: a lane closure sign blew over at 4:00. Its current condition and whether it has been restored are not confirmed. Contact the supervisor now and have the traffic controls checked and made safe before work continues." The case does not say the sign was put back up or that its base was weak. An active hazard needs action and reporting when discovered, not just a note at shift change.
 **b)** Sample: "Every handover lists every sign, light and barrier that changed during the shift, and the next crew checks them before work starts."
 **c)** Their supervisor or the employer, as soon as possible. Unsafe conditions must be reported (OHS Regulation section 3.10). A near miss should be reported the way the employer's procedures say.
 

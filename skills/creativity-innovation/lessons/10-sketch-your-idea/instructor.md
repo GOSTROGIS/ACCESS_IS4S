@@ -20,7 +20,7 @@ By the end of the session, learners will be able to:
 1. Have you ever built something from a drawing? What was hard about it?
 2. What do you think a dashed line on a drawing means?
 
-## Learning tasks (90 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

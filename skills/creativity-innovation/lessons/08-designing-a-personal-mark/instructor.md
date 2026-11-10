@@ -20,7 +20,7 @@ By the end of the session, learners will be able to:
 1. Think of a company mark you recognize from a distance, on a truck or a hard hat. Without naming the company, what makes it easy to recognize?
 2. Where would you look to find out whether an animal in BC is at risk?
 
-## Learning tasks (90 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 
@@ -61,6 +61,8 @@ During this session we covered:
 - presenting your mark and giving feedback
 
 Across the first eight Creativity and Innovation lessons we covered all six components: imagination and curiosity, finding opportunities, generating ideas, developing ideas, applying ideas and learning from failure, and building a creative environment for yourself and others.
+
+**Access and offline options:** Provide dated printouts from the named official sources for Task 2 when internet access is unavailable. Learners record the original page title, URL and printed date. For Task 4, allow an agreed viewing size and distance, magnification or a partner describing what is visible. Record the test conditions and assess how the learner uses feedback, not visual acuity. A paper poster meets Task 5.
 
 ## Sources
 

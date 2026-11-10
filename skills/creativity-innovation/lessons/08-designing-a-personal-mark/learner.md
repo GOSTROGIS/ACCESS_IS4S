@@ -177,7 +177,7 @@ What I changed: ______________________________________________
 
 **Task 5** (level 2) Make 5 to 8 slides in PowerPoint or Google Slides, or a one-page poster. Include:
 
-- a title slide with your name, the date and your mark
+- a title slide or poster heading with your name, the date and your mark
 - what your mark comes from
 - your research facts, each with its source
 - how the mark relates to you and the way you work

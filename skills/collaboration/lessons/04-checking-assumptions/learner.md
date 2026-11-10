@@ -104,7 +104,7 @@ g) He hasn't said anything at the crew talk.
 h) He has nothing to add.
 
 **Task 3** (level 2)
-Your instructor will read some statements. Move to the sign that fits what you think: Agree strongly, Agree a little, Disagree a little, Disagree strongly. Stand in the middle if you can't decide. Then, in groups of four, talk about these questions and have one person take notes:
+Your instructor will read some statements. Move to the sign that fits what you think: Agree strongly, Agree a little, Disagree a little, Disagree strongly. Stand in the middle if you can't decide. You may stay seated and name your choice, point to a card or write it instead. Then, in groups of four, talk about these questions and have one person take notes:
 
 - Where do beliefs like these come from? (family, media, past experience, friends)
 - Why do people hold on to them?
@@ -142,7 +142,7 @@ ______________________________________________
 **Task 7** (level 3) **You are the lead hand.**
 You run an asphalt paving crew. The roller operator, Dale (fictional), has arrived 15 minutes late two days in a row. A crew member says, "He's lazy. Those guys from up north are always like that."
 
-a) Which part of that comment is a stereotype? Which part is a fact?
+a) Which part of that comment is a stereotype? Which is an assumption? What fact does the scenario give about Dale?
 b) Name two things you check before you decide what to do.
 c) Write the first two sentences you say to Dale, in private.
 d) What do you say to the crew member who made the comment?

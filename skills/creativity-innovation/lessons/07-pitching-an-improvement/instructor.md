@@ -20,7 +20,7 @@ By the end of the session, learners will be able to:
 1. Think of a time you suggested a change at work, school or home. What happened, and why?
 2. What do you think a supervisor needs to know before saying yes to a new way of working?
 
-## Learning tasks (75 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

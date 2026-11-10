@@ -22,7 +22,7 @@ Levels: the Government of Canada page names three creativity and innovation leve
 1. Name one trade you have never thought about doing. What do you think a day in it looks like?
 2. Has feedback from someone else ever changed a choice you made? What made that feedback useful?
 
-## Learning tasks (60 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

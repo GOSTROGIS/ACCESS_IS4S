@@ -173,7 +173,7 @@ ______________________________________________
 
 ______________________________________________
 
-**Task 9** (level 3) **Role play.** In pairs, act out one disagreement from your own trade. One person is the lead hand, one is the worker. Then switch. The observer checks:
+**Task 9** (level 3) **Role play.** In groups of three, act out one disagreement from your own trade. One person is the lead hand, one is the worker and one observes. Then rotate roles. The observer checks:
 
 - [ ] picked a good moment
 - [ ] said it once, with facts

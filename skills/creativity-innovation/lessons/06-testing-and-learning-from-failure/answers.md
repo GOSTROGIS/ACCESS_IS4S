@@ -35,7 +35,7 @@ a) Version 1: (6 + 7 + 8) ÷ 3 = 21 ÷ 3 = 7 washers. Version 2: (12 + 13 + 14) 
 
 b) (13 − 7) ÷ 7 × 100 = 6 ÷ 7 × 100 ≈ 85.7%.
 
-c) Depends on the team's data. Check that brackets are worked first, that the old average is the one divided by, and that the answer is rounded to one decimal place.
+c) Depends on the team's data. Check that brackets are worked first, that the old average is the one divided by, and that the answer is rounded to one decimal place. If the old average is zero, percent improvement is undefined: report the change in washers instead of dividing by zero. A lower new average is a decrease, not an improvement.
 
 ## Task 7 (level 2)
 

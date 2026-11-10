@@ -39,7 +39,7 @@ By the end of the session, learners will be able to:
 | 2.6 | Run Task 9 in groups of three with an observer | Role-play, observe, switch | Learner page | 10 min |
 | 2.7 | Give time for Check yourself | Answer the five questions alone | Learner page, answers page | 4 min |
 | 3.1 | Ask the post-assessment questions | Answer aloud or on paper | Whiteboard | 5 min |
-| 3.2 | Summary and close of the Collaboration series | Name one thing from the twelve sessions they will use on a crew | None | 3 min |
+| 3.2 | Summary and preview of lesson 13 | Name one thing from the twelve sessions they will use on a crew | None | 3 min |
 | | | | **Total** | **75 min** |
 
 ## Post-assessment (5 min, step 3.1)
@@ -57,11 +57,13 @@ During this session we covered:
 - going up the chain one step at a time
 - disagreeing as a lead hand and admitting when someone else was right
 
-Across the twelve Collaboration sessions we covered doing your share, working styles, respecting differences, checking assumptions, resolving conflict, building as a team, learning from a journeyperson, respectful workplaces, who does what on a site, working around other trades, huddles and handovers, and disagreeing well.
+Across the first twelve Collaboration sessions we covered doing your share, working styles, respecting differences, checking assumptions, resolving conflict, building as a team, learning from a journeyperson, respectful workplaces, who does what on a site, working around other trades, huddles and handovers, and disagreeing well.
+
+Next session: who does what on a task, using a RACI chart.
 
 ## Notes for the instructor
 
-- This is a new lesson that answers the 2026-11-08 skills audit. It is the level 3 capstone of the series.
+- This is a new lesson that answers the 2026-11-08 skills audit. It is a level 3 practice session. Lessons 13 to 15 extend the series with task roles, project delivery and crew ground rules.
 - Make the safety line very clear. Learners must never take "disagree and commit" to mean doing unsafe work. If a learner describes being pressured into unsafe work, point to Communication lesson 4 and WorkSafeBC.
 - Some learners come from families or communities where questioning an older person is not done. Respect that. Saying it once, in private, with facts is a way to speak up that many people find respectful. Nobody has to act out a conflict they find uncomfortable in Task 9. They can observe instead.
 - "Disagree and commit" is a common workplace phrase, not a legal or official term.

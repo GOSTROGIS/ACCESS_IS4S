@@ -20,7 +20,7 @@ By the end of the session, learners will be able to:
 1. Name one rule or habit at a job you have had that seemed to slow the work down. Do you know why it was there?
 2. If 2 workers each walk 10 minutes a day for supplies, how many minutes is that for both of them in a 5-day week?
 
-## Learning tasks (60 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

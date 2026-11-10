@@ -6,7 +6,7 @@ Every minute of the session is in the Learning tasks table. The blocks below poi
 
 ## Opening (4 min, step 1.1)
 
-Welcome learners. This is the first of twelve Collaboration sessions, and it runs 70 minutes.
+Welcome learners. This is the first of fifteen Collaboration sessions, and it runs 70 minutes.
 
 Hook: write on the board "Is a totem pole made by one person?" Let learners answer in a word or two, then leave the question up. Tell them you will come back to it with one real pole project. Add a second hook from the trades: "Has a job ever stopped because one person was missing or late?"
 

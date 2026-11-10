@@ -131,7 +131,7 @@ ______________________________________________
 ______________________________________________
 
 **Task 4** (level 2)
-Write a short report to your supervisor about the Summit Steel video. Stick to facts. Include what happened, when, where, who was involved, who else saw it, and what you have done so far.
+Write a short report to your supervisor about the Summit Steel video. Stick to facts. Include what happened, when, where, who was involved, who else saw it, and what you have done so far. If the case does not give a detail, write "not yet known" or use a blank to confirm later. Do not invent witnesses, times or actions already taken.
 
 ______________________________________________
 

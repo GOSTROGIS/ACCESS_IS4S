@@ -68,6 +68,8 @@ c) "When I get talked over at the toolbox talk, I can't get my point across, and
 
 ## Task 8 (level 3)
 
+The samples below assume Kim needs two hours on the lift before a 10:00 inspection and Raj has suitable floor-level work until 9:00. These are invented role-play details, not facts supplied in the case. Accept other clear assumptions and agreements that meet both workers' needs safely.
+
 **a)** Sample (attend and value): "Hold on, both of you. Let's take two minutes. I want to hear each of you."
 **b)** Sample: "So, Kim, you need the lift at 7:00 because the inspector is coming at 10:00 to look at your hangers. Is that right?"
 **c)** Sample: "When the lift is taken first thing, I can't finish my hangers before the 10:00 inspection. I need it from 7:00 to 9:00."

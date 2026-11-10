@@ -19,7 +19,7 @@ By the end of the session, learners will be able to:
 1. What makes spoken directions easy to follow? Name two things.
 2. If someone facing you says "turn it to the left," which way do you turn it?
 
-## Learning tasks (60 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 
@@ -54,6 +54,8 @@ During this session we covered:
 - whose left and right, and saying "from where you are sitting"
 - testing directions, finding what went wrong and fixing it
 - writing build steps someone else can follow
+
+**Access option:** If back-to-back speech or handling small bricks is a barrier, use typed, signed or written directions and larger pieces, or let a partner place pieces as directed. Keep the reference model hidden for the first round and allow questions in the second. Assess the clarity and improvement of directions, not hearing, speech or hand dexterity.
 
 ## Sources
 

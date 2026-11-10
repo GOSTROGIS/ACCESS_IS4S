@@ -78,7 +78,7 @@ Northgate Construction is the GC on a four-storey rental building. Silverline Me
 
 **Which habit fits?** Both care a lot, they have four more months together, and there is time to sit down. That points to **work it out together**.
 
-**What they agreed.** Dale and Priya met with their bosses for 20 minutes. They agreed that Silverline's lead hand photographs each wall with a pre-printed tag before he leaves the unit, uploads the photos to the shared folder by the end of the shift, and signs one checklist per unit instead of one per wall. Priya checks the folder each morning and flags gaps the same day, not at month end. Dale's held claims were paid once the missing photos for the two months were in.
+**What they agreed.** Dale and Priya met with their bosses for 20 minutes. They agreed that Silverline's lead hand photographs each wall with a pre-printed tag before he leaves the unit, uploads the photos to the shared folder by the end of the shift, and signs one checklist per unit instead of one per wall. Priya checks the folder each morning and flags gaps the same day, not at month end. Dale's held claims were paid once the required tagged photos and signed checklists for the two months were complete and accepted.
 
 ## Practice
 

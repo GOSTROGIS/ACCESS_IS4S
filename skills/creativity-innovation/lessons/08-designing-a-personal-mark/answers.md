@@ -31,7 +31,7 @@ Open task. A good response:
 Open task. Good slides or a good poster:
 
 - has 5 to 8 slides, or one clear poster
-- includes the title slide with name, date and mark
+- includes a title slide or poster heading with name, date and mark
 - shows research facts with sources
 - explains how the mark relates to the learner and their work
 - shows earlier sketches and the final mark, with what changed and why

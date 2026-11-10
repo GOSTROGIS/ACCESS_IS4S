@@ -6,7 +6,7 @@ Open task. A good pitch planner:
 
 - problem: a specific observation with a number
 - idea: one or two clear sentences
-- test: something already tried, including what did not work
+- test: something already tried, including what did not work; if nothing has been tested, say so and propose a safe trial rather than inventing results
 - cost and time: what it takes and what it saves
 - safety: how it meets or improves safety and site rules, with nothing that works around a safety rule
 - ask: a small, clear, time-limited request
@@ -50,7 +50,7 @@ Answers will vary. A good response:
 - proposes a small, safe trial or a way to collect more evidence (time trips for a week, build and test the jig on 5 plates, get a photo of the setup)
 - says what will be brought back (numbers, a sample part, a photo) and when
 
-Example: "I'll time our trips for three days the old way and three days with the bin on the deck, and bring you the numbers on Friday."
+Example: "Could we agree on a safe trial first? I propose timing three workdays the old way and three workdays with the bin on the deck. I'll bring you the results after all six days."
 
 ## Task 6 (level 2)
 

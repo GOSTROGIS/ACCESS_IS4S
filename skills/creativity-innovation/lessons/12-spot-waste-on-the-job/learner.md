@@ -190,6 +190,8 @@ Trips to the van score highest.
 
 A round trip to the storage room takes about 0.5 minutes. The new daily time for 36 trips is 36 × 0.5 = 18 minutes. The saving is 108 − 18 = 90 minutes a day, which is 90 × 5 = 450 minutes, or 7.5 hours, in a 5-day week.
 
+These are estimates: they assume the two-hour trip rate continues for the full day. The 90-minute saving is before the time needed to bring the day's material into the storage room. Measure that stocking time and the actual trips during the trial, then subtract the stocking time to find the net saving.
+
 Lena brings her tally sheet and the numbers to her foreman. The foreman checks with the general contractor that the storage room can be used, and the crew tries it the next week.
 
 ## Practice

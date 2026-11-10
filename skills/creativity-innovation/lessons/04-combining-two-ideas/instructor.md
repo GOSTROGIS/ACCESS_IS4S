@@ -19,7 +19,7 @@ By the end of the session, learners will be able to:
 1. What does a healthy plate look like to you? Sketch it and label the parts.
 2. Name any food allergies you know of that a camp kitchen has to plan around.
 
-## Learning tasks (90 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

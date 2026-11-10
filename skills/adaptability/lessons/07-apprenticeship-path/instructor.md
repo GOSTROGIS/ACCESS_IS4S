@@ -73,6 +73,8 @@ During this session we covered:
 - the Canada Apprentice Loan and EI for technical training
 - writing a learning plan with goals you can check
 
+**Offline option for Task 3:** Prepare dated copies of a WorkBC career profile and the matching SkilledTradesBC trade profile. Learners can complete the same table from those copies, recording the page title, URL and date printed. Flag any fact not supplied for later checking instead of guessing.
+
 ## Sources
 
 - TEER categories 0 to 5, the TEER as the second digit of the NOC code, and what each category usually requires: Government of Canada, NOC 2021, TEER category, https://noc.esdc.gc.ca/Tutorial/TutorialTeerCategory, checked 2026-11-06.

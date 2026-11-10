@@ -74,6 +74,8 @@ Next session: who does what on a job site. Lessons 9 to 12 take these skills ont
 - The Summit Steel case calls the "bucket of steam" a well-known gag. Do not spend time debating whether gags are funny. The teaching point is that singling someone out, physical acts and posting video cross the line.
 - WorkSafeBC policy numbers changed when the *Workers Compensation Act* was renumbered on April 6, 2020. Older documents call the policies D3-115-2, D3-116-1 and D3-117-2. The current numbers are P2-21-2, P2-22-1 and P2-23-2.
 
+**Offline option:** For Task 5, provide a dated printout of the named WorkSafeBC page. If no printout is available, use the "How to report" section on the learner page and identify that as the source. Assess finding the reporting steps, not owning a device.
+
 ## Sources
 
 - WorkSafeBC, "Policies for the Workers Compensation Act", items P2-21-2 Employer Duties, P2-22-1 Worker Duties and P2-23-2 Supervisor Duties, Workplace Bullying and Harassment (definition, employer duties a to i, worker duties a to c, supervisor duties a and b, "person" includes anyone at the workplace, bullying and harassment can lead to injury, illness or death, effective November 1, 2013, housekeeping changes April 6, 2020): https://www.worksafebc.com/en/law-policy/occupational-health-safety/searchable-ohs-regulation/ohs-policies/policies-for-the-workers-compensation-act, checked 2026-11-06

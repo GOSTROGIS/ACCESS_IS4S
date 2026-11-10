@@ -21,7 +21,7 @@ By the end of the session, learners will be able to:
 1. You change the glue, the shape and the size of a part all at once, and it works better. What can you not tell?
 2. Three tests gave 4, 6 and 8. What is the average?
 
-## Learning tasks (90 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

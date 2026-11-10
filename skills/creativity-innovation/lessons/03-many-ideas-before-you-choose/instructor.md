@@ -20,7 +20,7 @@ By the end of the session, learners will be able to:
 1. When a group is coming up with ideas, what happens if someone shoots down each idea as soon as it is said?
 2. A plate is 160 mm long and a hole sits 30 mm in from each short end. How far apart are the hole centres?
 
-## Learning tasks (75 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 

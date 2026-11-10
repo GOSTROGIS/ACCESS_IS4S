@@ -224,7 +224,7 @@ ______________________________________________
 ______________________________________________
 
 **Task 8** (level 3) **You are the lead hand.**
-Two of your apprentices, Kim and Raj (fictional), both need the only scissor lift first thing in the morning. They are arguing at the gang box.
+Two of your apprentices, Kim and Raj (fictional), both need the only scissor lift first thing in the morning. They are arguing at the gang box. For this role-play, make up each apprentice's task, deadline and estimated lift time, and write those assumptions down before answering.
 
 a) Write what you say to start, using one of the four listening skills.
 b) Write one paraphrase you could use for Kim's side.

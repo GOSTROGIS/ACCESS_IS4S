@@ -291,7 +291,7 @@ ______________________________________________
 
 ______________________________________________
 
-**Task 9** (level 3) A new method for cutting pipe nipples averages 15 seconds a cut instead of 28. But 2 of 5 test cuts were 3 mm long. The job allows ±1 mm.
+**Task 9** (level 3) A new method for cutting pipe nipples averages 15 seconds a cut instead of 28. But 2 of 5 test cuts were 3 mm too long. The job allows ±1 mm.
 
 a) Find the percent time saved.
 

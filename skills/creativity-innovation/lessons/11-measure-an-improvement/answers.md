@@ -13,7 +13,7 @@ b) Without: 102 − 88 = **14 seconds**. With: 44 − 37 = **7 seconds**.
 
 ## Task 3 (level 2)
 
-**57.4%.** (94 − 40) ÷ 94 × 100 = 54 ÷ 94 × 100 = 57.45..., which rounds to 57.4%.
+**57.4%.** (94 − 40) ÷ 94 × 100 = 54 ÷ 94 × 100 = 57.4468..., which rounds to 57.4%.
 
 ## Task 4 (level 2)
 
@@ -55,7 +55,7 @@ d) **Yes.** Net saving: $275 − $105 = **$170**, and the jig can be used again.
 
 a) **46.4%.** (28 − 15) ÷ 28 × 100 = 13 ÷ 28 × 100 = 46.43..., which rounds to 46.4%.
 
-b) **Not yet.** It is faster, but 2 of 5 cuts (40%) are out by 3 mm when the job allows 1 mm. Those nipples would have to be recut or scrapped, which wipes out the time saved.
+b) **Not yet.** It is faster, but 2 of 5 cuts (40%) are out by 3 mm when the job allows 1 mm. Those nipples need correction or replacement. Measure that extra time and material before claiming a net saving; the scenario does not say how much rework costs.
 
 c) Find out why the cuts are long (for example, a stop that moves or a measuring error), fix it, and test 5 more cuts for both time and length.
 
@@ -73,4 +73,4 @@ Open answer. Example: "I timed 5 cuts each way. Measuring with a tape averaged 5
 
 **4.** The number of pieces after which the set-up time has been paid back. Level 2.
 
-**5.** If the quality is worse, the work has to be redone, and that costs more time than it saves. Level 2.
+**5.** If the quality does not meet the requirement, the work needs correction or replacement. That adds time and material costs and can outweigh the speed saving. Level 2.

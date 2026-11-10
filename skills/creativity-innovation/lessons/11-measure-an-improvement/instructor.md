@@ -20,7 +20,7 @@ By the end of the session, learners will be able to:
 1. Three trials took 12, 15 and 18 seconds. What is the average?
 2. A job took 50 minutes and now takes 40. What fraction of the time was saved?
 
-## Learning tasks (90 min)
+## Learning tasks
 
 The table covers the whole session, including the opening, objective, pre-assessment, post-assessment and summary blocks.
 
