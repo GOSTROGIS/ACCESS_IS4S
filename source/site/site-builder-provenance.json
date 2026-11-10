@@ -1,0 +1,48 @@
+{
+  "repository": "GOSTROGIS/SLIPCURVE",
+  "commit": "03d0a6c570f8270a6e21536534e8334d335e6927",
+  "retrieved": "2026-11-10",
+  "permission": "Owner requested reuse in ACCESS_IS4S. No root open-source licence found; no additional redistribution licence is asserted.",
+  "files": [
+    {
+      "local": "skills/digital/site-builder/vendor/dimensions.js",
+      "upstream": "engine/sitelib/dimensions.js",
+      "blob": "f833ddf8da10cf7774771f8ef32ae7665e2d60f8"
+    },
+    {
+      "local": "skills/digital/site-builder/vendor/catalog.js",
+      "upstream": "engine/mc-site-catalog.js",
+      "blob": "03a35db557eed7167ef20d9db08e0667943b3169"
+    },
+    {
+      "local": "skills/digital/site-builder/vendor/parts.js",
+      "upstream": "engine/mc-site-parts.js",
+      "blob": "adb4a9ea083e752ad10651ff12563cfe96a6a6f5"
+    },
+    {
+      "local": "skills/digital/site-builder/vendor/models-static.js",
+      "upstream": "engine/mc-site-models-static.js",
+      "blob": "4066163a2727b41d948b25cb03708d837623772f"
+    },
+    {
+      "local": "skills/digital/site-builder/vendor/materials.js",
+      "upstream": "engine/sitelib/materials.js",
+      "blob": "6036a78225848c2d97888cf28d44de0620aa6335"
+    },
+    {
+      "local": "skills/digital/site-builder/vendor/site3d.js",
+      "upstream": "engine/mc-site-3d.js",
+      "blob": "ab05e812f4c2c8dc5bbec8622812c412f1b7e6e4"
+    },
+    {
+      "local": "skills/digital/site-builder/vendor/three.min.js",
+      "upstream": "vendor/three/three.min.js",
+      "blob": "0c2f4ba351000d47f413873d8bb9c1a2f18cb37a"
+    },
+    {
+      "local": "skills/digital/site-builder/vendor/THREE-LICENSE.txt",
+      "upstream": "vendor/three/LICENSE",
+      "blob": "d07e209686512b9ac93d7df5481a4a6f622093e7"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+name: Learner site builder checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/digital/site-builder/**'
+      - 'source/site/test-site-builder*'
+      - '.github/workflows/site-builder-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node source/site/test-site-builder.cjs
+      - run: npm install --prefix /tmp/site-builder-tests playwright@1.56.1
+      - run: /tmp/site-builder-tests/node_modules/.bin/playwright install --with-deps chromium
+      - name: Verify learner interactions and 3D rendering
+        env:
+          NODE_PATH: /tmp/site-builder-tests/node_modules
+        run: |
+          python3 -m http.server 8798 --bind 127.0.0.1 > /tmp/site-builder-http.log 2>&1 &
+          export CHROMIUM_PATH="$(node -p "require('playwright').chromium.executablePath()")"
+          export SITE_BUILDER_SCREENSHOT_DIR="$RUNNER_TEMP"
+          for attempt in 1 2 3 4 5; do curl -fsS http://127.0.0.1:8798/ >/dev/null && break || sleep 1; done
+          node source/site/test-site-builder-browser.cjs

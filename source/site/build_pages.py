@@ -226,6 +226,9 @@ def chapter_cards(slug, prefix=''):
 
 EXTRAS = {
     'digital': [
+        ('Build a site through time', 'site-builder/index.html',
+         'Place Slipcurve objects, compare layouts across time and save a fictional site plan.',
+         [('Open site builder', 'site-builder/index.html'), ('Teaching guide', 'site-builder/guide.html')]),
         ('AI literacy lessons', 'ai-literacy/learner.html',
          'Claude, Claude Code, Cowork, ChatGPT and Codex activities, with real practice files.',
          [('Learner', 'ai-literacy/learner.html'), ('Instructor', 'ai-literacy/instructor.html'),
