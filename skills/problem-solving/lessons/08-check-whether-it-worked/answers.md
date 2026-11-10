@@ -38,7 +38,7 @@ Another person, for example: the supervisor (decides on buying new couplers or h
   - "The screen fixed the problem." **Not supported.** Two changes were made at once, so the record cannot say whether the screen, the cable, or both made the difference.
   - "The failure rate in booth 3 was lower in the two weeks after the changes." **Supported.** It went from 37.5% to about 8.3%.
   - "Booth 3 is now as good as booths 1 and 2." **Not supported.** Night shift in booth 3 was 2 of 24 (about 8.3%), and day shift was 1 of 24 (about 4.2%). With only 24 samples each, one or two failures either way can change the rate a lot. More weeks of records are needed.
-- d. Keep testing and recording for several more weeks. If the supervisor wants to know which change helped, test one at a time, for example by moving the screen back for a short trial with everything else the same, if that can be done safely. Ask the night welders for feedback.
+- d. Keep testing and recording for several more weeks. Do not remove a protective screen or reinstall a damaged cable to recreate a fault. If further cause testing is needed, the supervisor should arrange a controlled, safe comparison that keeps required safeguards in place. Ask the night welders for feedback.
 
 ## Task 5 (level 2)
 

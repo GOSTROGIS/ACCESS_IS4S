@@ -13,7 +13,7 @@ Accept steps 4 and 5 in either order if the learner explains that a no-tool chec
 
 ## Task 2 (level 2)
 
-Example: "Since about noon on Tuesday, the compressor runs nonstop and the framing nailers leave nails sticking up. There is a hiss at the coupler on hose 2, which a bin truck backed over on Monday afternoon. The regulator gauge reads 90 psi."
+Example: "The nailers have left nails sticking up since lunch on Tuesday. At 2:20 p.m. Bri reported that the compressor was running nonstop; its exact start time is not stated. There is a hiss at the coupler on hose 2, which a bin truck backed over on Monday afternoon. The regulator gauge reads 90 psi."
 
 Points a good response covers: when it started, what the compressor does, what the nailers do, the hiss and where, the Monday event, the gauge reading.
 
@@ -44,7 +44,7 @@ The regulator (90 psi) is inside the nailer's 70 to 120 psi range, so it is not 
 - a. **Yes, it looks fixed.** After the coupler was replaced, the compressor reached 125 psi and stopped, which is normal. It stayed off for 20 minutes with tools connected, so there is no big leak left. The nailers drove ten nails flush at 90 psi.
 - b. It is the simplest, fastest check and takes no tools. Checking it first rules out an easy cause before work begins on the hose. It is also a check that changes nothing, so it does not spoil the one-change-at-a-time test.
 - c. Points a good answer covers: the fault is fixed, so there is nothing to test by swapping more parts. Changing them would waste parts and would muddy the record. Instead, inspect hose 2 itself for crush damage (using page 4 if it needs replacing) and note the filter for the next scheduled maintenance. Say it respectfully: Bri's idea is about care for the equipment, and you can agree to check the hose.
-- d. The pump was not the cause. The fault was a leak at the hose 2 coupler. Bri's guess would have cost a new compressor.
+- d. Replacing the hose 2 coupler restored normal operation in the recorded tests. That supports the coupler leak as the cause of this fault; it does not establish the pump's condition under every possible load. Bri's proposed replacement was not justified by the evidence.
 
 ## Task 6 (level 2)
 

@@ -4,11 +4,11 @@
 
 **Session 1 of 16 in Problem Solving. Length: 60 min.**
 
-Welcome learners. Write two words, one under the other, on the flip chart: **NEW** and **DEER**. Say: "Rearrange the letters in these two words to spell one word. Stand up when you have it." Give about a minute, then confirm RENEWED. Now write **NEW** and **DOOR** and give the same instruction: "Rearrange the letters in these two words to spell one word." After a minute, write ONE WORD on the flip chart.
+Welcome learners. Write two words, one under the other, on the flip chart: **NEW** and **DEER**. Say: "Rearrange the letters in these two words to spell one word. Signal in any comfortable way when you have it." Give about a minute, then confirm RENEWED. Now write **NEW** and **DOOR** and give the same instruction: "Rearrange the letters in these two words to spell one word." After a minute, write ONE WORD on the flip chart.
 
 Debrief: we often assume a problem must be harder than it is, and we skip reading the instruction exactly. On a job, the same habit sends people off to fix a problem nobody asked them to fix. (This hook comes from the ACCESS ESAF Thinking Skills file it replaces.)
 
-Background for the instructor: in May 2021 the Government of Canada replaced its older skills framework with the Skills for Success model. Thinking Skills, which included critical thinking and decision making, became Problem Solving. This is the first of nine Problem Solving lessons.
+Background for the instructor: in May 2021 the Government of Canada replaced its older skills framework with the Skills for Success model. Thinking Skills, which included critical thinking and decision making, became Problem Solving. This is the first of sixteen Problem Solving lessons.
 
 ## Objective (2 min)
 

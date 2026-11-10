@@ -107,7 +107,7 @@ Drywall and paint together are 65% of the list. The site lead draws a fishbone f
 - **Equipment:** the material carts have hard steel edges.
 - **Environment:** the main hallway is narrow, and one end is badly lit.
 
-The crew thinks carts hitting outside corners is the most likely cause. **Plan:** put plastic corner guards on every outside corner in hallway A only, and count new dents for two weeks in hallway A and in hallway B, which is the same length. **Do:** install the guards. **Check:** hallway A had 3 new dents, hallway B had 11. **Act:** add corner guards to every job's start-up list, and move on to the next problem, paint touch-ups.
+The crew thinks carts hitting outside corners is the most likely cause. **Plan:** put plastic corner guards on every outside corner in hallway A only, and count new dents for two weeks in hallway A and in hallway B, which is the same length. **Do:** install the guards. **Check:** hallway A had 3 new dents, hallway B had 11. **Act:** keep the guards in place and compare dents per material movement over another period before extending the practice. Equal hallway length does not guarantee equal traffic or exposure; the early counts are encouraging, not proof that the guards caused the difference.
 
 ## Practice
 
@@ -144,7 +144,7 @@ One of these notes needs action today, before any fishbone work. Which one, and 
 - **Do:** before the change, 14 of 200 parts made were rejected for burrs. In the two weeks after, 3 of 150 parts made were rejected for burrs.
 
 - a. Work out the burr reject rate before and after, as percentages.
-- b. Did the change help? Why can the shop say the blade made the difference?
+- b. What improvement does the record show? Why is the blade a plausible explanation, and what still needs checking before claiming it caused the difference?
 - c. Write the **Act** step.
 
 **Task 5** (level 3) Go back to Harbourline's 80 deficiencies. The site lead now looks at **cost to fix** instead of count. On this job the average cost to fix each one is: drywall $15, paint $10, trim $20, doors $90, cover plates $5, other $25.

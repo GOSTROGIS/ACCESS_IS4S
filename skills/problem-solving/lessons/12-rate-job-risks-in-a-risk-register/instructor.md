@@ -28,7 +28,7 @@ By the end of the session, learners will be able to:
 | 1.2 | 1.2 Teach the scoring table and the high, medium and low bands. Walk through the deck register on the board. Stress the safety section: a register never replaces hazard checks, and section 3.10 applies at once. | 1.2 Follow the worked example and check each score. | Learner page, board | 7 min |
 | 1.3 | 1.3 Assign Task 3. Draw a 3 × 3 grid (likelihood across, impact up) and have learners place H1 to H5 on it. | 1.3 Complete Task 3 and place each risk on the grid. | Learner page, board | 7 min |
 | 2.1 | 2.1 Teach the four responses, owners and triggers. Assign Task 4 in pairs. | 2.1 Complete Task 4. | Learner page | 9 min |
-| 2.2 | 2.2 Assign Task 5 in small groups. Each group shares its highest item and its reason. | 2.2 Complete Task 5. | Learner page | 7 min |
+| 2.2 | 2.2 Assign Task 5 in small groups. Compare possible impact ratings and the assumptions behind them. Explain that likelihood is missing, so overall risk cannot yet be scored. | 2.2 Complete Task 5. | Learner page | 7 min |
 | 2.3 | 2.3 Assign Task 6. Discuss how a register changes as the job moves. | 2.3 Complete Task 6. | Learner page | 6 min |
 
 Learning tasks: 8 + 7 + 7 + 9 + 7 + 6 = 44 min. Whole session: 5 + 2 + 3 + 44 + 4 + 2 = 60 min.

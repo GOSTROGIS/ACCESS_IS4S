@@ -24,7 +24,7 @@ When you get stuck on a job, the fastest answer is usually on your phone: a sear
 
 ### Warning signs
 
-The Canadian Centre for Cyber Security suggests looking for: a web address with typos or an unexpected ending such as .net or .org, no contact information, no physical address and no "About us" page, and information that is out of date. Check the story against other sources, and do not assume something is correct just because a friend sent it.
+The Canadian Centre for Cyber Security suggests looking for: a web address with typos or one that does not match the organization it claims to represent, no contact information, no physical address and no "About us" page, and information that is out of date. A .net or .org ending alone does not show that a site is unreliable. Compare the full domain with the organization's verified address. Check the story against other sources, and do not assume something is correct just because a friend sent it.
 
 ### AI chatbots
 

@@ -25,7 +25,7 @@ By the end of the session, learners will be able to:
 
 | Step | Instructor activities | Learner activities | Resources | Time |
 |---|---|---|---|---|
-| 1.1 | 1.1 Show the shop picture for exactly 60 seconds, then ask learners to cover it. Assign Task 1. | 1.1 Study the picture, cover it, answer Task 1 from memory. | Learner page, timer | 5 min |
+| 1.1 | 1.1 Offer the picture or equivalent zone description, enlarged text and agreed extra time. Use the optional 60-second memory round only if suitable. Assign Task 1. | 1.1 Study the picture or description and answer Task 1 using the agreed access route. | Learner page, timer | 5 min |
 | 1.2 | 1.2 Teach the fixed-order scan from the key ideas. Assign Task 2. | 1.2 Scan zone by zone, list everything, check Task 1. | Learner page | 7 min |
 | 2.1 | 2.1 Explain observation versus interpretation and the five questions. Read the hose worked example. Assign Task 4. | 2.1 Complete Task 4 and read one rewrite aloud. | Learner page | 7 min |
 | 2.2 | 2.2 Explain the duty to report what appears unsafe (section 3.10). Assign Task 3. Discuss the tagged grinder. | 2.2 Complete Task 3 in pairs and share one report note. | Learner page | 10 min |
@@ -34,7 +34,7 @@ By the end of the session, learners will be able to:
 
 Learning tasks: 5 + 7 + 7 + 10 + 8 + 6 = 43 min. Whole session: 5 + 2 + 3 + 43 + 5 + 2 = 60 min.
 
-**For learners who use a screen reader or cannot see the picture**, read this description aloud for Task 1 and give it in writing for Tasks 2 and 3: "Zone 1: a brown door with a green EXIT sign above it. A dark puddle about a metre wide lies on the floor in front of the door. Zone 2: a red sign reading FIRE EXTINGUISHER. Under it, five cardboard boxes are stacked in front of a red fire extinguisher, so only its top shows. Zone 3: a round wall clock showing 2:15. A yellow work light on a stand. A wooden workbench holding a bench grinder with a yellow tag reading OUT OF SERVICE, DO NOT USE, and a blue vise. A grey flat bar lies on the bench and sticks out past its right end into the walkway. Zone 4: a whiteboard with blue writing: JOB 4471, 12 BRACKETS, DUE THU 3 PM. Three wooden sawhorses. A wall outlet on the far right, with an orange extension cord running from it across the floor to the work light in zone 3."
+**For learners who use a screen reader or cannot see the picture**, read this description aloud for Task 1 and give it in writing for Tasks 2 and 3: "Zone 1: a brown door with a green EXIT sign above it. A dark puddle lies on the floor in front of the door; its width is not established by this drawing. Zone 2: a red sign reading FIRE EXTINGUISHER. Under it, five cardboard boxes are stacked in front of a red fire extinguisher, so only its top shows. Zone 3: a round wall clock showing 2:15. A yellow work light on a stand. A wooden workbench holding a bench grinder with a yellow tag reading OUT OF SERVICE, DO NOT USE, and a blue vise. A grey flat bar lies on the bench and sticks out past its right end into the walkway. Zone 4: a whiteboard with blue writing: JOB 4471, 12 BRACKETS, DUE THU 3 PM. Three wooden sawhorses. A wall outlet on the far right, with an orange extension cord running from it across the floor to the work light in zone 3."
 
 ## Post-assessment (5 min)
 

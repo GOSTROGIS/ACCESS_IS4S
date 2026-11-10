@@ -29,7 +29,7 @@ Screws: 8 shelves × 6 screws = **48 screws**. One box of 100 is enough: **1 box
 ## Task 3 (level 2)
 
 - Sides: 4 sides ÷ 2 sides per strip = **2 strips**
-- Shelves: 8 shelves ÷ 3 shelves per strip = 2.67, so round up to **3 strips** (one shelf left over)
+- Shelves: 8 shelves ÷ 3 shelves per strip = 2.67, so round up to **3 strips** (capacity for one extra shelf if all three strips are fully cut)
 - Total: 2 + 3 = **5 strips**
 - Sheets: each sheet gives 4 strips. 5 ÷ 4 = 1.25, so round up to **2 sheets** (3 strips left over)
 
@@ -43,7 +43,7 @@ Action planner, for example:
 - **When:** Monday, sign in by 6:45 a.m., start 7:00 a.m.
 - **Where:** 2250 Mountview Road, street parking
 - **How:** drive, 45 minutes
-- **Resources:** hard hat, safety boots, safety glasses, high-visibility vest, work gloves, lunch, water, ID and phone
+- **Resources:** hard hat, safety boots, safety glasses, high-visibility vest, work gloves, lunch, water; ID and phone are optional planning suggestions, not requirements stated in Lena's email
 - **Anything else:** traffic, finding parking, weather, packing the night before
 
 Leaving time, working back from the start: 7:00 − 15 min (arrive early) = 6:45. 6:45 − 15 min (traffic) = 6:30. 6:30 − 45 min (drive) = **5:45 a.m.**
@@ -52,7 +52,7 @@ Leaving time, working back from the start: 7:00 − 15 min (arrive early) = 6:45
 
 Points a good response covers:
 
-- entries such as: alarm Monday 4:45 a.m., reminder Sunday 8 p.m. "pack gear and lunch," checklist of the six items to bring, the site address saved in maps, Lena's email saved so you can reach the site office
+- entries such as: alarm Monday 4:45 a.m., reminder Sunday 8 p.m. "pack gear and lunch," checklist of all seven items to bring, the site address saved in maps, Lena's email saved so you can reach the site office
 - three checks, such as: the alarm is set for a.m. and for the right day, the phone is charged and a charger is in the truck, the sound is on, the address is saved offline or written down, anyone driving with you has the plan too
 
 ## Task 6 (level 2)

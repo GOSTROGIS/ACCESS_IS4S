@@ -20,8 +20,8 @@ Good questions for the superintendent, for example:
 1. Cedar Street is busy and a bus route, and the permit says it must stay open.
 2. There is a school across Cedar Street, and no deliveries are allowed on Cedar Street at school times.
 3. The bus stop sits at the south-west corner on Cedar Street, so trucks turning there would cross people waiting for the bus.
-4. Mill Lane is quiet, so a truck can wait or back up with a spotter without stopping traffic.
-5. The catch basin is on Cedar Street, so a wheel wash on Mill Lane keeps wash water away from it.
+4. Mill Lane is quieter, making it a candidate for access. Confirm truck turning, queuing and traffic control; quiet does not mean it is safe to reverse or block the lane.
+5. The catch basin is on Cedar Street. A Mill Lane wheel wash may help separation, but collected water and an approved disposal route are still needed; location alone does not prevent runoff reaching the drain.
 
 Any three are accepted. A good spot is on the north half of Mill Lane, so trucks enter the open space north of the building.
 
@@ -97,8 +97,8 @@ A common choice is the first option, because it changes nothing else on the site
 
 | No. | Decision or assumption | Why | How we will check it | Who confirms |
 |---|---|---|---|---|
-| 9 | Lumber comes in two loads on trucks that fit the Mill Lane gate. | The 16 m truck cannot make the turn. Nothing else on the plan has to change. | Supplier confirms truck length in writing before each delivery. | Site office |
-| 10 | Assume the extra delivery charge is acceptable. | It is cheaper than moving the gate or using Cedar Street. | Superintendent approves the extra cost. | Site super |
+| 9 | Lumber comes in two loads on trucks that fit the Mill Lane gate. | The 16 m truck cannot make the turn. Nothing else on the plan has to change. | Supplier confirms vehicle dimensions and turning requirements against the actual gate and route before each delivery. | Site office |
+| 10 | Assume the extra delivery charge is acceptable. | Costs of smaller loads, gate changes and any permitted alternative must be compared; no prices have been supplied. | Superintendent approves the extra cost. | Site super |
 
 ## Check yourself
 

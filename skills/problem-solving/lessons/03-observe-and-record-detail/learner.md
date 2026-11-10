@@ -99,7 +99,7 @@ Coldwater Fabrication (a fictional shop) bay 2 is shown below, split into zones 
 
 ## Practice
 
-**Task 1** (level 1) Look at the picture for 60 seconds. Then cover it and answer from memory.
+**Task 1** (level 1) Look at the picture for 60 seconds. Then cover it and answer from memory. For an agreed accessible route, use the instructor's zone-by-zone description, enlarged image or extra viewing time. You may keep that source available: the learning goal is accurate observation, not memory speed. Record the support used.
 
 - a. How many boxes are stacked in zone 2?
 - b. What time does the clock show?

@@ -17,7 +17,7 @@
 ## Task 3 (level 2)
 
 - a. The address was sent without the town, so the delivery system or driver picked 1540 Mill Road in Cedarvale instead of Fernhill.
-- b. Example: "1540 Mill Road, Fernhill, BC, with the postal code. Back lot, enter by the gravel driveway on the left of the house. Call Marcus at the site before you leave the yard. Pin attached." Any answer with the full street name, the town, the postal code and a contact or landmark is accepted.
+- b. Example: "1540 Mill Road, Fernhill, BC. Confirm the postal code, delivery entrance, site contact and map pin with the site office before dispatch." The scenario supplies no postal code, driveway, contact person or attached pin. Do not invent them. Accept a complete known address plus a clear request to confirm the missing delivery details.
 - c. Any two: check the pin on a map before sending, include the town and postal code on every order, attach a dropped pin, ask the driver to call the site contact before leaving the yard, read the address back to the supplier.
 
 ## Task 4 (level 2)
@@ -29,9 +29,9 @@
 
 ## Task 5 (level 3)
 
-- a. Up to **12 m** in any direction, across a total width of 12 + 12 = **24 m**.
-- b. **No.** The possible error (24 m across) is 8 times the width of the driveway: 24 ÷ 3 = 8.
-- c. Many decimal places make a number look precise, but the stated accuracy is what tells you how close it is to the truth. Extra digits do not make it more accurate.
+- a. Estimated radius **12 m**, estimated diameter 12 + 12 = **24 m**. This is not a guaranteed maximum error; the true point may lie outside the estimated area.
+- b. **No.** Even the estimated area (24 m across) is 8 times the width of the driveway: 24 ÷ 3 = 8.
+- c. Many decimal places make a number look precise, but the stated accuracy is an estimate of uncertainty, not a guarantee of the true location. Extra digits do not make it more accurate.
 
 ## Task 6 (level 2)
 
@@ -48,7 +48,7 @@ A strong answer includes the locate request, the wait for responses, the on-site
 
 ## Check yourself
 
-1. Accurate means close to the true value. Precise means the same every time, or given with many digits. (Level 1)
+1. Accurate means close to the true value. Precise means repeated measurements agree closely. Many displayed digits alone do not establish precision or accuracy. (Level 1)
 2. Good enough for what you are about to do with it. (Level 2)
 3. Any two: the city was left out, a number or street type is wrong, the street is new, the pin sits at the middle of the lot or road. (Level 1)
 4. The location of all underground utility services in the area must be accurately determined, and any danger to workers from them must be controlled. (Level 2)

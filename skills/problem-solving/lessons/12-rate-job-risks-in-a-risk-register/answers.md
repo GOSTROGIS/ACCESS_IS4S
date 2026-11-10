@@ -51,13 +51,13 @@ Examples. Other well-reasoned answers are accepted.
 
 ## Task 5 (level 2)
 
-Ratings may differ if the reason is sound. A strong set:
+These are possible **impact** ratings, not overall risk bands. Likelihood has not been supplied, so a likelihood × impact score cannot yet be calculated. State the assumed consequence; different supported assumptions can give different impact ratings. Examples:
 
-- a. **Concrete slab pour: high.** Once it is poured and hard, mistakes are buried in the slab and can only be fixed by cutting or breaking concrete.
-- b. **Roof membrane: high.** A leak shows up later and can damage everything below it.
-- c. **Sprinkler pressure test: high.** A failed test or a leak means water damage and the building cannot be occupied until it passes.
-- d. **Painting the office walls: low.** Mistakes are easy to see and cheap to repaint.
-- e. **Planting the front garden: low.** Plants can be moved or replaced at small cost.
+- a. **Concrete slab pour: impact 3 (serious), if rework is needed.** Once it is poured and hard, mistakes are buried in the slab and can only be fixed by cutting or breaking concrete.
+- b. **Roof membrane: impact 3 (serious), if a leak causes major damage.** A leak shows up later and can damage everything below it.
+- c. **Sprinkler pressure test: impact 3 (serious), if failure causes major damage or delays required approval.** Report any safety concern immediately; confirm the actual consequences with the responsible qualified person.
+- d. **Painting the office walls: impact 1 (small), assuming a minor touch-up costing under $200 and taking less than half a day.** Repainting a large area could have a higher impact.
+- e. **Planting the front garden: impact 1 (small), assuming one inexpensive plant can be replaced within the small-impact limits.** A whole failed landscape installation would need a different rating.
 
 ## Task 6 (level 2)
 

@@ -17,7 +17,7 @@ Trades work runs on maps, drawings and numbers: a site address on a phone, a dra
 ### Accuracy and precision are different
 
 - **Accurate** means close to the true value.
-- **Precise** means the same answer every time, or an answer with many digits.
+- **Precise** means repeated measurements agree closely. A display with many digits has fine displayed resolution, which does not by itself prove precision or accuracy.
 
 A tape measure with a bent hook can read 2 mm long on every cut. It is **precise** (the same every time) but **not accurate**. A number like 49.204517 looks exact because of all the digits, but the digits do not prove it is right. Always ask: how close to the truth is this, and how do I know?
 
@@ -83,7 +83,7 @@ In July 2007, a contractor in Burnaby was digging a trench for a new storm sewer
 
 **Task 5** (level 3) A phone app shows a point as 49.204517, −122.910812 and says "accuracy ±12 m". (Digital lesson 19, [GPS and location sharing](../../../digital/lessons/19-gps-and-location-sharing/learner.html), explains what that accuracy number means.)
 
-- a. The true point could be up to how far from the dot in any direction? Across what total width?
+- a. Treat 12 m as the app's estimated error radius. What is the radius and the diameter of that estimated area? Is that estimate a guarantee that the true point lies inside it?
 - b. A driveway is 3 m wide. Could the app tell you which side of the driveway a buried line is on?
 - c. What does this show about the number of decimal places?
 

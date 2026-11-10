@@ -45,7 +45,7 @@ A learner who chooses A + C needs a strong reason, for example that no second pl
 
 c) Example: "If a second plumber cannot start by Wednesday morning, then we book the tile and paint crews for Saturday, October 2 (A + C)." Another: "If the re-inspection fails again, then we call the property manager that day with a new date."
 
-d) The recovered schedule is below. Only the exhaust fan duct (5) has float, and it was finished on September 17. Every activity still to come is critical, so a 1-day slip anywhere makes the job 1 day late. Watch the drain re-inspection, the cure day after the membrane, the tile and paint crews' bookings, and book the final inspection early.
+d) The recovered schedule is below. Only the exhaust fan duct (5) has float, and it was finished on September 17. Every activity still to come has zero start-time float: delaying its start by one working day delays the finish if the other durations and links stay unchanged. A duration extension is a different change, especially with start-to-start links; recalculate the network instead of assuming the same effect. Watch the drain re-inspection, the cure day after the membrane, the tile and paint crews' bookings, and book the final inspection early.
 
 | ID | Activity | Start | Finish |
 |---|---|---|---|
@@ -253,7 +253,7 @@ d) The recovered schedule is below. Only the exhaust fan duct (5) has float, and
 
 ## Task 6 (level 3)
 
-Open task. A good email:
+Open task. A good email matches the feasible plan chosen in Task 5. The example below uses A + B; accept A + C with its Saturday crews and $1,140 extra cost instead.
 
 - says what happened: the shower drain failed the rough-in inspection on September 21
 - says what you will do: insulate and board the walls that passed during the repair, and add a second plumber so the repair takes 1 day

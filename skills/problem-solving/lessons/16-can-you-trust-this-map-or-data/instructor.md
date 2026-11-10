@@ -28,7 +28,7 @@ By the end of the session, learners will be able to:
 | 1.2 | 1.2 Teach fit for the job with the table. Assign Task 2. | 1.2 Complete Task 2 and explain one answer. | Learner page | 6 min |
 | 1.3 | 1.3 Teach why pins go wrong. Assign Task 3 in pairs. | 1.3 Complete Task 3. | Learner page | 7 min |
 | 2.1 | 2.1 Tell the Burnaby case. Open the Transportation Safety Board report summary on screen. Assign Task 4. | 2.1 Complete Task 4. | Learner page, projector, calculator | 10 min |
-| 2.2 | 2.2 Assign Task 5. Mark ±12 m on the floor or in the parking lot with a tape so learners see the 24 m width. | 2.2 Complete Task 5. | Learner page, long tape | 6 min |
+| 2.2 | 2.2 Assign Task 5. Show a 12 m estimated radius and 24 m diameter on a scaled diagram or in a safe clear area. Explain that the true location can fall outside an app's estimate; it is not survey or utility-location evidence. | 2.2 Complete Task 5. | Learner page, long tape | 6 min |
 | 2.3 | 2.3 Teach section 20.79 and BC 1 Call. Open bc1c.ca on screen. Assign Task 6. | 2.3 Complete Task 6. | Learner page, projector | 9 min |
 
 Learning tasks: 6 + 6 + 7 + 10 + 6 + 9 = 44 min. Whole session: 5 + 2 + 3 + 44 + 4 + 2 = 60 min.

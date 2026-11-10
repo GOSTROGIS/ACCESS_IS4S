@@ -25,7 +25,7 @@ Steps: read the claim, find the section it is about, compare each part of the cl
 
 Warning signs:
 
-- the address is worksafe-bc-rules.net, not worksafebc.com, and ends in .net
+- the address is worksafe-bc-rules.net, not the verified WorkSafeBC domain worksafebc.com; .net alone is not proof of a problem
 - no author, no date, no contact page
 - it is selling a product ("50% off")
 - "made simple" and "good news" promise an easy answer
@@ -52,6 +52,6 @@ Open task. Points a good response covers:
 ## Check yourself
 
 1. Who wrote it, when, where does it apply, why was it written, and can I check it against the official source? (Level 1)
-2. Any two of: a web address with typos or an unexpected ending, no author, no date, no contact information or physical address, no About Us page, selling something, out of date. (Level 1)
+2. Any two of: a web address with typos or one impersonating the expected organization, no author, no date, no contact information or physical address, no About Us page, selling something, out of date. (Level 1)
 3. It can help you get started or find the name of the rule. Before acting, check its content against the official source. (Level 2)
 4. WorkSafeBC, through the Occupational Health and Safety Regulation. (Level 1)

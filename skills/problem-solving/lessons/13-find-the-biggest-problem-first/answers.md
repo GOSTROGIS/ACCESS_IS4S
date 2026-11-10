@@ -46,7 +46,7 @@ c. **Burrs and wrong length**, 60% together.
 ## Task 4 (level 3)
 
 - a. Before: 14 ÷ 200 × 100 = **7%**. After: 3 ÷ 150 × 100 = **2%**.
-- b. Yes. The burr reject rate fell from 7% to 2%, 5 percentage points lower. Only one thing changed (the blade), so the shop can link the drop to the blade. The two counts cannot be compared directly, because a different number of parts was made in each period, which is why rates are used.
+- b. Yes. The burr reject rate fell from 7% to 2%, 5 percentage points lower. The blade was the only planned change, making it a plausible explanation. These before-and-after records alone do not prove causation: check that material, operators, inspection methods and other conditions stayed comparable, and continue recording to see whether the improvement lasts. The two counts cannot be compared directly, because a different number of parts was made in each period, which is why rates are used.
 - c. Example Act step: "Make sharp blades the standard: check and change the cold saw blade on a set schedule and add a blade check to the start-of-week list. Keep counting burr rejects for two more weeks to confirm. Then start the next PDCA cycle on wrong lengths."
 
 ## Task 5 (level 3)
@@ -65,12 +65,12 @@ a.
 
 b. **Doors**, $720 ÷ $1,760 × 100 = **40.9%** of the cost.
 
-c. Either answer is accepted with a sound reason. Example for doors: "Doors are only 10% of the items but almost 41% of the cost, so fixing the door problem saves the most money. Drywall dents are the most common, so the corner guard fix should still go on every job's start-up list." Example for drywall: "Drywall dents are 40% of all items and the cheap fix (corner guards) stops them from happening at all. The door problem may need a different trade and more time to solve."
+c. Either answer is accepted with a sound reason. Example for doors: "Doors are only 10% of the items but almost 41% of the cost, so fixing the door problem saves the most money. Drywall dents are the most common, so the corner guard fix should still go on every job's start-up list." Example for drywall: "Drywall dents are 40% of all items and corner guards may reduce those dents, although the trial still recorded three. The door problem may need a different trade and more time to solve."
 
 ## Check yourself
 
 1. So the biggest problems are seen first and worked on first. (Level 1)
 2. People, method, material, equipment, environment. (Level 1)
 3. Plan, Do, Check, Act. (Level 1)
-4. So that if the result changes, you know which change caused it. (Level 2)
+4. So there is one planned change to investigate if results change. You still check other conditions and repeat the comparison before claiming a cause. (Level 2)
 5. Yes. In the Harbourline list, drywall dents are the biggest by count but doors are the biggest by cost. (Level 3)
