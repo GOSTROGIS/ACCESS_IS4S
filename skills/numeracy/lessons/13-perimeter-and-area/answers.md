@@ -1,5 +1,7 @@
 # Perimeter and area with openings and cut-outs
 
+Sheet and stock counts below use the lesson's net-quantity assumptions. They are minimum estimates, not verified cutting layouts or complete purchase orders.
+
 ## Task 1 (level 1)
 
 a) P = 2 × (12,200 + 8,500) = 2 × 20,700 = **41,400 mm**

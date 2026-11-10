@@ -47,6 +47,8 @@ On a larger site, the surveyor sets control points and gives every corner, pile 
 4. The signs give the quadrant: ΔN + is N, ΔN − is S, ΔE + is E, ΔE − is W.
 5. Change the bearing to an azimuth with the table.
 
+If ΔN = 0, do not divide by zero: the direction is due east (90°) when ΔE is positive or due west (270°) when ΔE is negative. If ΔE = 0, use due north (0°) or due south (180°). If both differences are zero, the points coincide and the direction is undefined.
+
 **Forward: a new point from a distance and an azimuth.**
 
 - ΔN = distance × cos(azimuth)

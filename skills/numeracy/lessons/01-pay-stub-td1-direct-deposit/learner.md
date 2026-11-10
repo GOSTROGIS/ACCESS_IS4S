@@ -78,6 +78,8 @@ Pay period: October 5 to October 18, 2026. Payday: October 23, 2026. Paid every 
 
 **Document B: payroll rates for 2026** (from the Canada Revenue Agency payroll tables)
 
+For these exercises, assume all earnings shown are pensionable and insurable, annual contribution limits have not been reached, no CPP2 applies, and the employee is eligible to contribute. Real payroll also depends on year-to-date earnings, maximums and employee circumstances; use the current CRA tables for an actual pay calculation.
+
 - CPP: 5.95% of the pay, after taking off the basic exemption of $3,500 a year. For 26 pays a year, the exemption for one pay is $3,500 ÷ 26.
 - EI: 1.63% of the pay.
 

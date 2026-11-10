@@ -38,7 +38,7 @@ By the end of the session, learners will be able to:
 ## Post-assessment (4 min)
 
 1. Row 50 gives 300 and row 60 gives 340. What is the value at 57? (300 + 0.7 × 40 = 328)
-2. You estimate a wait of 6.2 hours before stripping a form. Do you plan for 6 or 7 hours? (7, round up a wait)
+2. A fictional sealant chart permits interpolation and gives an estimated wait of 6.2 hours. Round to 6 or 7 whole hours? (7 for the exercise; real cure times follow the manufacturer and approved job instructions)
 3. A load chart note says to use the next larger radius. Your radius is 22 m and the rows are 20 m and 24 m. Which row do you use? (24 m)
 
 ## Summary (4 min)

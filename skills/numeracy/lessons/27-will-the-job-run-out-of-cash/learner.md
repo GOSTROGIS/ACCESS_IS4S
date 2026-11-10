@@ -36,6 +36,8 @@ The balance at the end of one month is the balance at the start of the next.
 - **Payroll remittances.** The money an employer takes off pay for income tax, CPP and EI, plus the employer's own CPP and EI, goes to the Canada Revenue Agency. A regular remitter must have it to the CRA by the 15th of the month after the employees were paid.
 - **GST.** GST collected on claims belongs to the CRA. A company that files every quarter must file and pay no later than one month after the end of the quarter.
 
+**Classroom timing model.** For these monthly tables, treat 30-day terms as payment in the following month and 60-day terms as payment two months later. This is a planning simplification, not exact calendar-day counting. Use actual invoice and payment dates for a real forecast. The tables exclude credit interest and fees, and month-end balances can miss a larger cash shortfall earlier in a month.
+
 **Line of credit.** A bank lets the company go below zero up to a set limit, and charges interest on what it uses. The lowest balance in the forecast shows how big the limit needs to be. Most owners add a cushion for surprises.
 
 ### Worked example

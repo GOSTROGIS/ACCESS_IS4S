@@ -57,6 +57,8 @@ Notes to the fee schedule:
 
 **Document B: Jordan's month** (fictional)
 
+Unless a task changes the facts, Jordan has no fee waiver, uses electronic statements and incurs no fees other than the listed transactions and ATM withdrawal. Use the same transaction pattern for each monthly comparison.
+
 | Type of transaction | Number |
 |---|---:|
 | Debit purchases (gas, lunch, hardware store) | 22 |
@@ -100,7 +102,7 @@ ______________________________________________
 
 ______________________________________________
 
-**Task 8** (level 2). Use the NSF rules in the key ideas. For each case, say whether Riverbend can charge an NSF fee, and how much.
+**Task 8** (level 2). Use the NSF rules in the key ideas. For each case, say whether Riverbend can charge an NSF fee, and how much. Assume the payments are returned unpaid, not covered by overdraft protection, and no NSF fee was charged in the previous 2 business days except where stated.
 
 a) A $45.00 gym payment comes out when Jordan's balance is $30.00.
 b) A $62.00 phone bill comes out when the balance is $57.00.

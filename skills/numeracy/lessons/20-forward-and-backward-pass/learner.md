@@ -85,7 +85,7 @@ Some books count from day 1 instead: ES 1, EF = ES + Dur − 1, and the next ES 
     - FS + lag: successor LS − lag
     - SS + lag: successor LS − lag + Dur (the activity must start by successor LS − lag)
     - FF + lag: successor LF − lag
-3. At a burst, take the **smallest** value. The activity must not hold up any successor.
+3. At a burst, take the **smallest** value, including the project duration as an upper limit on every LF. The activity must not hold up any successor or finish after the project. This cap matters with SS links: a successor can start before its predecessor finishes.
 4. LS = LF − Dur. TF = LS − ES.
 
 **Checks.** The first activities on the longest path have LS = 0. No TF is negative. The activities with TF = 0 join up into an unbroken chain from start to finish. That chain is the **critical path**.

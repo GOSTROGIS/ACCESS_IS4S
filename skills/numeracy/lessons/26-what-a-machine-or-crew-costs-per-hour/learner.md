@@ -111,7 +111,7 @@ ______________________________________________
 
 a) Find the operating cost per hour.
 b) Find the machine cost per hour (owning plus operating).
-c) A rental yard charges $380.00 for an 8-hour day. What is that per hour?
+c) For this fictional comparison, a rental yard charges $380.00 for an 8-hour day, including fuel, maintenance and all machine charges but excluding the operator. What is that per hour?
 d) Is owning cheaper per hour than renting when the machine works 1,200 hours a year? Name one thing that could change the answer.
 
 ______________________________________________

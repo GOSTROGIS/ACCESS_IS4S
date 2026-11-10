@@ -6,7 +6,7 @@
 
 ## Opening (5 min)
 
-Welcome learners. Cut a short offcut in front of the group, or show a photo of a saw cut, and point to the sawdust. Say: "That sawdust used to be part of the board. On a cut list with ten cuts, it adds up." Ask: "Has anyone run short of material on a job, or cut a board and found the last piece too short?" Tell learners this is session 10, and it runs 90 minutes.
+Welcome learners. Show a photo of a saw cut or a previously cut sample, and point to the sawdust. Say: "That sawdust used to be part of the board. On a cut list with ten cuts, it adds up." Ask: "Has anyone run short of material on a job, or cut a board and found the last piece too short?" Tell learners this is session 10, and it runs 90 minutes.
 
 ## Objective (2 min)
 

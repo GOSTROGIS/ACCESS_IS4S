@@ -6,7 +6,7 @@
 
 ## Opening (5 min)
 
-Welcome learners. Ask: "Can a company that makes money go broke?" Take answers. Say: "Today you follow a two-person roofing crew through one season. The job makes almost $20,000. In May the bank account is $6,000 below zero." Tell learners this is session 27 of the Numeracy set, and it runs 90 minutes.
+Welcome learners. Ask: "Can a company that makes money go broke?" Take answers. Say: "Today you follow a two-person roofing crew through one season. The forecast ends with almost $20,000 more cash than it started with; that is not a calculation of accounting profit. In May the bank account is $6,000 below zero." Tell learners this is session 27 of the Numeracy set, and it runs 90 minutes.
 
 ## Objective (2 min)
 
@@ -31,7 +31,7 @@ By the end of the session, learners will be able to:
 | 1.2 | Read Document A together. Ask: "Which month is the April claim paid? The April lumber?" Explain net 30, the CRA remittance due date for a regular remitter, and the quarterly GST due date. | 1.2 Read Document A and mark the month each item is paid. | Learner page, CRA pages | 8 min |
 | 2.1 | Learners do Tasks 1 to 3. Circulate. Check that each payment is moved one month later. | 2.1 Complete Tasks 1, 2 and 3. | Learner page, calculator | 14 min |
 | 2.2 | Learners build the forecast in Task 4. Model May on the board first. Remind them that the end balance of one month starts the next. | 2.2 Complete Task 4. | Learner page | 15 min |
-| 3.1 | Discuss Tasks 5 and 6. Ask: "Why does the job make $19,570 but still need a line of credit?" | 3.1 Complete Tasks 5 and 6. | Learner page | 8 min |
+| 3.1 | Discuss Tasks 5 and 6. Ask: "Why does cash rise by $19,570 over the whole forecast but the crew still needs a line of credit earlier?" | 3.1 Complete Tasks 5 and 6. | Learner page | 8 min |
 | 3.2 | Groups of three do Task 7. Each person takes two or three months, then the group checks the running balance together. | 3.2 Complete Task 7 in groups. | Learner page | 9 min |
 | 3.3 | Learners write Task 8. One or two read aloud. | 3.3 Write and share Task 8. | Learner page | 6 min |
 

@@ -115,7 +115,7 @@ a) Fill in the first three months. Round each amount to the cent.
 | 2 | | | |
 | 3 | | | |
 
-b) After 12 months the balance is $5,000.00 × 1.01¹² = $5,634.13. How much interest is that?
+b) Using unrounded compounding until the final result, after 12 months the balance is $5,000.00 × 1.01¹² = $5,634.13. How much interest is that? This formula may differ by a few cents from continuing the rounded monthly table in a).
 c) Simple interest at 12% for one year would be how much? Why is the compound amount bigger?
 
 ______________________________________________

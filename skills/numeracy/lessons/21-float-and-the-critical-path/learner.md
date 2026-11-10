@@ -31,7 +31,7 @@ Free float is never bigger than total float.
 
 **Near-critical.** Activities with only a little float, for example 1 or 2 days. Keep an eye on them. A small slip makes them critical.
 
-**What happens when an activity slips.**
+**What happens when an activity slips.** Here a slip means shifting an activity's start and finish later together, with its duration and other constraints unchanged. With plain FS links, a duration increase has the same downstream effect. With SS or FF links, it may not: redo the passes when duration changes, as in Task 5b.
 
 - If the slip is **not more than its TF**, the finish date does not move. The float absorbs the delay. The activities after it lose some float.
 - If the slip is **more than its TF**, the job finishes late by (slip − TF) days.

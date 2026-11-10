@@ -110,6 +110,7 @@
 </tbody>
 </table></div>
 <p>FS is by far the most common. SF is rare.</p>
+<p><strong>Practice only.</strong> Cure, stripping, waterproofing and overlap times on this page are scheduling examples, not safe-work limits. Use the approved specifications, inspections and supervisor or engineer directions on a real job.</p>
 <p><strong>Lag and lead.</strong> A <strong>lag</strong> is a wait added to a link, written as a plus number: FS+2 means "start 2 days after the predecessor finishes", for example to let concrete cure. A <strong>lead</strong> is an overlap, written as a minus number: FS−2 means "start 2 days before the predecessor finishes".</p>
 <p><strong>Timing rules for one link.</strong> ES is when an activity starts and EF is when it finishes. EF = ES + duration.</p>
 <ul>
@@ -211,7 +212,7 @@
 <li>Put the activities with no predecessors on the left.</li>
 <li>Place each other activity to the right of all its predecessors.</li>
 <li>Draw an arrow from each predecessor to its successor. Write the link type and lag on any arrow that is not plain FS.</li>
-<li>Check: every activity except the first has an arrow coming in, and every activity except the last has an arrow going out.</li>
+<li>Check every intended dependency. A network can have several starting or ending activities, as the garage example does. Connect them to common start/finish milestones when needed, and check that an unlinked activity is intentional rather than missing a dependency.</li>
 <li>Check that no arrow path loops back to an earlier box. A loop means "A waits for B and B waits for A", which can never be scheduled.</li>
 </ol>
 <h3>Worked example 1: the deck network</h3>

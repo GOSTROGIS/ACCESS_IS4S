@@ -79,7 +79,7 @@ $66,000.00 − $51,000.00 = **$15,000.00**
 
 ## Check yourself 4
 
-**When the holdback is released.** The GST on a holdback becomes payable when the holdback is paid or when the holdback period ends, whichever is first.
+**The earlier of payment and the end of the holdback period.** Waiting longer to release the holdback does not, by itself, postpone the GST beyond the end of that period.
 
 ## Check yourself 5
 

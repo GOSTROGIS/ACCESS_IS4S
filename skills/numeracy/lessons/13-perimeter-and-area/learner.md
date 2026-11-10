@@ -38,7 +38,7 @@ When two methods give the same answer, you can trust it. An L shape can be two r
 
 **Openings and cut-outs.** On a wall, subtract the doors and windows the material does not cover. On a plate, subtract the holes. For a round hole, the drawing usually gives the diameter: divide by 2 to get the radius, then use π × r².
 
-**Counting sheets.** Divide the area by the area one sheet covers, then round up. A result of 3.1 sheets means you buy 4.
+**Counting sheets.** Divide the area by the area one sheet covers, then round up. A result of 3.1 sheets gives a minimum of 4 by area. In this lesson, sheet and stock counts are net-quantity estimates with reusable offcuts and no waste allowance. Before a real order, check the cutting layout, joints, stock lengths, kerf and waste; area alone does not guarantee that the pieces will fit.
 
 ### Worked example
 

@@ -25,7 +25,7 @@ Before you calculate, read the whole task once from top to bottom. Then ask:
 
 - In 3/8, the **numerator** is 3 (how many parts) and the **denominator** is 8 (how many equal parts make the whole).
 - A **proper fraction** is less than one whole, such as 3/8.
-- An **improper fraction** has a numerator bigger than its denominator, such as 9/8.
+- An **improper fraction** has a numerator greater than or equal to its denominator, such as 9/8 or 8/8.
 - A **mixed number** is a whole number and a fraction, such as 2 3/4.
 - A fraction is in **lowest terms** when no number except 1 divides both the top and the bottom.
 
@@ -68,7 +68,7 @@ ______________________________________________
 > | Long rails | 2 | 36 5/8 in |
 > | Short rails | 2 | 14 3/8 in |
 >
-> Note: the client has ordered 3 bench frames.
+> Note: the client has ordered 3 bench frames. Calculate net finished lengths only; ignore saw kerf, end trimming and stock-length waste for this exercise.
 
 a) What is the total length of all the legs for the whole order?
 b) What is the total length of all the long rails? Of all the short rails?

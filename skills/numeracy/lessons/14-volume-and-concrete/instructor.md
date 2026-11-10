@@ -32,7 +32,7 @@ By the end of the session, learners will be able to:
 | 2.1 | Teach the waste allowance as one multiplier. Spot the mistake: "a 15% allowance means ordering 15% of the original quantity". Stress: apply it once, then round up. | 2.1 Complete Task 3. | [Textbook p. 142](../../books/ACCESS-Trades-Numeracy-Textbook.pdf#page=142) | 10 min |
 | 2.2 | Model the worked example. Show the plate for Article 9.16.4.3 and read Sentence (1) aloud. | 2.2 Follow the worked example and the code check. | [Plate 9.16.4.3](../../../../programs/carpentry/bcbc-part-9/9.16/9.16.4.3.svg) | 6 min |
 | 3.1 | Circulate during Tasks 4 and 5. Ask: "What unit does the supplier sell in? When do you round?" | 3.1 Complete Tasks 4 and 5. | Learner page | 18 min |
-| 3.2 | Introduce Task 6 as a real order. Remind learners that the note must give the number, the unit and what is included. | 3.2 Complete Task 6, including the note to the crew lead. | Learner page | 15 min |
+| 3.2 | Introduce Task 6 as a simulated order, not a structural design or authorization to pour. Remind learners that the note must give the number, the unit and what is included. | 3.2 Complete Task 6, including the note to the crew lead. | Learner page | 15 min |
 | 3.3 | Two or three learners read their notes aloud. The group checks that each note gives the order, the unit and one thing to check. | 3.3 Read or listen to notes and give one point of feedback. | Learner notes | 3 min |
 
 ## Post-assessment (5 min)

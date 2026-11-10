@@ -54,7 +54,7 @@ Example, May: $22,680 − $25,300 = −$2,620. −$3,400 + (−$2,620) = −$6,0
 
 a) **May**, at **−$6,020**.
 b) **3 months**: April, May and June.
-c) $27,570 − $8,000 = **$19,570** more. The season makes money, but the bank account is below zero for the first three months.
+c) $27,570 − $8,000 = **$19,570** more. Cash increases over the forecast, but the month-end balance is below zero for the first three months. This cash increase is not the same as accounting profit.
 
 ## Task 6 (level 3)
 

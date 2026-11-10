@@ -97,7 +97,7 @@
 <li>FF + lag: successor LF − lag</li>
 </ul>
 </li>
-<li>At a burst, take the <strong>smallest</strong> value. The activity must not hold up any successor.</li>
+<li>At a burst, take the <strong>smallest</strong> value, including the project duration as an upper limit on every LF. The activity must not hold up any successor or finish after the project. This cap matters with SS links: a successor can start before its predecessor finishes.</li>
 <li>LS = LF − Dur. TF = LS − ES.</li>
 </ol>
 <p><strong>Checks.</strong> The first activities on the longest path have LS = 0. No TF is negative. The activities with TF = 0 join up into an unbroken chain from start to finish. That chain is the <strong>critical path</strong>.</p>

@@ -39,7 +39,7 @@ This is the first of five lessons on project schedules. The next lessons use the
 - Duration in working days: count only the working days.
 - Duration in calendar days: finish date − start date + 1.
 
-**The 24-hour clock.** Hours run from 00:00 (midnight) to 23:59. For times after noon, add 12 to the p.m. hour: 3:15 p.m. is 15:15. Many sites, shift logs and equipment hour meters use it.
+**The 24-hour clock.** Hours run from 00:00 (midnight) to 23:59. For 1 p.m. through 11 p.m., add 12 to the hour: 3:15 p.m. is 15:15. Noon is 12:00 and midnight is 00:00; do not add 12 to the hour in 12 p.m. Many sites, shift logs and equipment hour meters use it.
 
 **Elapsed time.** Subtract the start time from the end time. If the shift crosses midnight, add 24 hours to the end time first.
 

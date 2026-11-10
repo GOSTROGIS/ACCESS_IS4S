@@ -43,7 +43,7 @@ a)
 | 4 | $4,000.00 | $15,000.00 |
 
 b) In **year 3** ($11,000.00 is more than $10,000.00).
-c) After 2 years, $10,000.00 − $7,000.00 = $3,000.00 is still to pay back. Year 3 saves $4,000.00, so it takes $3,000.00 ÷ $4,000.00 = 0.75 of year 3. Payback: 2 + 0.75 = **2.75 years**.
+c) After 2 years, $10,000.00 − $7,000.00 = $3,000.00 is still to pay back. Year 3 saves $4,000.00, so it takes $3,000.00 ÷ $4,000.00 = 0.75 of year 3. Payback: 2 + 0.75 = **2.75 years**, assuming the savings accrue evenly through year 3. If savings arrive only at each year-end, payback is at the end of year 3.
 
 ## Task 7 (level 3)
 

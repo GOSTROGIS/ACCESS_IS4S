@@ -50,6 +50,8 @@ A garage slab is 7.2 m by 6 m and 100 mm thick. The order adds a 10% waste allow
 
 ## Practice
 
+These are quantity calculations, not structural designs or permission to pour. Sizes and allowances are exercise data. On a real job, use the approved drawings and required checks; satisfying the one quoted slab-thickness clause does not establish full code compliance.
+
 **Task 1** (level 1-2). Volume of boxes.
 
 a) A form is 2.4 m by 1.2 m by 0.6 m. Find its volume in m³.

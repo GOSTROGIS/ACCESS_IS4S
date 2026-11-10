@@ -97,7 +97,7 @@ ______________________________________________
 
 a) Fill in the running total.
 b) In which year does the running total pass $10,000.00?
-c) Find the payback period to two decimal places of a year.
+c) Find the payback period to two decimal places of a year, assuming savings build up evenly within each year.
 
 ______________________________________________
 

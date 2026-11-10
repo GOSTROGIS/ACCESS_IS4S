@@ -45,7 +45,7 @@ How a common type, the **X-bar chart**, works:
 
 - At set times, measure a small sample, for example 5 parts each hour, and plot the **average** of the sample as one point.
 - The **centre line** is the average of all the sample averages.
-- The **upper control limit (UCL)** and **lower control limit (LCL)** are set 3 standard deviations above and below the centre line. They come from the process's own past data, not from the drawing.
+- The **upper control limit (UCL)** and **lower control limit (LCL)** are set 3 standard deviations above and below the centre line. For an X-bar chart, these are standard deviations of the sample averages, not of individual parts. The limits come from the process's own past data, not from the drawing.
 
 **Signals that something has changed.** Stop and look for a cause when you see:
 
@@ -63,7 +63,7 @@ Points inside the limits with no pattern are normal variation. Leave the process
 - R̄ (R-bar) = the average of the ranges.
 - UCL = centre line + 0.577 × R̄ and LCL = centre line − 0.577 × R̄. The number 0.577 is a factor from a quality-control table for samples of 5.
 
-A second chart, the **R chart**, tracks the ranges. For samples of 5, its upper limit is 2.114 × R̄ and it has no lower limit. A range above that limit means the parts are spreading out more than normal.
+A second chart, the **R chart**, tracks the ranges. For samples of 5, its upper limit is 2.114 × R̄ and its lower control limit is 0. A range above that limit means the parts are spreading out more than normal.
 
 ### Worked example 1: scrap and productivity
 
@@ -179,7 +179,7 @@ d) Check c): what is 6% scrap on your answer, and how many good parts are left?
 
 ______________________________________________
 
-**Task 3** (level 2-3). A crew of 3 works an 8-hour shift on a bracket line. They make 216 brackets. 12 are scrapped. 12 more need rework, which takes 0.25 h each. Each scrapped bracket has $6 of material and $4 of labour in it. Labour costs $48.00 an hour. All costs are made up for practice.
+**Task 3** (level 2-3). A crew of 3 works an 8-hour shift on a bracket line. They make 216 brackets. 12 are scrapped. 12 more are successfully reworked during the same shift, taking 0.25 labour-hours each. Those rework hours are included in the crew's 24 labour-hours. Each scrapped bracket has $6 of material and $4 of labour in it. Labour costs $48.00 an hour. All costs are made up for practice.
 
 a) How many labour hours did the crew work?  
 b) How many good brackets came out? What is the labour productivity?  

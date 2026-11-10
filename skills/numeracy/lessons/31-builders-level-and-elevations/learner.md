@@ -30,7 +30,9 @@ A big rod reading means the point is low. A small rod reading means the point is
 
 **Turning point (TP).** When the next point is too far away or out of sight, put the rod on a solid point that will not move, take a foresight on it, move the level, and take a backsight on the same point. The turning point carries the elevation forward.
 
-**The arithmetic check.** In a level book, add up all the backsights and all the foresights. Then:
+**Intermediate sight (IS).** A detail-point reading from the same setup also uses elevation = HI − reading, but does not carry the level run forward. Keep these readings separate from the final foresight at each setup.
+
+**The arithmetic check.** For a connected level run, add the backsights and the foresights that carry the run through turning points to its final point. Do not add intermediate detail sights. Then:
 
 - sum of BS − sum of FS = last elevation − first elevation
 
@@ -54,7 +56,7 @@ Raise or lower the form until the rod reads that number on top of it.
 A gravel pad for a small shop must be at design elevation 99.500. The benchmark is a nail in a power pole, elevation 100.000. The level is set up between the pole and the pad.
 
 1. Backsight on the BM: 1.425. HI = 100.000 + 1.425 = **101.425**
-2. Foresight on corner A: 1.875. Elevation A = 101.425 − 1.875 = **99.550**
+2. Intermediate sight on corner A: 1.875. Elevation A = 101.425 − 1.875 = **99.550**
 3. Foresight on corner B: 2.010. Elevation B = 101.425 − 2.010 = **99.415**
 4. Corner A: 99.550 − 99.500 = +0.050. **Cut 50 mm.**
 5. Corner B: 99.415 − 99.500 = −0.085. **Fill 85 mm.**
@@ -62,11 +64,13 @@ A gravel pad for a small shop must be at design elevation 99.500. The benchmark 
 
 The level book for this setup:
 
-| Point | BS | HI | FS | Elevation | Notes |
-|---|---|---|---|---|---|
-| BM | 1.425 | 101.425 | | 100.000 | nail in pole |
-| A | | | 1.875 | 99.550 | cut 0.050 |
-| B | | | 2.010 | 99.415 | fill 0.085 |
+| Point | BS | HI | IS | FS | Elevation | Notes |
+|---|---|---|---|---|---|---|
+| BM | 1.425 | 101.425 | | | 100.000 | nail in pole |
+| A | | | 1.875 | | 99.550 | cut 0.050 |
+| B | | | | 2.010 | 99.415 | fill 0.085 |
+
+Check the run from BM to B: 1.425 − 2.010 = −0.585, and 99.415 − 100.000 = −0.585. The intermediate shot at A is excluded. A passing arithmetic check does not prove the field readings are correct; recheck against known control before building.
 
 ### Tools for this lesson
 
@@ -78,7 +82,7 @@ The level book for this setup:
 **Task 1** (level 1-2). The level is set up near a benchmark of elevation 25.000. The backsight on the BM is 1.384.
 
 a) Find the HI.
-b) Find the elevation of each point from its foresight: P1 0.912, P2 1.655, P3 2.073, P4 1.240.
+b) Find the elevation of each point from its rod reading at this same setup: P1 0.912, P2 1.655, P3 2.073, P4 1.240.
 c) Which point is the highest? Which is the lowest?
 
 **Task 2** (level 2). The HI is 101.250. Find the rod reading you need on top of each:
@@ -97,7 +101,7 @@ d) The rod reads 1.180 on top of the slab form. Is the form too high or too low?
 | TP2 | 0.763 | | 1.209 | |
 | B | | | 1.517 | |
 
-**Task 4** (level 2-3). A parking pad must be at design elevation 51.500. The level was set up with a backsight of 1.440 on a benchmark of 51.200. The foresights on four stakes were: stake 1 1.020, stake 2 1.385, stake 3 0.870, stake 4 1.140.
+**Task 4** (level 2-3). A parking pad must be at design elevation 51.500. The level was set up with a backsight of 1.440 on a benchmark of 51.200. The rod readings on the ground at four marked stakes, all from this same setup, were: stake 1 1.020, stake 2 1.385, stake 3 0.870, stake 4 1.140.
 
 a) Find the HI.
 b) Find the ground elevation at each stake.

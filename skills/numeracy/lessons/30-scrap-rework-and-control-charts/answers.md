@@ -11,7 +11,7 @@ c) Passed the first time: 240 − 6 − 18 = 216. First-pass yield: 216 ÷ 240 �
 a) 190 ÷ (1 − 0.05) = 190 ÷ 0.95 = **200 clips**.  
 b) 288 ÷ (1 − 0.04) = 288 ÷ 0.96 = **300 plates**.  
 c) 150 ÷ (1 − 0.06) = 150 ÷ 0.94 = 159.57. Round up: **160 brackets**.  
-d) 6% of 160: 160 × 0.06 = 9.6, so about 10 scrapped. Good parts: 160 × 0.94 = 150.4, so **150 good brackets**, enough. Starting 159 would give 159 × 0.94 = 149.46, which is short.
+d) 6% of 160: 160 × 0.06 = 9.6, so about 10 scrapped. Good parts: 160 × 0.94 = 150.4, so **about 150 good brackets** under the planning assumption. A historical scrap rate is not a guarantee: actual scrap could exceed 10, so check output and allow a buffer where needed. Starting 159 would give 159 × 0.94 = 149.46, which is short.
 
 ## Task 3 (level 2-3)
 

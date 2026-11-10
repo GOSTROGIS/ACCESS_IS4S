@@ -71,4 +71,4 @@ The stake where the rod reads **0.9 m** is higher. A smaller rod reading means a
 
 ## Check yourself 5
 
-It compares the sum of the backsights minus the sum of the foresights with the last elevation minus the first elevation. If they are not equal, there is a mistake in the sums.
+For a connected level run, it compares the sum of the backsights minus the sum of the turning-point and final foresights with the last elevation minus the first elevation. Intermediate detail sights are excluded. If they are not equal, there is a mistake in the sums.

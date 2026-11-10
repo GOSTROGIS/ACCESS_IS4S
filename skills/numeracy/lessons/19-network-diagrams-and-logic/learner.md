@@ -80,6 +80,8 @@ A Gantt chart shows *when* the work happens. A network diagram shows *why*: whic
 
 FS is by far the most common. SF is rare.
 
+**Practice only.** Cure, stripping, waterproofing and overlap times on this page are scheduling examples, not safe-work limits. Use the approved specifications, inspections and supervisor or engineer directions on a real job.
+
 **Lag and lead.** A **lag** is a wait added to a link, written as a plus number: FS+2 means "start 2 days after the predecessor finishes", for example to let concrete cure. A **lead** is an overlap, written as a minus number: FS−2 means "start 2 days before the predecessor finishes".
 
 **Timing rules for one link.** ES is when an activity starts and EF is when it finishes. EF = ES + duration.
@@ -182,7 +184,7 @@ FS is by far the most common. SF is rare.
 1. Put the activities with no predecessors on the left.
 2. Place each other activity to the right of all its predecessors.
 3. Draw an arrow from each predecessor to its successor. Write the link type and lag on any arrow that is not plain FS.
-4. Check: every activity except the first has an arrow coming in, and every activity except the last has an arrow going out.
+4. Check every intended dependency. A network can have several starting or ending activities, as the garage example does. Connect them to common start/finish milestones when needed, and check that an unlinked activity is intentional rather than missing a dependency.
 5. Check that no arrow path loops back to an earlier box. A loop means "A waits for B and B waits for A", which can never be scheduled.
 
 ### Worked example 1: the deck network

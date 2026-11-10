@@ -27,7 +27,7 @@ Reading lesson 20 ([What is in a construction contract](../../../reading/lessons
 
 **A law that is coming.** BC passed the *Construction Prompt Payment Act* in November 2025. When it comes into force, it will change the 55 days to 46 days. On the date of this lesson it was not yet in force. Check BC Laws before you use the 55 days on a real job.
 
-**GST on a progress claim.** In BC the GST is 5%. The holdback comes off first. GST is charged on the amount being paid now, the claim less the holdback. The Canada Revenue Agency says the GST on the holdback becomes payable when the holdback is paid or when the holdback period ends, whichever comes first. So the GST on the holdback is billed when the holdback is released.
+**GST on a progress claim.** In BC the GST is 5%. The holdback comes off first. GST is charged on the amount being paid now, the claim less the holdback. The Canada Revenue Agency says the GST on the holdback becomes payable when the holdback is paid or when the holdback period ends, whichever comes first. Do not assume that delayed release also delays the GST: use the earlier of payment and the end of the holdback period stated above.
 
 **The claim in four lines** (BEDMAS: work out each line before the next):
 
@@ -131,5 +131,5 @@ ______________________________________________
 1. A claim is $20,000.00. What is the holdback?
 2. On that claim, what is the GST billed now?
 3. Value to date is $66,000.00 and last month's total was $51,000.00. What is this month's claim?
-4. Is GST charged on the holdback in each monthly claim, or when the holdback is released?
+4. Under the rule in this lesson, which two events determine when GST on the holdback becomes payable?
 5. A certificate of completion is issued on March 1. On what date does the 55-day holdback period end?

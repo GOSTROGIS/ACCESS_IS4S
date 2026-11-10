@@ -35,7 +35,7 @@
 <p><strong>Float is shared.</strong> Several activities in a row often share the same total float. If the first one uses it up, the ones after it have none left. Free float is the part that belongs to one activity alone.</p>
 <p><strong>Critical path.</strong> The chain of activities with TF = 0 that runs from the start to the finish. It is the longest path through the network, and its length is the project duration. A critical activity that is 1 day late makes the job 1 day late, unless something else is sped up.</p>
 <p><strong>Near-critical.</strong> Activities with only a little float, for example 1 or 2 days. Keep an eye on them. A small slip makes them critical.</p>
-<p><strong>What happens when an activity slips.</strong></p>
+<p><strong>What happens when an activity slips.</strong> Here a slip means shifting an activity's start and finish later together, with its duration and other constraints unchanged. With plain FS links, a duration increase has the same downstream effect. With SS or FF links, it may not: redo the passes when duration changes, as in Task 5b.</p>
 <ul>
 <li>If the slip is <strong>not more than its TF</strong>, the finish date does not move. The float absorbs the delay. The activities after it lose some float.</li>
 <li>If the slip is <strong>more than its TF</strong>, the job finishes late by (slip − TF) days.</li>

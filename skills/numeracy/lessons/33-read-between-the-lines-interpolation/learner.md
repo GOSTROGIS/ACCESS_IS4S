@@ -125,7 +125,7 @@ a) The radius is 18 m. What rated load does the chart note tell you to use?
 b) What would straight-line interpolation give at 18 m? Why must you not use that number?
 c) A load weighs 2,000 kg. What is the largest radius in the chart where it may be lifted?
 
-**Task 6** (level 3). On a site plan, stake P has a spot elevation of 101.20 and stake Q has 100.40. They are 16.0 m apart and the ground between them is an even slope. Stake R is on the line from P to Q, 6.0 m from P.
+**Task 6** (level 3). On a site plan, stake P has a spot elevation of 101.20 and stake Q has 100.40. They are 16.0 m apart. For this estimate, assume the ground between them is an even slope; it has not been checked at R. Stake R is on the line from P to Q, 6.0 m from P.
 
 a) Estimate the ground elevation at R.
 b) The design elevation at R is 100.750. Is it cut or fill, and how much?

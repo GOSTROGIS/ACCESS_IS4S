@@ -38,7 +38,7 @@ By the end of the session, learners will be able to:
 
 ## Post-assessment (5 min)
 
-1. An activity has TF 2 and FF 0. What happens to its successor if it slips 1 day? (The successor starts 1 day late, but the finish date does not move)
+1. An activity has TF 2 and FF 0, with one plain FS successor. What happens to that successor if the activity starts and finishes 1 day later, with its duration unchanged? (The successor starts 1 day late, but the finish date does not move)
 2. Crash cost $2,500, normal cost $1,900, normal 4 days, crash 2 days. Find the cost slope. ($600 ÷ 2 = $300 a day)
 3. Two activities are critical, with cost slopes $400 and $700, and both are on the only critical path. Which do you crash first? ($400)
 
