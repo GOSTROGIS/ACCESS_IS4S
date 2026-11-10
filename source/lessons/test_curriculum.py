@@ -65,6 +65,20 @@ class CurriculumChecks(unittest.TestCase):
         shutil.copytree(self.lesson, self.lesson.with_name('01-duplicate'))
         self.assertIn('duplicate lesson number 01', self.errors())
 
+    def test_answer_task_parity(self):
+        learner = self.lesson / 'learner.md'
+        learner.write_text(learner.read_text() + '\n**Task 1** Practice.\n**Task 2** Reflect.\n')
+        answers = self.lesson / 'answers.md'
+        answers.write_text('# Example\n## Task 1\nAnswer.\n')
+        self.assertIn('task numbers do not match', self.errors())
+        answers.write_text(answers.read_text() + '## Task 2\nReflection.\n')
+        self.assertNotIn('task numbers do not match', self.errors())
+
+    def test_duplicate_learner_task_fails(self):
+        learner = self.lesson / 'learner.md'
+        learner.write_text(learner.read_text() + '\n**Task 1** Practice.\n**Task 1** Again.\n')
+        self.assertIn('duplicate task numbers', self.errors())
+
     def test_sources_and_time_fail(self):
         (self.lesson / 'instructor.md').write_text('# Example')
         path = self.lesson / 'learner.md'

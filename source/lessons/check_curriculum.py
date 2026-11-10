@@ -71,8 +71,15 @@ def audit(repo):
                 errors.append(f'{label}/learner.md: invalid level {level!r}')
             if not re.fullmatch(r'[1-9]\d* min', fields.get('time', '')):
                 errors.append(f'{label}/learner.md: time must be positive minutes')
+            learner_tasks = re.findall(r'^\*\*Task (\d+)\*\*', learner, re.M)
+            if len(learner_tasks) != len(set(learner_tasks)):
+                errors.append(f'{label}/learner.md: duplicate task numbers')
             for role in ROLES:
                 source = learner if role == 'learner' else require(folder / f'{role}.md')
+                if role == 'answers':
+                    answer_tasks = re.findall(r'^## Task (\d+)\b', source, re.M)
+                    if learner_tasks != answer_tasks:
+                        errors.append(f'{label}/answers.md: task numbers do not match learner tasks')
                 if not re.search(r'^# \S', source, re.M):
                     errors.append(f'{label}/{role}.md: missing heading')
                 if role == 'instructor' and not re.search(r'^## .*Sources', source, re.M | re.I):
