@@ -79,6 +79,7 @@ main>*,nav{min-width:0}
 .prose th,.prose td{border:1px solid var(--line-strong);padding:8px 10px;text-align:left;vertical-align:top}
 .prose th{background:var(--gold-tint);font-family:var(--font-display)}
 .prose .table-wrap{overflow-x:auto}
+.prose .table-wrap:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
 .prose blockquote{margin:12px 0;padding:10px 16px;border-left:4px solid var(--gold);background:var(--gold-tint)}
 .prose code{font-size:.92em}
 .prose pre{max-width:100%;overflow-x:auto}
@@ -320,7 +321,27 @@ def md_html(text):
     out = out.replace('<pre>', '<pre tabindex="0">')
     out = re.sub(r'<(div|figure) class="figure-art">',
                  r'<\1 class="figure-art" tabindex="0" role="group" aria-label="Figure, scroll sideways on a small screen">', out)
-    return out.replace('<table>', '<div class="table-wrap"><table>').replace('</table>', '</table></div>')
+    # Explicit focus works without JavaScript, including browsers that do not
+    # automatically put overflowing containers in the tab order. Keep the table
+    # semantics inside a separately named group; numbering distinguishes tables
+    # in the same section. A static page cannot reliably detect actual overflow,
+    # so short tables remain reachable too.
+    section, table_number = '', 0
+
+    def table_group(match):
+        nonlocal section, table_number
+        tag = match.group(0)
+        if re.match(r'<h[1-6]\b', tag):
+            section = ' '.join(html.unescape(re.sub(r'<[^>]+>', '', tag)).split())
+            return tag
+        if tag == '</table>':
+            return '</table></div>'
+        table_number += 1
+        name = f'Table {table_number}' + (f': {section}' if section else '')
+        label = name + '. Scroll horizontally if needed.'
+        return f'<div class="table-wrap" tabindex="0" role="group" aria-label="{e(label)}">{tag}'
+
+    return re.sub(r'<h[1-6]\b[^>]*>.*?</h[1-6]>|<table\b[^>]*>|</table>', table_group, out, flags=re.S)
 
 
 def lessons(slug):
