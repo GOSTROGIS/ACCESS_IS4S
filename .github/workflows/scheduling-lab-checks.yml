@@ -1,0 +1,25 @@
+name: Check learner scheduling lab
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/numeracy/lessons/21-float-and-the-critical-path/**'
+      - '.github/workflows/scheduling-lab-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node skills/numeracy/lessons/21-float-and-the-critical-path/scheduling-lab/test-engine.cjs
+      - run: npm install --prefix /tmp/scheduling-tests playwright@1.56.1
+      - run: /tmp/scheduling-tests/node_modules/.bin/playwright install --with-deps chromium
+      - name: Check learner interactions, mobile layout and print
+        env:
+          NODE_PATH: /tmp/scheduling-tests/node_modules
+        run: node skills/numeracy/lessons/21-float-and-the-critical-path/scheduling-lab/test-browser.cjs

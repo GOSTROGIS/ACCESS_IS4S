@@ -426,7 +426,7 @@ d) The **electrical rough-in**. It has no float, so every day it slips moves the
 ## Task 5 (level 3)
 
 a) The Zone 1 crew can be up to 9 days late with beams and joists before the floor (Zone 2 complete, day 27) is late. But with 0 free float, any day they lose pushes the next Zone 1 work (sheathing, then the shafts) later by the same amount. They are using float that the trades after them are also counting on, so they must tell them.  
-b) **No.** Sheathing has 9 days of total float and slips 8 − 3 = 5 days. 5 is less than 9, so the floor still finishes at day 27. If you redo the passes, sheathing shows 7 days of float left, not 9 − 5 = 4. Here is how. Sheathing now runs from day 12 to day 20. The lesson 20 rule for the SS+1 link gives LF = 22 − 1 + 8 = 29, but no activity can finish after the floor is due at day 27, so the late finish is capped at LF 27. Then LS = 27 − 8 = 19 and TF = 19 − 12 = 7. The shafts follow the sheathing with SS+1, so they only wait for it to *start*. That is worth checking with the planner: on a real floor the shaft framing may need more of the sheathing done first.  
+b) **No.** The duration increases by 5 days, but the start stays at day 12. Sheathing now finishes at day 20. Its shafts successor follows with SS+1, so that successor still starts at day 13; the Zone 2 chain still finishes at day 27. Do not apply the unchanged-duration slip rule to this duration change. Recomputing gives 7 days of total float, not 9 − 5 = 4. Here is how. The lesson 20 rule for the SS+1 link gives LF = 22 − 1 + 8 = 29, but no activity can finish after the floor is due at day 27, so the late finish is capped at LF 27. Then LS = 27 − 8 = 19 and TF = 19 − 12 = 7. The shafts follow the sheathing with SS+1, so they only wait for it to *start*. That is worth checking with the planner: on a real floor the shaft framing may need more of the sheathing done first.  
 c) Zone 2 cannot start until the Zone 1 wall framing (83) is done, at day 9. From there the Zone 2 chain needs 18 more days, to day 27. The rest of Zone 1 needs only until day 18. The longer chain is critical.
 
 ## Task 6 (level 3)
@@ -460,6 +460,48 @@ e) Each day saved also saves $500 of site costs.
 - Day 1: $350 − $500 = $150 saved. **Pays for itself.**
 - Day 2: $450 − $500 = $50 saved. **Pays for itself.**
 - Day 3: $600 − $500 = $100 extra. Only worth it if the owner needs the earlier date.
+
+## Task 7 (level 2)
+
+Arrows: A → B, A → C, B → D, C → E, D → E, E → F. E is the merge: surfaces cannot begin until both materials and services are ready in this fictional model.
+
+| Activity | ES | EF | LS | LF | TF | FF |
+|---|---|---|---|---|---|---|
+| A | 0 | 2 | 0 | 2 | 0 | 0 |
+| B | 2 | 6 | 2 | 6 | 0 | 0 |
+| C | 2 | 5 | 5 | 8 | 3 | 3 |
+| D | 6 | 8 | 6 | 8 | 0 | 0 |
+| E | 8 | 11 | 8 | 11 | 0 | 0 |
+| F | 11 | 12 | 11 | 12 | 0 | 0 |
+
+Finish **12 working days**. Critical path A–B–D–E–F = 2 + 4 + 2 + 3 + 1 = 12. A–C–E–F = 9. C has 3 days of float: E waits until D finishes at 8 even though C finishes at 5. Use the smallest successor ES for FF and the smallest successor LS for the backward pass. A correct lab comparison identifies any error rather than silently replacing a handwritten result.
+
+## Task 8 (level 2-3)
+
+a) B finishes at 8, D at 10, E at 13 and F at **14**. Variance **+2 working days**. C now has 5 days of total/free float.  
+b) C finishes at 8, tying D. Finish **12**, variance **0**. Both A–B–D–E–F and A–C–E–F are critical; every activity has TF 0.  
+c) C finishes at 9, E at 12 and F at **13**, variance **+1 working day**. A–C–E–F is now critical. C loses its original 3 days of float; B and D each gain 1 day of shared total float. B has FF 0, D has FF 1. A, E and F remain critical.  
+d) The original C branch has 3 days of float, which absorb the 3-day increase. It now has no remaining float. A further delay would move the finish.
+
+## Task 9 (level 2)
+
+a) 14 − 12 = **+2 working days**, meaning later than the original plan.  
+b) Example: “Framing now takes 6 working days instead of 4. The original finish was day 12; the forecast is day 14, so the project is 2 working days late.”  
+c) Changing the comparison does not change any work or recover time. Keep the original baseline and the forecast. If a new baseline is authorised, retain the prior baseline and record the revision, date, reason, approving person and effect on completion. Do not describe an unapproved forecast as an agreed completion date.
+
+## Task 10 (level 3)
+
+a) B runs 2–6 and C runs 2–5: **3 working days** of overlap. CPM only enforces the given links; resource availability is an additional constraint.  
+b) B first: A 0–2, B 2–6, C 6–9, D 6–8, E 9–12, F 12–13. Finish **13**.  
+c) C first: A 0–2, C 2–5, B 5–9, D 9–11, E 11–14, F 14–15. Finish **15**.  
+d) B first is feasible and **2 days shorter** than C first, but still 1 day longer than the unconstrained baseline. The original work links describe what must be ready; the extra link describes the chosen order for a limited resource. Record it as a resource decision so it is not mistaken for a technical necessity.  
+e) A good transfer response distinguishes space/time conflict from a dependency or crew conflict; a clash-free drawing alone does not establish a safe construction plan.
+
+## Task 11 (level 3)
+
+a) Buy B 6 → 5 for **$250**: finish 13. Then E 3 → 2 for **$300**: finish 12. Total **$550**, leaving $50 of the $600 limit. Reversing these two purchases gives the same final result. Each option saves at most one day; at least two effective options are needed. The other effective pairs cost $650 (B + D) or $700 (E + D). Thus $550 is the cheapest listed feasible combination.  
+b) Rushing C costs $100 but saves no project time: the B–D branch still controls E. It does not replace either effective option.  
+c) Confirm the duration estimates with the trades, availability and competence of extra crews, work-space access, inspection bookings, procurement, cost approval and safety/quality requirements. Do not shorten curing, testing or safety steps merely to make the arithmetic fit.
 
 ## Check yourself 1
 

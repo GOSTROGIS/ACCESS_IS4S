@@ -2,7 +2,7 @@
 title: Float and the critical path
 summary: Work out total float and free float, find the critical path and the near-critical activities, predict what a late activity does to the finish date, and shorten a schedule at the lowest cost with cost slopes.
 level: 2-3
-time: 90 min
+time: 150 min
 components: Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information; Share the mathematical information, results and implications
 ---
 
@@ -40,8 +40,10 @@ Free float is never bigger than total float.
 **Crashing.** Crashing means shortening critical activities by adding crew, equipment or overtime. It costs money.
 
 - **Cost slope** = (crash cost − normal cost) ÷ (normal duration − crash duration). It is the extra cost for each day saved.
-- Crash one day at a time. Each time, pick the critical activity with the **lowest** cost slope.
-- After each day, redo the passes or check the paths. A path that had float may now be critical too. Then you have to shorten both paths to gain another day.
+- For one critical path, compare the feasible one-day reductions on that path. Choose the lowest extra cost for the next day saved, within each activity's crash limit.
+- With several critical paths, compare **combinations that shorten every critical path**. A shared activity may shorten several paths at once, but a combination of separate activities may cost less. Count the cost of a shared activity once.
+- After each proposed change, redo the passes or check all paths. Confirm that the project really finishes sooner: a near-critical path may now control the finish. Repeat until the target is reached or no feasible reduction remains. A cheapest next step is not, by itself, proof of the cheapest complete multi-day plan; compare the full feasible combinations when asked for the overall minimum.
+- Example: two critical paths share one activity that costs $300 to shorten by a day. Their separate branches can each be shortened by a day for $100 and $150. Either option saves a project day, but the two-activity combination costs $250, less than the shared activity. Shortening just the $100 branch saves no project time.
 - Never pay to crash an activity that is not critical. The finish date will not move.
 
 ### Worked example 1: total float and free float
@@ -437,7 +439,7 @@ ______________________________________________
 </div>
 
 a) Activity 84, Z1 beams, joists, blocking, has 9 days of total float but 0 free float. Explain what that means for the Zone 1 crew.  
-b) Zone 1 floor sheathing (85) takes 8 days instead of 3. Does the floor finish late? Explain with total float.  
+b) Zone 1 floor sheathing (85) takes 8 days instead of 3, with the same early start. Does the floor finish late? Recalculate its finish, the SS+1 successor timing and its total float. Explain why a duration increase is not the same as shifting its start and finish later together.  
 c) Why is Zone 2 critical but Zone 1 is not?
 
 ______________________________________________
@@ -462,6 +464,68 @@ e) The site costs (trailer, toilet, fencing and supervision) are $500 a day (mad
 ______________________________________________
 
 ______________________________________________
+
+## Scheduling lab: predict, test and explain
+
+The original lesson takes 90 minutes. These five additional activities form a 60-minute follow-on session. Work on paper first, then open the [scheduling lab](scheduling-lab/index.html). The lab brings the schedule → calculate → compare workflow into a small learner model inspired by Slipcurve. No account, project upload or installed software is needed.
+
+This is a **fictional workshop fit-out**, not a construction method or safety plan. All links are finish-to-start with zero lag. Use working-day boundaries: A starts at 0 and finishes at 2, so B can start at 2. Weekends, holidays, actual progress, resource limits and SS/FF links are not calculated in this lab. Assume separate crews unless Task 10 says otherwise. Its saved comparison is the fixed original plan, called the **baseline**. Changes are practice forecasts, not a new approved baseline. Keep your results on paper or print them before closing the page.
+
+| ID | Activity | Duration (working days) | Must wait for |
+|---|---|---|---|
+| A | Site setup | 2 | Nothing |
+| B | Frame partitions | 4 | A |
+| C | Order materials | 3 | A |
+| D | Install services | 2 | B |
+| E | Finish surfaces | 3 | C and D |
+| F | Inspection | 1 | E |
+
+**Task 7** (level 2). Build the baseline before using the lab.
+
+a) Draw arrows for every dependency. Which activity is a merge, and why must it wait for both predecessors?  
+b) Calculate ES, EF, LS, LF, TF and FF for all six activities.  
+c) Give the project duration and critical path. Which activity has spare time? Explain why the shorter branch does not control E.  
+d) Open the lab and compare its results with your calculations. If they differ, locate the first activity where your numbers disagree.
+
+**Task 8** (level 2-3). Predict each change **separately**, starting again from the original plan each time. Record your predicted finish before showing the calculation. A duration increase here means more working time, not a later fixed start date.
+
+a) B takes 6 days instead of 4. What is the new finish and the variance from baseline?  
+b) C takes 6 days instead of 3. What is the finish? List every critical path.  
+c) C takes 7 days instead of 3. What is the finish? Which activities lose or gain float?  
+d) Explain why “the materials are 3 days late, so the whole job is 3 days late” is wrong for part b.
+
+**Task 9** (level 2). Keep the original promise visible.
+
+A weekly report lists baseline finish 12 and current forecast finish 14. A team member suggests replacing the baseline with 14 so the report shows zero variance.
+
+a) Calculate finish variance as forecast minus baseline, including units.  
+b) Write a two-sentence update naming the changed activity, the original finish, the forecast and the effect on the job. Use Task 8a.  
+c) Explain why changing the baseline would hide the slip rather than recover time. What should be recorded if an authorised planner later approves a new baseline?
+
+**Task 10** (level 3). A schedule can fit the arrows but not the crew.
+
+For this exercise only, B and C both need the same coordinator for their **whole duration**, and cannot overlap. All other activities have separate crews. This is a made-up resource constraint, not a claim that ordering always needs full-time labour.
+
+a) Show the overlap in the original plan. Why does a normal critical-path calculation not remove it?  
+b) Keep the original dependencies. Schedule B before C, adding the resource order B → C. Recalculate the finish.  
+c) Reset. Schedule C before B instead, adding C → B. Recalculate the finish.  
+d) Choose the shorter feasible plan. Explain the difference between a work dependency and a resource choice. Do this task on paper; the lab does not automatically level resources.  
+e) Optional transfer: once available, use the Digital site-builder to explore a further question: can activities also clash because equipment needs the same space at the same time?
+
+**Task 11** (level 3). Recover time with a limit.
+
+Start from Task 8a: B takes 6 days, the job takes 14 days, and there is no shared-coordinator constraint. The following fictional options are safe and feasible **for this exercise only**. Each can be bought once. Prices are extra total costs, not rates to multiply by the full activity duration.
+
+| Option | Change | Extra cost |
+|---|---|---|
+| Extra framing support | B: 6 to 5 days | $250 |
+| Extra finishing support | E: 3 to 2 days | $300 |
+| Extra services support | D: 2 to 1 day | $400 |
+| Rush materials | C: 3 to 2 days | $100 |
+
+a) With a $600 limit, find the cheapest combination that restores the original 12-day finish. Show each recalculation and total cost. Test the durations in the lab.  
+b) Why is the cheapest single option not the best first purchase?  
+c) Explain what a real supervisor would need to confirm before using your recovery plan, including safety, crew availability, inspections and the unchanged quality requirements.
 
 ## Check yourself
 

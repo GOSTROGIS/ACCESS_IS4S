@@ -20,7 +20,7 @@
   </div>
 </header>
 <main class="wrap">
-<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 90 min</li><li>Components: Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information; Share the mathematical information, results and implications</li></ul></nav><article class="prose"><h2>Why this matters on the job</h2>
+<nav aria-label="Lesson pages"><ul class="lesson-tabs"><li><a href="learner.html" aria-current="page">Learner</a></li><li><a href="instructor.html">Instructor<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li><li><a href="answers.html">Answers<span class="lock" aria-hidden="true">🔒</span><span class="sr"> (instructor code)</span></a></li></ul><ul class="lesson-meta"><li>Level: 2-3</li><li>Time: 150 min</li><li>Components: Identify the mathematical information; Make connections between related pieces of mathematical information; Apply mathematical operations and tools you will need to answer the question; Interpret and evaluate the information; Share the mathematical information, results and implications</li></ul></nav><article class="prose"><h2>Why this matters on the job</h2>
 <p>Float is spare time in the schedule. A foreman who knows where the float is can move a crew to where it is needed without making the job late. A foreman who does not know can lose a whole week by holding up one critical activity. When the owner asks "can we finish sooner?", the critical path tells you where extra crews or overtime will help, and where they would only waste money.</p>
 <h2>Key ideas</h2>
 <p><strong>Total float (TF).</strong> How many days an activity can slip without making the <strong>whole job</strong> finish late. TF = LS − ES = LF − EF.</p>
@@ -44,8 +44,10 @@
 <p><strong>Crashing.</strong> Crashing means shortening critical activities by adding crew, equipment or overtime. It costs money.</p>
 <ul>
 <li><strong>Cost slope</strong> = (crash cost − normal cost) ÷ (normal duration − crash duration). It is the extra cost for each day saved.</li>
-<li>Crash one day at a time. Each time, pick the critical activity with the <strong>lowest</strong> cost slope.</li>
-<li>After each day, redo the passes or check the paths. A path that had float may now be critical too. Then you have to shorten both paths to gain another day.</li>
+<li>For one critical path, compare the feasible one-day reductions on that path. Choose the lowest extra cost for the next day saved, within each activity's crash limit.</li>
+<li>With several critical paths, compare <strong>combinations that shorten every critical path</strong>. A shared activity may shorten several paths at once, but a combination of separate activities may cost less. Count the cost of a shared activity once.</li>
+<li>After each proposed change, redo the passes or check all paths. Confirm that the project really finishes sooner: a near-critical path may now control the finish. Repeat until the target is reached or no feasible reduction remains. A cheapest next step is not, by itself, proof of the cheapest complete multi-day plan; compare the full feasible combinations when asked for the overall minimum.</li>
+<li>Example: two critical paths share one activity that costs $300 to shorten by a day. Their separate branches can each be shortened by a day for $100 and $150. Either option saves a project day, but the two-activity combination costs $250, less than the shared activity. Shortening just the $100 branch saves no project time.</li>
 <li>Never pay to crash an activity that is not critical. The finish date will not move.</li>
 </ul>
 <h3>Worked example 1: total float and free float</h3>
@@ -915,7 +917,7 @@ d) Which of these slips should the site supervisor worry about most, and why?</p
 </div>
 
 <p>a) Activity 84, Z1 beams, joists, blocking, has 9 days of total float but 0 free float. Explain what that means for the Zone 1 crew.<br />
-b) Zone 1 floor sheathing (85) takes 8 days instead of 3. Does the floor finish late? Explain with total float.<br />
+b) Zone 1 floor sheathing (85) takes 8 days instead of 3, with the same early start. Does the floor finish late? Recalculate its finish, the SS+1 successor timing and its total float. Explain why a duration increase is not the same as shifting its start and finish later together.<br />
 c) Why is Zone 2 critical but Zone 1 is not?</p>
 <hr />
 <p><strong>Task 6</strong> (level 3). The garage owner wants the job 3 days shorter, at 17 days. These are the crash options (made up for practice):</p>
@@ -981,6 +983,115 @@ d) After you crash activity 7, what happens to activity 8?<br />
 e) The site costs (trailer, toilet, fencing and supervision) are $500 a day (made up). Which of your crash steps pay for themselves?</p>
 <hr />
 <hr />
+<h2>Scheduling lab: predict, test and explain</h2>
+<p>The original lesson takes 90 minutes. These five additional activities form a 60-minute follow-on session. Work on paper first, then open the <a href="scheduling-lab/index.html">scheduling lab</a>. The lab brings the schedule → calculate → compare workflow into a small learner model inspired by Slipcurve. No account, project upload or installed software is needed.</p>
+<p>This is a <strong>fictional workshop fit-out</strong>, not a construction method or safety plan. All links are finish-to-start with zero lag. Use working-day boundaries: A starts at 0 and finishes at 2, so B can start at 2. Weekends, holidays, actual progress, resource limits and SS/FF links are not calculated in this lab. Assume separate crews unless Task 10 says otherwise. Its saved comparison is the fixed original plan, called the <strong>baseline</strong>. Changes are practice forecasts, not a new approved baseline. Keep your results on paper or print them before closing the page.</p>
+<div class="table-wrap" tabindex="0" role="group" aria-label="Table 6: Scheduling lab: predict, test and explain. Scroll horizontally if needed."><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Activity</th>
+<th>Duration (working days)</th>
+<th>Must wait for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Site setup</td>
+<td>2</td>
+<td>Nothing</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Frame partitions</td>
+<td>4</td>
+<td>A</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Order materials</td>
+<td>3</td>
+<td>A</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Install services</td>
+<td>2</td>
+<td>B</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Finish surfaces</td>
+<td>3</td>
+<td>C and D</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Inspection</td>
+<td>1</td>
+<td>E</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Task 7</strong> (level 2). Build the baseline before using the lab.</p>
+<p>a) Draw arrows for every dependency. Which activity is a merge, and why must it wait for both predecessors?<br />
+b) Calculate ES, EF, LS, LF, TF and FF for all six activities.<br />
+c) Give the project duration and critical path. Which activity has spare time? Explain why the shorter branch does not control E.<br />
+d) Open the lab and compare its results with your calculations. If they differ, locate the first activity where your numbers disagree.</p>
+<p><strong>Task 8</strong> (level 2-3). Predict each change <strong>separately</strong>, starting again from the original plan each time. Record your predicted finish before showing the calculation. A duration increase here means more working time, not a later fixed start date.</p>
+<p>a) B takes 6 days instead of 4. What is the new finish and the variance from baseline?<br />
+b) C takes 6 days instead of 3. What is the finish? List every critical path.<br />
+c) C takes 7 days instead of 3. What is the finish? Which activities lose or gain float?<br />
+d) Explain why “the materials are 3 days late, so the whole job is 3 days late” is wrong for part b.</p>
+<p><strong>Task 9</strong> (level 2). Keep the original promise visible.</p>
+<p>A weekly report lists baseline finish 12 and current forecast finish 14. A team member suggests replacing the baseline with 14 so the report shows zero variance.</p>
+<p>a) Calculate finish variance as forecast minus baseline, including units.<br />
+b) Write a two-sentence update naming the changed activity, the original finish, the forecast and the effect on the job. Use Task 8a.<br />
+c) Explain why changing the baseline would hide the slip rather than recover time. What should be recorded if an authorised planner later approves a new baseline?</p>
+<p><strong>Task 10</strong> (level 3). A schedule can fit the arrows but not the crew.</p>
+<p>For this exercise only, B and C both need the same coordinator for their <strong>whole duration</strong>, and cannot overlap. All other activities have separate crews. This is a made-up resource constraint, not a claim that ordering always needs full-time labour.</p>
+<p>a) Show the overlap in the original plan. Why does a normal critical-path calculation not remove it?<br />
+b) Keep the original dependencies. Schedule B before C, adding the resource order B → C. Recalculate the finish.<br />
+c) Reset. Schedule C before B instead, adding C → B. Recalculate the finish.<br />
+d) Choose the shorter feasible plan. Explain the difference between a work dependency and a resource choice. Do this task on paper; the lab does not automatically level resources.<br />
+e) Optional transfer: once available, use the Digital site-builder to explore a further question: can activities also clash because equipment needs the same space at the same time?</p>
+<p><strong>Task 11</strong> (level 3). Recover time with a limit.</p>
+<p>Start from Task 8a: B takes 6 days, the job takes 14 days, and there is no shared-coordinator constraint. The following fictional options are safe and feasible <strong>for this exercise only</strong>. Each can be bought once. Prices are extra total costs, not rates to multiply by the full activity duration.</p>
+<div class="table-wrap" tabindex="0" role="group" aria-label="Table 7: Scheduling lab: predict, test and explain. Scroll horizontally if needed."><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Change</th>
+<th>Extra cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Extra framing support</td>
+<td>B: 6 to 5 days</td>
+<td>$250</td>
+</tr>
+<tr>
+<td>Extra finishing support</td>
+<td>E: 3 to 2 days</td>
+<td>$300</td>
+</tr>
+<tr>
+<td>Extra services support</td>
+<td>D: 2 to 1 day</td>
+<td>$400</td>
+</tr>
+<tr>
+<td>Rush materials</td>
+<td>C: 3 to 2 days</td>
+<td>$100</td>
+</tr>
+</tbody>
+</table></div>
+<p>a) With a $600 limit, find the cheapest combination that restores the original 12-day finish. Show each recalculation and total cost. Test the durations in the lab.<br />
+b) Why is the cheapest single option not the best first purchase?<br />
+c) Explain what a real supervisor would need to confirm before using your recovery plan, including safety, crew availability, inspections and the unchanged quality requirements.</p>
 <h2>Check yourself</h2>
 <ol>
 <li>What is the difference between total float and free float?</li>
