@@ -1,4 +1,4 @@
-"""Copy the nine-skills books from the Business repo into ACCESS_IS4S, split by skill.
+"""Copy the Skills for Success books from the Business repo into ACCESS_IS4S, split by skill.
 
 The books are written and built in GOSTROGIS/Business (curriculum/skills-for-success).
 This script publishes that build here:

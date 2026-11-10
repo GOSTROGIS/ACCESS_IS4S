@@ -245,7 +245,7 @@ if (REPO / 'skills/writing/resume-builder/index.html').exists():
 
 def books_section(root):
     t = f'{root}textbook/'
-    return ('<section><h2>The nine-skills books</h2><div class="grid">'
+    return ('<section><h2>Skills for Success</h2><div class="grid">'
             + card('Learner textbook', f'{t}learner-textbook.html', 'All nine skills in one book, with practice and response pages.',
                    [('Read online', f'{t}learner-textbook.html'), ('PDF', f'{t}learner-textbook.pdf'),
                     ('Start here', f'{t}learner/00-start-here.html')], 'gold')
@@ -415,7 +415,7 @@ def build_numeracy_section():
     t = path.read_text(encoding='utf-8')
     ls = lessons_section('numeracy', 'Numeracy', 3)
     ls = f'<div class="wrap" style="padding-block:0 32px">{ls}</div>' if ls else ''
-    block = (f'{MARK[0]}\n<section class="wrap" style="padding-block:0 32px"><p class="nine-crumb"><a href="../../index.html">← {HUB}</a></p><h2>Numeracy in the nine-skills books</h2>'
+    block = (f'{MARK[0]}\n<section class="wrap" style="padding-block:0 32px"><p class="nine-crumb"><a href="../../index.html">← {HUB}</a></p><h2>Numeracy in the Skills for Success books</h2>'
              f'<div class="grid">{"".join(chapter_cards("numeracy"))}</div></section>\n{ls}{MARK[1]}')
     if MARK[0] in t:
         t = re.sub(re.escape(MARK[0]) + '.*?' + re.escape(MARK[1]), lambda _: block, t, flags=re.S)

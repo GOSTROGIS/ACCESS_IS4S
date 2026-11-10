@@ -6,7 +6,7 @@ Learning materials for ACCESS Indigenous Skills4Success, organized by the nine S
 
 ## IS4S Skills for Success
 
-Each skill has its own folder with a skill page, the learner chapter, the teaching chapter and answer guidance from the nine-skills books, plus any tools for that skill.
+Each skill has its own folder with a skill page, the learner chapter, the teaching chapter and answer guidance from the Skills for Success books, plus any tools for that skill.
 
 | # | Skill | Chapters | Tools |
 |---|---|---|---|
@@ -32,10 +32,10 @@ skills/
   reading/  writing/  numeracy/  digital/  problem-solving/
   communication/  collaboration/  adaptability/  creativity-innovation/
     index.html             skill page
-    learner.*  teaching.*  answers.*    chapters from the nine-skills books
+    learner.*  teaching.*  answers.*    chapters from the Skills for Success books
   numeracy/  hub/  shape-canvas/  calculators/  books/
   digital/   ai-literacy/  practice-desk/
-textbook/                  full nine-skills books, shared chapters, figures and research
+textbook/                  full Skills for Success books, shared chapters, figures and research
 programs/
   carpentry/intake-142/    Carpentry Foundation cohort at KPU
   carpentry/bcbc-part-9/   BC Building Code Part 9 plates
@@ -92,7 +92,7 @@ The [Exercise Book web edition](skills/numeracy/books/ACCESS-Trades-Numeracy-Exe
 
 ## Updating the site
 
-- **Nine-skills books.** They are written and built in [GOSTROGIS/Business](https://github.com/GOSTROGIS/Business/tree/main/curriculum/skills-for-success). After a rebuild there, clone Business and run `python3 source/textbook/sync.py /path/to/Business`. It copies the books here, splits the chapters into the skill folders and rewrites every link. `source/textbook/SOURCE.json` records the Business commit. Build, validation and research records stay in Business, so only the curriculum is published here.
+- **Skills for Success books.** They are written and built in [GOSTROGIS/Business](https://github.com/GOSTROGIS/Business/tree/main/curriculum/skills-for-success). After a rebuild there, clone Business and run `python3 source/textbook/sync.py /path/to/Business`. It copies the books here, splits the chapters into the skill folders and rewrites every link. `source/textbook/SOURCE.json` records the Business commit. Build, validation and research records stay in Business, so only the curriculum is published here.
 - **Hub and skill pages.** Run `python3 source/site/build_pages.py` after a sync or after adding decks. Titles and introductions come from the chapters, and deck lists from the folders.
 - **Construction Operations tab.** Edit the files in `source/hub/conops/`, then run `python3 source/hub/conops/inject.py` to rebuild the tab inside the Numeracy Hub. The tab is not in the exam builder yet: its tasks can be practised on the tab, but the exam builder does not draw questions from it.
 - **Links.** `python3 source/check-links.py` reports any relative link that points at a missing file.
