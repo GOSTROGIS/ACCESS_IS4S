@@ -1,0 +1,51 @@
+name: One-time verified Digital pack repair
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-digital-pack.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: digital-offline-pack
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --prefix /tmp/offline-tests playwright@1.56.1
+      - run: /tmp/offline-tests/node_modules/.bin/playwright install --with-deps chromium
+      - name: Rebuild, verify offline behaviour and publish only the archive
+        env:
+          NODE_PATH: /tmp/offline-tests/node_modules
+          SITE_BUILDER_OFFLINE: '1'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          export CHROMIUM_PATH="$(node -p "require('playwright').chromium.executablePath()")"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            PYTHONPATH=source/site python3 -c "import build_downloads as b; b.archive('digital', 'Digital')"
+            python3 source/site/test_downloads.py
+            python3 source/site/test_lesson21_offline.py
+            node source/site/test-site-builder.cjs
+            export OFFLINE_DIR="$(mktemp -d)"
+            python3 -c "import os; from zipfile import ZipFile; ZipFile('downloads/ACCESS-IS4S-digital.zip').extractall(os.environ['OFFLINE_DIR'])"
+            export SITE_BUILDER_ENTRY_URL="file://$OFFLINE_DIR/skills/digital/site-builder/index.html"
+            node source/site/test-site-builder-browser.cjs
+            git add downloads/ACCESS-IS4S-digital.zip
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m 'Rebuild complete Digital offline pack with shared assets'
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          echo 'Archive publication conflicted with concurrent changes.' >&2
+          exit 1
