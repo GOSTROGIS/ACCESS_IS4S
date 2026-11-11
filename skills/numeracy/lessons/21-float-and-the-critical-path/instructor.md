@@ -67,6 +67,8 @@ Use Tasks 7–11 as a second session after the core lesson. Learners can complet
 | 4.5 | Ask learners to justify the least-cost pair and the real-world limitations. | 4.5 Complete Task 11, verify it and explain their choice. | Recovery table and lab | 10 min |
 | 4.6 | Check learning: why can a 3-day delay produce zero variance, and why can zero crew clashes still leave a spatial conflict? | 4.6 Give an exit explanation using float and model assumptions. Print or keep results. | Learner calculations | 3 min |
 
+**Task 10e offline preparation:** Numeracy and Digital are separate packs. The Numeracy pack sends the site-builder link to the live website. Download and extract the Digital pack before an offline session, then open its local site-builder page. If that pack is unavailable, use the two-rectangle paper fallback; the overlap is hours 2–4. No internet or device is needed for that alternative.
+
 **Evidence of learning:** correct passes and both critical paths; predictions explained with float; a numerical variance report that preserves the original plan; a resource-feasible order; a $550 recovery justified by comparison. Accept oral explanation, a diagram or written working. For support, supply the Task 7 ES/EF columns and calculate TF together. For extension, ask learners to invent another duration change and prove its result with both path lengths. Do not assess keyboard speed.
 
 ## Sources

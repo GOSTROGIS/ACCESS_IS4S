@@ -495,7 +495,7 @@ a) B runs 2–6 and C runs 2–5: **3 working days** of overlap. CPM only enforc
 b) B first: A 0–2, B 2–6, C 6–9, D 6–8, E 9–12, F 12–13. Finish **13**.  
 c) C first: A 0–2, C 2–5, B 5–9, D 9–11, E 11–14, F 14–15. Finish **15**.  
 d) B first is feasible and **2 days shorter** than C first, but still 1 day longer than the unconstrained baseline. The original work links describe what must be ready; the extra link describes the chosen order for a limited resource. Record it as a resource decision so it is not mistaken for a technical necessity.  
-e) A good transfer response distinguishes space/time conflict from a dependency or crew conflict; a clash-free drawing alone does not establish a safe construction plan.
+e) A good transfer response distinguishes space/time conflict from a dependency or crew conflict; a clash-free drawing alone does not establish a safe construction plan. For the paper fallback, the shared time is hours 2–4. Move one footprint so the rectangles no longer overlap, or shift the second window to hours 4–8. The time windows touch at hour 4 but do not overlap in this simplified model; real removal, setup and clearance needs still require review.
 
 ## Task 11 (level 3)
 

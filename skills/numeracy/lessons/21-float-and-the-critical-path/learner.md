@@ -510,7 +510,11 @@ a) Show the overlap in the original plan. Why does a normal critical-path calcul
 b) Keep the original dependencies. Schedule B before C, adding the resource order B → C. Recalculate the finish.  
 c) Reset. Schedule C before B instead, adding C → B. Recalculate the finish.  
 d) Choose the shorter feasible plan. Explain the difference between a work dependency and a resource choice. Do this task on paper; the lab does not automatically level resources.  
-e) Optional transfer: once available, use the Digital site-builder to explore a further question: can activities also clash because equipment needs the same space at the same time?
+e) Optional transfer: open the [Digital site-builder](../../../digital/site-builder/index.html) to explore a further question: can activities also clash because equipment needs the same space at the same time?
+
+**Using separate offline packs:** this link opens the website when you use the Numeracy download, so it needs internet access. Before going offline, [download the Digital section](../../../../downloads/ACCESS-IS4S-digital.zip), extract it separately, and open `skills/digital/site-builder/index.html` inside that extracted Digital folder. The site-builder is not included in the Numeracy pack. Keep its complete extracted folder together so its local scripts and models can load.
+
+**Paper fallback:** if the Digital pack is unavailable, draw two overlapping rectangles for equipment footprints. Give one a use window of hours 0–4 and the other hours 2–6. Identify their shared time, then change either a position or a time window to remove the overlap. Explain why removing this simplified overlap does not prove a real site is safe.
 
 **Task 11** (level 3). Recover time with a limit.
 
