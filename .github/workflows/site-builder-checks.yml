@@ -29,3 +29,21 @@ jobs:
           export SITE_BUILDER_SCREENSHOT_DIR="$RUNNER_TEMP"
           for attempt in 1 2 3 4 5; do curl -fsS http://127.0.0.1:8798/ >/dev/null && break || sleep 1; done
           node source/site/test-site-builder-browser.cjs
+      - name: Verify complete extracted Digital pack without network access
+        env:
+          NODE_PATH: /tmp/site-builder-tests/node_modules
+          SITE_BUILDER_OFFLINE: '1'
+        run: |
+          PYTHONPATH=source/site python3 -c "import build_downloads as b; b.archive('digital', 'Digital')"
+          python3 source/site/test_downloads.py
+          python3 source/site/test_lesson21_offline.py
+          export OFFLINE_DIR="$(mktemp -d)"
+          python3 -c "import os; from zipfile import ZipFile; ZipFile('downloads/ACCESS-IS4S-digital.zip').extractall(os.environ['OFFLINE_DIR'])"
+          export CHROMIUM_PATH="$(node -p "require('playwright').chromium.executablePath()")"
+          export SITE_BUILDER_ENTRY_URL="file://$OFFLINE_DIR/skills/digital/site-builder/index.html"
+          node source/site/test-site-builder-browser.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-digital-offline-pack
+          path: downloads/ACCESS-IS4S-digital.zip
+          retention-days: 7
