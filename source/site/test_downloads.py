@@ -1,6 +1,8 @@
 """Validate every section archive: python3 source/site/test_downloads.py."""
 from contextlib import contextmanager
 import html
+import json
+from html.parser import HTMLParser
 import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -89,6 +91,39 @@ class Downloads(unittest.TestCase):
                         target = os.path.normpath(os.path.join(str(Path(name).parent), unquote(u.path)))
                         self.assertTrue(target in names or target.rstrip('/') + '/index.html' in names, f'{name}: {match[3]}')
                 self.assertIn('instructor-gate.js', z.read(f'skills/{slug}/teaching.html').decode())
+
+    def test_data_attributes_are_not_rewritten(self):
+        text = '<iframe data-src="src-shape" data-href="local-id" src="../other.html"></iframe>'
+        result = build.offline_links(text, Path('skills/numeracy/hub/index.html'), set())
+        self.assertIn('data-src="src-shape"', result)
+        self.assertIn('data-href="local-id"', result)
+        self.assertIn('src="' + build.SITE + 'skills/numeracy/other.html"', result)
+
+    def test_packaged_hub_embedded_templates_resolve(self):
+        class Templates(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.refs, self.scripts, self.current = [], {}, None
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if tag == 'iframe' and 'data-src' in attrs:
+                    self.refs.append(attrs['data-src'])
+                if tag == 'script' and attrs.get('type') == 'application/json':
+                    self.current = attrs.get('id')
+                    self.scripts[self.current] = ''
+            def handle_data(self, data):
+                if self.current:
+                    self.scripts[self.current] += data
+            def handle_endtag(self, tag):
+                if tag == 'script':
+                    self.current = None
+        with ZipFile(build.REPO / 'downloads/ACCESS-IS4S-numeracy.zip') as z:
+            parser = Templates()
+            parser.feed(z.read('skills/numeracy/hub/index.html').decode())
+        self.assertGreater(len(parser.refs), 0)
+        for ref in parser.refs:
+            self.assertTrue(ref in parser.scripts, f'Offline Hub template missing: {ref}')
+            self.assertIn('<html', json.loads(parser.scripts[ref]).lower())
 
     def test_cross_section_links(self):
         text = '<a href="../writing/index.html?q=one&amp;b=two#example">Other</a>'

@@ -19,7 +19,8 @@ SKILLS = [('reading', 'Reading'), ('writing', 'Writing'), ('numeracy', 'Numeracy
           ('communication', 'Communication'), ('collaboration', 'Collaboration'),
           ('adaptability', 'Adaptability'), ('creativity-innovation', 'Creativity and innovation')]
 START, END = '<!-- section-downloads:start -->', '<!-- section-downloads:end -->'
-ATTR = re.compile(r'''\b(href|src|poster|action)=(['"])(.*?)\2''', re.I)
+# data-src can hold an embedded template ID, not a URL. Match exact attributes.
+ATTR = re.compile(r'''(?<![\w-])(href|src|poster|action)=(['"])(.*?)\2''', re.I)
 
 
 def selected_files(slug):
