@@ -207,7 +207,7 @@ The test trims the linked media, reopens the downloaded project, compares the
 saved tracks, and requires rendered playback after reopening. Export must
 produce a downloaded MP4 with no offline media or job error. FFprobe counts
 the decoded H.264 frames and identifies the AAC stream. FFmpeg decodes the full
-video and audio streams and checks that the audio contains signal. The
+video and audio streams and checks for moving video and audible signal. The
 upstream import-bin and collision checks also run.
 
 The updated regression reproduced the export failure on the checksum-pinned
@@ -216,9 +216,29 @@ downloaded a 5,700-byte project, reopened it with matching video and audio
 tracks, and rendered 37 playback frames before export hit the thread-pool
 error.
 
+The ACCESS IS4S release build completed with Rust 1.95.0 and wasm-bindgen
+0.2.129. The locked Cargo feature graph included H.264 encode on both targets
+and the codec thread feature on native. The original lockfile SHA-256 was
+`39b7f91226493f65ad28f06222789284d6c4a18fa8dae11512fe577be2f82ae5`.
+The tested browser package has cache key `00332b41e5b5cd6f` and WASM SHA-256
+`7c00283925f2d88814dcfe32df0059a062d2ed94e3283bca5111052432c62470`.
+
+The patched smoke passed in Chrome with WebGPU on a loopback server. It
+trimmed the 72-frame sequence to 60 frames, downloaded and reopened the
+5,700-byte project, and rendered 25 frames during the playback check.
+The downloaded 594,832-byte MP4 was 2.517 seconds long. FFprobe counted 60
+H.264 frames at 320×192 and 118 AAC frames. FFmpeg decoded both streams
+through the end, identified motion in the video, and measured a nonzero PCM
+signal. The browser passed the upstream import-bin, browser drop, file-name
+collision, project and source recovery, mode switching and resize checks.
+
 The official v0.20.1 Windows portable CLI ran the same import, trim, save,
 reopen and export workflow. FFprobe independently counted 60 H.264 frames
 at 320×192 and 118 AAC frames in the 605,853-byte, 2.517-second export.
-FFmpeg decoded both streams through the end without errors. This measured
-the native engine through its CLI. Streamed desktop access, native device
-input and organizational authentication require tests on the chosen host.
+FFmpeg decoded both streams through the end without errors. The portable
+archive matched the upstream checksum and Windows validated the CLI's
+Authenticode signature.
+
+These results cover the browser package on loopback and the Windows engine
+through its CLI. Deployment and tests of the streamed desktop, native device
+input, organizational authentication and session isolation remain pending.
