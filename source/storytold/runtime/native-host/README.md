@@ -143,5 +143,13 @@ Before publishing a tool as ready, demonstrate at least:
    remote session, with the saved recording containing the input.
 4. Required hardware/provider features work with the chosen host and account.
 
+Run the CADCraft native CLI regression against a signed native distribution
+with `python3 ../verify-cadcraft-native.py /path/to/cadcraft-cli` from this
+directory. Its Python environment needs `ezdxf`, `Pillow` and `pypdf`. It
+creates a bracket DWG, draws a line and circle, exercises undo and redo,
+reopens the saved DWG and independently reads the DXF, PNG, SVG and PDF
+exports. The desktop GUI and its audio, device and session settings need
+their own deployed checks.
+
 No host account, DNS name, tunnel, authentication policy or production
 deployment is created by these files.

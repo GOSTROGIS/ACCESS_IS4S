@@ -514,16 +514,20 @@ def main():
     parser.add_argument('--candidate-output', type=Path, default=Path('/workspace/build/storytold/release-candidates'))
     args = parser.parse_args()
     staged = stage_manifest(args.manifest, args.output)
+    failed = bool(staged['failures'])
     print(f"Staged {len(staged['apps'])} complete releases, expanded {sum(row['expandedBytes'] for row in staged['apps'])} bytes; failures={len(staged['failures'])}", flush=True)
     if args.boot:
         result = boot_report(staged, args.output, timeout=args.timeout, only=set(args.only or []))
         print(json.dumps(result['summary']), flush=True)
     if args.prepare_hosting_fixes:
         candidates = prepare_hosting_fixes(staged, args.candidate_output)
+        failed |= bool(candidates['failures'])
+        for failure in candidates['failures']:
+            print(f"FAILED hosting fix for {failure['name']}: {failure['error']}", flush=True)
         print(f"Prepared {len(candidates['candidates'])} additive hosting candidates.", flush=True)
         if args.boot:
             boot_hosting_candidates(candidates, args.output, timeout=args.timeout)
-    return bool(staged['failures'])
+    return failed
 
 
 if __name__ == '__main__':

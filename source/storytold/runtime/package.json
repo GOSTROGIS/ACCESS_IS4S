@@ -1,0 +1,6 @@
+{
+  "name": "is4s-storytold-release-tools",
+  "private": true,
+  "engines": { "node": ">=22" },
+  "dependencies": { "openpgp": "6.3.2" }
+}

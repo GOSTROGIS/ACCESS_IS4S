@@ -13,6 +13,32 @@ dashboard or a source catalogue is not evidence that all tool features work.
 
 ## Prepared executable web distributions
 
+### Acquire and stage the pinned releases
+
+Run from the IS4S checkout with Node.js 22 or later, pnpm, curl and Python 3.12
+or later. Set `RELEASE_CACHE`, `STAGED_APPS` and `HOSTING_CANDIDATES` to writable
+directories outside the public checkout. Install the locked verifier and stage
+the complete upstream packages:
+
+```sh
+pnpm --dir source/storytold/runtime install --frozen-lockfile --ignore-scripts
+node source/storytold/runtime/acquire-web-releases.mjs "$RELEASE_CACHE"
+python3 source/storytold/runtime/import_releases.py \
+  --manifest "$RELEASE_CACHE/web-assets-manifest.json" \
+  --output "$STAGED_APPS" --prepare-hosting-fixes \
+  --candidate-output "$HOSTING_CANDIDATES"
+```
+
+The acquisition command checks the detached signature using the signer
+fingerprint recorded in `app-targets.json`, then matches the application ZIP
+against both the signed checksum and the checked-in SHA-256. It verifies
+cached releases again on every run. An invalid release fails acquisition
+before a new manifest is published. For PhotoCraft v0.23.1, use the path in
+`hosting-fixes-report.json` to test the corrected distribution. Its extra
+snippet is copied from the verified archive.
+
+### Evidence from the handoff
+
 Seventeen real upstream web ZIPs were downloaded from official GitHub stable
 release pages into `/workspace/build/storytold/releases/`. Their corresponding
 HTML, JavaScript, WebAssembly, fonts, models, workers and licence files were
