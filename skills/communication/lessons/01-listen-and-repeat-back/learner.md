@@ -84,6 +84,16 @@ You confirm the change: "Eight. Got it."
 
 The repeat-back caught a change Dana had not mentioned the first time. If you had only said "okay," you would have made a second trip.
 
+### Try it now
+
+These rounds check themselves, and every play gives you a new mix. Earn three stars, then play more in the [Communication practice arcade](../../practice/index.html).
+
+<div class="px" data-px="communication.01-six-parts"><p>Interactive practice: sort the parts of an instruction. It needs JavaScript turned on.</p></div>
+
+<div class="px" data-px="communication.01-spot-repeat-back"><p>Interactive practice: catch the bad repeat-back. It needs JavaScript turned on.</p></div>
+
+<div class="px" data-px="communication.01-read-back-loop"><p>Interactive practice: put the read-back loop in order. It needs JavaScript turned on.</p></div>
+
 ## Practice
 
 **Task 1** (level 1) **Draw what you hear.** Your instructor reads drawing instructions twice. The first time, just draw. The second time, you may ask questions and say steps back. After both rounds, answer:

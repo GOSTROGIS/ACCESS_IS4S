@@ -4,7 +4,7 @@ Titles and introductions come from the textbook chapters in skills/<skill>/.
 File lists come from the folders themselves. Re-run after source/textbook/sync.py
 or after adding decks:  python3 source/site/build_pages.py
 """
-import html, json, os, re
+import functools, html, json, os, posixpath, re
 
 import markdown
 from pathlib import Path
@@ -111,6 +111,17 @@ main>*,nav{min-width:0}
 @media (max-width:640px){.figure-art>svg,.figure-art img{min-width:600px}}
 .lesson-steps{justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.passport-note{margin:0;color:var(--muted);font-size:15px}
+.passport-list{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(190px,100%),1fr));gap:10px}
+.stamp a{display:grid;gap:6px;padding:12px 14px;border:2px dashed var(--line-strong);border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;transform:rotate(-1deg)}
+.stamp:nth-child(even) a{transform:rotate(1deg)}
+.stamp.on a,.stamp a:hover{border-style:solid;border-color:var(--red)}
+.stamp-name{font-family:var(--font-display);font-weight:700}
+.stamp-stars{display:flex;align-items:center;gap:4px;font-weight:600;color:var(--slate)}
+.stamp-stars svg{width:20px;height:20px;fill:var(--line-strong)}
+.stamp.on .stamp-stars svg{fill:var(--gold)}
+.stamp-bar{display:block;height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.stamp-bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--red))}
 """
 
 # Instructor pages: answers, teaching chapters, practitioner guides and teaching tools.
@@ -146,6 +157,7 @@ def mark_locks(text, path):
 
 def page(path, title, eyebrow, h1, lede, body, crumb=None):
     root = '../' * (len(Path(path).parts) - 1)
+    head = practice_assets(path, root, body)
     crumb_html = f'<p class="crumb"><a href="{e(crumb[1])}">{e(crumb[0])}</a></p>' if crumb else ''
     out = f"""<!doctype html>
 <html lang="en">
@@ -154,7 +166,7 @@ def page(path, title, eyebrow, h1, lede, body, crumb=None):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(title)}</title>
 <link rel="icon" href="{root}brand/is4s-badge.svg" type="image/svg+xml">
-<link rel="stylesheet" href="{root}brand/site.css">
+<link rel="stylesheet" href="{root}brand/site.css">{head}
 </head>
 <body>
 <header class="site-head">
@@ -277,7 +289,13 @@ def build_hub():
             items += [('AI lessons', 'skills/digital/ai-literacy/learner.html')]
         if slug == 'writing' and (REPO / 'skills/writing/resume-builder/index.html').exists():
             items += [('Résumé builder', 'skills/writing/resume-builder/')]
+        if practice_bank(slug):
+            items.insert(1, ('Practice arcade', f'skills/{slug}/practice/index.html'))
         cards.append(card(f'<span class="num">{i}</span>{e(name)}', f'skills/{slug}/', subtitle(t), items))
+    stamps = ','.join(f'{slug}:{name}:{len(bank["sets"])}' for slug, name in SKILLS if (bank := practice_bank(slug)))
+    passport = ('<section id="passport"><h2>Your practice passport</h2>'
+                '<p class="section-note">Every skill has a practice arcade with self-checking, randomized rounds. Stars you earn show here.</p>'
+                f'<div data-px-passport="{e(stamps)}"><p>Open any practice arcade to start earning stars.</p></div></section>') if stamps else ''
     def tools_section():
         if not (REPO / 'tools/noc/index.html').exists():
             return ''
@@ -294,13 +312,46 @@ def build_hub():
                         ('Math deck library', 'programs/carpentry/#decks')])
                 + '</div></section>')
     body = (f'<section><h2>The nine skills</h2><div class="grid">{"".join(cards)}</div></section>'
-            + books_section('') + tools_section() + programs)
+            + passport + books_section('') + tools_section() + programs)
     page('index.html', f'{HUB} · ACCESS Indigenous Skills4Success', 'ACCESS Indigenous Skills4Success',
          HUB, 'Reading, Writing, Numeracy, Digital, Problem solving, Communication, Collaboration, '
          'Adaptability, and Creativity and innovation, each with its learner chapter, teaching chapter, answer guidance and tools.', body)
 
 
 LESSON_ROLES = (('learner', 'Learner'), ('instructor', 'Instructor'), ('answers', 'Answers'))
+
+# Practice engine (brand/practice.js). Each skill may keep a bank of self-checking exercises in
+# skills/<skill>/practice/bank.js, written as IS4SPractice.register(<JSON>). Lessons place a set with
+# <div class="px" data-px="<set id>"></div> in learner.md. See source/practice/README.md.
+BANK_HEAD, BANK_TAIL = 'IS4SPractice.register(', ');'
+
+
+@functools.cache
+def practice_bank(slug):
+    """The parsed practice bank of a skill, or None when the skill has none. Read once per build."""
+    path = REPO / f'skills/{slug}/practice/bank.js'
+    if not path.exists():
+        return None
+    text = path.read_text(encoding='utf-8').strip()
+    start, end = text.index(BANK_HEAD) + len(BANK_HEAD), text.rindex(BANK_TAIL)
+    return json.loads(text[start:end])
+
+
+def practice_assets(path, root, body):
+    """Head tags for a page that uses practice. A lesson set (data-px) or an arcade (data-px-skill)
+    loads the engine and its skill's bank, deferred and in that order. The home page passport
+    (data-px-passport) loads only the small passport script. Other pages load nothing extra."""
+    if 'data-px="' in body or 'data-px-skill="' in body:
+        parts = Path(path).parts
+        bank = ''
+        if parts[0] == 'skills' and practice_bank(parts[1]):
+            bank = posixpath.relpath(f'skills/{parts[1]}/practice/bank.js', posixpath.dirname(path))
+        return (f'\n<link rel="stylesheet" href="{root}brand/practice.css">'
+                f'\n<script src="{root}brand/practice.js" defer></script>'
+                + (f'\n<script src="{bank}" defer></script>' if bank else ''))
+    if 'data-px-passport="' in body:
+        return f'\n<script src="{root}brand/passport.js" defer></script>'
+    return ''
 
 
 def front(text):
@@ -316,8 +367,25 @@ def front(text):
     return fields, body
 
 
+# A quoted line of text (not a list item, table row or heading inside the quote).
+QUOTE_TEXT = re.compile(r'>[ \t]*(?![-*+#|][ \t]|\d+[.)][ \t]|\|)\S')
+
+
+def keep_quote_lines(text):
+    """Keep the line breaks of quoted documents. Lessons quote memos, emails, contract clauses,
+    tables of contents, worked calculations and dialogue line by line. Markdown would join those
+    lines into one paragraph, so each quoted text line that runs into another gets a hard break.
+    Task-list boxes (- [ ]) become the ☐ and ☑ characters the lessons already use elsewhere."""
+    lines = text.split('\n')
+    for k in range(len(lines) - 1):
+        if QUOTE_TEXT.match(lines[k]) and QUOTE_TEXT.match(lines[k + 1]) and not lines[k].endswith('  '):
+            lines[k] += '  '
+    text = '\n'.join(lines)
+    return re.sub(r'^([ \t]*[-*+][ \t]+)\[([ xX])\][ \t]', lambda m: m.group(1) + ('☐' if m.group(2) == ' ' else '☑') + ' ', text, flags=re.M)
+
+
 def md_html(text):
-    out = markdown.markdown(text, extensions=['tables', 'fenced_code', 'sane_lists', 'attr_list'])
+    out = markdown.markdown(keep_quote_lines(text), extensions=['tables', 'fenced_code', 'sane_lists', 'attr_list'])
     # An empty header cell is a table's corner: a data cell, not a header with no name.
     out = re.sub(r'<th((?: [^>]*)?)>\s*</th>', r'<td\1></td>', out)
     # Wide preformatted blocks scroll sideways, so keyboard users must be able to reach them.
@@ -347,6 +415,7 @@ def md_html(text):
     return re.sub(r'<h[1-6]\b[^>]*>.*?</h[1-6]>|<table\b[^>]*>|</table>', table_group, out, flags=re.S)
 
 
+@functools.cache
 def lessons(slug):
     """Lessons of a skill, in folder order: (folder, front matter)."""
     d = REPO / f'skills/{slug}/lessons'
@@ -381,10 +450,11 @@ def build_lessons(slug, name, i):
                     text = f'← {e(step)}' if arrow == 'prev' else f'{e(step)} →'
                     steps += f'<li><a rel="{arrow}" href="../{lesson[0]}/{role}.html">{text}</a></li>'
             steps = f'<nav aria-label="Other lessons"><ul class="lesson-tabs lesson-steps">{steps}</ul></nav>' if steps else ''
+            rendered = md_html(body)
             page(f'{base}/{role}.html', f'{fm.get("title", folder)} · {label} · {name}', f'{name} · Lesson {folder[:2]} · {label}',
                  fm.get('title', folder), e(fm.get('summary', '')),
                  f'<nav aria-label="Lesson pages"><ul class="lesson-tabs">{tabs}</ul><ul class="lesson-meta">{meta}</ul></nav>'
-                 f'<article class="prose">{md_html(body)}</article>{steps}',
+                 f'<article class="prose">{rendered}</article>{steps}',
                  crumb=(f'← {name}', '../../index.html'))
         items = [(l, f'lessons/{folder}/{r}.html') for r, l in LESSON_ROLES if (REPO / base / f'{r}.md').exists()]
         lvl = f' · Level {fm["level"]}' if fm.get('level') else ''
@@ -402,11 +472,50 @@ def lessons_section(slug, name, i):
             f'<div class="grid">{"".join(cards)}</div></section>')
 
 
+def build_practice(slug, name, i):
+    """Write skills/<slug>/practice/index.html, the practice arcade for one skill, if it has a bank."""
+    bank = practice_bank(slug)
+    if not bank:
+        return
+    titles = {folder: fm.get('title', folder) for folder, fm in lessons(slug)}
+    arcade = bank.get('arcade', {})
+    fallback = links([(f'Lesson {int(f[:2])}: {titles.get(f, f)}', f'../lessons/{f}/learner.html')
+                      for f in sorted({s['lesson'] for s in bank['sets']})])
+    body = (f'<section aria-label="Practice"><div class="px-arcade" data-px-skill="{e(slug)}" data-px-titles="{e(json.dumps(titles, ensure_ascii=False))}">'
+            f'<p>The practice arcade needs JavaScript. Every lesson below also has Practice tasks that work on paper.</p>'
+            f'{fallback}</div></section>'
+            '<section><h2>How it works</h2><div class="prose"><p>Every round is drawn fresh, so you can play a set again and get a new mix. '
+            'Stars and best scores are saved in this browser only. Nothing is sent anywhere. '
+            'A different browser or computer starts a fresh record.</p>'
+            '<p>Each practice set comes from a lesson. If a question is hard, open the lesson link above it and read the Key ideas again.</p></div></section>')
+    lede = arcade.get('pitch') or f'Self-checking practice from the {name.lower()} lessons. Earn stars, build a streak and come back for a new mix.'
+    page(f'skills/{slug}/practice/index.html', f'{arcade.get("name") or "Practice"} · {name} · {HUB}', f'Skill {i} of 9 · Practice arcade',
+         arcade.get('name') or f'{name} practice', e(lede), body, crumb=(f'← {name}', '../index.html'))
+
+
+def practice_card(slug, name):
+    """The Practice arcade card for a skill page, or nothing when the skill has no bank."""
+    bank = practice_bank(slug)
+    if not bank:
+        return ''
+    n, lessons_n = len(bank['sets']), len({s['lesson'] for s in bank['sets']})
+    arcade = bank.get('arcade', {})
+    text = (f'{n} self-checking practice set' + ('s' if n != 1 else '') + f' from {lessons_n} lesson' + ('s' if lessons_n != 1 else '')
+            + '. Earn stars, build streaks, and try the three-strikes and 90-second quick-fire rounds.')
+    return (f'<section id="practice"><h2>Practice arcade</h2><div class="grid">'
+            + card(e(arcade.get('name') or f'{name} practice'), 'practice/index.html', text, [('Play now', 'practice/index.html')], 'gold')
+            + '</div></section>')
+
+
+def practice_and_lessons(slug, name, i):
+    return practice_card(slug, name) + lessons_section(slug, name, i)
+
+
 def build_skill(slug, name, i):
     t, p = chapter(slug, 'learner')
     extra = ''.join(card(e(h), href, txt, items) for h, href, txt, items in EXTRAS.get(slug, []))
     tools = f'<section><h2>Tools for {e(name)}</h2><div class="grid">{extra}</div></section>' if extra else ''
-    body = (lessons_section(slug, name, i)
+    body = (practice_and_lessons(slug, name, i)
             + f'<section><h2>Chapters</h2><div class="grid">{"".join(chapter_cards(slug))}</div></section>'
             + tools + books_section('../../'))
     page(f'skills/{slug}/index.html', f'{name} · {HUB}', f'Skill {i} of 9', name, e(p), body,
@@ -416,7 +525,7 @@ def build_skill(slug, name, i):
 def build_numeracy_section():
     path = REPO / 'skills/numeracy/index.html'
     t = path.read_text(encoding='utf-8')
-    ls = lessons_section('numeracy', 'Numeracy', 3)
+    ls = practice_and_lessons('numeracy', 'Numeracy', 3)
     ls = f'<div class="wrap" style="padding-block:0 32px">{ls}</div>' if ls else ''
     block = (f'{MARK[0]}\n<section class="wrap" style="padding-block:0 32px"><p class="nine-crumb"><a href="../../index.html">← {HUB}</a></p><h2>Numeracy in the Skills for Success books</h2>'
              f'<div class="grid">{"".join(chapter_cards("numeracy"))}</div></section>\n{ls}{MARK[1]}')
@@ -600,10 +709,7 @@ def main():
     (REPO / 'brand/site-cards.css').write_text(cards_only, encoding='utf-8')
     build_hub()
     for i, (slug, name) in enumerate(SKILLS, 1):
-        if slug == 'numeracy':
-            build_numeracy_section()
-        else:
-            build_skill(slug, name, i)
+        build_skill_pages(slug, name, i)
     n = build_carpentry()
     g = apply_gates()
     from build_downloads import main as build_downloads
@@ -611,5 +717,27 @@ def main():
     print(f'built hub, 8 skill pages, Numeracy chapters, Carpentry page, {n} carpentry intake(s), {g} page(s) newly locked')
 
 
+def build_skill_pages(slug, name, i):
+    """Everything one skill owns: lesson pages, practice arcade and skill page."""
+    build_practice(slug, name, i)
+    if slug == 'numeracy':
+        build_numeracy_section()
+    else:
+        build_skill(slug, name, i)
+
+
+def build_one(slug):
+    """Rebuild one skill and nothing shared, for checking work in progress:
+    python3 source/site/build_pages.py --skill <slug>. The full build (no arguments) also
+    rebuilds the home page and the download packs."""
+    i, name = next((n, nm) for n, (s, nm) in enumerate(SKILLS, 1) if s == slug)
+    build_skill_pages(slug, name, i)
+    print(f'built {name}: lessons, practice arcade and skill page (run without --skill before publishing)')
+
+
 if __name__ == '__main__':
-    main()
+    import sys
+    if len(sys.argv) == 3 and sys.argv[1] == '--skill':
+        build_one(sys.argv[2])
+    else:
+        main()

@@ -90,3 +90,14 @@ main>*,nav{min-width:0}
 @media (max-width:640px){.figure-art>svg,.figure-art img{min-width:600px}}
 .lesson-steps{justify-content:space-between;border-top:1px solid var(--line);padding-top:16px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.passport-note{margin:0;color:var(--muted);font-size:15px}
+.passport-list{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(190px,100%),1fr));gap:10px}
+.stamp a{display:grid;gap:6px;padding:12px 14px;border:2px dashed var(--line-strong);border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;transform:rotate(-1deg)}
+.stamp:nth-child(even) a{transform:rotate(1deg)}
+.stamp.on a,.stamp a:hover{border-style:solid;border-color:var(--red)}
+.stamp-name{font-family:var(--font-display);font-weight:700}
+.stamp-stars{display:flex;align-items:center;gap:4px;font-weight:600;color:var(--slate)}
+.stamp-stars svg{width:20px;height:20px;fill:var(--line-strong)}
+.stamp.on .stamp-stars svg{fill:var(--gold)}
+.stamp-bar{display:block;height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.stamp-bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--red))}
