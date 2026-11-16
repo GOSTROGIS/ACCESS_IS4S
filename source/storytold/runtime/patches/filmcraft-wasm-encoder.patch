@@ -1,0 +1,167 @@
+--- a/crates/video/src/h264/encode/mod.rs
++++ b/crates/video/src/h264/encode/mod.rs
+@@ -6,6 +6,10 @@
+ //!   16x16/16x8/8x16/8x8 partitions, P_Skip, B-frames with spatial direct/B_Skip, in-loop deblocking.
+ //! - Rate control: constant QP, constant quality (CRF-like), 1-pass ABR with VBV, 2-pass VBR.
+ //! - Slice-parallel encoding with rayon (opt-in feature `threads`).
++//!
++//! Browser wasm32 cannot spawn OS threads. It uses the existing serial encode,
++//! analysis and picture-preparation branches even when native users unify the
++//! `threads` feature. Codec profiles, rate control and output remain available.
+ //!
+ //! ```no_run
+ //! use craft_video::h264::{Encoder, EncoderConfig, RateControl, YuvFrame};
+@@ -303,13 +307,13 @@
+ 
+ struct Pool {
+     /// Built for every thread count, also 1: rayon calls outside `install` run on the global pool (all cores).
+-    #[cfg(feature = "threads")]
++    #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+     pool: Option<rayon::ThreadPool>,
+ }
+ 
+ impl Pool {
+     fn install<R: Send>(&self, f: impl FnOnce() -> R + Send) -> R {
+-        #[cfg(feature = "threads")]
++        #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+         if let Some(p) = &self.pool {
+             return p.install(f);
+         }
+@@ -612,21 +616,21 @@
+         let pps = Pps { cabac, pic_init_qp: 26, chroma_qp_offset: params.chroma_qp_offset, transform_8x8: params.t8x8, high };
+         let sps_nal = nal::nal(3, NAL_SPS, &sps.rbsp());
+         let pps_nal = nal::nal(3, NAL_PPS, &pps.rbsp());
+-        #[cfg(feature = "threads")]
++        #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+         let threads = if cfg.threads == 0 { std::thread::available_parallelism().map_or(1, |n| n.get()) } else { cfg.threads };
+         let slices = if cfg.slices > 0 {
+             cfg.slices.min(mbh)
+         } else {
+-            #[cfg(feature = "threads")]
++            #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+             {
+                 threads.min(mbh.div_ceil(4)).max(1)
+             }
+-            #[cfg(not(feature = "threads"))]
++            #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+             {
+                 1
+             }
+         };
+-        #[cfg(feature = "threads")]
++        #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+         let pool = Pool {
+             pool: Some(
+                 rayon::ThreadPoolBuilder::new()
+@@ -635,7 +639,7 @@
+                     .map_err(|e| Error::InvalidConfig(format!("cannot build the {threads}-thread pool: {e}")))?,
+             ),
+         };
+-        #[cfg(not(feature = "threads"))]
++        #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+         let pool = Pool {};
+         let record_pass1 = cfg.pass == Pass::First;
+         let mut rc = ratecontrol::RateControl::new(rc_kind, fps, vbv.0, vbv.1);
+@@ -743,9 +747,9 @@
+         let aq_of = || if use_aq { lookahead::aq_offsets(&src, mbw, mbh, strength, shift) } else { Vec::new() };
+         // the two analyses are independent: side by side, the pool's threads are not left idle
+         // at the end of each
+-        #[cfg(feature = "threads")]
++        #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+         let ((lowres, cplx), aq) = self.pool.install(|| rayon::join(analyse, aq_of));
+-        #[cfg(not(feature = "threads"))]
++        #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+         let ((lowres, cplx), aq) = (analyse(), aq_of());
+         self.prev_lowres = Some(lowres);
+         let display = self.display_count;
+@@ -1064,12 +1068,12 @@
+                 }
+                 (pi, k, out)
+             };
+-            #[cfg(feature = "threads")]
++            #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+             let results: Vec<(usize, usize, SliceOut)> = {
+                 use rayon::prelude::*;
+                 if tasks.len() > 1 { this.pool.install(|| tasks.into_par_iter().map(run).collect()) } else { tasks.into_iter().map(run).collect() }
+             };
+-            #[cfg(not(feature = "threads"))]
++            #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+             let results: Vec<(usize, usize, SliceOut)> = tasks.into_iter().map(run).collect();
+             let mut results = results;
+             results.sort_by_key(|r| (r.0, r.1));
+@@ -1389,7 +1393,7 @@
+         assert!(matches!(Encoder::new(cfg), Err(Error::InvalidConfig(message)) if message.contains("frame rate")));
+     }
+ 
+-    #[cfg(not(feature = "threads"))]
++    #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+     #[test]
+     fn automatic_slicing_is_serial_without_threads() {
+         let enc = Encoder::new(EncoderConfig::new(320, 240, 30, 1)).unwrap();
+--- a/crates/video/src/h264/encode/picture.rs
++++ b/crates/video/src/h264/encode/picture.rs
+@@ -95,7 +95,7 @@
+         hpel_rows(f, d, r0, r1, hrows, vrows, crows, scratch);
+     };
+     let chunk = band * f.stride;
+-    #[cfg(feature = "threads")]
++    #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+     {
+         use rayon::prelude::*;
+         hp.data
+@@ -105,7 +105,7 @@
+             .enumerate()
+             .for_each_init(HpelScratch::default, |s, (b, ((h, v), c))| work(b, h, v, c, s));
+     }
+-    #[cfg(not(feature = "threads"))]
++    #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+     {
+         let mut s = HpelScratch::default();
+         for (b, ((h, v), c)) in hp.data.chunks_mut(chunk).zip(vp.data.chunks_mut(chunk)).zip(cp.data.chunks_mut(chunk)).enumerate() {
+--- a/crates/video/src/h264/encode/lookahead.rs
++++ b/crates/video/src/h264/encode/lookahead.rs
+@@ -24,12 +24,12 @@
+                 out[x] = ((s + (2 << shift)) >> (2 + shift)).min(255) as u8;
+             }
+         };
+-        #[cfg(feature = "threads")]
++        #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+         {
+             use rayon::prelude::*;
+             data.par_chunks_mut(w).enumerate().for_each(|(y, r)| row(y, r));
+         }
+-        #[cfg(not(feature = "threads"))]
++        #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+         for (y, r) in data.chunks_mut(w).enumerate() {
+             row(y, r);
+         }
+@@ -46,12 +46,12 @@
+ }
+ 
+ fn block_rows<F: Fn(usize) -> (u64, u64) + Sync + Send>(rows: usize, f: F) -> (u64, u64) {
+-    #[cfg(feature = "threads")]
++    #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+     {
+         use rayon::prelude::*;
+         (0..rows).into_par_iter().map(f).reduce(|| (0, 0), |a, b| (a.0 + b.0, a.1 + b.1))
+     }
+-    #[cfg(not(feature = "threads"))]
++    #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+     {
+         (0..rows).map(f).fold((0, 0), |a, b| (a.0 + b.0, a.1 + b.1))
+     }
+@@ -146,12 +146,12 @@
+             e[mx] = ((vy + 0.5 * (vu + vv)) / norm + 1.0).log2();
+         }
+     };
+-    #[cfg(feature = "threads")]
++    #[cfg(all(feature = "threads", not(target_arch = "wasm32")))]
+     {
+         use rayon::prelude::*;
+         e.par_chunks_mut(mbw).enumerate().for_each(|(my, r)| row(my, r));
+     }
+-    #[cfg(not(feature = "threads"))]
++    #[cfg(any(not(feature = "threads"), target_arch = "wasm32"))]
+     for (my, r) in e.chunks_mut(mbw).enumerate() {
+         row(my, r);
+     }

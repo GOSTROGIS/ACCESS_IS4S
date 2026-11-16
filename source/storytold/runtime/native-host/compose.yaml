@@ -1,0 +1,42 @@
+name: is4s-native-tools
+
+services:
+  desktop:
+    # Official ubuntu-xfce multi-architecture index, inspected before pinning.
+    image: ghcr.io/linuxserver/webtop@sha256:14fa1ceb750d4bf9e0880cb7e7b6a535f6f9210762a59ff992ef17e3375d48c0
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-America/Los_Angeles}
+      TITLE: ACCESS IS4S native tools
+      CUSTOM_USER: ${DESKTOP_USERNAME:?Set DESKTOP_USERNAME in the private .env file}
+      FILE__PASSWORD: /run/secrets/desktop_password
+      SELKIES_AUDIO_ENABLED: "true"
+      SELKIES_MICROPHONE_ENABLED: "true"
+      SELKIES_MICROPHONE_ON_START: "false"
+      SELKIES_FILE_TRANSFERS: upload,download
+      SELKIES_ALLOWED_ORIGINS: ${DESKTOP_ORIGIN:?Set the actual HTTPS desktop origin}
+      SELKIES_FRAME_ANCESTORS: "'self',https://gostrogis.github.io"
+      IS4S_APP_TARGETS: /opt/is4s/app-targets.json
+      IS4S_APPS_DIR: /config/is4s-apps
+    ports:
+      # Only an authenticated HTTPS reverse proxy/tunnel should reach this port.
+      - "127.0.0.1:${DESKTOP_HTTP_PORT:-3000}:3000"
+    volumes:
+      - desktop-home:/config
+      - ./install-apps.sh:/opt/is4s/install-apps.sh:ro
+      - ../app-targets.json:/opt/is4s/app-targets.json:ro
+    secrets:
+      - desktop_password
+    shm_size: "1gb"
+    restart: unless-stopped
+    # No privileged mode, host Docker socket or unrestricted device mounts.
+    # GPU passthrough is host-specific: use the official Selkies GPU guide after
+    # selecting the actual GPU/driver. The CPU configuration is not GPU parity.
+
+volumes:
+  desktop-home:
+
+secrets:
+  desktop_password:
+    file: ${DESKTOP_PASSWORD_FILE:?Set a private existing password-file path}

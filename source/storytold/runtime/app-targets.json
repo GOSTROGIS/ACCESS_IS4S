@@ -1,0 +1,3009 @@
+{
+  "schemaVersion": 1,
+  "inspectedOn": "2026-11-16",
+  "scope": "21 user-facing/maintainer applications:17 Rust creative/analysis tools, ArtCraft, ArtCraft-X, AutoCraft and Craft Launcher. The other source repositories are libraries, infrastructure or research, not additional complete applications.",
+  "sourceRoot": "/workspace/vendor-sources/storytold",
+  "releaseCache": "/workspace/build/storytold/releases",
+  "publicDemoVerification": "No invented hosted-app URLs. Release pages were inspected and17 actual webZIPs were downloaded with upstream checksum/signature checks.",
+  "verificationScope": "Source architecture and documented gaps are inspected. Actual app feature tests and native/browser parity are unrun by this inventory audit.",
+  "hosting": {
+    "githubPagesCanServe": [
+      "Static HTML/JavaScript/WebAssembly and same-build assets",
+      "Browser local computation, file-pickers/downloads and browser storage",
+      "HTTPS entry pages for GPU/clipboard/browser-storage APIs"
+    ],
+    "githubPagesCannotExecute": [
+      "A Node/Rust server or SQLite service",
+      "Tauri native IPC, local process spawning or arbitrary OS filesystem operations",
+      "Provider secrets, OAuth callback services, persistent worker queues or server cron",
+      "Native app installation/update/launch, native ffmpeg processes or OS audio/device capture through the unchanged native app"
+    ],
+    "headerCaveat": "GitHub Pages does not apply Netlify _headers or Apache .htaccess files. Current inspected wasm hosting docs say SharedArrayBuffer/isolation headers are not required, but a future threaded build must be re-evaluated.",
+    "sizeCaveat": "The17 verified webZIPs expand to706.7MiB. Measure the existing published site and individual files before adding them to a1GiB GitHub Pages site; VectorCraft has a97.5MiB single file.",
+    "fullFunctionalityRequirement": "Full native functionality requires the actual native app or a deliberately implemented native/server companion for the documented missing capabilities. Serving a mock frontend, source catalogue or limited browser viewer does not satisfy it."
+  },
+  "targets": [
+    {
+      "id": "vectorcraft",
+      "sourceCommit": "e142c5fceee014ba9ff7fc4c17bcce7e8365e286",
+      "sourceVersion": "0.24.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Editable vector paths, shapes, text and layers",
+        "SVG and native vector-document workflows",
+        "Transforms, boolean geometry and drawing exports"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/vectorcraft-web/index.html",
+        "manifest": "apps/vectorcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "not established by this audit",
+        "build": {
+          "cwd": "apps/vectorcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/vectorcraft",
+        "releases": "https://github.com/storytold/vectorcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/vectorcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [],
+      "featureAcceptance": [
+        {
+          "id": "draw-path",
+          "action": "Create and edit a path and a shape, then undo/redo the edit.",
+          "expected": "The actual vector geometry and undo state change.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "svg-roundtrip",
+          "action": "Save an editable document, export SVG and reopen both.",
+          "expected": "Geometry/text/layers are preserved to the format capabilities actually supported.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "text-fonts",
+          "action": "Edit a text object including representative learner scripts.",
+          "expected": "No missing glyphs; required font assets load.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "transform",
+          "action": "Resize/rotate an object and exercise a boolean operation.",
+          "expected": "Document properties and exported bounds reflect the chosen edits.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/vectorcraft-web/index.html",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/apps/vectorcraft-web/index.html"
+        },
+        {
+          "path": "apps/vectorcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/apps/vectorcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/vectorcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/vectorcraft/blob/e142c5fceee014ba9ff7fc4c17bcce7e8365e286/apps/vectorcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "vectorcraft",
+        "tag": "v0.24.1",
+        "releaseUrl": "https://github.com/storytold/vectorcraft/releases/tag/v0.24.1",
+        "webAssets": [
+          "https://github.com/storytold/vectorcraft/releases/download/v0.24.1/vectorcraft-web-0.24.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/vectorcraft/releases/download/v0.24.1/vectorcraft-web-0.24.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/vectorcraft/v0.24.1/vectorcraft-web-0.24.1.zip",
+        "bytes": 38342892,
+        "sha256Expected": "de31befd175476f252e3563b4b1fdc6c887d5842b33fb7d1f5fdf007dc7633aa",
+        "sha256Actual": "de31befd175476f252e3563b4b1fdc6c887d5842b33fb7d1f5fdf007dc7633aa",
+        "checksumUrl": "https://github.com/storytold/vectorcraft/releases/download/v0.24.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/vectorcraft/releases/download/v0.24.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/vectorcraft/releases/download/v0.24.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/vectorcraft/v0.24.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/vectorcraft/v0.24.1/extracted/vectorcraft-web-0.24.1",
+        "fileCount": 45,
+        "expandedBytes": 104370790,
+        "largestFile": {
+          "path": "vectorcraft-web-0.24.1/vectorcraft-web-80ef79e0b9e423a1_bg.wasm",
+          "bytes": 102201657
+        },
+        "licenceFiles": [
+          "vectorcraft-web-0.24.1/OFL-lxgw-wenkai-lite.txt",
+          "vectorcraft-web-0.24.1/OFL-biz-ud-mincho.txt",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-cmap/LICENSE-MIT",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-cmap/LICENSE-APACHE",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-cmap/LICENSE.txt",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-jbig2/LICENSE-MIT",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-jbig2/LICENSE-APACHE",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-interpret/LICENSE-MIT",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-interpret/assets/CGATS_LICENSE.txt",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-interpret/assets/LICENSE_FOXIT",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-interpret/LICENSE-APACHE",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-syntax/LICENSE-MIT",
+          "vectorcraft-web-0.24.1/licenses/pdf-backend/hayro-syntax/LICENSE-APACHE",
+          "vectorcraft-web-0.24.1/LICENSE-MIT",
+          "vectorcraft-web-0.24.1/OFL-biz-ud-pgothic.txt",
+          "vectorcraft-web-0.24.1/OFL-noto-sans-hebrew.txt",
+          "vectorcraft-web-0.24.1/fonts/dc591156f36842d3/OFL.txt",
+          "vectorcraft-web-0.24.1/fonts/5a1c559bb539583c/OFL.txt",
+          "vectorcraft-web-0.24.1/fonts/63111b5b2e074dd4/OFL.txt",
+          "vectorcraft-web-0.24.1/NOTICE",
+          "vectorcraft-web-0.24.1/OFL-shippori-mincho.txt",
+          "vectorcraft-web-0.24.1/OFL-noto-sans-arabic.txt",
+          "vectorcraft-web-0.24.1/OFL-noto-sans-symbols.txt",
+          "vectorcraft-web-0.24.1/OFL-noto-sans-symbols-2.txt",
+          "vectorcraft-web-0.24.1/LICENSE-APACHE",
+          "vectorcraft-web-0.24.1/OFL-nanum-gothic.txt",
+          "vectorcraft-web-0.24.1/OFL-noto-sans-georgian.txt",
+          "vectorcraft-web-0.24.1/OFL-noto-sans-thai.txt",
+          "vectorcraft-web-0.24.1/OFL-noto-sans-cjk-sc.txt",
+          "vectorcraft-web-0.24.1/OFL-noto-sans-devanagari.txt"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "filmcraft",
+      "sourceCommit": "d6e78890f19baba37b062319fb45a1f2408a3450",
+      "sourceVersion": "0.20.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Nonlinear video/audio timeline and clip edits",
+        "Transform/effect/keyframe composition and playback",
+        "Project saving and video/frame/audio exports through browser file services"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/filmcraft-web/web/index.html",
+        "manifest": "apps/filmcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": ".",
+          "command": [
+            "cargo",
+            "xtask",
+            "web"
+          ],
+          "outputDirectory": "target/web/dist",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": [
+          "Documented same-origin parent bridge for real open/save/dirty messages; verify the per-app protocol before using it."
+        ]
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/filmcraft",
+        "releases": "https://github.com/storytold/filmcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/filmcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The browser build is single-threaded per engine instance; frame jobs/exports are stepped on the browser event loop.",
+        "Native hardware decoding, OS file services and audio output are replaced by browser WebCodecs/WebAudio/file services. Browser codec support must be tested."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "timeline-edit",
+          "action": "Import a small local clip, cut/reorder it and play the sequence.",
+          "expected": "The output sequence follows the edited timeline.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "keyframes",
+          "action": "Change video opacity and audio volume over time.",
+          "expected": "Preview and export follow the keyframes.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "save-project",
+          "action": "Save and reopen a real .fcproj with its media.",
+          "expected": "The edit and source media resolve after reopening.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "export",
+          "action": "Export a short movie and inspect decoded duration, frames and audio.",
+          "expected": "A genuine playable file is created; no fake export progress.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/packaging/web/package.sh"
+        },
+        {
+          "path": "docs/web.md",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/docs/web.md"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/filmcraft-web/web/index.html",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/apps/filmcraft-web/web/index.html"
+        },
+        {
+          "path": "apps/filmcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/filmcraft/blob/d6e78890f19baba37b062319fb45a1f2408a3450/apps/filmcraft-web/Cargo.toml"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "filmcraft",
+        "tag": "v0.20.1",
+        "releaseUrl": "https://github.com/storytold/filmcraft/releases/tag/v0.20.1",
+        "webAssets": [
+          "https://github.com/storytold/filmcraft/releases/download/v0.20.1/filmcraft-web-0.20.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/filmcraft/releases/download/v0.20.1/filmcraft-web-0.20.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/filmcraft/v0.20.1/filmcraft-web-0.20.1.zip",
+        "bytes": 15630847,
+        "sha256Expected": "1cf3072e3f3b6535fcd024d6f6ab2a16cf7776345d868037dc630de0ad0dbbb8",
+        "sha256Actual": "1cf3072e3f3b6535fcd024d6f6ab2a16cf7776345d868037dc630de0ad0dbbb8",
+        "checksumUrl": "https://github.com/storytold/filmcraft/releases/download/v0.20.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/filmcraft/releases/download/v0.20.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/filmcraft/releases/download/v0.20.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/filmcraft/v0.20.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/filmcraft/v0.20.1/extracted/filmcraft-web-0.20.1",
+        "fileCount": 13,
+        "expandedBytes": 50317758,
+        "largestFile": {
+          "path": "filmcraft-web-0.20.1/filmcraft_web_bg.wasm",
+          "bytes": 50019301
+        },
+        "licenceFiles": [
+          "filmcraft-web-0.20.1/LICENSE-MIT",
+          "filmcraft-web-0.20.1/NOTICE",
+          "filmcraft-web-0.20.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "wordcraft",
+      "sourceCommit": "de977bcde6126f07b06bddfa2653c0dad6c44f85",
+      "sourceVersion": "0.18.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Styled text, tables, page layout and review changes",
+        "DOCX/ODT/RTF and other document interchange",
+        "PDF and page-image exports"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/wordcraft-web/index.html",
+        "manifest": "apps/wordcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "not established by this audit",
+        "build": {
+          "cwd": "apps/wordcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": [
+          "Documented same-origin parent bridge for real open/save/dirty messages; verify the per-app protocol before using it.",
+          "Documented page automation API; inspect actual supported commands and test real document operations."
+        ]
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/wordcraft",
+        "releases": "https://github.com/storytold/wordcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/wordcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [],
+      "featureAcceptance": [
+        {
+          "id": "edit-document",
+          "action": "Create a styled heading, paragraph and table.",
+          "expected": "Native document structure and visible text reflect the edits.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "review",
+          "action": "Add a comment and tracked edit; accept/reject deliberately.",
+          "expected": "The chosen review change affects the document.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "docx-roundtrip",
+          "action": "Save and reopen DOCX.",
+          "expected": "The intended text, structure and supported styles survive.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "pdf-export",
+          "action": "Export PDF and independently inspect text/page count.",
+          "expected": "The file contains the edited text and intended pages.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/wordcraft-web/index.html",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/apps/wordcraft-web/index.html"
+        },
+        {
+          "path": "apps/wordcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/apps/wordcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/wordcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/wordcraft/blob/de977bcde6126f07b06bddfa2653c0dad6c44f85/apps/wordcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "wordcraft",
+        "tag": "v0.18.1",
+        "releaseUrl": "https://github.com/storytold/wordcraft/releases/tag/v0.18.1",
+        "webAssets": [
+          "https://github.com/storytold/wordcraft/releases/download/v0.18.1/wordcraft-web-0.18.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/wordcraft/releases/download/v0.18.1/wordcraft-web-0.18.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/wordcraft/v0.18.1/wordcraft-web-0.18.1.zip",
+        "bytes": 22536015,
+        "sha256Expected": "3daa7c2d1f209a7eeb2527fcefa3fe31e875848fb1970d68f54edae55fe0bc9f",
+        "sha256Actual": "3daa7c2d1f209a7eeb2527fcefa3fe31e875848fb1970d68f54edae55fe0bc9f",
+        "checksumUrl": "https://github.com/storytold/wordcraft/releases/download/v0.18.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/wordcraft/releases/download/v0.18.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/wordcraft/releases/download/v0.18.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/wordcraft/v0.18.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/wordcraft/v0.18.1/extracted/wordcraft-web-0.18.1",
+        "fileCount": 26,
+        "expandedBytes": 61343367,
+        "largestFile": {
+          "path": "wordcraft-web-0.18.1/wordcraft-web-bc9cdbc0b42827ee_bg.wasm",
+          "bytes": 60994261
+        },
+        "licenceFiles": [
+          "wordcraft-web-0.18.1/OFL-lxgw-wenkai-lite.txt",
+          "wordcraft-web-0.18.1/OFL-biz-ud-mincho.txt",
+          "wordcraft-web-0.18.1/LICENSE-MIT",
+          "wordcraft-web-0.18.1/OFL-biz-ud-pgothic.txt",
+          "wordcraft-web-0.18.1/OFL-noto-sans-hebrew.txt",
+          "wordcraft-web-0.18.1/NOTICE",
+          "wordcraft-web-0.18.1/OFL-shippori-mincho.txt",
+          "wordcraft-web-0.18.1/OFL-noto-sans-arabic.txt",
+          "wordcraft-web-0.18.1/OFL-noto-sans-symbols.txt",
+          "wordcraft-web-0.18.1/OFL-noto-sans-symbols-2.txt",
+          "wordcraft-web-0.18.1/LICENSE-APACHE",
+          "wordcraft-web-0.18.1/OFL-nanum-gothic.txt",
+          "wordcraft-web-0.18.1/OFL-noto-sans-georgian.txt",
+          "wordcraft-web-0.18.1/OFL-noto-sans-thai.txt",
+          "wordcraft-web-0.18.1/OFL-noto-sans-cjk-sc.txt",
+          "wordcraft-web-0.18.1/OFL-noto-sans-devanagari.txt"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "effectcraft",
+      "sourceCommit": "91f9e9b1ef1185f4561b21465e83e5387f40c8a1",
+      "sourceVersion": "0.24.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Layered compositions, masks, effects and keyframes",
+        "Browser rendering/export jobs using dedicated workers",
+        "Project persistence and audio playback"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/effectcraft-web/web/index.html",
+        "manifest": "apps/effectcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": ".",
+          "command": [
+            "cargo",
+            "xtask",
+            "web"
+          ],
+          "outputDirectory": "target/web/dist",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/effectcraft",
+        "releases": "https://github.com/storytold/effectcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/effectcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The browser uses separate worker instances instead of shared-memory/native threading.",
+        "Real-time performance, memory limits and the supported decode/export paths must be measured in the chosen browser; source claims are not runtime proof."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "composition",
+          "action": "Create two layers and a mask.",
+          "expected": "The composite changes when layer order/mask changes.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "animate",
+          "action": "Animate an actual property across two keyframes.",
+          "expected": "Preview differs correctly at the sampled frames.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "render-worker",
+          "action": "Start and cancel a bounded render job.",
+          "expected": "Progress/cancellation are real and the UI remains usable.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "save-export",
+          "action": "Save/reopen and export a short composition.",
+          "expected": "A real project and rendered output preserve tested edits.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/packaging/web/package.sh"
+        },
+        {
+          "path": "docs/web.md",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/docs/web.md"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/effectcraft-web/web/index.html",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/apps/effectcraft-web/web/index.html"
+        },
+        {
+          "path": "apps/effectcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/effectcraft/blob/91f9e9b1ef1185f4561b21465e83e5387f40c8a1/apps/effectcraft-web/Cargo.toml"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "effectcraft",
+        "tag": "v0.24.1",
+        "releaseUrl": "https://github.com/storytold/effectcraft/releases/tag/v0.24.1",
+        "webAssets": [
+          "https://github.com/storytold/effectcraft/releases/download/v0.24.1/effectcraft-web-0.24.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/effectcraft/releases/download/v0.24.1/effectcraft-web-0.24.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/effectcraft/v0.24.1/effectcraft-web-0.24.1.zip",
+        "bytes": 22524556,
+        "sha256Expected": "8adc985f345d73207abc69a27938905aba1729b63c6c9b332d0244a7567424f1",
+        "sha256Actual": "8adc985f345d73207abc69a27938905aba1729b63c6c9b332d0244a7567424f1",
+        "checksumUrl": "https://github.com/storytold/effectcraft/releases/download/v0.24.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/effectcraft/releases/download/v0.24.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/effectcraft/releases/download/v0.24.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/effectcraft/v0.24.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/effectcraft/v0.24.1/extracted/effectcraft-web-0.24.1",
+        "fileCount": 19,
+        "expandedBytes": 76129458,
+        "largestFile": {
+          "path": "effectcraft-web-0.24.1/effectcraft_web_bg.wasm",
+          "bytes": 75277835
+        },
+        "licenceFiles": [
+          "effectcraft-web-0.24.1/LICENSE-MIT",
+          "effectcraft-web-0.24.1/NOTICE",
+          "effectcraft-web-0.24.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "photocraft",
+      "sourceCommit": "02e9907f683bcda0e8a3de4865a914f6aa9280c1",
+      "sourceVersion": "0.23.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Layered raster editing, brushes and masks",
+        "Image adjustments and compositing",
+        "PSD/native workflow and raster exports"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/photocraft-web/index.html",
+        "manifest": "apps/photocraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "not established by this audit",
+        "build": {
+          "cwd": "apps/photocraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/photocraft",
+        "releases": "https://github.com/storytold/photocraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/photocraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [],
+      "featureAcceptance": [
+        {
+          "id": "layer-edit",
+          "action": "Import an image, add a layer and edit pixels/mask.",
+          "expected": "Visible pixels and layer state change.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "non-destructive",
+          "action": "Change an adjustment and undo it.",
+          "expected": "The original state can be restored.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "project-roundtrip",
+          "action": "Save/reopen a supported layered document.",
+          "expected": "Tested layers and edits remain available.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "image-export",
+          "action": "Export PNG and independently inspect its dimensions/pixels.",
+          "expected": "The actual edited image is exported.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/photocraft-web/index.html",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/apps/photocraft-web/index.html"
+        },
+        {
+          "path": "apps/photocraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/apps/photocraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/photocraft-web/src/main.rs",
+          "url": "https://github.com/storytold/photocraft/blob/02e9907f683bcda0e8a3de4865a914f6aa9280c1/apps/photocraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "photocraft",
+        "tag": "v0.23.1",
+        "releaseUrl": "https://github.com/storytold/photocraft/releases/tag/v0.23.1",
+        "webAssets": [
+          "https://github.com/storytold/photocraft/releases/download/v0.23.1/photocraft-web-0.23.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/photocraft/releases/download/v0.23.1/photocraft-web-0.23.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/photocraft/v0.23.1/photocraft-web-0.23.1.zip",
+        "bytes": 16064050,
+        "sha256Expected": "3a498eb517bca6cec89f9c6b1fc6448269a05428c8a3a4637c16817da157f03c",
+        "sha256Actual": "3a498eb517bca6cec89f9c6b1fc6448269a05428c8a3a4637c16817da157f03c",
+        "checksumUrl": "https://github.com/storytold/photocraft/releases/download/v0.23.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/photocraft/releases/download/v0.23.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/photocraft/releases/download/v0.23.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/photocraft/v0.23.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/photocraft/v0.23.1/extracted/photocraft-web-0.23.1",
+        "fileCount": 15,
+        "expandedBytes": 16374061,
+        "largestFile": {
+          "path": "photocraft-web-0.23.1/app/photocraft-web-caa57f60c12c8283.part-aa",
+          "bytes": 15955518
+        },
+        "licenceFiles": [
+          "photocraft-web-0.23.1/LICENSE-MIT",
+          "photocraft-web-0.23.1/NOTICE",
+          "photocraft-web-0.23.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "figcraft",
+      "sourceCommit": "4548d6c00953dd051ee36af3bada376d1a80d05c",
+      "sourceVersion": "0.18.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Frames, auto layout, components and variants",
+        "Vector/text styling and prototype navigation",
+        "Native .figcraft documents and image/SVG/PDF exports"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/figcraft-web/index.html",
+        "manifest": "apps/figcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": "apps/figcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": [
+          "Documented same-origin parent bridge for real open/save/dirty messages; verify the per-app protocol before using it."
+        ]
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/figcraft",
+        "releases": "https://github.com/storytold/figcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/figcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The browser can join a live session or figcraft-server but cannot host a live session itself.",
+        "HTTPS pages cannot join arbitrary plain ws:// desktop sessions; a secure wss:// server is required for remote hosted collaboration."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "layout",
+          "action": "Create frames and auto-layout children.",
+          "expected": "Resizing updates positions/spacing as specified.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "components",
+          "action": "Create a component and modify an instance override.",
+          "expected": "The override and shared component behavior are observable.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "prototype",
+          "action": "Connect two frames and activate the interaction.",
+          "expected": "The preview reaches the intended target frame.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "file-export",
+          "action": "Save/reopen .figcraft and export SVG/PNG.",
+          "expected": "The editable document and exported frame reflect the edits.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/figcraft-web/index.html",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/apps/figcraft-web/index.html"
+        },
+        {
+          "path": "apps/figcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/apps/figcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/figcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/figcraft/blob/4548d6c00953dd051ee36af3bada376d1a80d05c/apps/figcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "figcraft",
+        "tag": "v0.18.1",
+        "releaseUrl": "https://github.com/storytold/figcraft/releases/tag/v0.18.1",
+        "webAssets": [
+          "https://github.com/storytold/figcraft/releases/download/v0.18.1/figcraft-web-0.18.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/figcraft/releases/download/v0.18.1/figcraft-web-0.18.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/figcraft/v0.18.1/figcraft-web-0.18.1.zip",
+        "bytes": 10534024,
+        "sha256Expected": "2fbeb93f5022b0a7cc9d8528f1ed7e2b54c94d213ef79e65128aa898c399f02b",
+        "sha256Actual": "2fbeb93f5022b0a7cc9d8528f1ed7e2b54c94d213ef79e65128aa898c399f02b",
+        "checksumUrl": "https://github.com/storytold/figcraft/releases/download/v0.18.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/figcraft/releases/download/v0.18.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/figcraft/releases/download/v0.18.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/figcraft/v0.18.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/figcraft/v0.18.1/extracted/figcraft-web-0.18.1",
+        "fileCount": 40,
+        "expandedBytes": 25886634,
+        "largestFile": {
+          "path": "figcraft-web-0.18.1/figcraft-web-f987f34d74d47a59_bg.wasm",
+          "bytes": 25503950
+        },
+        "licenceFiles": [
+          "figcraft-web-0.18.1/OFL-lxgw-wenkai-lite.txt",
+          "figcraft-web-0.18.1/OFL-lato.txt",
+          "figcraft-web-0.18.1/OFL-biz-ud-mincho.txt",
+          "figcraft-web-0.18.1/LICENSE-MIT",
+          "figcraft-web-0.18.1/OFL-biz-ud-pgothic.txt",
+          "figcraft-web-0.18.1/OFL-noto-sans-hebrew.txt",
+          "figcraft-web-0.18.1/NOTICE",
+          "figcraft-web-0.18.1/OFL-shippori-mincho.txt",
+          "figcraft-web-0.18.1/OFL-noto-sans-arabic.txt",
+          "figcraft-web-0.18.1/OFL-noto-sans-symbols.txt",
+          "figcraft-web-0.18.1/OFL-carlito.txt",
+          "figcraft-web-0.18.1/OFL-poppins.txt",
+          "figcraft-web-0.18.1/OFL-open-sans.txt",
+          "figcraft-web-0.18.1/OFL-liberation-sans.txt",
+          "figcraft-web-0.18.1/OFL-inter.txt",
+          "figcraft-web-0.18.1/OFL-noto-sans-symbols-2.txt",
+          "figcraft-web-0.18.1/OFL-playfair-display.txt",
+          "figcraft-web-0.18.1/OFL-source-sans-3.txt",
+          "figcraft-web-0.18.1/OFL-merriweather.txt",
+          "figcraft-web-0.18.1/OFL-liberation-serif.txt",
+          "figcraft-web-0.18.1/LICENSE-APACHE",
+          "figcraft-web-0.18.1/OFL-nunito-sans.txt",
+          "figcraft-web-0.18.1/OFL-nanum-gothic.txt",
+          "figcraft-web-0.18.1/OFL-noto-sans-georgian.txt",
+          "figcraft-web-0.18.1/OFL-caladea.txt",
+          "figcraft-web-0.18.1/OFL-noto-sans-thai.txt",
+          "figcraft-web-0.18.1/OFL-roboto.txt",
+          "figcraft-web-0.18.1/OFL-montserrat.txt",
+          "figcraft-web-0.18.1/OFL-noto-sans-cjk-sc.txt",
+          "figcraft-web-0.18.1/OFL-liberation-mono.txt",
+          "figcraft-web-0.18.1/OFL-noto-sans-devanagari.txt",
+          "figcraft-web-0.18.1/OFL-source-serif-4.txt"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "pdfcraft",
+      "sourceCommit": "efd265563edfe1b5a3261b184fbc4c83f67f4364",
+      "sourceVersion": "0.21.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "PDF rendering, text selection/search and page organisation",
+        "Combining/extracting documents, annotations and forms",
+        "Built-in OCR when the separate model assets are present"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/pdfcraft-web/index.html",
+        "manifest": "apps/pdfcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": "apps/pdfcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": [
+          "Documented same-origin parent bridge for real open/save/dirty messages; verify the per-app protocol before using it.",
+          "Documented page automation API; inspect actual supported commands and test real document operations."
+        ]
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/pdfcraft",
+        "releases": "https://github.com/storytold/pdfcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/pdfcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "Source Trunk builds do not fetch OCR models automatically; `cargo xtask models dist/web/models` is an explicit additional step.",
+        "Web printing and native installed Tesseract are not equivalent browser services; source README records weak or missing professional/Office conversion workflows."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "open-search",
+          "action": "Open a known PDF and search/select text.",
+          "expected": "Matches and selected text agree with visible content.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "organise",
+          "action": "Rotate/reorder/extract selected pages.",
+          "expected": "Independent page count/order checks match.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "forms",
+          "action": "Fill a supplied ordinary form and reopen it.",
+          "expected": "Entered values survive saving.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "ocr",
+          "action": "Recognise a small scan after loading the bundled models.",
+          "expected": "Searchable text can be checked against the scan; missing models are an explicit failure.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/pdfcraft-web/index.html",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/apps/pdfcraft-web/index.html"
+        },
+        {
+          "path": "apps/pdfcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/apps/pdfcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/pdfcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/pdfcraft/blob/efd265563edfe1b5a3261b184fbc4c83f67f4364/apps/pdfcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "pdfcraft",
+        "tag": "v0.21.1",
+        "releaseUrl": "https://github.com/storytold/pdfcraft/releases/tag/v0.21.1",
+        "webAssets": [
+          "https://github.com/storytold/pdfcraft/releases/download/v0.21.1/pdfcraft-web-0.21.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/pdfcraft/releases/download/v0.21.1/pdfcraft-web-0.21.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/pdfcraft/v0.21.1/pdfcraft-web-0.21.1.zip",
+        "bytes": 34367297,
+        "sha256Expected": "fe9708d46af191aebb56f70eb32cf8b112b0b9452d17ae6ba3a8c4a8665fe748",
+        "sha256Actual": "fe9708d46af191aebb56f70eb32cf8b112b0b9452d17ae6ba3a8c4a8665fe748",
+        "checksumUrl": "https://github.com/storytold/pdfcraft/releases/download/v0.21.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/pdfcraft/releases/download/v0.21.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/pdfcraft/releases/download/v0.21.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/pdfcraft/v0.21.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/pdfcraft/v0.21.1/extracted/pdfcraft-web-0.21.1",
+        "fileCount": 19,
+        "expandedBytes": 76551165,
+        "largestFile": {
+          "path": "pdfcraft-web-0.21.1/pdfcraft-web-dbf16682ba914f2f_bg.wasm",
+          "bytes": 60639389
+        },
+        "licenceFiles": [
+          "pdfcraft-web-0.21.1/LICENSE-MIT",
+          "pdfcraft-web-0.21.1/NOTICE",
+          "pdfcraft-web-0.21.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "designcraft",
+      "sourceCommit": "47ef1ec411d53e98a31c576d80a1d0e20ef5eb04",
+      "sourceVersion": "0.21.0",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Page layout, threaded text frames, styles and placed media",
+        "Native .designcraft and IDML workflows",
+        "PDF, PNG and other publishing exports"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/designcraft-web/index.html",
+        "manifest": "apps/designcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": "apps/designcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/designcraft",
+        "releases": "https://github.com/storytold/designcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/designcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "Browser Open/Place use a file picker and Save/Export download files; the web build has no native TCP control channel.",
+        "Source version is ahead of the latest stable web release inspected; binary behavior must be checked at its own release."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "document",
+          "action": "Create a one-page document with text and an image frame.",
+          "expected": "The actual layout contains the content.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "text-flow",
+          "action": "Change a text frame/column and inspect its overflow.",
+          "expected": "Text reflows and any overflow is reported or visible.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "roundtrip",
+          "action": "Save/reopen .designcraft or supported IDML.",
+          "expected": "The tested page objects remain editable.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "pdf-export",
+          "action": "Export PDF and compare content/crop/page count.",
+          "expected": "The exported artifact matches the tested layout.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/designcraft-web/index.html",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/apps/designcraft-web/index.html"
+        },
+        {
+          "path": "apps/designcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/apps/designcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/designcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/designcraft/blob/47ef1ec411d53e98a31c576d80a1d0e20ef5eb04/apps/designcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "designcraft",
+        "tag": "v0.20.1",
+        "releaseUrl": "https://github.com/storytold/designcraft/releases/tag/v0.20.1",
+        "webAssets": [
+          "https://github.com/storytold/designcraft/releases/download/v0.20.1/designcraft-web-0.20.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/designcraft/releases/download/v0.20.1/designcraft-web-0.20.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/designcraft/v0.20.1/designcraft-web-0.20.1.zip",
+        "bytes": 27265672,
+        "sha256Expected": "50fb2bebce1f48065318953393626b84b25cd1736c556e523275dadc46ae6906",
+        "sha256Actual": "50fb2bebce1f48065318953393626b84b25cd1736c556e523275dadc46ae6906",
+        "checksumUrl": "https://github.com/storytold/designcraft/releases/download/v0.20.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/designcraft/releases/download/v0.20.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/designcraft/releases/download/v0.20.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/designcraft/v0.20.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/designcraft/v0.20.1/extracted/designcraft-web-0.20.1",
+        "fileCount": 24,
+        "expandedBytes": 66453841,
+        "largestFile": {
+          "path": "designcraft-web-0.20.1/designcraft-web-6fe2a088b8a9125b_bg.wasm",
+          "bytes": 66165557
+        },
+        "licenceFiles": [
+          "designcraft-web-0.20.1/OFL-lxgw-wenkai-lite.txt",
+          "designcraft-web-0.20.1/OFL-biz-ud-mincho.txt",
+          "designcraft-web-0.20.1/LICENSE-MIT",
+          "designcraft-web-0.20.1/OFL-biz-ud-pgothic.txt",
+          "designcraft-web-0.20.1/OFL-noto-sans-hebrew.txt",
+          "designcraft-web-0.20.1/NOTICE",
+          "designcraft-web-0.20.1/OFL-shippori-mincho.txt",
+          "designcraft-web-0.20.1/OFL-noto-sans-arabic.txt",
+          "designcraft-web-0.20.1/OFL-noto-sans-symbols.txt",
+          "designcraft-web-0.20.1/OFL-noto-sans-symbols-2.txt",
+          "designcraft-web-0.20.1/LICENSE-APACHE",
+          "designcraft-web-0.20.1/OFL-nanum-gothic.txt",
+          "designcraft-web-0.20.1/OFL-noto-sans-georgian.txt",
+          "designcraft-web-0.20.1/OFL-noto-sans-thai.txt",
+          "designcraft-web-0.20.1/OFL-noto-sans-cjk-sc.txt",
+          "designcraft-web-0.20.1/OFL-noto-sans-devanagari.txt"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "texturecraft",
+      "sourceCommit": "62b2b13fdd32740b6e118cd00c5e0d0c12b30815",
+      "sourceVersion": "0.6.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "PBR material/texture painting on 3D models",
+        "Layered paint/material editing and preview",
+        "Project and texture-map exports"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/texturecraft-web/index.html",
+        "manifest": "apps/texturecraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "not established by this audit",
+        "build": {
+          "cwd": "apps/texturecraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/texturecraft",
+        "releases": "https://github.com/storytold/texturecraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/texturecraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [],
+      "featureAcceptance": [
+        {
+          "id": "mesh",
+          "action": "Load a small supplied mesh and inspect UV/material assignment.",
+          "expected": "The actual 3D subject and UV set appear.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "paint",
+          "action": "Paint a layer and adjust its blend/opacity.",
+          "expected": "The model and texture preview change together.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "project",
+          "action": "Save and reopen the project.",
+          "expected": "The tested material layers and mesh reopen.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "textures",
+          "action": "Export the tested texture maps and inspect them.",
+          "expected": "The maps contain the painted result and expected dimensions.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/texturecraft/blob/62b2b13fdd32740b6e118cd00c5e0d0c12b30815/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/texturecraft/blob/62b2b13fdd32740b6e118cd00c5e0d0c12b30815/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/texturecraft/blob/62b2b13fdd32740b6e118cd00c5e0d0c12b30815/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/texturecraft/blob/62b2b13fdd32740b6e118cd00c5e0d0c12b30815/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/texturecraft/blob/62b2b13fdd32740b6e118cd00c5e0d0c12b30815/ROADMAP.md"
+        },
+        {
+          "path": "apps/texturecraft-web/index.html",
+          "url": "https://github.com/storytold/texturecraft/blob/62b2b13fdd32740b6e118cd00c5e0d0c12b30815/apps/texturecraft-web/index.html"
+        },
+        {
+          "path": "apps/texturecraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/texturecraft/blob/62b2b13fdd32740b6e118cd00c5e0d0c12b30815/apps/texturecraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/texturecraft-web/src/main.rs",
+          "url": "https://github.com/storytold/texturecraft/blob/62b2b13fdd32740b6e118cd00c5e0d0c12b30815/apps/texturecraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "texturecraft",
+        "tag": "v0.6.1",
+        "releaseUrl": "https://github.com/storytold/texturecraft/releases/tag/v0.6.1",
+        "webAssets": [
+          "https://github.com/storytold/texturecraft/releases/download/v0.6.1/texturecraft-web-0.6.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/texturecraft/releases/download/v0.6.1/texturecraft-web-0.6.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/texturecraft/v0.6.1/texturecraft-web-0.6.1.zip",
+        "bytes": 9488618,
+        "sha256Expected": "6dea6a9f77a161cba3258ab4c6db591bdb4dd32b7385d16a7db997ab671a5f3b",
+        "sha256Actual": "6dea6a9f77a161cba3258ab4c6db591bdb4dd32b7385d16a7db997ab671a5f3b",
+        "checksumUrl": "https://github.com/storytold/texturecraft/releases/download/v0.6.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/texturecraft/releases/download/v0.6.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/texturecraft/releases/download/v0.6.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/texturecraft/v0.6.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/texturecraft/v0.6.1/extracted/texturecraft-web-0.6.1",
+        "fileCount": 15,
+        "expandedBytes": 20744862,
+        "largestFile": {
+          "path": "texturecraft-web-0.6.1/texturecraft-web-44b3e3b6a536dac4_bg.wasm",
+          "bytes": 20510127
+        },
+        "licenceFiles": [
+          "texturecraft-web-0.6.1/LICENSE-MIT",
+          "texturecraft-web-0.6.1/OFL-biz-ud-pgothic.txt",
+          "texturecraft-web-0.6.1/NOTICE",
+          "texturecraft-web-0.6.1/OFL-inter.txt",
+          "texturecraft-web-0.6.1/LICENSE-APACHE",
+          "texturecraft-web-0.6.1/OFL-noto-sans-cjk-sc.txt"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "lightcraft",
+      "sourceCommit": "41d68830857f37655b7a7277dc986dc109759c56",
+      "sourceVersion": "0.21.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Photo library import and organisation",
+        "Non-destructive development, masking and cropping",
+        "Persistent browser library plus export/backup/restore"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/lightcraft-web/index.html",
+        "manifest": "apps/lightcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": ".",
+          "command": [
+            "cargo",
+            "xtask",
+            "web"
+          ],
+          "outputDirectory": "target/web-site",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/lightcraft",
+        "releases": "https://github.com/storytold/lightcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/lightcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "Browser libraries live in origin-specific OPFS/IndexedDB rather than an arbitrary native library folder.",
+        "Only one tab can own the library; moving origins requires the actual library backup/restore operation."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "import",
+          "action": "Import a small image set and inspect its library records.",
+          "expected": "Photos appear without overwriting originals.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "develop",
+          "action": "Change exposure/crop and reset an edit.",
+          "expected": "The preview changes while the original remains recoverable.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "persist",
+          "action": "Reload and inspect library/edits.",
+          "expected": "The browser library returns from OPFS/IndexedDB.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "backup",
+          "action": "Back up and restore a practice library.",
+          "expected": "A checked backup can restore the actual photos and metadata.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/packaging/web/package.sh"
+        },
+        {
+          "path": "docs/web.md",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/docs/web.md"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/lightcraft-web/index.html",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/apps/lightcraft-web/index.html"
+        },
+        {
+          "path": "apps/lightcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/lightcraft/blob/41d68830857f37655b7a7277dc986dc109759c56/apps/lightcraft-web/Cargo.toml"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "lightcraft",
+        "tag": "v0.21.1",
+        "releaseUrl": "https://github.com/storytold/lightcraft/releases/tag/v0.21.1",
+        "webAssets": [
+          "https://github.com/storytold/lightcraft/releases/download/v0.21.1/lightcraft-web-0.21.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/lightcraft/releases/download/v0.21.1/lightcraft-web-0.21.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/lightcraft/v0.21.1/lightcraft-web-0.21.1.zip",
+        "bytes": 74569049,
+        "sha256Expected": "57147383a46eaab3b0cc036acf9443b221450c6a19f5dc303ae165bb9678b8cb",
+        "sha256Actual": "57147383a46eaab3b0cc036acf9443b221450c6a19f5dc303ae165bb9678b8cb",
+        "checksumUrl": "https://github.com/storytold/lightcraft/releases/download/v0.21.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/lightcraft/releases/download/v0.21.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/lightcraft/releases/download/v0.21.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/lightcraft/v0.21.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/lightcraft/v0.21.1/extracted/lightcraft-web-0.21.1",
+        "fileCount": 37,
+        "expandedBytes": 100750645,
+        "largestFile": {
+          "path": "lightcraft-web-0.21.1/lightcraft_web_bg.wasm",
+          "bytes": 36603526
+        },
+        "licenceFiles": [
+          "lightcraft-web-0.21.1/OFL-lxgw-wenkai-lite.txt",
+          "lightcraft-web-0.21.1/OFL-biz-ud-mincho.txt",
+          "lightcraft-web-0.21.1/LICENSE-MIT",
+          "lightcraft-web-0.21.1/OFL-biz-ud-pgothic.txt",
+          "lightcraft-web-0.21.1/OFL-noto-sans-hebrew.txt",
+          "lightcraft-web-0.21.1/NOTICE",
+          "lightcraft-web-0.21.1/OFL-shippori-mincho.txt",
+          "lightcraft-web-0.21.1/OFL-noto-sans-arabic.txt",
+          "lightcraft-web-0.21.1/OFL-noto-sans-symbols.txt",
+          "lightcraft-web-0.21.1/OFL-noto-sans-symbols-2.txt",
+          "lightcraft-web-0.21.1/LICENSE-APACHE",
+          "lightcraft-web-0.21.1/OFL-nanum-gothic.txt",
+          "lightcraft-web-0.21.1/OFL-noto-sans-georgian.txt",
+          "lightcraft-web-0.21.1/OFL-noto-sans-thai.txt",
+          "lightcraft-web-0.21.1/OFL-noto-sans-cjk-sc.txt",
+          "lightcraft-web-0.21.1/OFL-Inter.txt",
+          "lightcraft-web-0.21.1/OFL-noto-sans-devanagari.txt"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "anicraft",
+      "sourceCommit": "38541642cbc25a32181e02d412f9c04efdc3df00",
+      "sourceVersion": "0.3.0",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Vector animation, timeline, keyframes and tweens",
+        "Browser file opening and .anicraft saves",
+        "GIF, PNG sequence and HTML animation exports"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "packaging/web/index.html",
+        "manifest": "Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": ".",
+          "command": [
+            "bash",
+            "scripts/build-web.sh"
+          ],
+          "outputDirectory": "web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/anicraft",
+        "releases": "https://github.com/storytold/anicraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/anicraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "Video export requiring a native ffmpeg process is disabled in the web editor.",
+        "Installing filesystem plug-ins, local system fonts and XFL folder drops require the desktop app.",
+        "The web GPU stage is not wired; rendering/export is serial and browser recovery storage is limited.",
+        "No stable web release ZIP was listed; source build and real browser validation are required."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "animate",
+          "action": "Create a shape and two timeline keyframes.",
+          "expected": "Playback visibly changes the shape/property across time.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "save",
+          "action": "Save/reopen .anicraft.",
+          "expected": "The animation remains editable.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "gif",
+          "action": "Export GIF and inspect multiple frames.",
+          "expected": "A real animated file is produced.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "video-parity",
+          "action": "Attempt the documented video-export path.",
+          "expected": "The browser explicitly refuses the native ffmpeg-dependent operation; full-native parity is not claimed.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/anicraft/blob/38541642cbc25a32181e02d412f9c04efdc3df00/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/anicraft/blob/38541642cbc25a32181e02d412f9c04efdc3df00/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/anicraft/blob/38541642cbc25a32181e02d412f9c04efdc3df00/packaging/web/package.sh"
+        },
+        {
+          "path": "docs/web.md",
+          "url": "https://github.com/storytold/anicraft/blob/38541642cbc25a32181e02d412f9c04efdc3df00/docs/web.md"
+        },
+        {
+          "path": "packaging/web/index.html",
+          "url": "https://github.com/storytold/anicraft/blob/38541642cbc25a32181e02d412f9c04efdc3df00/packaging/web/index.html"
+        },
+        {
+          "path": "Cargo.toml",
+          "url": "https://github.com/storytold/anicraft/blob/38541642cbc25a32181e02d412f9c04efdc3df00/Cargo.toml"
+        },
+        {
+          "path": "scripts/build-web.sh",
+          "url": "https://github.com/storytold/anicraft/blob/38541642cbc25a32181e02d412f9c04efdc3df00/scripts/build-web.sh"
+        },
+        {
+          "path": "docs/adr/0036-web-build.md",
+          "url": "https://github.com/storytold/anicraft/blob/38541642cbc25a32181e02d412f9c04efdc3df00/docs/adr/0036-web-build.md"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "anicraft",
+        "tag": "v0.2.1",
+        "releaseUrl": "https://github.com/storytold/anicraft/releases/tag/v0.2.1",
+        "webAssets": [],
+        "status": "no-published-web-asset",
+        "reason": "No web ZIP listed in latest stable release.",
+        "binaryExecution": "not executed by this audit",
+        "fallback": "Compile the genuine upstream source with scripts/build-web.sh; do not substitute a lesson/demo canvas."
+      }
+    },
+    {
+      "id": "deckcraft",
+      "sourceCommit": "f9bc097b4ef92e6b39725ea94716a5787e6565fc",
+      "sourceVersion": "0.19.0",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Slide masters/layouts, text, shapes, pictures, tables and charts",
+        "Presenter/slideshow workflows, notes and media",
+        "PPTX document interchange and PDF/image exports"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/deckcraft-web/index.html",
+        "manifest": "apps/deckcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "not established by this audit",
+        "build": {
+          "cwd": "apps/deckcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": [
+          "Documented same-origin parent bridge for real open/save/dirty messages; verify the per-app protocol before using it.",
+          "Documented page automation API; inspect actual supported commands and test real document operations."
+        ]
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/deckcraft",
+        "releases": "https://github.com/storytold/deckcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/deckcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [],
+      "featureAcceptance": [
+        {
+          "id": "slides",
+          "action": "Create three slides with text, image and notes.",
+          "expected": "The saved deck contains the edited slide order and content.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "show",
+          "action": "Run the actual presentation and a timed transition.",
+          "expected": "The view changes in the intended order.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "pptx",
+          "action": "Save/reopen PPTX.",
+          "expected": "Tested editable text, objects and notes remain.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "pdf",
+          "action": "Export slides/notes/handout and inspect the chosen view.",
+          "expected": "The PDF matches the intended audience view and page count.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/deckcraft-web/index.html",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/apps/deckcraft-web/index.html"
+        },
+        {
+          "path": "apps/deckcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/apps/deckcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/deckcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/deckcraft/blob/f9bc097b4ef92e6b39725ea94716a5787e6565fc/apps/deckcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "deckcraft",
+        "tag": "v0.18.1",
+        "releaseUrl": "https://github.com/storytold/deckcraft/releases/tag/v0.18.1",
+        "webAssets": [
+          "https://github.com/storytold/deckcraft/releases/download/v0.18.1/deckcraft-web-0.18.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/deckcraft/releases/download/v0.18.1/deckcraft-web-0.18.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/deckcraft/v0.18.1/deckcraft-web-0.18.1.zip",
+        "bytes": 11910503,
+        "sha256Expected": "3196e537fcfab538aaa2e88584bc74e29bb584459b916ab584ac22fbafe32db5",
+        "sha256Actual": "3196e537fcfab538aaa2e88584bc74e29bb584459b916ab584ac22fbafe32db5",
+        "checksumUrl": "https://github.com/storytold/deckcraft/releases/download/v0.18.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/deckcraft/releases/download/v0.18.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/deckcraft/releases/download/v0.18.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/deckcraft/v0.18.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/deckcraft/v0.18.1/extracted/deckcraft-web-0.18.1",
+        "fileCount": 12,
+        "expandedBytes": 33411271,
+        "largestFile": {
+          "path": "deckcraft-web-0.18.1/deckcraft-web-f863e8c546b80fd1_bg.wasm",
+          "bytes": 33159566
+        },
+        "licenceFiles": [
+          "deckcraft-web-0.18.1/LICENSE-MIT",
+          "deckcraft-web-0.18.1/NOTICE",
+          "deckcraft-web-0.18.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "cadcraft",
+      "sourceCommit": "16341b665fa358d6fa1847e4f2325b5a5b0ec037",
+      "sourceVersion": "0.21.0",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Precision model-space drafting, snaps, layers and dimensions",
+        "Layouts, plotting and constraint workflows",
+        "DXF/DWG and SVG/PNG/PDF interchange subject to format support"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/cadcraft-web/index.html",
+        "manifest": "apps/cadcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "not established by this audit",
+        "build": {
+          "cwd": "apps/cadcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": [
+          "Documented same-origin parent bridge for real open/save/dirty messages; verify the per-app protocol before using it.",
+          "Documented page automation API; inspect actual supported commands and test real document operations."
+        ]
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/cadcraft",
+        "releases": "https://github.com/storytold/cadcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/cadcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [],
+      "featureAcceptance": [
+        {
+          "id": "geometry",
+          "action": "Draw a known rectangle/circle at stated coordinates.",
+          "expected": "Measured extents and dimensions match independently calculated values.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "layers",
+          "action": "Change a layer visibility/property and undo a transform.",
+          "expected": "The actual entity state changes and restores.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "dxf",
+          "action": "Save/reopen DXF and inspect entity counts/bounds.",
+          "expected": "The tested geometry survives the roundtrip.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "plot",
+          "action": "Plot/export and inspect the actual dimensions and scale.",
+          "expected": "The artifact represents the drawing at the declared output settings.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/cadcraft-web/index.html",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/apps/cadcraft-web/index.html"
+        },
+        {
+          "path": "apps/cadcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/apps/cadcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/cadcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/cadcraft/blob/16341b665fa358d6fa1847e4f2325b5a5b0ec037/apps/cadcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "cadcraft",
+        "tag": "v0.20.1",
+        "releaseUrl": "https://github.com/storytold/cadcraft/releases/tag/v0.20.1",
+        "webAssets": [
+          "https://github.com/storytold/cadcraft/releases/download/v0.20.1/cadcraft-web-0.20.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/cadcraft/releases/download/v0.20.1/cadcraft-web-0.20.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/cadcraft/v0.20.1/cadcraft-web-0.20.1.zip",
+        "bytes": 11420690,
+        "sha256Expected": "300e870c50b66d371055915ba95e3ddbfd4c45431466d5214743b5dcab95a0e1",
+        "sha256Actual": "300e870c50b66d371055915ba95e3ddbfd4c45431466d5214743b5dcab95a0e1",
+        "checksumUrl": "https://github.com/storytold/cadcraft/releases/download/v0.20.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/cadcraft/releases/download/v0.20.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/cadcraft/releases/download/v0.20.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/cadcraft/v0.20.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/cadcraft/v0.20.1/extracted/cadcraft-web-0.20.1",
+        "fileCount": 12,
+        "expandedBytes": 31132521,
+        "largestFile": {
+          "path": "cadcraft-web-0.20.1/cadcraft-web-a91fdcd993cc5580_bg.wasm",
+          "bytes": 30882789
+        },
+        "licenceFiles": [
+          "cadcraft-web-0.20.1/LICENSE-MIT",
+          "cadcraft-web-0.20.1/NOTICE",
+          "cadcraft-web-0.20.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "gridcraft",
+      "sourceCommit": "abcfc191533519dde56bfea65fd1d84e0df6f489",
+      "sourceVersion": "0.19.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Workbook cells, formulas, styles and dynamic recalculation",
+        "Tables, charts, data organisation and print layouts",
+        "XLSX/CSV/TSV workflows"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/gridcraft-web/index.html",
+        "manifest": "apps/gridcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "not established by this audit",
+        "build": {
+          "cwd": "apps/gridcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": [
+          "Documented same-origin parent bridge for real open/save/dirty messages; verify the per-app protocol before using it.",
+          "Documented page automation API; inspect actual supported commands and test real document operations."
+        ]
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/gridcraft",
+        "releases": "https://github.com/storytold/gridcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/gridcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [],
+      "featureAcceptance": [
+        {
+          "id": "formula",
+          "action": "Enter the12-person budget and formulas.",
+          "expected": "The total is78; changing both quantities to16 produces104.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "xlsx",
+          "action": "Save/reopen XLSX and inspect formulas.",
+          "expected": "Formula expressions and values remain consistent.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "chart",
+          "action": "Create a chart from a small range and change a source value.",
+          "expected": "The actual chart changes with the source data.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "export",
+          "action": "Export CSV/PDF and independently inspect rows/pages.",
+          "expected": "The file reflects the intended range and values.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/gridcraft-web/index.html",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/apps/gridcraft-web/index.html"
+        },
+        {
+          "path": "apps/gridcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/apps/gridcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/gridcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/gridcraft/blob/abcfc191533519dde56bfea65fd1d84e0df6f489/apps/gridcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "gridcraft",
+        "tag": "v0.19.1",
+        "releaseUrl": "https://github.com/storytold/gridcraft/releases/tag/v0.19.1",
+        "webAssets": [
+          "https://github.com/storytold/gridcraft/releases/download/v0.19.1/gridcraft-web-0.19.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/gridcraft/releases/download/v0.19.1/gridcraft-web-0.19.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/gridcraft/v0.19.1/gridcraft-web-0.19.1.zip",
+        "bytes": 9679862,
+        "sha256Expected": "48c5d1b101befebb3c5ba3b7a14914f01c3207934813ed07dc4251b7ae116a78",
+        "sha256Actual": "48c5d1b101befebb3c5ba3b7a14914f01c3207934813ed07dc4251b7ae116a78",
+        "checksumUrl": "https://github.com/storytold/gridcraft/releases/download/v0.19.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/gridcraft/releases/download/v0.19.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/gridcraft/releases/download/v0.19.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/gridcraft/v0.19.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/gridcraft/v0.19.1/extracted/gridcraft-web-0.19.1",
+        "fileCount": 13,
+        "expandedBytes": 26583528,
+        "largestFile": {
+          "path": "gridcraft-web-0.19.1/gridcraft-web-fdc723373f2aa0d8_bg.wasm",
+          "bytes": 26298748
+        },
+        "licenceFiles": [
+          "gridcraft-web-0.19.1/LICENSE-MIT",
+          "gridcraft-web-0.19.1/NOTICE",
+          "gridcraft-web-0.19.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "soundcraft",
+      "sourceCommit": "648ed9db9a0e98cc55643babffac381521a556c8",
+      "sourceVersion": "0.20.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Audio/MIDI tracks, timeline editing and mixing",
+        "Synthesised demo playback through WebAudio in the browser",
+        "Browser open/import and .scraftz bundle saves/exports in actual web source"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/soundcraft-web/index.html",
+        "manifest": "apps/soundcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": "apps/soundcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/soundcraft",
+        "releases": "https://github.com/storytold/soundcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/soundcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The upstream web hosting document explicitly states no recording and no native TCP control channel.",
+        "Actual web source does wire browser Open Session/Import file pickers and .scraftz saves, so absence of native dialogs must not be misreported as absence of all file operations."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "audio-import",
+          "action": "Import a small WAV/audio clip into a real track.",
+          "expected": "The waveform and timeline use the actual file.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "edit-mix",
+          "action": "Trim/move audio and change gain or mute.",
+          "expected": "Playback and exported audio reflect the tested edit.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "session",
+          "action": "Save/reopen the browser .scraftz bundle.",
+          "expected": "The tested session and audio reopen.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "recording-parity",
+          "action": "Exercise live-input recording with consented test audio on a native target.",
+          "expected": "A real recorded take appears. The documented browser target cannot satisfy this native requirement.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/soundcraft-web/index.html",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/apps/soundcraft-web/index.html"
+        },
+        {
+          "path": "apps/soundcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/apps/soundcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/soundcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/apps/soundcraft-web/src/main.rs"
+        },
+        {
+          "path": "apps/soundcraft-web/src/web.rs",
+          "url": "https://github.com/storytold/soundcraft/blob/648ed9db9a0e98cc55643babffac381521a556c8/apps/soundcraft-web/src/web.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "soundcraft",
+        "tag": "v0.20.1",
+        "releaseUrl": "https://github.com/storytold/soundcraft/releases/tag/v0.20.1",
+        "webAssets": [
+          "https://github.com/storytold/soundcraft/releases/download/v0.20.1/soundcraft-web-0.20.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/soundcraft/releases/download/v0.20.1/soundcraft-web-0.20.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/soundcraft/v0.20.1/soundcraft-web-0.20.1.zip",
+        "bytes": 7179733,
+        "sha256Expected": "ca7c03c53cf4b7ec9ae26ef2cbde5d86566d006127040fe694fb95f9773a34e4",
+        "sha256Actual": "ca7c03c53cf4b7ec9ae26ef2cbde5d86566d006127040fe694fb95f9773a34e4",
+        "checksumUrl": "https://github.com/storytold/soundcraft/releases/download/v0.20.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/soundcraft/releases/download/v0.20.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/soundcraft/releases/download/v0.20.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/soundcraft/v0.20.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/soundcraft/v0.20.1/extracted/soundcraft-web-0.20.1",
+        "fileCount": 13,
+        "expandedBytes": 19355918,
+        "largestFile": {
+          "path": "soundcraft-web-0.20.1/soundcraft-web-1a7ddbf5e69df875_bg.wasm",
+          "bytes": 19113325
+        },
+        "licenceFiles": [
+          "soundcraft-web-0.20.1/LICENSE-MIT",
+          "soundcraft-web-0.20.1/NOTICE",
+          "soundcraft-web-0.20.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "materialcraft",
+      "sourceCommit": "c382a005f0487eb8270f70f7272a325bcad028a2",
+      "sourceVersion": "0.4.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Procedural node graphs for materials",
+        "PBR material evaluation and preview",
+        "Material-package and texture-map export workflows"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/materialcraft-web/index.html",
+        "manifest": "apps/materialcraft-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "not established by this audit",
+        "build": {
+          "cwd": "apps/materialcraft-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/materialcraft",
+        "releases": "https://github.com/storytold/materialcraft/releases",
+        "officialProductPage": "https://getartcraft.com/apps/materialcraft",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [],
+      "featureAcceptance": [
+        {
+          "id": "nodes",
+          "action": "Create a small connected procedural graph.",
+          "expected": "Disconnecting/changing a node changes the material.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "parameter",
+          "action": "Change a generator parameter and inspect the preview.",
+          "expected": "The actual evaluated texture responds.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "package",
+          "action": "Save/reopen a supported material package.",
+          "expected": "The tested graph remains editable.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "export",
+          "action": "Export texture maps and compare their pixels/dimensions.",
+          "expected": "The maps contain the evaluated material.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/packaging/web/package.sh"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/ROADMAP.md"
+        },
+        {
+          "path": "docs/target-app-parity.md",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/docs/target-app-parity.md"
+        },
+        {
+          "path": "apps/materialcraft-web/index.html",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/apps/materialcraft-web/index.html"
+        },
+        {
+          "path": "apps/materialcraft-web/Cargo.toml",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/apps/materialcraft-web/Cargo.toml"
+        },
+        {
+          "path": "apps/materialcraft-web/src/main.rs",
+          "url": "https://github.com/storytold/materialcraft/blob/c382a005f0487eb8270f70f7272a325bcad028a2/apps/materialcraft-web/src/main.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "materialcraft",
+        "tag": "v0.4.1",
+        "releaseUrl": "https://github.com/storytold/materialcraft/releases/tag/v0.4.1",
+        "webAssets": [
+          "https://github.com/storytold/materialcraft/releases/download/v0.4.1/materialcraft-web-0.4.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/materialcraft/releases/download/v0.4.1/materialcraft-web-0.4.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/materialcraft/v0.4.1/materialcraft-web-0.4.1.zip",
+        "bytes": 5245824,
+        "sha256Expected": "73b8c319881fd7218737d30b5eeb033801a17427bcf3d31920da32a1fbb1ffec",
+        "sha256Actual": "73b8c319881fd7218737d30b5eeb033801a17427bcf3d31920da32a1fbb1ffec",
+        "checksumUrl": "https://github.com/storytold/materialcraft/releases/download/v0.4.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/materialcraft/releases/download/v0.4.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/materialcraft/releases/download/v0.4.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/materialcraft/v0.4.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/materialcraft/v0.4.1/extracted/materialcraft-web-0.4.1",
+        "fileCount": 14,
+        "expandedBytes": 14453712,
+        "largestFile": {
+          "path": "materialcraft-web-0.4.1/materialcraft-web-f0e3f75f9ac4c726_bg.wasm",
+          "bytes": 14233035
+        },
+        "licenceFiles": [
+          "materialcraft-web-0.4.1/LICENSE-MIT",
+          "materialcraft-web-0.4.1/OFL-biz-ud-pgothic.txt",
+          "materialcraft-web-0.4.1/NOTICE",
+          "materialcraft-web-0.4.1/LICENSE-APACHE",
+          "materialcraft-web-0.4.1/OFL-noto-sans-cjk-sc.txt"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "craft-anything",
+      "sourceCommit": "88b2490892e26f49c9cfb6eb277b7b8819ece885",
+      "sourceVersion": "0.6.1",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Native/desktop engine: software inspection, evidence, external analyzers and agentic reconstruction",
+        "Browser target: native-header/signature triage, file SHA-256 and entropy only"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/craft-anything-web/index.html",
+        "manifest": "apps/craft-anything-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": "apps/craft-anything-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.97",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/craft-anything",
+        "releases": "https://github.com/storytold/craft-anything/releases",
+        "officialProductPage": "https://getartcraft.com/apps/craft-anything",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The actual web entry is a small file viewer: native-header/signature triage, SHA-256 and entropy.",
+        "Its code explicitly says the web viewer does not open containers or code; full disassembly, JavaScript/Android/device tools and AI reconstruction remain desktop functionality.",
+        "Craft Anything requires Rust1.97 or newer, beyond the1.95 minimum of the other inspected Rust apps."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "triage",
+          "action": "Open a synthetic PE/ELF or plain file in the browser viewer.",
+          "expected": "Reported signature/header facts and SHA-256 match independent checks.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "desktop-inspection",
+          "action": "Inspect a permitted program with the actual native analyzer.",
+          "expected": "Evidence references real binary/code locations, not generated examples.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "agent-build",
+          "action": "Run a bounded reconstruction task with a configured model CLI in an isolated environment.",
+          "expected": "A genuine project is created and tested; no fixture-only dashboard is accepted.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/craft-anything/blob/88b2490892e26f49c9cfb6eb277b7b8819ece885/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/craft-anything/blob/88b2490892e26f49c9cfb6eb277b7b8819ece885/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/craft-anything/blob/88b2490892e26f49c9cfb6eb277b7b8819ece885/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/craft-anything/blob/88b2490892e26f49c9cfb6eb277b7b8819ece885/packaging/web/package.sh"
+        },
+        {
+          "path": "apps/craft-anything-web/index.html",
+          "url": "https://github.com/storytold/craft-anything/blob/88b2490892e26f49c9cfb6eb277b7b8819ece885/apps/craft-anything-web/index.html"
+        },
+        {
+          "path": "apps/craft-anything-web/Cargo.toml",
+          "url": "https://github.com/storytold/craft-anything/blob/88b2490892e26f49c9cfb6eb277b7b8819ece885/apps/craft-anything-web/Cargo.toml"
+        },
+        {
+          "path": "apps/craft-anything-web/src/main.rs",
+          "url": "https://github.com/storytold/craft-anything/blob/88b2490892e26f49c9cfb6eb277b7b8819ece885/apps/craft-anything-web/src/main.rs"
+        },
+        {
+          "path": "apps/craft-anything-web/src/triage.rs",
+          "url": "https://github.com/storytold/craft-anything/blob/88b2490892e26f49c9cfb6eb277b7b8819ece885/apps/craft-anything-web/src/triage.rs"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "craft-anything",
+        "tag": "v0.6.1",
+        "releaseUrl": "https://github.com/storytold/craft-anything/releases/tag/v0.6.1",
+        "webAssets": [
+          "https://github.com/storytold/craft-anything/releases/download/v0.6.1/craft-anything-web-0.6.1.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/craft-anything/releases/download/v0.6.1/craft-anything-web-0.6.1.zip",
+        "zipPath": "/workspace/build/storytold/releases/craft-anything/v0.6.1/craft-anything-web-0.6.1.zip",
+        "bytes": 2667952,
+        "sha256Expected": "e87273b5c0181785ce9059f5348353be44e18b4ba6485203babc26ef17f71d84",
+        "sha256Actual": "e87273b5c0181785ce9059f5348353be44e18b4ba6485203babc26ef17f71d84",
+        "checksumUrl": "https://github.com/storytold/craft-anything/releases/download/v0.6.1/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/craft-anything/releases/download/v0.6.1/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/craft-anything/releases/download/v0.6.1/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/craft-anything/v0.6.1/extracted",
+        "webRoot": "/workspace/build/storytold/releases/craft-anything/v0.6.1/extracted/craft-anything-web-0.6.1",
+        "fileCount": 13,
+        "expandedBytes": 6337685,
+        "largestFile": {
+          "path": "craft-anything-web-0.6.1/craft-anything-web-e374ff1db17de5f2_bg.wasm",
+          "bytes": 6114779
+        },
+        "licenceFiles": [
+          "craft-anything-web-0.6.1/OFL-JetBrainsMono.txt",
+          "craft-anything-web-0.6.1/LICENSE-MIT",
+          "craft-anything-web-0.6.1/NOTICE",
+          "craft-anything-web-0.6.1/OFL-GeistMono.txt",
+          "craft-anything-web-0.6.1/OFL-DMSans.txt",
+          "craft-anything-web-0.6.1/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    },
+    {
+      "id": "artcraft",
+      "sourceCommit": "69f53c2f0358a91a5e35e5a7b3a91677320c3112",
+      "sourceVersion": null,
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Tauri desktop AI-generation workspace",
+        "2D canvas and 3D scene composition",
+        "Image/video/audio/mesh/world provider tasks through native clients and remote services"
+      ],
+      "browser": {
+        "kind": "native-tauri-and-provider-services",
+        "sourceEntry": "frontend/apps/artcraft/app/index.html",
+        "manifest": "frontend/package.json",
+        "entryExists": true,
+        "staticDeployableArchitecture": false,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": ".",
+          "command": [
+            "bash",
+            "script/artcraft/unix_dev.sh"
+          ],
+          "outputDirectory": null,
+          "rustMinimum": null,
+          "tooling": [
+            "See native/server setup documents"
+          ]
+        },
+        "runtimeRequirements": [
+          "Native Tauri host, Rust and Node/npm build dependencies",
+          "Configured external provider/service access for generation"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/artcraft",
+        "releases": "https://github.com/storytold/artcraft/releases",
+        "officialProductPage": "https://getartcraft.com/",
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The React index.html is a Tauri frontend, not a standalone full browser app.",
+        "Native Tauri IPC/HTTP/cookies, SQLite task persistence and external provider services are required for actual generation workflows.",
+        "Third-party assets excluded by upstream NOTICE cannot be rebranded or redistributed under the root code licence."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "canvas",
+          "action": "Create a local canvas/scene and save/reopen it through real Tauri services.",
+          "expected": "The native application persists actual user content.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "provider",
+          "action": "Submit a small user-approved generation task through a configured provider account.",
+          "expected": "A real provider job/output appears with its actual status; no simulated generation.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "model-output",
+          "action": "Import the resulting media/mesh and export/save it.",
+          "expected": "The genuine model output is usable in the intended workspace.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/AGENTS.md"
+        },
+        {
+          "path": "ROADMAP.md",
+          "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/ROADMAP.md"
+        },
+        {
+          "path": "frontend/apps/artcraft/app/index.html",
+          "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/frontend/apps/artcraft/app/index.html"
+        },
+        {
+          "path": "frontend/package.json",
+          "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/frontend/package.json"
+        },
+        {
+          "path": "_docs/dev_setup.md",
+          "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/_docs/dev_setup.md"
+        },
+        {
+          "path": "frontend/apps/artcraft/app/src/api/SyncStorytellerApiConfig.ts",
+          "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/frontend/apps/artcraft/app/src/api/SyncStorytellerApiConfig.ts"
+        },
+        {
+          "path": "NOTICE",
+          "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/NOTICE"
+        }
+      ]
+    },
+    {
+      "id": "artcraftx",
+      "sourceCommit": "2bcbdd1ac0c06666b7fb33fd240e5df0cc3dac86",
+      "sourceVersion": null,
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Experimental Tauri workspace for AI images, video, audio, meshes and worlds",
+        "Frontend-to-Rust communication through native Tauri IPC"
+      ],
+      "browser": {
+        "kind": "native-tauri-and-provider-services",
+        "sourceEntry": "frontend/apps/artcraft/app/index.html",
+        "manifest": "frontend/package.json",
+        "entryExists": true,
+        "staticDeployableArchitecture": false,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": ".",
+          "command": [
+            "bash",
+            "script/unix_dev.sh"
+          ],
+          "outputDirectory": null,
+          "rustMinimum": null,
+          "tooling": [
+            "See native/server setup documents"
+          ]
+        },
+        "runtimeRequirements": [
+          "Native Tauri host, Rust and Node/npm build dependencies",
+          "Configured external provider/service access for generation"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/artcraftx",
+        "releases": "https://github.com/storytold/artcraftx/releases",
+        "officialProductPage": null,
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The supplied interface requires the Rust/Tauri IPC backend; a Vite page by itself is not the complete application.",
+        "README labels it an early experimental release with builds forthcoming; source availability is not runtime readiness."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "launch",
+          "action": "Start the genuine Tauri frontend+Rust runtime.",
+          "expected": "Native IPC calls complete without mock replacements.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "generation",
+          "action": "Submit a consented bounded task through a configured provider.",
+          "expected": "The actual remote service returns a real output or a diagnosed provider error.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "save",
+          "action": "Save/open the resulting media with the native application.",
+          "expected": "A genuine artifact is available outside the app.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/artcraftx/blob/2bcbdd1ac0c06666b7fb33fd240e5df0cc3dac86/README.md"
+        },
+        {
+          "path": "frontend/apps/artcraft/app/index.html",
+          "url": "https://github.com/storytold/artcraftx/blob/2bcbdd1ac0c06666b7fb33fd240e5df0cc3dac86/frontend/apps/artcraft/app/index.html"
+        },
+        {
+          "path": "frontend/package.json",
+          "url": "https://github.com/storytold/artcraftx/blob/2bcbdd1ac0c06666b7fb33fd240e5df0cc3dac86/frontend/package.json"
+        }
+      ]
+    },
+    {
+      "id": "autocraft",
+      "sourceCommit": "0bcc1f8d681609233d2f6f0d1f4e359e994079e0",
+      "sourceVersion": null,
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Live issue/PR mirror and SQLite-backed dashboard",
+        "Authenticated operator/maintainer decisions and scoped GitHub writes",
+        "Model runner, sandboxed work and verification/merge pipeline"
+      ],
+      "browser": {
+        "kind": "persistent-node-service",
+        "sourceEntry": "web/index.html",
+        "manifest": "package.json",
+        "entryExists": true,
+        "staticDeployableArchitecture": false,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": ".",
+          "command": [
+            "node",
+            "src/cli.ts",
+            "dash",
+            "serve"
+          ],
+          "outputDirectory": null,
+          "rustMinimum": null,
+          "tooling": [
+            "See native/server setup documents"
+          ]
+        },
+        "runtimeRequirements": [
+          "Node24+ and pnpm",
+          "Persistent SQLite storage",
+          "GitHub sign-in configuration and approved repository access",
+          "Separate model runner and authenticated model accounts"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/autocraft",
+        "releases": "https://github.com/storytold/autocraft/releases",
+        "officialProductPage": null,
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The static `VITE_MOCK=1` build and web dev command intentionally use fixtures; those do not satisfy actual tool integration.",
+        "The real dashboard needs a persistent Node24+/SQLite server, OAuth/sign-in configuration, a separate runner and configured model accounts.",
+        "GitHub Pages cannot execute its server, runner, scheduled sync or approved repository writes."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "auth",
+          "action": "Sign in to the real server with a configured GitHub identity.",
+          "expected": "The session/roles are real and backed by the server.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "mirror",
+          "action": "Synchronise an explicitly approved test repository.",
+          "expected": "SQLite/dashboard records correspond to actual GitHub items.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "runner",
+          "action": "Run a bounded approved pipeline step with a configured model account.",
+          "expected": "The real runner records its result; fixture/mock data are absent.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "write-control",
+          "action": "Check a permitted test write and an unapproved write.",
+          "expected": "Only explicitly approved repository operations are performed and audited.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/autocraft/blob/0bcc1f8d681609233d2f6f0d1f4e359e994079e0/README.md"
+        },
+        {
+          "path": "web/index.html",
+          "url": "https://github.com/storytold/autocraft/blob/0bcc1f8d681609233d2f6f0d1f4e359e994079e0/web/index.html"
+        },
+        {
+          "path": "package.json",
+          "url": "https://github.com/storytold/autocraft/blob/0bcc1f8d681609233d2f6f0d1f4e359e994079e0/package.json"
+        },
+        {
+          "path": "web/README.md",
+          "url": "https://github.com/storytold/autocraft/blob/0bcc1f8d681609233d2f6f0d1f4e359e994079e0/web/README.md"
+        },
+        {
+          "path": "web/package.json",
+          "url": "https://github.com/storytold/autocraft/blob/0bcc1f8d681609233d2f6f0d1f4e359e994079e0/web/package.json"
+        },
+        {
+          "path": "docs/operations.md",
+          "url": "https://github.com/storytold/autocraft/blob/0bcc1f8d681609233d2f6f0d1f4e359e994079e0/docs/operations.md"
+        },
+        {
+          "path": "docs/pipeline.md",
+          "url": "https://github.com/storytold/autocraft/blob/0bcc1f8d681609233d2f6f0d1f4e359e994079e0/docs/pipeline.md"
+        }
+      ]
+    },
+    {
+      "id": "craft-launcher",
+      "sourceCommit": "cbe639c5927712db69ce43476509d5ee97dc2cad",
+      "sourceVersion": "0.19.2",
+      "inspectionStatus": "source and official release metadata inspected; no application executed by this audit",
+      "implementedFeatureGroups": [
+        "Native install/update/uninstall and launch of platform applications",
+        "Browser target: release catalog and platform download links only"
+      ],
+      "browser": {
+        "kind": "static-wasm",
+        "sourceEntry": "apps/artcraft-launcher-web/index.html",
+        "manifest": "apps/artcraft-launcher-web/Cargo.toml",
+        "entryExists": true,
+        "staticDeployableArchitecture": true,
+        "nativeFeatureParity": "documented gaps",
+        "build": {
+          "cwd": "apps/artcraft-launcher-web",
+          "command": [
+            "trunk",
+            "build",
+            "--release",
+            "--cargo-profile",
+            "wasm-release"
+          ],
+          "outputDirectory": "dist/web",
+          "rustMinimum": "1.95",
+          "tooling": [
+            "Rust wasm32-unknown-unknown target",
+            "Trunk or exact Cargo.lock-pinned wasm-bindgen CLI as indicated by the build command"
+          ]
+        },
+        "runtimeRequirements": [
+          "HTTPS or a localhost secure context",
+          "Browser with WebAssembly and the graphics backend documented by the tool",
+          "Original glue/worker/model/font/licence files from the same build"
+        ],
+        "integrationBridge": []
+      },
+      "publicLinks": {
+        "project": "https://github.com/storytold/craft-launcher",
+        "releases": "https://github.com/storytold/craft-launcher/releases",
+        "officialProductPage": null,
+        "runnablePublicDemoUrls": [],
+        "demoEvidence": "No runnable public demo URL was found in the inspected README/hosting docs. Official product pages and downloadable bundles are not labelled as running demos."
+      },
+      "documentedGaps": [
+        "The web build only shows release data/platform downloads; it cannot install, update or launch native applications.",
+        "The native local-mirror service can pull/build packages on an interval using `cargo xtask local serve --sync-every 1h`, but it requires a running native process and platform builds."
+      ],
+      "featureAcceptance": [
+        {
+          "id": "catalog",
+          "action": "Load actual release data and choose a platform.",
+          "expected": "Versions/downloads match the official repository releases.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "native-install",
+          "action": "Install a chosen verified platform build using the native launcher.",
+          "expected": "A real app is installed and launched, with an independently inspected version.",
+          "status": "not run by this audit"
+        },
+        {
+          "id": "native-update",
+          "action": "Update a practice installation while retaining user work.",
+          "expected": "The verified new binary runs and user files remain intact.",
+          "status": "not run by this audit"
+        }
+      ],
+      "sourceReferences": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/storytold/craft-launcher/blob/cbe639c5927712db69ce43476509d5ee97dc2cad/README.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/storytold/craft-launcher/blob/cbe639c5927712db69ce43476509d5ee97dc2cad/AGENTS.md"
+        },
+        {
+          "path": "packaging/web/README.md",
+          "url": "https://github.com/storytold/craft-launcher/blob/cbe639c5927712db69ce43476509d5ee97dc2cad/packaging/web/README.md"
+        },
+        {
+          "path": "packaging/web/package.sh",
+          "url": "https://github.com/storytold/craft-launcher/blob/cbe639c5927712db69ce43476509d5ee97dc2cad/packaging/web/package.sh"
+        },
+        {
+          "path": "apps/artcraft-launcher-web/index.html",
+          "url": "https://github.com/storytold/craft-launcher/blob/cbe639c5927712db69ce43476509d5ee97dc2cad/apps/artcraft-launcher-web/index.html"
+        },
+        {
+          "path": "apps/artcraft-launcher-web/Cargo.toml",
+          "url": "https://github.com/storytold/craft-launcher/blob/cbe639c5927712db69ce43476509d5ee97dc2cad/apps/artcraft-launcher-web/Cargo.toml"
+        }
+      ],
+      "releaseArtifact": {
+        "name": "craft-launcher",
+        "tag": "v0.19.2",
+        "releaseUrl": "https://github.com/storytold/craft-launcher/releases/tag/v0.19.2",
+        "webAssets": [
+          "https://github.com/storytold/craft-launcher/releases/download/v0.19.2/artcraft-launcher-web-0.19.2.zip"
+        ],
+        "status": "checksum-and-signature-verified",
+        "zipUrl": "https://github.com/storytold/craft-launcher/releases/download/v0.19.2/artcraft-launcher-web-0.19.2.zip",
+        "zipPath": "/workspace/build/storytold/releases/craft-launcher/v0.19.2/artcraft-launcher-web-0.19.2.zip",
+        "bytes": 4688318,
+        "sha256Expected": "e71260a99c1bd90dc0b379f5a455314d55e5aff7d372ffce5c6bbaec36d71c64",
+        "sha256Actual": "e71260a99c1bd90dc0b379f5a455314d55e5aff7d372ffce5c6bbaec36d71c64",
+        "checksumUrl": "https://github.com/storytold/craft-launcher/releases/download/v0.19.2/SHA256SUMS.txt",
+        "signatureUrl": "https://github.com/storytold/craft-launcher/releases/download/v0.19.2/SHA256SUMS.txt.asc",
+        "keyUrl": "https://github.com/storytold/craft-launcher/releases/download/v0.19.2/release-signing-key.asc",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "identityVerification": "Cryptographic signature checked using the public key supplied in the same official GitHub release; fingerprint not independently attested.",
+        "extractedRoot": "/workspace/build/storytold/releases/craft-launcher/v0.19.2/extracted",
+        "webRoot": "/workspace/build/storytold/releases/craft-launcher/v0.19.2/extracted/artcraft-launcher-web-0.19.2",
+        "fileCount": 13,
+        "expandedBytes": 10799354,
+        "largestFile": {
+          "path": "artcraft-launcher-web-0.19.2/artcraft-launcher-web-2f6718deaa657ee4_bg.wasm",
+          "bytes": 10556361
+        },
+        "licenceFiles": [
+          "artcraft-launcher-web-0.19.2/LICENSE-MIT",
+          "artcraft-launcher-web-0.19.2/NOTICE",
+          "artcraft-launcher-web-0.19.2/LICENSE-APACHE"
+        ],
+        "binaryExecution": "not executed by this audit"
+      }
+    }
+  ]
+}
