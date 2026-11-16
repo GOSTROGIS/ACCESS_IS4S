@@ -37,6 +37,15 @@ before a new manifest is published. For PhotoCraft v0.23.1, use the path in
 `hosting-fixes-report.json` to test the corrected distribution. Its extra
 snippet is copied from the verified archive.
 
+Run `verify-photocraft-browser.py` with the corrected app directory. The
+test environment needs Playwright, Pillow and `psd-tools`. The test opens a
+PNG in the real editor, paints on a separate layer, downloads and reopens a
+PSD, and compares the independently decoded PNG exports. Use
+`--chromium-executable` to select an installed browser if needed.
+
+[Application labs](lessons.md) cover the PhotoCraft and CADCraft editing,
+save/reopen and export workflows.
+
 ### Evidence from the handoff
 
 Seventeen real upstream web ZIPs were downloaded from official GitHub stable
