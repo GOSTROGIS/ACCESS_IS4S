@@ -1,0 +1,13 @@
+# Folder intranet
+
+This is a Windows folder deployment for use on the owning computer. `Start Intranet.cmd` opens the installed portal at `http://127.0.0.1:4180/` and starts the packaged SLIPCURVE service when present. Leave its console open while using the apps. `Open Native Applications.cmd` opens the folder of desktop launchers. Use the individual product folders for their standalone commands.
+
+The built portal serves the ACCESS site, the CONSULTING production site and each installed Storytold browser package. SLIPCURVE runs its own local server on port 4184. Each Storytold browser build has a persistent loopback port, which keeps its browser storage separate from the other tools. Keep using the same browser profile to reopen that profile's work. A copy of the folder does not carry browser storage. Use the application's save or export command to keep a portable copy of your work.
+
+The GridCraft and WordCraft links open same-origin workspaces with file controls for the genuine editors. The controls use Storytold's documented host bridge. Desktop launchers are available under `Storytold/native`. See the individual product folders for SLIPCURVE's server accounts, CONSULTING's standalone and Atlas MCP launchers, and AutoCraft's separate service prerequisites.
+
+This deployment listens on IPv4 loopback. The portal accepts only its exact loopback Host header and GET/HEAD requests. It exposes only the declared public asset directories and checks resolved paths before serving bytes. The Windows launchers start programs through the operating system. Downloaded web content has no process-launch endpoint. Native packages, credentials and private databases stay outside the portal's routes. Access from other devices, HTTPS and organization-managed sign-in require a separate network deployment.
+
+To recreate the browser installation, use `prepare.py` with a trusted Git archive of the ACCESS site, a verified stage from `import_releases.py`, the tested FilmCraft ZIP and its digest, the corrected PhotoCraft tree, and the verified Node.js executable and licence. Run it with Python 3.12 or later. Pass `--help` for the input paths. The tool keeps each app's version in its own directory and checks the copied files before writing the active browser inventory. New releases need functional verification before activation. The local folder does not configure a runtime update schedule.
+
+With the installed portal running, verify the served application routes and the static serving boundary by running `node verify.mjs <installed-folder>` from the source checkout. This checks real WASM headers and HTTP behavior. Use the application workflow regressions separately for editing, file round trips and exports.

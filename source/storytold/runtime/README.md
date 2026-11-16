@@ -115,6 +115,10 @@ browser file picker and bundle downloads.
 
 ## Hosting and integration plan
 
+For an owner-operated Windows folder, the [folder intranet](local-intranet/README.md)
+installs the existing ACCESS site and verified Storytold packages and serves them
+on loopback. Use the deployment checks below for an organization-wide network host.
+
 1. Serve each verified web distribution at its own versioned path, preserving
    all same-build files and licences. Use its relative-URL entry point. An
    IS4S shell may embed the real app, or the documented module/host bridge may

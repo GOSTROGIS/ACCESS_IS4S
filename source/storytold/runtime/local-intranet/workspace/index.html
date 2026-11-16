@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>ACCESS IS4S editor</title>
+  <link rel="stylesheet" href="workspace.css">
+  <script type="module" src="workspace.mjs"></script>
+</head>
+<body>
+  <header>
+    <h1 id="title">ACCESS IS4S editor</h1>
+    <div class="controls" aria-label="Document actions">
+      <button id="new" type="button" disabled>New</button>
+      <button id="open" type="button" disabled>Open file</button>
+      <label for="filename">File name</label>
+      <input id="filename" type="text" maxlength="120" autocomplete="off" disabled>
+      <button id="save" type="button" disabled>Save a copy</button>
+      <input id="file" type="file" hidden>
+    </div>
+    <p id="status" role="status">Starting the editor…</p>
+  </header>
+  <iframe id="editor" title="Document editor" allow="fullscreen; clipboard-read; clipboard-write"></iframe>
+</body>
+</html>
