@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the actual upstream FilmCraft WASM application without changing source or lockfiles.
+# Build FilmCraft WASM from the selected upstream checkout or IS4S worktree.
 # Usage: bash source/storytold/runtime/filmcraft-build.sh [SOURCE_CHECKOUT] [BUILD_ROOT]
 # Install prerequisites separately: Rust 1.95.0 + wasm32 target and wasm-bindgen-cli 0.2.129.
 set -euo pipefail
@@ -73,7 +73,7 @@ for name in ['filmcraft_web.js', 'filmcraft_web_bg.wasm']:
         build = ((build ^ byte) * 0x100000001b3) & 0xffffffffffffffff
 build_hash = f'{build:016x}'
 for path in (source / 'apps/filmcraft-web/web').iterdir():
-    if not path.is_file() or path.name.endswith('.attribution'):
+    if not path.is_file():
         continue
     if path.name == 'index.html':
         (dist / path.name).write_text(path.read_text().replace('__FC_BUILD__', build_hash))

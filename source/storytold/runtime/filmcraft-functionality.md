@@ -153,23 +153,6 @@ constructs a Rayon thread pool, even when configured for one worker. Browser
 wasm32 cannot create that OS thread. This is a demonstrated upstream runtime
 defect; no usable exported MP4 or full native parity has been established.
 
-`patches/filmcraft-wasm-encoder.patch` is a narrow proposed correction for that
-exact dependency revision. It selects the encoder's existing serial branches
-on wasm32 in `mod.rs`, `lookahead.rs` and `picture.rs`. It retains native
-parallel branches and all encoder profiles, rate control and file outputs.
-The patch passed `git apply --check` against the pinned source. **It has not
-been applied, rebuilt or browser-verified.** No Cargo cache was modified.
-
-To continue, copy the pinned craft-libs source to an isolated build overlay,
-apply the patch there, and use a Cargo patch for the video package. Preserve
-the Git source identity of `craft-media` dependencies when forming the local
-overlay; otherwise Rust sees different local/Git media types. Create any
-necessary updated lockfile only in a FilmCraft build fork, leaving the original
-source and original lock untouched. Record the exact dependency revision and
-patch hash, then rebuild and rerun import/playback/export. Require a nonempty
-MP4, `ffprobe` identifying H.264 and an independent complete FFmpeg decode
-before calling export fixed.
-
 Runtime evidence is outside the checkout:
 
 - `/workspace/build/storytold/filmcraft/release-runtime-check/report.json`
@@ -181,3 +164,61 @@ The first run without a trusted user gesture held the audio clock at zero;
 the gesture-enabled reruns advanced the playhead and isolated the distinct
 encoder failure. Project save/reopen was scheduled after the export gate and
 was not executed once export failed. No artifact was deployed or published.
+
+## ACCESS IS4S source build
+
+`patches/filmcraft-is4s.patch` moves the opt-in `craft-video/threads` feature
+to the native target dependency in FilmCraft's codec crate. The web target uses
+craft-video's existing serial implementation. Export and platform both depend
+on that codec crate, so the native feature also applies when building them
+individually. Cargo's target-specific feature resolution leaves the codec
+formats, Git revisions and lockfile intact. The same patch replaces the
+restricted branding artwork with ACCESS IS4S text and keeps upstream
+attribution and project links.
+
+Prepare an isolated worktree at the pinned FilmCraft revision. Use absolute
+paths and a build directory reserved for this variant.
+
+```sh
+filmcraft_commit=d6e78890f19baba37b062319fb45a1f2408a3450
+filmcraft_patch="$is4s/source/storytold/runtime/patches/filmcraft-is4s.patch"
+mkdir -p "$build"
+git -C "$filmcraft_clone" fetch origin "$filmcraft_commit"
+git -C "$filmcraft_clone" worktree add --detach "$build/source" "$filmcraft_commit"
+git -C "$build/source" apply --check "$filmcraft_patch"
+git -C "$build/source" apply "$filmcraft_patch"
+FILMCRAFT_SKIP_BUILD=0 bash "$is4s/source/storytold/runtime/filmcraft-build.sh" "$build/source" "$build"
+```
+
+The patched upstream browser smoke includes a trusted input gesture and uses
+a three-second 320×192, 24 fps H.264/AAC fixture. Serve a QA copy of the build
+on loopback, generate the fixture there, and run the smoke against that copy.
+
+```sh
+ffmpeg -f lavfi -i testsrc2=size=320x192:rate=24 \
+  -f lavfi -i sine=frequency=523:sample_rate=48000 -t 3 \
+  -c:v libx264 -pix_fmt yuv420p -c:a aac "$qa_web_root/web-test.mp4"
+node "$build/source/apps/filmcraft-web/tests/smoke.mjs" \
+  --url http://127.0.0.1:8765/ --media web-test.mp4 \
+  --chrome "$chrome" --out "$build/smoke"
+```
+
+The test trims the linked media, reopens the downloaded project, compares the
+saved tracks, and requires rendered playback after reopening. Export must
+produce a downloaded MP4 with no offline media or job error. FFprobe counts
+the decoded H.264 frames and identifies the AAC stream. FFmpeg decodes the full
+video and audio streams and checks that the audio contains signal. The
+upstream import-bin and collision checks also run.
+
+The updated regression reproduced the export failure on the checksum-pinned
+official v0.20.1 browser ZIP. It trimmed a 72-frame source to 60 frames,
+downloaded a 5,700-byte project, reopened it with matching video and audio
+tracks, and rendered 37 playback frames before export hit the thread-pool
+error.
+
+The official v0.20.1 Windows portable CLI ran the same import, trim, save,
+reopen and export workflow. FFprobe independently counted 60 H.264 frames
+at 320×192 and 118 AAC frames in the 605,853-byte, 2.517-second export.
+FFmpeg decoded both streams through the end without errors. This measured
+the native engine through its CLI. Streamed desktop access, native device
+input and organizational authentication require tests on the chosen host.
