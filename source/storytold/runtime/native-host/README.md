@@ -90,17 +90,23 @@ unknown ones rather than silently emulating amd64.
 
 The installer takes pinned release tags from `../app-targets.json`, obtains
 the actual matching native Linux tarballs, verifies the published checksum
-manifest's detached signature, and verifies the archive's exact SHA-256 before
-safe extraction. It retains the full package and its licences. Same-release
-public keys prove consistency with that published key; their fingerprints
-have not been independently attested. It never launches the app or declares
-feature readiness just because extraction succeeded.
+manifest's detached signature against the pinned signing fingerprint, and
+verifies the archive's SHA-256 before extraction. It retains the full package
+and its licences. For ArtCraft, the installer also verifies the pinned Linux
+archive digest and adds the upstream licences and `NOTICE` from the pinned
+release source because the Linux tarball omits them. Application launches
+and feature checks are separate from package verification.
 
-`--all` covers the targets with a recorded release tag. ArtCraft and
-ArtCraft-X need their actual Tauri runtime and provider setup; AutoCraft needs
-its real Node/SQLite server, identity and model runner. Those three are not
-installed by pretending their frontends are standalone native release
-tarballs. Install and validate their real services separately.
+`--all` covers targets with a recorded native release, including ArtCraft
+v0.41.1. ArtCraft needs the Linux Tauri system dependencies and configured
+provider accounts. ArtCraft-X needs a separate native source build and
+provider setup. AutoCraft needs its Node/SQLite server, identity and model
+runner. Install and validate those services on the approved host.
+
+The FigCraft release ships a desktop package and a separate
+`figcraft-server` package. `--app figcraft` selects the desktop binary.
+Deploy the server with the organization's access policy and secure
+WebSockets to verify cross-user collaboration.
 
 ## Native capability constraints
 

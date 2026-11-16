@@ -1702,6 +1702,7 @@
         "releaseUrl": "https://github.com/storytold/anicraft/releases/tag/v0.2.1",
         "webAssets": [],
         "status": "no-published-web-asset",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
         "reason": "No web ZIP listed in latest stable release.",
         "binaryExecution": "not executed by this audit",
         "fallback": "Compile the genuine upstream source with scripts/build-web.sh; do not substitute a lesson/demo canvas."
@@ -2685,7 +2686,22 @@
           "path": "NOTICE",
           "url": "https://github.com/storytold/artcraft/blob/69f53c2f0358a91a5e35e5a7b3a91677320c3112/NOTICE"
         }
-      ]
+      ],
+      "nativeReleaseArtifact": {
+        "tag": "artcraft-v0.41.1",
+        "releaseUrl": "https://github.com/storytold/artcraft/releases/tag/artcraft-v0.41.1",
+        "signingKeyFingerprint": "568DC1F68F8FAECC797F3C7B006DAF6BB0EF334E",
+        "sha256ByArchitecture": {
+          "x86_64": "149f9748ea33553177c021e1ade47a195fad25b881129d4178fe5bd922a94eb4",
+          "aarch64": "cb780e02e87234927d339c87dee03b224e1641320758be813d31d442d9a691ae"
+        },
+        "noticeCommit": "07ebde1454d4bc99f0d9add90618fb4d871f6b1d",
+        "noticeSha256": {
+          "LICENSE-MIT": "8ce608753585920ec5b61e8f324b0b205ca345e663a92850f4ef0b4240c3f49c",
+          "LICENSE-APACHE": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+          "NOTICE": "f35bd05c87611fd20746f6c354cf4f2b2a415382421f8e021e438c472707f2ea"
+        }
+      }
     },
     {
       "id": "artcraftx",

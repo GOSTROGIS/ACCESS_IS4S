@@ -28,8 +28,8 @@ def command(args):
 
 def fetch(url, destination):
     # curl's normal certificate verification is retained; only HTTPS is allowed.
-    command(['curl', '--fail', '--silent', '--show-error', '--location',
-             '--proto', '=https', '--tlsv1.2', '--max-time', '300',
+    command(['curl', '--disable', '--fail', '--silent', '--show-error', '--location',
+             '--proto', '=https', '--proto-redir', '=https', '--tlsv1.2', '--max-time', '300',
              url, '--output', str(destination)])
 
 
@@ -38,44 +38,77 @@ def sha256(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def verify_manifest(base, cache):
+def verify_manifest(base, cache, expected_fingerprint):
+    if not re.fullmatch(r'[A-F0-9]{40}', expected_fingerprint or ''):
+        raise RuntimeError('Missing pinned signing fingerprint')
     for filename in ['SHA256SUMS.txt', 'SHA256SUMS.txt.asc', 'release-signing-key.asc']:
         fetch(f'{base}/{filename}', cache / filename)
     with tempfile.TemporaryDirectory(prefix='gpg-', dir=cache) as temporary:
         Path(temporary).chmod(0o700)
-        command(['gpg', '--homedir', temporary, '--batch', '--import',
-                 str(cache / 'release-signing-key.asc')])
-        status = command(['gpg', '--homedir', temporary, '--batch', '--status-fd', '1',
+        gpg = ['gpg', '--no-options', '--homedir', temporary, '--batch', '--no-auto-key-retrieve']
+        command([*gpg, '--import', str(cache / 'release-signing-key.asc')])
+        status = command([*gpg, '--status-fd', '1',
                           '--verify', str(cache / 'SHA256SUMS.txt.asc'),
                           str(cache / 'SHA256SUMS.txt')])
-        valid = re.search(r'\[GNUPG:\] VALIDSIG ([A-F0-9]+)', status)
-        if not valid:
-            raise RuntimeError('Release checksum manifest did not produce a valid signature')
+        fingerprints = re.findall(r'^\[GNUPG:\] VALIDSIG ([A-F0-9]+)\s', status, flags=re.MULTILINE)
+        if expected_fingerprint not in fingerprints:
+            raise RuntimeError('Release checksum manifest did not match the pinned signing fingerprint')
     sums = {}
     for line in (cache / 'SHA256SUMS.txt').read_text().splitlines():
         match = re.fullmatch(r'([a-fA-F0-9]{64})\s+\*?(.+?)\s*', line)
         if match:
             sums[match.group(2).removeprefix('./')] = match.group(1).lower()
-    return sums, valid.group(1)
+    return sums
+
+
+def release_for(target):
+    return target.get('nativeReleaseArtifact') or target.get('releaseArtifact') or {}
+
+
+def include_notices(name, artifact, stage):
+    notices = artifact.get('noticeSha256')
+    if not notices:
+        return
+    commit = artifact.get('noticeCommit', '')
+    if not re.fullmatch(r'[a-f0-9]{40}', commit):
+        raise RuntimeError('Invalid notice source commit')
+    destination = stage / 'upstream-notices'
+    destination.mkdir()
+    for filename, checksum in notices.items():
+        if filename not in {'LICENSE-MIT', 'LICENSE-APACHE', 'NOTICE'}:
+            raise RuntimeError('Unknown notice file name')
+        path = destination / filename
+        fetch(f'https://raw.githubusercontent.com/storytold/{name}/{commit}/{filename}', path)
+        if sha256(path) != checksum:
+            raise RuntimeError(f'{name}: upstream notice differs from the pinned file')
 
 
 def install(target, architecture, root, cache_root, apply):
     name = target['id']
-    artifact = target.get('releaseArtifact') or {}
-    tag = artifact.get('tag')
-    if not re.fullmatch(r'[A-Za-z0-9_.-]+', name) or not re.fullmatch(r'v?\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?', tag or ''):
+    artifact = release_for(target)
+    tag = artifact.get('tag') or ''
+    version_tag = tag.removeprefix('artcraft-') if name == 'artcraft' else tag
+    if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', name) or not re.fullmatch(r'v?\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?', version_tag):
         raise RuntimeError(f'{name}: no supported pinned native release is recorded')
     base = f'https://github.com/storytold/{name}/releases/download/{tag}'
     cache = cache_root / name / tag
     cache.mkdir(parents=True, exist_ok=True)
-    sums, fingerprint = verify_manifest(base, cache)
-    candidates = [filename for filename in sums
-                  if filename.endswith(f'-linux-{architecture}.tar.gz')
-                  and not filename.startswith(f'{name}-cli-')]
-    if len(candidates) != 1:
-        raise RuntimeError(f'{name}: expected one published native Linux {architecture} tarball; found {len(candidates)}')
-    filename = candidates[0]
+    fingerprint = artifact.get('signingKeyFingerprint')
+    sums = verify_manifest(base, cache, fingerprint)
+    program = 'artcraft-launcher' if name == 'craft-launcher' else name
+    suffix = f'-linux-{architecture}.tar.gz'
+    filename = f'{program}-{version_tag.removeprefix("v")}{suffix}'
+    if filename not in sums:
+        candidates = [entry for entry in sums if entry.endswith(suffix)
+                      and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]+', entry)
+                      and not entry.startswith((f'{program}-cli-', f'{program}-server-'))]
+        if len(candidates) != 1:
+            raise RuntimeError(f'{name}: expected one published native Linux {architecture} app tarball; found {len(candidates)}')
+        filename = candidates[0]
     expected = sums[filename]
+    hashes = artifact.get('sha256ByArchitecture')
+    if hashes and hashes.get(architecture) != expected:
+        raise RuntimeError(f'{name}: signed archive checksum differs from the pinned architecture digest')
     print(f'{name}: signed manifest identifies {filename} SHA256={expected}', flush=True)
     if not apply:
         return
@@ -106,18 +139,18 @@ def install(target, architecture, root, cache_root, apply):
             if sum(member.size for member in members) > 4 * 1024 ** 3:
                 raise RuntimeError('Unexpected archive expansion; extraction refused')
             package.extractall(stage, filter='data')
-        program = 'artcraft-launcher' if name == 'craft-launcher' else name
         binaries = [p for p in stage.rglob(program)
                     if p.is_file() and p.parent.name == 'bin' and os.access(p, os.X_OK)]
         if len(binaries) != 1:
             raise RuntimeError(f'{name}: native executable was not found unambiguously; installation refused')
         executable_relative = binaries[0].relative_to(stage)
+        include_notices(name, artifact, stage)
         (stage / 'is4s-install-receipt.json').write_text(json.dumps({
             'repository': name, 'tag': tag, 'archive': filename,
             'sha256Expected': expected, 'sha256Actual': sha256(archive),
             'checksumManifest': base + '/SHA256SUMS.txt',
             'signingKeyFingerprint': fingerprint,
-            'signatureScope': 'Verified with the key published in the same official release, not independently attested',
+            'signatureScope': 'Signed checksum manifest matched the repository-pinned fingerprint',
             'executable': str(executable_relative),
             'runtimeValidation': 'Not launched or feature-tested by installer',
         }, indent=2) + '\n')
@@ -160,7 +193,7 @@ def main():
     if not architecture:
         parser.error('Only actual x86_64 or aarch64 Linux release targets are supported')
     targets = {item['id']: item for item in json.loads(args.targets.read_text())['targets']}
-    chosen = [name for name, target in targets.items() if target.get('releaseArtifact', {}).get('tag')] if args.all else args.app
+    chosen = [name for name, target in targets.items() if release_for(target).get('tag')] if args.all else args.app
     args.root.mkdir(parents=True, exist_ok=True)
     args.cache.mkdir(parents=True, exist_ok=True)
     failed = []
