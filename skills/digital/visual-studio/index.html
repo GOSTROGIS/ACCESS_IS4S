@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Visual practice studio · ACCESS IS4S</title>
+  <meta name="description" content="Plan a clear message, explore a room diagram, build a storyboard and check your evidence in the IS4S visual practice studio.">
+  <link rel="icon" href="../../../brand/is4s-badge.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../brand/site.css">
+  <link rel="stylesheet" href="studio.css">
+  <script type="module" src="studio.js"></script>
+</head>
+<body>
+<a class="studio-skip" href="#activity">Skip to activity</a>
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a href="../../../index.html"><img class="lockup" src="../../../brand/is4s-badge.svg" width="92" height="84" alt="ACCESS Indigenous Skills4Success"></a>
+    <div class="head-text">
+      <p class="crumb"><a href="../index.html">Digital</a> / AI and media literacy</p>
+      <h1>Visual practice studio</h1>
+      <p class="lede">Make a message people can see, understand and use.</p>
+    </div>
+  </div>
+</header>
+<main class="wrap studio-main">
+  <div class="studio-intro"><p>Explore, create and check your work.<br>Change something, see what happens, then explain your choice.</p><p id="save-status" role="status">Your work stays in this browser.</p></div>
+  <nav class="activity-nav" aria-label="Studio activities">
+    <button type="button" data-step="brief" aria-current="step"><span>01</span> Message brief</button>
+    <button type="button" data-step="diagram"><span>02</span> Room diagram</button>
+    <button type="button" data-step="shot"><span>03</span> Frame a shot</button>
+    <button type="button" data-step="story"><span>04</span> Storyboard</button>
+    <button type="button" data-step="review"><span>05</span> Check the evidence</button>
+    <button type="button" data-step="sources"><span>06</span> Tool library</button>
+  </nav>
+  <div id="activity" tabindex="-1">
+    <section id="brief" aria-labelledby="brief-title">
+      <div class="section-heading"><p class="eyebrow">Writing + Digital</p><h2 id="brief-title">Make your message fit the audience.</h2><p>Give a creator a useful brief. Your choices update the message below.</p></div>
+      <div class="workspace brief-workspace">
+        <div class="controls">
+          <label for="audience">Who needs the message?</label>
+          <select id="audience"><option value="learners">New learners</option><option value="facilitators">Facilitators</option><option value="community">Community visitors</option></select>
+          <label for="purpose">What should they do?</label>
+          <textarea id="purpose" rows="3" maxlength="400">Find the room and join the demonstration.</textarea>
+          <label for="medium">What will you make?</label>
+          <select id="medium"><option value="notice">A visual notice</option><option value="diagram">A labelled diagram</option><option value="video">A short video</option></select>
+          <details class="case-facts"><summary>Use these case facts</summary><ul><li>Fictional Community Learning Day</li><li>Tuesday, 10:00–12:00 · Training room A</li><li>12 learners; a small wooden birdhouse demonstration</li><li>Visitors need to find the entrance, seating and demonstration area.</li></ul><p>This is a classroom scenario, not an actual event.</p></details>
+          <p class="try-this"><strong>Try it:</strong> change the audience. Which detail becomes more useful?</p>
+        </div>
+        <figure class="scene-figure"><img src="assets/learning-day.png" alt="AI-generated illustration of adults discussing a wooden birdhouse prototype in a bright training room." width="1536" height="1024"><figcaption><span class="figure-label">Imagine the setting</span> Original AI-generated illustration of a fictional learning day. It does not prove room measurements, attendance or safe working practice.</figcaption></figure>
+      </div>
+      <div class="brief-output"><div><p class="eyebrow">Your working brief</p><h3 id="brief-output-title">A visual notice for new learners</h3><p id="brief-output-text"></p><p id="brief-output-check" class="muted"></p></div><button type="button" id="download-brief" class="secondary">Download brief</button></div>
+      <div class="next-action"><span>Next: turn an idea into a precise visual.</span><button type="button" data-go="diagram" class="primary">Explore the room diagram <span aria-hidden="true">→</span></button></div>
+    </section>
+    <section id="diagram" aria-labelledby="diagram-title" hidden>
+      <div class="section-heading"><p class="eyebrow">Numeracy + Creativity and innovation</p><h2 id="diagram-title">Move the furniture. Read the room.</h2><p>A picture suggests a setting. A diagram lets you inspect positions, counts and labels.</p></div>
+      <div class="workspace diagram-workspace">
+        <div class="controls"><label for="layout">Seating layout</label><select id="layout"><option value="groups">Small groups</option><option value="rows">Rows</option><option value="horseshoe">Horseshoe</option></select><label for="people">Learners</label><select id="people"><option value="8">8 learners</option><option value="12" selected>12 learners</option><option value="16">16 learners</option><option value="24">24 learners</option></select><fieldset><legend>Show information</legend><label class="check"><input id="labels" type="checkbox" checked> Room labels</label><label class="check"><input id="dimensions" type="checkbox" checked> Example dimensions</label><label class="check"><input id="route" type="checkbox" checked> Proposed rear route</label></fieldset><p class="try-this"><strong>Try it:</strong> compare 12 and 24 learners. Which layout makes it easier to see the demonstration?</p><button id="download-svg" class="secondary" type="button">Download your SVG</button></div>
+        <div class="diagram-stage"><div id="room-diagram"></div><p id="diagram-summary" role="status"></p><p class="muted">Schematic practice layout. The 8 m × 6 m room and routes are invented. This is not a scale drawing, capacity calculation or accessibility/code assessment.</p></div>
+      </div>
+      <div class="visual-principle"><span aria-hidden="true">A → B</span><p><strong>Use the right visual for the question.</strong> Use an illustration to discuss the setting. Use a labelled diagram to compare arrangements. Measure the real space before making a real plan.</p></div>
+      <div class="next-action"><span>Next: choose what your audience sees.</span><button data-go="shot" type="button" class="primary">Frame a shot <span aria-hidden="true">→</span></button></div>
+    </section>
+    <section id="story" aria-labelledby="story-title" hidden>
+      <div class="section-heading"><p class="eyebrow">Communication + Creativity and innovation</p><h2 id="story-title">Show it in a sequence.</h2><p>Choose a visual, write one clear caption, then set the time. Reorder frames to change your explanation.</p></div>
+      <div class="story-tools"><p><strong id="story-total">15 seconds</strong> <span id="frame-count">· 3 frames</span></p><div><button id="add-frame" type="button" class="secondary">Add frame</button><button id="play-story" type="button" class="primary">Preview sequence</button></div></div>
+      <div id="story-frames" class="story-frames"></div>
+      <div id="preview" class="sequence-preview" hidden><div><span class="eyebrow" id="preview-position"></span><button id="stop-story" type="button" class="secondary">Stop preview</button></div><div id="preview-visual"></div><p id="preview-caption" role="status"></p></div>
+      <div id="timeline" class="timeline" role="img" aria-label="Storyboard timing"></div>
+      <p class="try-this"><strong>Try it:</strong> choose the prototype close-up for one frame. A wide shot shows the setting; a close-up directs attention to a detail. Which order helps your audience?</p>
+      <p class="muted">This is a timed storyboard preview, not an exported video. Both illustrations are AI-generated; the diagram and notice are drawn locally. Captions stay editable.</p>
+      <div class="next-action"><span>Next: decide what you can trust.</span><button type="button" data-go="review" class="primary">Check the evidence <span aria-hidden="true">→</span></button></div>
+    </section>
+    <section id="review" aria-labelledby="review-title" hidden>
+      <div class="section-heading"><p class="eyebrow">Reading + Problem solving</p><h2 id="review-title">A convincing image is not proof.</h2><p>Choose the evidence that supports each claim. Get feedback, then revise your work.</p></div>
+      <div class="review-layout"><figure class="scene-figure"><img src="assets/learning-day.png" width="1536" height="1024" alt="The same fictional AI-generated training-room illustration, shown for evidence review." loading="lazy"><figcaption>Look closely. The image helps you imagine an activity. What facts can it actually establish?</figcaption></figure><form id="review-form"><fieldset><legend>1. “This real room can safely hold 24 people.”</legend><label class="check"><input type="radio" name="capacity" value="image"> The generated room image</label><label class="check"><input type="radio" name="capacity" value="measured"> A measured plan and the applicable occupancy requirements</label></fieldset><fieldset><legend>2. “Our fictional demonstration starts at 10:00.”</legend><label class="check"><input type="radio" name="time" value="brief"> The supplied case facts</label><label class="check"><input type="radio" name="time" value="guess"> A clock or sign invented by an image tool</label></fieldset><fieldset><legend>3. “A learner can follow my explanation.”</legend><label class="check"><input type="radio" name="clarity" value="polish"> The images look professional</label><label class="check"><input type="radio" name="clarity" value="test"> Ask a learner to use it and observe where they get stuck</label></fieldset><button class="primary" type="submit">Check my choices</button><div id="review-feedback" aria-live="polite"></div></form></div>
+      <label for="reflection">What would you check or change before sharing?</label><textarea id="reflection" rows="3" maxlength="1500" placeholder="Name one claim, the evidence you need, and one improvement."></textarea>
+      <div class="next-action"><span>Keep your editable work and your next step.</span><button type="button" id="download-project" class="primary">Download studio project</button></div>
+    </section>
+    <section id="shot" aria-label="Shot framing workshop" hidden><div id="shot-workshop"></div><div class="next-action"><span>Next: explain a sequence, one frame at a time.</span><button type="button" data-go="story" class="primary">Build a storyboard <span aria-hidden="true">→</span></button></div></section>
+    <section id="sources" aria-labelledby="sources-title" hidden><div class="section-heading"><p class="eyebrow">Digital + Creativity and innovation</p><h2 id="sources-title">Choose a workflow. Explore the tools.</h2><p>Practise six visual workflows adapted from Artcraft, then explore Storytold’s source collection by task.</p></div><div id="source-library"></div></section>
+  </div>
+  <section class="studio-footer" aria-labelledby="keep-work"><div><h2 id="keep-work">Keep your work. Keep learning.</h2><p>Your choices are saved on this browser when storage is available. Download a project to move your work to another device.</p><div class="file-actions"><button type="button" id="save-project" class="secondary">Download project</button><label class="file-button secondary" for="import-project">Open a saved project<input id="import-project" type="file" accept=".json,application/json"></label><button type="button" id="reset-request" class="quiet">Start again</button></div><p id="file-status" role="status"></p><div id="reset-confirm" hidden><p>Clear this studio’s saved work? Other IS4S activities will be kept.</p><button type="button" id="reset-confirmed" class="secondary">Clear this studio</button><button type="button" id="reset-cancel" class="quiet">Keep working</button></div></div><div class="related"><h3>Use this in a lesson</h3><a href="../ai-literacy/learner.html">AI and media literacy</a><a href="../../writing/lessons/10-site-memo-and-short-report/learner.html" id="writing-lesson-link">Writing a clear message</a><a href="../../communication/index.html">Communication</a><a href="../../creativity-innovation/index.html">Creativity and innovation</a><details><summary>About these materials</summary><p>Original ACCESS IS4S practice activities. Illustration generated with AI; diagrams are editable vector graphics. No live AI generation or external account is needed. The framing workshop adapts Artcraft viewport code and documented visual workflows, with source attribution and an <a href="vendor/ARTCRAFT-LICENSE-MIT.txt">MIT licence</a>. <a href="vendor/ARTCRAFT-NOTICE.txt">Upstream notices</a> identify material outside that licence. The tool library records downloaded source; the complete upstream apps and paid AI services are not embedded here.</p></details></div></section>
+  <noscript><p>This studio needs JavaScript. You can still use the <a href="../ai-literacy/learner.html">AI and media literacy reading activities</a>.</p></noscript>
+</main>
+<footer class="site-foot"><div class="wrap"><p>ACCESS Indigenous Skills4Success · Practise. Check. Improve.</p></div></footer>
+</body>
+</html>

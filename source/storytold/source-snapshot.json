@@ -1,0 +1,664 @@
+{
+  "retrieved": "2026-11-16",
+  "source": "https://github.com/orgs/storytold/repositories?type=all",
+  "repositoryCount": 82,
+  "scope": "Public repository default branches, shallow clones; Git LFS media downloads skipped. No upstream code executed.",
+  "repositories": [
+    {
+      "name": "ActorSpawningPlugin",
+      "url": "https://github.com/storytold/ActorSpawningPlugin",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "b920a363b0ab473f5ced3d4e772dc401831a87c9"
+    },
+    {
+      "name": "anicraft",
+      "url": "https://github.com/storytold/anicraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "38541642cbc25a32181e02d412f9c04efdc3df00"
+    },
+    {
+      "name": "AnimationTest",
+      "url": "https://github.com/storytold/AnimationTest",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "71e1c2111866fd65b4b9b215794de14459a8eeda"
+    },
+    {
+      "name": "artcraft",
+      "url": "https://github.com/storytold/artcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "69f53c2f0358a91a5e35e5a7b3a91677320c3112"
+    },
+    {
+      "name": "artcraft-services",
+      "url": "https://github.com/storytold/artcraft-services",
+      "listed_license": "Other",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "4c72ed543753f4ef71d75691e3c106c294b77cbd"
+    },
+    {
+      "name": "artcraftx",
+      "url": "https://github.com/storytold/artcraftx",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "2bcbdd1ac0c06666b7fb33fd240e5df0cc3dac86"
+    },
+    {
+      "name": "autocraft",
+      "url": "https://github.com/storytold/autocraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "0bcc1f8d681609233d2f6f0d1f4e359e994079e0"
+    },
+    {
+      "name": "Azure-Kinect-Sample-for-Unity",
+      "url": "https://github.com/storytold/Azure-Kinect-Sample-for-Unity",
+      "listed_license": "MIT License",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "bdc6061b425e62b7e661004345303199c9a5fe60"
+    },
+    {
+      "name": "bevy-mocap",
+      "url": "https://github.com/storytold/bevy-mocap",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "e115330cd3f23543a1f145ba10ca5e9038a1d22f"
+    },
+    {
+      "name": "cadcraft",
+      "url": "https://github.com/storytold/cadcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "16341b665fa358d6fa1847e4f2325b5a5b0ec037"
+    },
+    {
+      "name": "cadcraft-corpus",
+      "url": "https://github.com/storytold/cadcraft-corpus",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "fde57bc9e8c71c7c2d33a410edafa1afe44cae24"
+    },
+    {
+      "name": "cloud-worker",
+      "url": "https://github.com/storytold/cloud-worker",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "e375345bf6109a23425f8a8c2d35fee79eb062c7"
+    },
+    {
+      "name": "cloudcam",
+      "url": "https://github.com/storytold/cloudcam",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "497d941746fdd168a579623bbb7a29c8ecd2ef0f"
+    },
+    {
+      "name": "CloudCamPlugin",
+      "url": "https://github.com/storytold/CloudCamPlugin",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "50cd9a3870bb699740d88db93fb3b17060ded183"
+    },
+    {
+      "name": "craft-ai-integrations",
+      "url": "https://github.com/storytold/craft-ai-integrations",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "d94a3593adcff504eaaad9e5aee4c84fd2f07a72"
+    },
+    {
+      "name": "craft-anything",
+      "url": "https://github.com/storytold/craft-anything",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "88b2490892e26f49c9cfb6eb277b7b8819ece885"
+    },
+    {
+      "name": "craft-common-actions",
+      "url": "https://github.com/storytold/craft-common-actions",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "59d1ecc4ea15ab59f8d60d38b147d5016c1f1385"
+    },
+    {
+      "name": "craft-contrib",
+      "url": "https://github.com/storytold/craft-contrib",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "f7502233f8e0c8e40d75bc4afd717a4232b0bd89"
+    },
+    {
+      "name": "craft-extensions",
+      "url": "https://github.com/storytold/craft-extensions",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "964c71574affa68da560a19d0efc4bb1f0263aee"
+    },
+    {
+      "name": "craft-fonts",
+      "url": "https://github.com/storytold/craft-fonts",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "cc9269cd8d8258785dac603fba3122e5d2556795"
+    },
+    {
+      "name": "craft-i18n",
+      "url": "https://github.com/storytold/craft-i18n",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "866aff71dd63d8369eb100b9c432b5af1400c22a"
+    },
+    {
+      "name": "craft-launcher",
+      "url": "https://github.com/storytold/craft-launcher",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "cbe639c5927712db69ce43476509d5ee97dc2cad"
+    },
+    {
+      "name": "craft-launcher-assets",
+      "url": "https://github.com/storytold/craft-launcher-assets",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "8619bdedefbddd71963ec3de872d7baa98b289ab"
+    },
+    {
+      "name": "craft-libs",
+      "url": "https://github.com/storytold/craft-libs",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "692a7fe5c95947e11850eeefc4e071623d4bbf47"
+    },
+    {
+      "name": "craft-pr-review-tool",
+      "url": "https://github.com/storytold/craft-pr-review-tool",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "197a26dc9f03825bfb72b8e2cc376af87b54e4d8"
+    },
+    {
+      "name": "craft-repo-status-app",
+      "url": "https://github.com/storytold/craft-repo-status-app",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "b35f4913eb0015480660441e5e59fdfdc8d24ec8"
+    },
+    {
+      "name": "craft-skills",
+      "url": "https://github.com/storytold/craft-skills",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "2a55dce3b5b42c3da4ab09bb084a7889bdd0a0fd"
+    },
+    {
+      "name": "craft-wiki",
+      "url": "https://github.com/storytold/craft-wiki",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "63468221cbfbd89a067f084594c680d5d3bb0aa3"
+    },
+    {
+      "name": "crafthub",
+      "url": "https://github.com/storytold/crafthub",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "ca18a5727075044599a13421b73bb63476440b84"
+    },
+    {
+      "name": "deckcraft",
+      "url": "https://github.com/storytold/deckcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "f9bc097b4ef92e6b39725ea94716a5787e6565fc"
+    },
+    {
+      "name": "designcraft",
+      "url": "https://github.com/storytold/designcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "47ef1ec411d53e98a31c576d80a1d0e20ef5eb04"
+    },
+    {
+      "name": "discord-github-ticket-relay",
+      "url": "https://github.com/storytold/discord-github-ticket-relay",
+      "listed_license": "MIT License",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "a646422b0e4ff1e8b710c759718d3852f9bf4a73"
+    },
+    {
+      "name": "discord-vocodes",
+      "url": "https://github.com/storytold/discord-vocodes",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "03b2e1e2fbf064f51287410b11d023c3997abb3e"
+    },
+    {
+      "name": "effectcraft",
+      "url": "https://github.com/storytold/effectcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "91f9e9b1ef1185f4561b21465e83e5387f40c8a1"
+    },
+    {
+      "name": "effectcraft-corpus",
+      "url": "https://github.com/storytold/effectcraft-corpus",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "97262276f625afdeeb61787e4cbb74b3f17af510"
+    },
+    {
+      "name": "egui",
+      "url": "https://github.com/storytold/egui",
+      "listed_license": "Apache License 2.0",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "faa2876b9fda5996fec5cdeb0b9d6a5d12b1eb85"
+    },
+    {
+      "name": "EventCenterPlugin",
+      "url": "https://github.com/storytold/EventCenterPlugin",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "c69a1a3ef5b87f491c82fe0a067fa773c79966f4"
+    },
+    {
+      "name": "fakeyou-recast",
+      "url": "https://github.com/storytold/fakeyou-recast",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "8e65d3a2f18e3e8ec2742cd83de1945e5d4b64f4"
+    },
+    {
+      "name": "figcraft",
+      "url": "https://github.com/storytold/figcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "4548d6c00953dd051ee36af3bada376d1a80d05c"
+    },
+    {
+      "name": "filmcraft",
+      "url": "https://github.com/storytold/filmcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "d6e78890f19baba37b062319fb45a1f2408a3450"
+    },
+    {
+      "name": "FineTrainers-Conditioning",
+      "url": "https://github.com/storytold/FineTrainers-Conditioning",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "8c17c3a7333e75c718d17652c0088935c95db4af"
+    },
+    {
+      "name": "font-preview-service",
+      "url": "https://github.com/storytold/font-preview-service",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "d5448ceb4cba039bec4b254e23ea037f67229c20"
+    },
+    {
+      "name": "github-media",
+      "url": "https://github.com/storytold/github-media",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "22a27373707b13f48fc56405f1f89ca143c43d5d"
+    },
+    {
+      "name": "gridcraft",
+      "url": "https://github.com/storytold/gridcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "abcfc191533519dde56bfea65fd1d84e0df6f489"
+    },
+    {
+      "name": "hanashi-graphics-demo",
+      "url": "https://github.com/storytold/hanashi-graphics-demo",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "86ffdb51a880023fe999c40b9519ee425c746cba"
+    },
+    {
+      "name": "harfbuzz",
+      "url": "https://github.com/storytold/harfbuzz",
+      "listed_license": "Other",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "f6b7a4cb7216b900229f0a11110784d5ff9cf796"
+    },
+    {
+      "name": "html_test",
+      "url": "https://github.com/storytold/html_test",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "078e8ac11b4ffb970849664f6935a802de2e3377"
+    },
+    {
+      "name": "HyperJail",
+      "url": "https://github.com/storytold/HyperJail",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "37ff28a2798fc0264d3b8254849da1d7e244652e"
+    },
+    {
+      "name": "indd-utils",
+      "url": "https://github.com/storytold/indd-utils",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "136f973a9d5f1b3ef34e46e27f4a08af196efde7"
+    },
+    {
+      "name": "irsa-manager",
+      "url": "https://github.com/storytold/irsa-manager",
+      "listed_license": "MIT License",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "22b2a64dadf0846def74e24c438ff5abcaa1e62c"
+    },
+    {
+      "name": "k4a-sys-temp",
+      "url": "https://github.com/storytold/k4a-sys-temp",
+      "listed_license": "MIT License",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "ffc38156faca14a44fb2c489049c8bf9d4959f5a"
+    },
+    {
+      "name": "lightcraft",
+      "url": "https://github.com/storytold/lightcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "41d68830857f37655b7a7277dc986dc109759c56"
+    },
+    {
+      "name": "LiveScan3D",
+      "url": "https://github.com/storytold/LiveScan3D",
+      "listed_license": "MIT License",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "a65c5ab9b80efda7176e817930668086545c2072"
+    },
+    {
+      "name": "materialcraft",
+      "url": "https://github.com/storytold/materialcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "c382a005f0487eb8270f70f7272a325bcad028a2"
+    },
+    {
+      "name": "motion-capture-data",
+      "url": "https://github.com/storytold/motion-capture-data",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "a6e477b5b113eb478ad4c7e5044c5c7060c77148"
+    },
+    {
+      "name": "pdfcraft",
+      "url": "https://github.com/storytold/pdfcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "efd265563edfe1b5a3261b184fbc4c83f67f4364"
+    },
+    {
+      "name": "photocraft",
+      "url": "https://github.com/storytold/photocraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "02e9907f683bcda0e8a3de4865a914f6aa9280c1"
+    },
+    {
+      "name": "photocraft-corpus",
+      "url": "https://github.com/storytold/photocraft-corpus",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "c3abfc1c794409a71ade6a22283caab4ba4d2aa8"
+    },
+    {
+      "name": "placeholder-artcraft",
+      "url": "https://github.com/storytold/placeholder-artcraft",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "0daf83dba9b36e2d9a870114cb12ec873913bd58"
+    },
+    {
+      "name": "point-generator",
+      "url": "https://github.com/storytold/point-generator",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "29938fd712e474a9a968f8a735080ecca708c8bd"
+    },
+    {
+      "name": "realtime-voice-conversion",
+      "url": "https://github.com/storytold/realtime-voice-conversion",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "4a222ad81553153e4f5aceb97fb9d046c16ef87a"
+    },
+    {
+      "name": "redirect-vocodes",
+      "url": "https://github.com/storytold/redirect-vocodes",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "4fba73d4192b381feecca9921a151209ae4ee546"
+    },
+    {
+      "name": "RuntimeAudioImporter",
+      "url": "https://github.com/storytold/RuntimeAudioImporter",
+      "listed_license": "MIT License",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "2ecfcee44daccc6dcffd7533f7455fa2f5498c33"
+    },
+    {
+      "name": "RuntimeFilesDownloader",
+      "url": "https://github.com/storytold/RuntimeFilesDownloader",
+      "listed_license": "MIT License",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "1a8e141d657f26d56208f2f503dd4b3e7a5aaaff"
+    },
+    {
+      "name": "soundcraft",
+      "url": "https://github.com/storytold/soundcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "648ed9db9a0e98cc55643babffac381521a556c8"
+    },
+    {
+      "name": "spark",
+      "url": "https://github.com/storytold/spark",
+      "listed_license": "MIT License",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "2697021c2ee567508a76f10f704ee329706060d3"
+    },
+    {
+      "name": "storyteller-bevy",
+      "url": "https://github.com/storytold/storyteller-bevy",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "9baf1fef3b099be0ef739ef342ebc3568a87ba8b"
+    },
+    {
+      "name": "storyteller-ml",
+      "url": "https://github.com/storytold/storyteller-ml",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "6486cace0d78a45243ab1c504046cbd491143c18"
+    },
+    {
+      "name": "StreamTwo",
+      "url": "https://github.com/storytold/StreamTwo",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "d3a1270b417a0929ba2d533fa2b0c25ab8f36db2"
+    },
+    {
+      "name": "terraform-aws-observability-accelerator",
+      "url": "https://github.com/storytold/terraform-aws-observability-accelerator",
+      "listed_license": "Apache License 2.0",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "dd830eb5a3f26de9b068726665744681a55aa737"
+    },
+    {
+      "name": "texturecraft",
+      "url": "https://github.com/storytold/texturecraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "62b2b13fdd32740b6e118cd00c5e0d0c12b30815"
+    },
+    {
+      "name": "torchscript-models",
+      "url": "https://github.com/storytold/torchscript-models",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "d012036a05c8d31ba6e09d9b45f8185b279f28cc"
+    },
+    {
+      "name": "UE4-OSC",
+      "url": "https://github.com/storytold/UE4-OSC",
+      "listed_license": "MIT License",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "a17317cd5b2066b5d66aa4dcbbd561916345d49a"
+    },
+    {
+      "name": "UnrealZeroMQ",
+      "url": "https://github.com/storytold/UnrealZeroMQ",
+      "listed_license": null,
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "b916bda40c72d3810bf345b257a864e9e06463ce"
+    },
+    {
+      "name": "vectorcraft",
+      "url": "https://github.com/storytold/vectorcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "e142c5fceee014ba9ff7fc4c17bcce7e8365e286"
+    },
+    {
+      "name": "vits-finetuning",
+      "url": "https://github.com/storytold/vits-finetuning",
+      "listed_license": "MIT License",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "b1e03bee38e0d28c0cb420e5cb4e653e4643506c"
+    },
+    {
+      "name": "voder-proxy",
+      "url": "https://github.com/storytold/voder-proxy",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "e4ee56e0dc3263005755604a3d871e83fb889147"
+    },
+    {
+      "name": "wgpu",
+      "url": "https://github.com/storytold/wgpu",
+      "listed_license": "Apache License 2.0",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "c963b26abd9db81ae44d108350f8841af4cb0d97"
+    },
+    {
+      "name": "winit",
+      "url": "https://github.com/storytold/winit",
+      "listed_license": "Apache License 2.0",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "7f66c996e6a565a8dfd47c452480bc40294c81b7"
+    },
+    {
+      "name": "winprint.rs",
+      "url": "https://github.com/storytold/winprint.rs",
+      "listed_license": "BSD 3-Clause \"New\" or \"Revised\" License",
+      "isFork": true,
+      "status": "downloaded",
+      "commit": "8ae097ef941b432b0e7671b1ec3a506800e65e57"
+    },
+    {
+      "name": "wordcraft",
+      "url": "https://github.com/storytold/wordcraft",
+      "listed_license": "Apache License 2.0",
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "de977bcde6126f07b06bddfa2653c0dad6c44f85"
+    },
+    {
+      "name": "xsens-packet-send",
+      "url": "https://github.com/storytold/xsens-packet-send",
+      "listed_license": null,
+      "isFork": false,
+      "status": "downloaded",
+      "commit": "a1c4b9fa2791bc04ce06b3a47d2049fa077465cb"
+    }
+  ]
+}

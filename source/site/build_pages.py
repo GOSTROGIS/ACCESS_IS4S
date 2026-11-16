@@ -226,6 +226,9 @@ def chapter_cards(slug, prefix=''):
 
 EXTRAS = {
     'digital': [
+        ('Visual learning studio', 'visual-studio/index.html',
+         'Build a visual brief, explore a live SVG, frame an image and create a storyboard. Includes a source-backed creative tool library.',
+         [('Open the studio', 'visual-studio/index.html'), ('Explore the tools', 'visual-studio/index.html#sources')]),
         ('Build a site through time', 'site-builder/index.html',
          'Place Slipcurve objects, compare layouts across time and save a fictional site plan.',
          [('Open site builder', 'site-builder/index.html'), ('Teaching guide', 'site-builder/guide.html')]),
@@ -244,6 +247,20 @@ if (REPO / 'skills/writing/resume-builder/index.html').exists():
         ('Résumé and cover letter builder', 'resume-builder/',
          'Build an ATS-safe trades résumé and cover letter, match it to a job posting, and download Word or PDF. Your work stays in your browser.',
          [('Open the builder', 'resume-builder/')])]
+
+# One shared studio connects visual practice to the skill being developed.
+# Cross-skill links become online links in each section's offline download.
+for slug, title, text in (
+    ('writing', 'Write a clear visual brief',
+     'Turn a purpose, audience and key details into a brief someone else can use.'),
+    ('communication', 'Explain an idea visually',
+     'Choose what your audience needs to see and organise a short visual explanation.'),
+    ('creativity-innovation', 'Try, compare and improve a visual idea',
+     'Explore visual choices, test an explanation and revise it for your audience.'),
+):
+    EXTRAS.setdefault(slug, []).append(
+        (title, '../digital/visual-studio/index.html', text,
+         [('Open the visual learning studio', '../digital/visual-studio/index.html')]))
 
 
 def books_section(root):
@@ -274,7 +291,8 @@ def build_hub():
         if slug == 'numeracy':
             items += [('Numeracy Hub', 'skills/numeracy/hub/'), ('Shape Canvas', 'skills/numeracy/shape-canvas/')]
         if slug == 'digital':
-            items += [('AI lessons', 'skills/digital/ai-literacy/learner.html')]
+            items += [('AI lessons', 'skills/digital/ai-literacy/learner.html'),
+                      ('Visual learning studio', 'skills/digital/visual-studio/index.html')]
         if slug == 'writing' and (REPO / 'skills/writing/resume-builder/index.html').exists():
             items += [('Résumé builder', 'skills/writing/resume-builder/')]
         cards.append(card(f'<span class="num">{i}</span>{e(name)}', f'skills/{slug}/', subtitle(t), items))
@@ -301,6 +319,33 @@ def build_hub():
 
 
 LESSON_ROLES = (('learner', 'Learner'), ('instructor', 'Instructor'), ('answers', 'Answers'))
+
+# Optional practice beside the lesson, without replacing its curriculum text.
+VISUAL_PRACTICE = {
+    ('digital', '10-short-presentation'): (
+        'story', 'Plan a visual story with a clear beginning, middle and ending.',
+        'Try the storyboard activity'),
+    ('writing', '10-site-memo-and-short-report'): (
+        'brief', 'Choose the audience, purpose and key details before writing your memo or report.',
+        'Build a clear brief'),
+    ('creativity-innovation', '10-sketch-your-idea'): (
+        'diagram', 'Explore how a labelled diagram helps another person understand your idea.',
+        'Explore a visual explanation'),
+    ('communication', '08-toolbox-talk'): (
+        'story', 'Plan what to show during your talk and put the key points in a useful order.',
+        'Plan the visuals for your talk'),
+}
+
+
+def visual_practice(slug, folder, role):
+    activity = VISUAL_PRACTICE.get((slug, folder)) if role == 'learner' else None
+    if not activity:
+        return ''
+    anchor, benefit, label = activity
+    href = f'../../../digital/visual-studio/index.html#{anchor}'
+    return ('<aside class="card gold" aria-labelledby="visual-practice-title">'
+            '<h2 id="visual-practice-title">Try it in the visual practice studio</h2>'
+            f'<p>{e(benefit)}</p><p><a href="{e(href)}">{e(label)}</a></p></aside>')
 
 
 def front(text):
@@ -384,7 +429,7 @@ def build_lessons(slug, name, i):
             page(f'{base}/{role}.html', f'{fm.get("title", folder)} · {label} · {name}', f'{name} · Lesson {folder[:2]} · {label}',
                  fm.get('title', folder), e(fm.get('summary', '')),
                  f'<nav aria-label="Lesson pages"><ul class="lesson-tabs">{tabs}</ul><ul class="lesson-meta">{meta}</ul></nav>'
-                 f'<article class="prose">{md_html(body)}</article>{steps}',
+                 f'{visual_practice(slug, folder, role)}<article class="prose">{md_html(body)}</article>{steps}',
                  crumb=(f'← {name}', '../../index.html'))
         items = [(l, f'lessons/{folder}/{r}.html') for r, l in LESSON_ROLES if (REPO / base / f'{r}.md').exists()]
         lvl = f' · Level {fm["level"]}' if fm.get('level') else ''
