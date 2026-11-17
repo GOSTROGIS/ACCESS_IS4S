@@ -45,6 +45,9 @@ def inventory(path):
 
 
 def install_tree(source, destination, workspace=None):
+    destination = destination.absolute()
+    if destination.resolve() != destination:
+        raise ValueError('Runtime destination or an ancestor is redirected')
     expected = inventory(source)
     if workspace:
         auxiliary = {f'access-workspace/{name}': checksum for name, checksum in inventory(SOURCE / 'workspace').items()}
@@ -144,7 +147,8 @@ def deploy(args):
     if not installed_node.is_file() or digest(installed_node) != args.node_sha256:
         shutil.copyfile(args.node / 'node.exe', installed_node)
     shutil.copyfile(args.node / 'LICENSE', tools / 'node-LICENSE.txt')
-    for filename in ['index.html', 'portal.css', 'portal.mjs', 'intranet.mjs', 'Start Intranet.cmd', 'Open Native Applications.cmd', 'README.md']:
+    for filename in ['index.html', 'portal.css', 'portal.mjs', 'intranet.mjs', 'runtime-state.mjs',
+                     'Start Intranet.cmd', 'Open Native Applications.cmd', 'README.md']:
         shutil.copyfile(SOURCE / filename, args.destination / filename)
     pointer = args.destination / 'installed-web.json'
     candidate = pointer.with_suffix('.tmp')

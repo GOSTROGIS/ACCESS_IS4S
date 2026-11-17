@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { parseArgs, promisify } from 'node:util';
 import { createMessage, readKey, readSignature, verify } from 'openpgp';
 
@@ -30,7 +31,7 @@ function releaseFiles(target) {
   return { files, urls, zip };
 }
 
-async function download(url, destination, maxBytes) {
+export async function download(url, destination, maxBytes) {
   // Keep normal TLS validation and prevent release redirects to another protocol.
   await run('curl', ['--disable', '--fail', '--silent', '--show-error', '--location', '--max-redirs', '5',
     '--proto', '=https', '--proto-redir', '=https', '--connect-timeout', '20', '--max-time', '300',
@@ -38,7 +39,7 @@ async function download(url, destination, maxBytes) {
   if ((await stat(destination)).size > maxBytes) throw new Error('Release asset exceeds its size limit');
 }
 
-async function verifyArchive(directory, files, zip, pin) {
+export async function signedChecksum(directory, files, asset, fingerprint) {
   const [checksums, signature, key] = await Promise.all([
     readFile(join(directory, files[0])),
     readFile(join(directory, files[1]), 'utf8').then(armoredSignature => readSignature({ armoredSignature })),
@@ -48,14 +49,19 @@ async function verifyArchive(directory, files, zip, pin) {
   if (!signatures.length) throw new Error('Release manifest is unsigned');
   await Promise.all(signatures.map(result => result.verified));
   const signerMatches = signatures.some(result => key.getKeys(result.keyID).some(signer =>
-    signer.getFingerprint().toUpperCase() === pin.signingKeyFingerprint));
+    signer.getFingerprint().toUpperCase() === fingerprint));
   if (!signerMatches) throw new Error('Release manifest signer differs from the checked-in pin');
 
   const entries = checksums.toString('utf8').split(/\r?\n/).flatMap(line => {
     const entry = /^([a-f0-9]{64})\s+\*?(?:\.\/)?(\S+)\s*$/i.exec(line);
-    return entry?.[2] === zip ? [entry[1].toLowerCase()] : [];
+    return entry?.[2] === asset ? [entry[1].toLowerCase()] : [];
   });
-  if (entries.length !== 1 || entries[0] !== pin.sha256Expected) {
+  if (entries.length !== 1) throw new Error('Release manifest must sign exactly one checksum for the asset');
+  return entries[0];
+}
+
+export async function verifyArchive(directory, files, zip, pin) {
+  if (await signedChecksum(directory, files, zip, pin.signingKeyFingerprint) !== pin.sha256Expected) {
     throw new Error('Signed checksum differs from the checked-in ZIP pin');
   }
 
@@ -135,7 +141,9 @@ async function main() {
   console.log(manifest);
 }
 
-main().catch(error => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
+  main().catch(error => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

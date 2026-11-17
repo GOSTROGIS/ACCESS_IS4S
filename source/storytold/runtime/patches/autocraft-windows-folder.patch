@@ -1,0 +1,344 @@
+diff --git a/AutoCraft CLI.cmd b/AutoCraft CLI.cmd
+new file mode 100644
+index 0000000..9392ba3
+--- /dev/null
++++ "b/AutoCraft CLI.cmd"
+@@ -0,0 +1,4 @@
++@echo off
++setlocal
++"%~dp0..\..\tools\node.exe" "%~dp0windows-folder.mjs" cli %*
++if "%~1"=="" pause
+diff --git a/Configure AutoCraft.cmd b/Configure AutoCraft.cmd
+new file mode 100644
+index 0000000..e10bb2a
+--- /dev/null
++++ "b/Configure AutoCraft.cmd"
+@@ -0,0 +1,5 @@
++@echo off
++setlocal
++set "PSModulePath=%SystemRoot%\System32\WindowsPowerShell\v1.0\Modules"
++"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -ExecutionPolicy RemoteSigned -File "%~dp0configure-folder-oauth.ps1"
++pause
+diff --git a/LOCAL-STATUS.md b/LOCAL-STATUS.md
+new file mode 100644
+index 0000000..a67934c
+--- /dev/null
++++ b/LOCAL-STATUS.md
+@@ -0,0 +1,10 @@
++# AutoCraft in the folder intranet
++
++This installation contains the production dashboard and Node/SQLite service from Storytold AutoCraft commit `0bcc1f8d681609233d2f6f0d1f4e359e994079e0`. The folder launcher binds the dashboard to `127.0.0.1:8993` and uses GitHub sign-in. The current Windows user, SYSTEM and Administrators are the only principals allowed in the protected default `.private` directory.
++
++1. Register or reuse an approved GitHub OAuth app with callback `http://127.0.0.1:8993/auth/callback`. See [GitHub's loopback callback documentation](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#loopback-redirect-urls).
++2. Run `Configure AutoCraft.cmd` and enter the OAuth client ID and secret in that local window. It creates the secrets file once and generates the session key. Keep `.private` outside source control and backups accessible to other users.
++3. Set the first operator from a terminal with `"AutoCraft CLI.cmd" access add YOUR-GITHUB-LOGIN --operator`.
++4. Run `Start AutoCraft.cmd` and open [AutoCraft](http://127.0.0.1:8993/).
++
++`AutoCraft CLI.cmd` uses `.private/mirror.db` by default. Keep the database and session key together when backing up this installation. The upstream runner's provider-backed tools require a supported isolated Linux runtime with bubblewrap and configured model and repository credentials. See the bundled [operations guide](docs/operations.md).
+diff --git a/Start AutoCraft.cmd b/Start AutoCraft.cmd
+new file mode 100644
+index 0000000..7e164f6
+--- /dev/null
++++ "b/Start AutoCraft.cmd"
+@@ -0,0 +1,4 @@
++@echo off
++setlocal
++"%~dp0..\..\tools\node.exe" "%~dp0windows-folder.mjs" dashboard
++if errorlevel 1 pause
+diff --git a/configure-folder-oauth.ps1 b/configure-folder-oauth.ps1
+new file mode 100644
+index 0000000..962d069
+--- /dev/null
++++ b/configure-folder-oauth.ps1
+@@ -0,0 +1,36 @@
++$ErrorActionPreference = 'Stop'
++if ($env:AUTOCRAFT_SECRETS_FILE) { throw 'Configure the custom secrets path separately or clear AUTOCRAFT_SECRETS_FILE for this setup.' }
++$node = Join-Path $PSScriptRoot '..\..\tools\node.exe'
++$launcher = Join-Path $PSScriptRoot 'windows-folder.mjs'
++& $node $launcher protect
++if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
++$file = Join-Path $PSScriptRoot '.private\secrets.json'
++if (Test-Path -LiteralPath $file) { throw 'AutoCraft already has a secrets file. Setup leaves the existing file in place.' }
++Write-Host 'Use the GitHub OAuth application registered for http://127.0.0.1:8993/auth/callback.'
++$id = (Read-Host 'GitHub OAuth client ID').Trim()
++$secret = Read-Host 'GitHub OAuth client secret' -AsSecureString
++if (-not $id -or -not $secret.Length) { throw 'Both OAuth values are required.' }
++$secretPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secret)
++$bytes = [byte[]]::new(32)
++$random = [Security.Cryptography.RandomNumberGenerator]::Create()
++$temp = $file + '.' + [Guid]::NewGuid().ToString('N') + '.tmp'
++try {
++    $random.GetBytes($bytes)
++    $json = @{github_client_id=$id; github_client_secret=[Runtime.InteropServices.Marshal]::PtrToStringBSTR($secretPointer); session_key=[Convert]::ToBase64String($bytes)} | ConvertTo-Json -Compress
++    $stream = [IO.File]::Open($temp, 'CreateNew', 'Write', 'None')
++    try {
++        $encoded = [Text.UTF8Encoding]::new($false).GetBytes($json)
++        $stream.Write($encoded, 0, $encoded.Length)
++    } finally {
++        $stream.Dispose()
++        if ($encoded) { [Array]::Clear($encoded, 0, $encoded.Length) }
++    }
++    [IO.File]::Move($temp, $file)
++} finally {
++    [IO.File]::Delete($temp)
++    $random.Dispose()
++    [Array]::Clear($bytes, 0, $bytes.Length)
++    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($secretPointer)
++    $secret.Dispose()
++}
++Write-Host 'OAuth settings saved in the protected AutoCraft data folder.'
+diff --git a/src/dash/server/config.ts b/src/dash/server/config.ts
+index a0dcf09..51fa847 100644
+--- a/src/dash/server/config.ts
++++ b/src/dash/server/config.ts
+@@ -1,11 +1,12 @@
+ import { chmodSync, readFileSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+ import { isIP } from "node:net";
+-import { resolve } from "node:path";
++import { dirname, resolve } from "node:path";
+ import { fileURLToPath } from "node:url";
+ import { randomToken } from "./crypto.ts";
+ import { dbPath } from "../../db.ts";
+ import { defaultImageCacheDir } from "./images.ts";
+ import { envVar } from "../../env.ts";
++import { windowsSecretAcl } from "./windows-secret-acl.ts";
+
+ // The GitHub App that AutoCraft registered through the manifest flow. The
+ // private key and client secret leave this object only to sign a JWT or to
+@@ -34,7 +35,7 @@ export function followAppSecrets(secrets: Secrets, file: string): void {
+       if (now !== stamp) {
+         if (now === "none") { cached = null; stamp = now; }
+         else {
+-          try { cached = appSecretsOf(JSON.parse(readFileSync(file, "utf8")) as Record<string, unknown>); stamp = now; } catch { /* mid-write or unreadable: keep the last good value */ }
++          try { cached = appSecretsOf(readRawSecrets(file)); stamp = now; } catch { /* mid-write or unreadable: keep the last good value */ }
+         }
+       }
+       return cached;
+@@ -98,6 +99,11 @@ export function checkSecretsFileMode(path: string): void {
+   } catch {
+     throw new ConfigError("secrets file not found");
+   }
++  if (process.platform === "win32") {
++    try { windowsSecretAcl("CheckFile", path); }
++    catch { throw new ConfigError("secrets file failed the Windows ACL check; use the protected AutoCraft data folder"); }
++    return;
++  }
+   if (mode & 0o077) throw new ConfigError("secrets file is readable or writable by group or others; chmod 600 it");
+ }
+
+@@ -135,6 +141,14 @@ export function appSecretsOf(raw: Record<string, unknown>): AppSecrets | null {
+ }
+
+ function readRawSecrets(path: string): Record<string, unknown> {
++  if (process.platform === "win32") {
++    try { statSync(path); }
++    catch (e) {
++      if ((e as NodeJS.ErrnoException).code === "ENOENT") return {};
++      throw new ConfigError("secrets file cannot be accessed");
++    }
++    checkSecretsFileMode(path);
++  }
+   try {
+     return JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+   } catch (e) {
+@@ -146,9 +160,11 @@ function readRawSecrets(path: string): Record<string, unknown> {
+ /** A sibling of the target with a random name, created exclusively (`wx`) so it never follows or replaces an existing file. */
+ function writeTemp(target: string, body: string): string {
+   const tmp = `${target}.${randomToken(6)}.tmp`;
++  if (process.platform === "win32") windowsSecretAcl("CheckDirectory", dirname(target));
+   try {
+     writeFileSync(tmp, body, { mode: 0o600, flag: "wx" });
+-    chmodSync(tmp, 0o600);
++    if (process.platform === "win32") windowsSecretAcl("CheckFile", tmp);
++    else chmodSync(tmp, 0o600);
+   } catch (e) {
+     try { unlinkSync(tmp); } catch { /* not created */ }
+     throw e;
+@@ -159,6 +175,11 @@ function writeTemp(target: string, body: string): string {
+ /** The file a write must replace: the secrets file itself, or the file a symlink there points to. */
+ function secretsTarget(path: string): string {
+   try {
++    if (process.platform === "win32") {
++      statSync(path);
++      checkSecretsFileMode(path);
++      return path;
++    }
+     return realpathSync(path);
+   } catch (e) {
+     if ((e as NodeJS.ErrnoException).code === "ENOENT") return path;
+@@ -222,12 +243,14 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
+   const secretsFile = envVar("SECRETS_FILE", env) ?? null;
+   // A dev server reads the app's keys from a secrets file when one is given, so registration can be tried locally.
+   if (devAuth && secretsFile) {
+-    let loose = false;
+-    try { loose = (statSync(secretsFile).mode & 0o077) !== 0; } catch { /* no file yet */ }
+-    if (loose) throw new ConfigError("secrets file is readable or writable by group or others; chmod 600 it");
+-    try {
+-      secrets.app = appSecretsOf(JSON.parse(readFileSync(secretsFile, "utf8")) as Record<string, unknown>);
+-    } catch { /* no file yet: registration creates it */ }
++    let exists = false;
++    try { statSync(secretsFile); exists = true; }
++    catch (e) { if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e; }
++    if (exists) {
++      checkSecretsFileMode(secretsFile);
++      try { secrets.app = appSecretsOf(readRawSecrets(secretsFile)); }
++      catch { /* allow registration to replace an invalid config */ }
++    }
+   }
+   if (secretsFile) followAppSecrets(secrets, secretsFile);
+   const rawBaseUrl = envVar("BASE_URL", env);
+diff --git a/src/dash/server/index.ts b/src/dash/server/index.ts
+index 1f0c736..94586e9 100644
+--- a/src/dash/server/index.ts
++++ b/src/dash/server/index.ts
+@@ -495,6 +495,12 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
+   };
+
+   async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
++    const folderHost = `127.0.0.1:${config.port}`;
++    if (process.platform === "win32" && config.host === "127.0.0.1" && config.baseUrl === `http://${folderHost}` &&
++        (req.headers.host !== folderHost || req.headers["x-forwarded-for"] !== undefined)) {
++      const nonce = randomToken(16);
++      return send(res, nonce, errorPage(nonce, 403, "Refused", "Open the AutoCraft folder URL on this computer."));
++    }
+     if (serveHealth(req, res, () => dbReady(db)) || serveChecks(req, res, db, Date.now(), 5_000, staffCaller)) return;
+     const nonce = randomToken(16);
+     try {
+diff --git a/src/dash/server/windows-secret-acl.ps1 b/src/dash/server/windows-secret-acl.ps1
+new file mode 100644
+index 0000000..3d5a72f
+--- /dev/null
++++ b/src/dash/server/windows-secret-acl.ps1
+@@ -0,0 +1,57 @@
++param(
++    [Parameter(Mandatory)][ValidateSet('CheckFile', 'CheckDirectory', 'ProtectDirectory')][string]$Action,
++    [Parameter(Mandatory)][string]$LiteralPath
++)
++
++$ErrorActionPreference = 'Stop'
++$owner = [Security.Principal.WindowsIdentity]::GetCurrent().User
++$trusted = @($owner.Value, 'S-1-5-18', 'S-1-5-32-544')
++
++function Get-OwnedItem([string]$Path, [bool]$Directory) {
++    $item = Get-Item -LiteralPath $Path -Force
++    if ($item.PSIsContainer -ne $Directory -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
++        throw 'A reparse point or unexpected file type cannot hold AutoCraft secrets.'
++    }
++    $acl = Get-Acl -LiteralPath $item.FullName
++    if ($acl.GetOwner([Security.Principal.SecurityIdentifier]) -ne $owner) {
++        throw 'The running Windows account must own AutoCraft private data.'
++    }
++    return $acl
++}
++
++function Assert-PrivateAcl([string]$Path, [bool]$Directory) {
++    $acl = Get-OwnedItem $Path $Directory
++    $descriptor = [Security.AccessControl.RawSecurityDescriptor]::new($acl.GetSecurityDescriptorBinaryForm(), 0)
++    if (($Directory -and -not $acl.AreAccessRulesProtected) -or $null -eq $descriptor.DiscretionaryAcl) {
++        throw 'AutoCraft private data must have an explicit Windows access policy.'
++    }
++    $ownerMode = [int][Security.AccessControl.FileSystemRights]::FullControl
++    $ownerInheritance = [int][Security.AccessControl.AceFlags]::ContainerInherit -bor [int][Security.AccessControl.AceFlags]::ObjectInherit
++    $propagation = $ownerInheritance -bor [int][Security.AccessControl.AceFlags]::InheritOnly -bor [int][Security.AccessControl.AceFlags]::NoPropagateInherit
++    $inheritsOwner = $false
++    foreach ($ace in $descriptor.DiscretionaryAcl) {
++        if ($ace.AceType -ne [Security.AccessControl.AceType]::AccessAllowed -or $ace.SecurityIdentifier.Value -notin $trusted) {
++            throw 'AutoCraft private data grants access outside the running Windows account, SYSTEM and Administrators.'
++        }
++        if ($ace.SecurityIdentifier -eq $owner -and ([int]$ace.AceFlags -band $propagation) -eq $ownerInheritance -and ($ace.AccessMask -band $ownerMode) -eq $ownerMode) {
++            $inheritsOwner = $true
++        }
++    }
++    if ($Directory -and -not $inheritsOwner) {
++        throw 'New private files must inherit access for the running Windows account.'
++    }
++}
++
++if ($Action -eq 'ProtectDirectory') {
++    $null = Get-OwnedItem $LiteralPath $true
++    $icacls = Join-Path $env:SystemRoot 'System32\icacls.exe'
++    $permissions = $trusted | Select-Object -Unique | ForEach-Object { '*' + $_ + ':(OI)(CI)F' }
++    & $icacls $LiteralPath '/inheritance:r' '/grant:r' $permissions | Out-Null
++    if ($LASTEXITCODE -ne 0) { throw 'Windows did not accept the AutoCraft directory access policy.' }
++}
++if ($Action -eq 'CheckFile') {
++    Assert-PrivateAcl (Split-Path -LiteralPath $LiteralPath) $true
++    Assert-PrivateAcl $LiteralPath $false
++} else {
++    Assert-PrivateAcl $LiteralPath $true
++}
+diff --git a/src/dash/server/windows-secret-acl.ts b/src/dash/server/windows-secret-acl.ts
+new file mode 100644
+index 0000000..435af93
+--- /dev/null
++++ b/src/dash/server/windows-secret-acl.ts
+@@ -0,0 +1,22 @@
++import { spawnSync } from "node:child_process";
++import { realpathSync } from "node:fs";
++import { join, resolve } from "node:path";
++import { fileURLToPath } from "node:url";
++
++type Action = "CheckFile" | "CheckDirectory" | "ProtectDirectory";
++
++export function windowsSecretAcl(action: Action, input: string): void {
++  const path = resolve(input);
++  if (!/^[a-z]:\\[^:]+$/i.test(path) || realpathSync.native(path).toLowerCase() !== path.toLowerCase()) {
++    throw new Error("AutoCraft private data needs a regular local path without reparse points or alternate streams.");
++  }
++  const powershellHome = join(process.env.SystemRoot ?? "C:\\Windows", "System32", "WindowsPowerShell", "v1.0");
++  const powershell = join(powershellHome, "powershell.exe");
++  const script = fileURLToPath(new URL("./windows-secret-acl.ps1", import.meta.url));
++  const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => name.toLowerCase() !== "psmodulepath"));
++  env.PSModulePath = join(powershellHome, "Modules");
++  const result = spawnSync(powershell, ["-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "RemoteSigned", "-File", script, "-Action", action, "-LiteralPath", path], {
++    env, stdio: "ignore", windowsHide: true, timeout: 15_000,
++  });
++  if (result.status !== 0) throw new Error("AutoCraft private data failed the Windows ACL check.");
++}
+diff --git a/windows-folder.mjs b/windows-folder.mjs
+new file mode 100644
+index 0000000..233ff8f
+--- /dev/null
++++ b/windows-folder.mjs
+@@ -0,0 +1,41 @@
++import { spawn } from 'node:child_process';
++import { existsSync, mkdirSync } from 'node:fs';
++import { join } from 'node:path';
++import { fileURLToPath } from 'node:url';
++import { windowsSecretAcl } from './src/dash/server/windows-secret-acl.ts';
++
++const root = fileURLToPath(new URL('.', import.meta.url));
++const privateDir = join(root, '.private');
++const defaultSecrets = join(privateDir, 'secrets.json');
++const callback = 'http://127.0.0.1:8993';
++const [mode, ...args] = process.argv.slice(2);
++
++try {
++  if (!existsSync(privateDir)) {
++    mkdirSync(privateDir);
++    windowsSecretAcl('ProtectDirectory', privateDir);
++  }
++  if (mode === 'protect') {
++    windowsSecretAcl('ProtectDirectory', privateDir);
++    console.log('AutoCraft private folder protected. Keep the OAuth secrets file here.');
++  } else {
++    windowsSecretAcl('CheckDirectory', privateDir);
++    const env = {
++      ...process.env,
++      AUTOCRAFT_BASE_URL: callback,
++      AUTOCRAFT_LISTEN: '127.0.0.1:8993',
++      AUTOCRAFT_DEV_AUTH: '0',
++      AUTOCRAFT_TRUST_PROXY: '0',
++      AUTOCRAFT_DB: process.env.AUTOCRAFT_DB || join(privateDir, 'mirror.db'),
++      AUTOCRAFT_SECRETS_FILE: process.env.AUTOCRAFT_SECRETS_FILE || defaultSecrets,
++      AUTOCRAFT_LOCK_DIR: process.env.AUTOCRAFT_LOCK_DIR || join(privateDir, 'locks'),
++    };
++    const command = mode === 'dashboard' ? ['dash', 'serve'] : args;
++    const child = spawn(process.execPath, [join(root, 'src', 'cli.ts'), ...command], { cwd: root, env, stdio: 'inherit' });
++    child.on('error', () => { process.exitCode = 1; console.error('Could not start AutoCraft.'); });
++    child.on('exit', (code) => { process.exitCode = code ?? 1; });
++  }
++} catch (error) {
++  console.error(error.message);
++  process.exitCode = 1;
++}

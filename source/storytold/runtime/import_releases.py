@@ -62,12 +62,15 @@ def checked_members(archive: zipfile.ZipFile) -> list[tuple[zipfile.ZipInfo, Pur
         if not raw or '\x00' in raw or '\\' in raw or raw.startswith('/'):
             raise ValueError(f'Unsafe archive path: {raw!r}')
         parts = raw.rstrip('/').split('/')
-        if any(part in {'', '.', '..'} for part in parts) or ':' in parts[0]:
+        if any(part in {'', '.', '..'} or part.endswith(('.', ' ')) or
+               re.search(r'[:<>"|?*\x00-\x1f]', part) or
+               re.fullmatch(r'(?:CON|PRN|AUX|NUL|COM[1-9¹²³]|LPT[1-9¹²³])(?:\..*)?', part, re.I)
+               for part in parts):
             raise ValueError(f'Unsafe archive path: {raw!r}')
         path = PurePosixPath(*parts)
-        if path.as_posix() in seen:
+        if path.as_posix().casefold() in seen:
             raise ValueError(f'Duplicate archive path: {path}')
-        seen.add(path.as_posix())
+        seen.add(path.as_posix().casefold())
         mode = stat.S_IFMT(info.external_attr >> 16)
         if mode not in {0, stat.S_IFREG, stat.S_IFDIR}:
             raise ValueError(f'Archive contains a symlink or special entry: {path}')
@@ -84,9 +87,9 @@ def checked_members(archive: zipfile.ZipFile) -> list[tuple[zipfile.ZipInfo, Pur
             raise ValueError('Archive exceeds total expanded size limit.')
         result.append((info, path))
     # A file cannot also be an ancestor of another entry.
-    files = {path for info, path in result if not info.is_dir()}
+    files = {path.as_posix().casefold() for info, path in result if not info.is_dir()}
     for _, path in result:
-        if any(parent in files for parent in path.parents if parent != PurePosixPath('.')):
+        if any(parent.as_posix().casefold() in files for parent in path.parents):
             raise ValueError(f'Archive path descends from a regular file: {path}')
     return result
 
@@ -121,7 +124,7 @@ def verify_existing(root: Path, archive: zipfile.ZipFile, members) -> None:
         raise ValueError('Existing staged tree contains unrecorded or missing files.')
 
 
-def stage_asset(asset: dict, output: Path) -> dict:
+def stage_asset(asset: dict, output: Path, entrypoint='index.html') -> dict:
     name, tag = asset.get('name', ''), asset.get('tag', '')
     if not NAME.fullmatch(name) or not TAG.fullmatch(tag):
         raise ValueError('Invalid repository name or release tag in manifest.')
@@ -137,21 +140,20 @@ def stage_asset(asset: dict, output: Path) -> dict:
         raise ValueError('Staging destination must not be a symlink.')
     with zipfile.ZipFile(path) as archive:
         members = checked_members(archive)
-        indexes = [relative for info, relative in members if not info.is_dir() and relative.name == 'index.html']
-        # The official archive must have one top-level web entry. Do not guess a
-        # deeper example's index as the application if an upstream layout changes.
+        indexes = [relative for info, relative in members if not info.is_dir() and relative.name == entrypoint]
+        # An app has one top-level entry. Reject unexpected archive layouts.
         indexes.sort(key=lambda entry: len(entry.parts))
         if not indexes or (len(indexes) > 1 and len(indexes[0].parts) == len(indexes[1].parts)):
-            raise ValueError('The archive has no unambiguous web application index.')
+            raise ValueError('The archive has no unambiguous runtime entry point.')
         app_relative = indexes[0].parent
         if len(app_relative.parts) > 1:
             raise ValueError('Unexpected nested release root; explicit review is required.')
         app_members = {relative.relative_to(app_relative).as_posix() for info, relative in members
                        if not info.is_dir() and (relative == app_relative or app_relative in relative.parents)}
-        if not any(name.endswith('.wasm') for name in app_members):
+        if entrypoint == 'index.html' and not any(name.endswith('.wasm') for name in app_members):
             raise ValueError('The web release contains no WASM application binary.')
         if 'NOTICE' not in app_members or not any(name.startswith('LICENSE') for name in app_members):
-            raise ValueError('The web release is missing its upstream licence or NOTICE.')
+            raise ValueError('The release is missing its upstream licence or NOTICE.')
         if destination.exists():
             verify_existing(destination, archive, members)
             state = 'verified-existing-complete-tree'

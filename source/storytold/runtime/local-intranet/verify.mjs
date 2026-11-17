@@ -5,13 +5,19 @@ import { join, resolve } from 'node:path';
 
 const folder = resolve(process.argv[2] || '.');
 
-function read(port, path, options = {}) {
+function read(port, path, options = {}, follow = true) {
   return new Promise((success, failure) => {
     const req = request({ host: '127.0.0.1', port, path, timeout: 10000, ...options }, res => {
       const chunks = [];
       res.on('data', chunk => chunks.push(chunk));
       res.on('error', failure);
-      res.on('end', () => success({ code: res.statusCode, headers: res.headers, body: Buffer.concat(chunks) }));
+      res.on('end', () => {
+        if (follow && res.statusCode === 307 && res.headers.location?.startsWith('/_edition/')) {
+          success(read(port, res.headers.location, options, false));
+        } else {
+          success({ code: res.statusCode, headers: res.headers, body: Buffer.concat(chunks) });
+        }
+      });
     });
     req.on('timeout', () => req.destroy(new Error(`Timed out at ${port}${path}`)));
     req.on('error', failure);

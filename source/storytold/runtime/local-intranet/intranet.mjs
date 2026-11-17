@@ -4,7 +4,8 @@ import { createReadStream } from 'node:fs';
 import { readFile, realpath, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { activeRuntime, runtimeTree, versionedWebApps } from './runtime-state.mjs';
 
 const home = dirname(fileURLToPath(import.meta.url));
 const address = '127.0.0.1';
@@ -49,12 +50,12 @@ function byteRange(header, size) {
   return { start, end };
 }
 
-async function fileResponse(req, res, root, segments, path, directoryRoot = false) {
+async function fileResponse(req, res, root, segments, path, directoryRoot = false, boundary = home) {
   let target;
   let info;
   try {
     const realRoot = await realpath(root);
-    if (!inside(home, realRoot) || relative(root, realRoot) !== '') return response(res, 404, 'File not found');
+    if (!inside(boundary, realRoot) || relative(root, realRoot) !== '') return response(res, 404, 'File not found');
     const requested = join(realRoot, ...segments);
     target = await realpath(requested);
     if (!inside(realRoot, target) || relative(requested, target) !== '') return response(res, 404, 'File not found');
@@ -115,11 +116,11 @@ async function installedApps() {
 }
 
 function server(port, serve) {
-  return createServer(async (req, res) => {
+  const endpoint = createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Referrer-Policy', 'no-referrer');
-    if (req.headers.host !== `${address}:${port}`) return response(res, 421, 'Use the intranet loopback URL');
+    if (req.headers.host !== `${address}:${port || endpoint.address().port}`) return response(res, 421, 'Use the intranet loopback URL');
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       res.setHeader('Allow', 'GET, HEAD');
       return response(res, 405, 'Method not allowed');
@@ -134,6 +135,7 @@ function server(port, serve) {
       else response(res, 500, 'Intranet read failed');
     }
   });
+  return endpoint;
 }
 
 function json(req, res, value) {
@@ -149,6 +151,54 @@ function listen(port, endpoint) {
       endpoint.off('error', no);
       yes();
     });
+  });
+}
+
+export async function serveCandidate(root, app) {
+  const endpoint = editionServer(root, { ...app, port: 0 }, () => ({ version: app.version, retained: [] }), () => root);
+  await listen(0, endpoint);
+  return {
+    url: `http://${address}:${endpoint.address().port}/`,
+    close: async () => new Promise((resolve, reject) => endpoint.close(error => error ? reject(error) : resolve())),
+  };
+}
+
+export function runtimeServer(home, app) {
+  const target = { ...app, kind: 'web' };
+  return editionServer(home, app, () => activeRuntime(home, target), version => runtimeTree(home, target, version));
+}
+
+function editionServer(home, app, readActive, resolveTree) {
+  return server(app.port, async (req, res, path) => {
+    const active = await readActive();
+    let { version } = active;
+    let { segments } = path;
+    let edition = false;
+    if (versionedWebApps.has(app.id)) {
+      if (segments[0] === '_edition') {
+        edition = true;
+        version = segments[1];
+        segments = segments.slice(2);
+      } else if (!segments.length || ['index.html', 'access-workspace', 'access-workspace/index.html'].includes(segments.join('/'))) {
+        const directory = segments.join('/') === 'access-workspace' && !path.trailing ? '/' : '';
+        const targetPath = `/_edition/${version}${path.raw}${directory}${req.url.slice(path.raw.length)}`;
+        return res.writeHead(307, { Location: targetPath }).end();
+      } else if (req.headers.referer) {
+        // Older builds can request assets from the origin root. Use the edition
+        // of the same-origin page that requested them when it is available.
+        try {
+          const referer = new URL(req.headers.referer);
+          const match = /^\/_edition\/([^/]+)\//.exec(referer.pathname);
+          if (referer.origin === `http://${req.headers.host}` && match) version = match[1];
+        } catch {
+          // Ignore a malformed Referer on a direct asset request.
+        }
+      }
+      if (version !== active.version && !active.retained.includes(version)) return response(res, 404, 'Runtime version not found');
+      res.setHeader('Referrer-Policy', 'same-origin');
+    }
+    res.setHeader('X-Intranet-Runtime', version);
+    return fileResponse(req, res, resolveTree(version), segments, path, edition, home);
   });
 }
 
@@ -205,11 +255,16 @@ async function main() {
       let native = [];
       try {
         const manifest = await readJson(join(home, 'Storytold', 'native', 'native-apps.json'));
-        native = manifest.apps.map(({ id, label, version, status }) => ({ id, label, version, status }));
+        native = await Promise.all(manifest.apps.map(async ({ id, label, version, status }) => ({
+          id, label, version: (await activeRuntime(home, { kind: 'native', id, version })).version, status,
+        })));
       } catch (error) {
         if (error.code !== 'ENOENT') throw error;
       }
-      return json(req, res, { apps, native });
+      const active = await Promise.all(apps.map(async app => ({
+        ...app, version: (await activeRuntime(home, { ...app, kind: 'web' })).version,
+      })));
+      return json(req, res, { apps: active, native });
     }
     if (first === 'health.json' && !remaining.length) {
       return json(req, res, { service: 'access-is4s-folder-intranet', installation, apps: apps.length });
@@ -222,10 +277,7 @@ async function main() {
     }
     return response(res, 404, 'File not found');
   })]]);
-  for (const app of apps) {
-    const root = join(home, 'Storytold', 'web', app.id, app.version);
-    services.set(app.port, server(app.port, (req, res, path) => fileResponse(req, res, root, path.segments, path)));
-  }
+  for (const app of apps) services.set(app.port, runtimeServer(home, app));
   try {
     for (const [port, endpoint] of services) await listen(port, endpoint);
   } catch (error) {
@@ -238,7 +290,9 @@ async function main() {
   openBrowser(url);
 }
 
-main().catch(error => {
-  console.error(`Could not start the intranet: ${error.message}`);
-  process.exitCode = 1;
-});
+if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
+  main().catch(error => {
+    console.error(`Could not start the intranet: ${error.message}`);
+    process.exitCode = 1;
+  });
+}

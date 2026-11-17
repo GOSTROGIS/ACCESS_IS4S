@@ -1,0 +1,17 @@
+diff --git a/crates/artcraftx/src/state/data_dir/app_data_root.rs b/crates/artcraftx/src/state/data_dir/app_data_root.rs
+index 3e36cfc..b96864c 100644
+--- a/crates/artcraftx/src/state/data_dir/app_data_root.rs
++++ b/crates/artcraftx/src/state/data_dir/app_data_root.rs
+@@ -140,5 +140,12 @@ impl AppDataRoot {
+ // eg. /home/bob/artcraft, /Users/alice/artcraft, or C:\Users\Taylor\artcraft
+ fn get_default_data_dir() -> anyhow::Result<PathBuf> {
++  if let Some(path) = std::env::var_os("ARTCRAFTX_DATA_DIR") {
++    let path = PathBuf::from(path);
++    if !path.is_absolute() {
++      return Err(anyhow!("ARTCRAFTX_DATA_DIR must be an absolute path"));
++    }
++    return Ok(path);
++  }
+   Ok(UserDirs::new()
+       .ok_or_else(|| anyhow!("could not determine user home directory"))?
+       .home_dir()
