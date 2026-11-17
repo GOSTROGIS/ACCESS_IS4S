@@ -239,6 +239,9 @@ function editionServer(home, app, readActive, resolveTree, projectWorkspace = fa
         }
         return json(req, res, { id: app.sourceApplication || app.id, label: app.label, entry, ...pdf });
       }
+      if (app.id === 'pdfcraft' && parts.length === 2 && parts[0] === 'models' && ['text-detection.onnx', 'text-recognition.onnx'].includes(parts[1])) {
+        return fileResponse(req, res, resolveTree(active.version), ['models', parts[1]], path, false, home);
+      }
       if (parts.length > 1 || (parts.length && !['index.html', 'workspace.mjs', 'pdfcraft.html', 'pdfcraft-page.mjs'].includes(parts[0]))) return response(res, 404, 'Workspace file not found');
       return fileResponse(req, res, join(home, 'tools/storytold-workspace'), parts, path);
     }

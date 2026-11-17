@@ -174,6 +174,9 @@ def check():
                 require(any(file.is_file() and file.read_bytes() == archive for file in data.rglob(sha256)),
                         "snapshots persist the exact payload bytes on local disk")
                 client_browser()
+                import committedcheck
+                project = json.loads((ROOT / 'client-manifest.json').read_text(encoding='utf-8'))['pages']['project']
+                committedcheck.check(ORIGIN, ROOT / 'client' / project, HERE / 'commit-evidence')
                 browser(username, password)
             finally:
                 server.terminate()

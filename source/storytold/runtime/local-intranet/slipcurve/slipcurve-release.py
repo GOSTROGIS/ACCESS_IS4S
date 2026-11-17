@@ -141,14 +141,44 @@ def remote_main(git):
     return reply[0]
 
 
-def checkout(git, target, scratch):
+def local_git_environment():
+    env = {key: value for key, value in os.environ.items() if key.upper() in
+                {'PATH', 'PATHEXT', 'SYSTEMROOT', 'SYSTEMDRIVE', 'WINDIR', 'COMSPEC', 'TEMP', 'TMP'}}
+    env.update(GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull,
+               GIT_CONFIG_SYSTEM=os.devnull, GIT_ATTR_NOSYSTEM='1', GIT_TERMINAL_PROMPT='0')
+    return env
+
+
+def checkout(git, target, scratch, source_cache=None):
     repo = scratch / 'repository'
     env = {**os.environ, 'GIT_TERMINAL_PROMPT': '0', 'GCM_INTERACTIVE': 'Never'}
-    run([git, '-c', 'core.longpaths=true', 'clone', '--no-checkout', '--no-tags', '--single-branch', '--branch', 'main', ORIGIN, repo], env=env)
-    run([git, '-C', repo, 'fsck', '--strict', '--connectivity-only', target])
-    run([git, '-C', repo, '-c', 'core.longpaths=true', '-c', 'core.autocrlf=false', 'checkout', '--detach', target])
-    if (run([git, '-C', repo, 'rev-parse', 'HEAD']) != target or
-            run([git, '-C', repo, 'status', '--porcelain'])):
+    safe_env = local_git_environment()
+    hooks = scratch / 'empty-hooks'
+    hooks.mkdir()
+    if source_cache:
+        # Fetch only the authoritative published commit's reachable objects.
+        # No source working files, alternate store or newer local refs are used.
+        cache = Path(source_cache).resolve(strict=True)
+        if run([git, '-C', cache, 'remote', 'get-url', 'origin'], env=safe_env) != ORIGIN:
+            raise ValueError('The source cache is not the owned SLIPCURVE repository')
+        if run([git, '-C', cache, 'rev-parse', '--verify', target + '^{commit}'], env=safe_env) != target:
+            raise ValueError('The published commit is absent from the source cache')
+        run([git, '-c', 'core.longpaths=true', 'init', '--quiet', repo], env=safe_env)
+        safe = [git, '-C', repo, '-c', 'core.longpaths=true', '-c', 'core.hooksPath=' + str(hooks),
+                '-c', 'core.fsmonitor=false', '-c', 'credential.helper=']
+        run([*safe, 'fetch', '--quiet', '--no-tags', '--no-recurse-submodules', str(cache), target], env=safe_env)
+        run([*safe, 'remote', 'add', 'origin', ORIGIN], env=safe_env)
+    else:
+        run([git, '-c', 'core.longpaths=true', 'clone', '--no-checkout', '--no-tags', '--single-branch', '--branch', 'main', ORIGIN, repo], env=env)
+    run([git, '-C', repo, 'config', 'core.hooksPath', str(hooks)], env=safe_env)
+    run([git, '-C', repo, 'fsck', '--strict', '--connectivity-only', target], env=safe_env)
+    # The client build does not compile the separate installed native/WASM
+    # runtimes. Keep their full source in Git and the source archive, without
+    # materializing tens of thousands of unrelated source files in each build.
+    run([git, '-C', repo, 'sparse-checkout', 'set', '--no-cone', '/*', '!/vendor/storytold/apps/'], env=safe_env)
+    run([git, '-C', repo, '-c', 'core.longpaths=true', '-c', 'core.autocrlf=false', 'checkout', '--detach', target], env=safe_env)
+    if (run([git, '-C', repo, 'rev-parse', 'HEAD'], env=safe_env) != target or
+            run([git, '-C', repo, 'status', '--porcelain'], env=safe_env)):
         raise ValueError('The detached checkout does not match the verified commit')
     return repo
 
@@ -168,7 +198,8 @@ def clean_env(git, node, profile):
 
 def artifact_receipt(git, repo, revision, scratch):
     archive = scratch / 'source.tar'
-    run([git, '-C', repo, 'archive', '--format=tar', '-o', archive, revision])
+    run([git, '-C', repo, '-c', 'core.autocrlf=false', '-c', 'core.eol=lf', '-c', 'core.attributesFile=' + os.devnull,
+         'archive', '--format=tar', '-o', archive, revision], env=local_git_environment())
     with archive.open('rb') as source:
         if run([git, 'get-tar-commit-id'], stdin=source) != revision:
             raise ValueError('Git archive does not identify the pinned source revision')
@@ -292,6 +323,7 @@ def main():
     parser.add_argument('--python-deps', type=Path)
     parser.add_argument('--chrome', type=Path)
     parser.add_argument('--npm-cli', type=Path)
+    parser.add_argument('--source-cache', type=Path)
     args = parser.parse_args()
     home = canonical(args.root.absolute())
     if args.mode == 'status':
@@ -332,7 +364,7 @@ def main():
             canonical(editions)
             with TemporaryDirectory(prefix='.slipcurve-stage-', dir=editions, ignore_cleanup_errors=True) as directory:
                 scratch = Path(directory)
-                repo = checkout(git, revision, scratch)
+                repo = checkout(git, revision, scratch, args.source_cache)
                 promote(home, state, git, repo, revision, scratch, args.python_deps.resolve(strict=True), args.chrome, node, npm)
 
 

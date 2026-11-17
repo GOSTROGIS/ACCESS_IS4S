@@ -60,8 +60,9 @@ def loopback_only(app, origin, port):
         if host != f"{HOST}:{port}" or (request_origin and request_origin != origin):
             start_response("403 Forbidden", [("Content-Length", "0"), ("Cache-Control", "no-store")])
             return []
-        if environ.get("PATH_INFO") == "/":
-            environ = dict(environ, PATH_INFO="/index.html")
+        entry = {"/": "/index.html", "/app/": "/app/index.html"}.get(environ.get("PATH_INFO"))
+        if entry:
+            environ = dict(environ, PATH_INFO=entry)
         def local_headers(status, headers, exc_info=None):
             # Only this owner-operated loopback host embeds the installed tools.
             frames = "frame-src 'self' " + " ".join(f"http://127.0.0.1:{tool}" for tool in [*range(4190, 4207), 4211])

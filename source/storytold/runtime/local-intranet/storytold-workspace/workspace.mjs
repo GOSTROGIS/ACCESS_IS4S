@@ -9,6 +9,25 @@ let app;
 let ready = false;
 let name;
 let pendingPdf;
+let pdfOpening = false;
+async function openedPdf(pending) {
+  const target = frame.contentWindow;
+  const deadline = Date.now() + 120000;
+  while (Date.now() < deadline) {
+    if (frame.contentWindow !== target) throw Error('The PDF editor changed while opening the document.');
+    const state = await target.pdfcraft.docInspect();
+    if (state.documents?.some(document => document.active && document.name === pending.name) && !state.pending_opens?.length) {
+      if (pending.recognize) await target.pdfcraft.execute('ocr.recognize', {});
+      pdfOpening = false;
+      ready = true;
+      status.hidden = true;
+      tell('ready');
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  throw Error('The PDF editor did not finish opening the document.');
+}
 function tell(type, extra = {}, transfer = []) {
   window.parent.postMessage({ type: `slipcurve-editor:${type}`, application: app.id, ...extra }, parentOrigin, transfer);
 }
@@ -28,7 +47,8 @@ async function action(message) {
       // Both parent applications confirm replacement before asking us to open.
       // Restart only the inner PDF runtime, then deliver the verified bytes once
       // its fresh host bridge is ready. Never recursively re-enter action().
-      pendingPdf = { name, bytes: message.bytes };
+      pendingPdf = { name, bytes: message.bytes, recognize: message.recognize === true };
+      pdfOpening = true;
       ready = false;
       status.textContent = 'Opening the saved PDF…';
       status.hidden = false;
@@ -58,6 +78,11 @@ async function action(message) {
     } else {
       await api.execute(app.id === 'cadcraft' ? 'qsave' : 'file.save', { path: name || `Untitled.${formats[app.id]}` });
     }
+  } else if (message.type === 'slipcurve-editor:ocr') {
+    if (app.id !== 'pdfcraft') throw Error('Text recognition requires the PDF editor.');
+    const state = await api.docInspect();
+    if (!state.documents?.some(document => document.active)) throw Error('Open a PDF before recognizing text.');
+    await api.execute('ocr.recognize', {});
   } else if (message.type === 'slipcurve-editor:saved') {
     frame.contentWindow.postMessage({ type: `${app.id}:saved`, name: message.name }, location.origin);
   }
@@ -77,14 +102,16 @@ async function start() {
     if (event.source !== frame.contentWindow || event.origin !== location.origin || !event.data || typeof event.data !== 'object') return;
     const message = event.data;
     if (message.type === `${app.id}:ready`) {
-      ready = true;
-      status.hidden = true;
       if (pendingPdf) {
         const pending = pendingPdf;
         pendingPdf = null;
         frame.contentWindow.postMessage({ type: 'pdfcraft:open', name: pending.name, bytes: pending.bytes }, location.origin, [pending.bytes]);
+        void openedPdf(pending).catch(error => { pdfOpening = false; status.textContent = error.message; tell('error', { error: error.message }); });
+      } else if (!pdfOpening) {
+        ready = true;
+        status.hidden = true;
+        tell('ready');
       }
-      tell('ready');
     } else if (message.type === `${app.id}:dirty`) {
       tell('dirty', { dirty: message.dirty === true });
     } else if (message.type === `${app.id}:save`) {
