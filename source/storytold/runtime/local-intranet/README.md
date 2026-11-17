@@ -30,4 +30,4 @@ To install this updater from source for another copy of the folder, run `Install
 
 ## Repository synchronization
 
-GitHub is the source of truth. The separate **ACCESS Intranet GitHub Repositories** task pulls owned repositories into the intranet every 15 minutes. It never commits or pushes intranet changes to GitHub. Clean default branches fast-forward; local edits, divergent work and unexpected repository configuration are preserved and reported. See [the synchronization setup](github-sync.md). This source-copy schedule does not bypass the functional gates used to activate installed application runtimes.
+GitHub is the source of truth. The separate **ACCESS Intranet GitHub Repositories** task pulls owned repositories into the intranet every two hours. It never commits or pushes intranet changes to GitHub. Clean default branches fast-forward; local edits, divergent work and unexpected repository configuration are preserved and reported. See [the synchronization setup](github-sync.md). This source-copy schedule does not bypass the functional gates used to activate installed application runtimes.

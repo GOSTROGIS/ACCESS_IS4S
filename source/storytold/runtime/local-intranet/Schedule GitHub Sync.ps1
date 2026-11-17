@@ -27,7 +27,7 @@ if ($existing -and ($existing.Actions.Count -ne 1 -or $existing.Actions[0].Argum
     throw 'The task name is already registered for another repository mirror.'
 }
 $action = New-ScheduledTaskAction -Execute $nodePath -Argument $arguments -WorkingDirectory $rootPath
-$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(15) -RepetitionInterval (New-TimeSpan -Minutes 15)
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddHours(2) -RepetitionInterval (New-TimeSpan -Hours 2)
 $principal = New-ScheduledTaskPrincipal -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().User.Value) -LogonType Interactive -RunLevel Limited
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Hours 1) -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
 Register-ScheduledTask -TaskName $name -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Description 'Fetch owned GitHub repositories and fast-forward clean local default branches. Preserve local edits and divergent work.' -Force | Out-Null
