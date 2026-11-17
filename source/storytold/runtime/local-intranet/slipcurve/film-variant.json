@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "apps": [
+    {
+      "id": "slipcurve-filmcraft",
+      "sourceApplication": "filmcraft",
+      "label": "Slipcurve Video",
+      "version": "v0.20.1-slipcurve-d6e7889",
+      "port": 4211,
+      "artifactSha256": "3b78b7fbf9d1715efc3d15c0807c52d51c39d2eaf80fccc9d012275691076c83",
+      "wasmSha256": "2b03de2ee6149d245e7c1f97e2c7c9a153b96049f942278fbde6ebab23d2fa5e",
+      "buildManifestSha256": "fdfbeeb22ac0126f376be601c53e67b23fdb9083196c300150231899dead9479"
+    }
+  ]
+}

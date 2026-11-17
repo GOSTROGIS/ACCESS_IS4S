@@ -28,6 +28,16 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
     await commit('two');await run(['push',origin,'main'],writer);
     const advanced=await sync();
     assert.equal(advanced.status,'current',JSON.stringify(advanced));assert.equal(await readFile(join(local,'sample.txt'),'utf8'),'two');
+    await run(['config','lfs.repositoryformatversion','0'],local);
+    assert.equal((await sync()).status,'current');
+    await run(['config','lfs.repositoryformatversion','1'],local);
+    assert.deepEqual(await sync(),{name:'example',status:'local-config-requires-review',configuration:'lfs.repositoryformatversion'});
+    await run(['config','lfs.repositoryformatversion','0'],local);
+    for(const [key,value] of [['filter.untrusted.process','never-execute-this'],['lfs.url','https://unrelated.invalid/objects']]) {
+      await run(['config',key,value],local);
+      assert.deepEqual(await sync(),{name:'example',status:'local-config-requires-review',configuration:key});
+      await run(['config','--unset',key],local);
+    }
     await writeFile(join(local,'sample.txt'),'user edit');
     assert.equal((await sync()).status,'local-edits');assert.equal(await readFile(join(local,'sample.txt'),'utf8'),'user edit');
     await writeFile(join(local,'sample.txt'),'two');

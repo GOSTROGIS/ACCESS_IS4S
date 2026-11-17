@@ -147,7 +147,8 @@ export async function synchronizeRepository({git,root,repo,environment,hooks,see
     const originUrl=key==='remote.origin.url' && value===repo.url;
     const originTags=key==='remote.origin.tagopt' && value==='--no-tags';
     const originFetch=key==='remote.origin.fetch' && /^\+refs\/heads\/(?:\*|[^\s:]+):refs\/remotes\/origin\/(?:\*|[^\s:]+)$/.test(value);
-    if(!core.has(key) && !branchRemote && !branchMerge && !originUrl && !originTags && !originFetch && !['user.name','user.email'].includes(key)) {
+    const lfsFormat=key==='lfs.repositoryformatversion' && value==='0';
+    if(!core.has(key) && !branchRemote && !branchMerge && !originUrl && !originTags && !originFetch && !lfsFormat && !['user.name','user.email'].includes(key)) {
       return {name:repo.name,status:'local-config-requires-review',configuration:key};
     }
   }

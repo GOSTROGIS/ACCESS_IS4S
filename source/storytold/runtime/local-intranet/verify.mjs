@@ -27,10 +27,10 @@ function read(port, path, options = {}, follow = true) {
 
 const inventory = await read(4180, '/applications.json');
 assert.equal(inventory.code, 200);
-const { apps } = JSON.parse(inventory.body);
+const { apps, variants = [] } = JSON.parse(inventory.body);
 assert.equal(apps.length, 17);
 assert.equal(new Set(apps.map(app => app.port)).size, 17);
-for (const app of apps) {
+for (const app of [...apps, ...variants]) {
   const root = join(folder, 'Storytold', 'web', app.id, app.version);
   const entry = await read(app.port, '/');
   assert.equal(entry.code, 200, `${app.label} entry`);
@@ -47,8 +47,12 @@ for (const app of apps) {
 
 const hub = await read(4180, '/ACCESS_IS4S/skills/numeracy/');
 assert.equal(hub.code, 200);
-assert.match(hub.body.toString(), /Installed Storytold applications/);
-assert.match(hub.body.toString(), />CADCraft<\/a>/);
+assert.match(hub.body.toString(), /aria-label="Create and edit"/);
+assert.match(hub.body.toString(), /\/workspace\/\?skill=numeracy&amp;app=cadcraft/);
+assert.doesNotMatch(hub.body.toString(), /Installed Storytold applications/);
+const projectWorkspace = await read(4180, '/workspace/?skill=numeracy&app=cadcraft');
+assert.equal(projectWorkspace.code, 200, 'ACCESS contextual project workspace');
+assert.match(projectWorkspace.headers['content-security-policy'], /frame-src http:\/\/127\.0\.0\.1:4190/);
 for (const id of ['gridcraft', 'wordcraft']) {
   const app = apps.find(tool => tool.id === id);
   const workspace = await read(app.port, '/access-workspace/');

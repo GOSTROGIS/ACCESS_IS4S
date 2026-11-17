@@ -116,6 +116,56 @@ async function installedApps() {
   return apps;
 }
 
+export const slipcurveFilmVariant = Object.freeze({
+  id: 'slipcurve-filmcraft', sourceApplication: 'filmcraft', label: 'Slipcurve Video',
+  version: 'v0.20.1-slipcurve-d6e7889', port: 4211,
+  artifactSha256: '3b78b7fbf9d1715efc3d15c0807c52d51c39d2eaf80fccc9d012275691076c83',
+  wasmSha256: '2b03de2ee6149d245e7c1f97e2c7c9a153b96049f942278fbde6ebab23d2fa5e',
+  buildManifestSha256: 'fdfbeeb22ac0126f376be601c53e67b23fdb9083196c300150231899dead9479',
+});
+
+export function validateVariants(manifest) {
+  if (!manifest || Object.keys(manifest).sort().join(',') !== 'apps,schema' || manifest.schema !== 1 ||
+      !Array.isArray(manifest.apps) || manifest.apps.length !== 1) throw Error('Invalid installed variant mapping');
+  const row = manifest.apps[0];
+  const fields = Object.keys(slipcurveFilmVariant).sort();
+  if (!row || Object.keys(row).sort().join(',') !== fields.join(',') ||
+      fields.some(field => row[field] !== slipcurveFilmVariant[field])) throw Error('Unapproved installed variant');
+  return [{ ...slipcurveFilmVariant }];
+}
+
+export async function installedVariants(root) {
+  const file = join(root, 'installed-variants.json');
+  let manifest;
+  try {
+    if (relative(file, await realpath(file)) !== '' || (await stat(file)).size > 4096) throw Error('Invalid variant registry file');
+    manifest = JSON.parse(await readFile(file, 'utf8'));
+  } catch (error) {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  }
+  const variants = validateVariants(manifest);
+  for (const app of variants) {
+    const tree = runtimeTree(root, { ...app, kind: 'web' });
+    if (relative(tree, await realpath(tree)) !== '') throw Error('Redirected variant runtime');
+    const receipt = await readFile(join(tree, 'build-manifest.json'));
+    if (createHash('sha256').update(receipt).digest('hex') !== app.buildManifestSha256) throw Error('Variant build receipt checksum failed');
+    const build = JSON.parse(receipt.toString('utf8'));
+    if (build.application !== app.label || build.commit !== 'd6e78890f19baba37b062319fb45a1f2408a3450' ||
+        build.wasmSha256 !== app.wasmSha256 || !build.files || Object.keys(build.files).length !== 16) throw Error('Invalid variant build receipt');
+    for (const [name, pin] of Object.entries(build.files)) {
+      if (!name || name.split('/').some(part => !part || part.startsWith('.') || /[\\:\u0000-\u001f]/u.test(part))) throw Error('Invalid variant file name');
+      const path = join(tree, ...name.split('/'));
+      if (!inside(tree, path) || relative(path, await realpath(path)) !== '' || !Number.isSafeInteger(pin.bytes) ||
+          pin.bytes < 0 || !/^[a-f0-9]{64}$/u.test(pin.sha256) || !(await stat(path)).isFile() || (await stat(path)).size !== pin.bytes) throw Error('Variant file differs from its receipt');
+      const hash = createHash('sha256');
+      for await (const bytes of createReadStream(path)) hash.update(bytes);
+      if (hash.digest('hex') !== pin.sha256 || (name === 'filmcraft_web_bg.wasm' && pin.sha256 !== app.wasmSha256)) throw Error('Variant file checksum failed');
+    }
+  }
+  return variants;
+}
+
 function server(port, serve) {
   const endpoint = createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -166,7 +216,8 @@ export async function serveCandidate(root, app) {
 
 export function runtimeServer(home, app) {
   const target = { ...app, kind: 'web' };
-  return editionServer(home, app, () => activeRuntime(home, target), version => runtimeTree(home, target, version), true);
+  const active = app.sourceApplication ? () => ({ version: app.version, retained: [] }) : () => activeRuntime(home, target);
+  return editionServer(home, app, active, version => runtimeTree(home, target, version), true);
 }
 
 function editionServer(home, app, readActive, resolveTree, projectWorkspace = false) {
@@ -186,7 +237,7 @@ function editionServer(home, app, readActive, resolveTree, projectWorkspace = fa
           if (!loader || !wasm || !worker) throw Error('Unsupported installed PdfCraft artifact layout');
           pdf = { loader: entry + loader, wasm: entry + wasm, worker: entry + worker };
         }
-        return json(req, res, { id: app.id, label: app.label, entry, ...pdf });
+        return json(req, res, { id: app.sourceApplication || app.id, label: app.label, entry, ...pdf });
       }
       if (parts.length > 1 || (parts.length && !['index.html', 'workspace.mjs', 'pdfcraft.html', 'pdfcraft-page.mjs'].includes(parts[0]))) return response(res, 404, 'Workspace file not found');
       return fileResponse(req, res, join(home, 'tools/storytold-workspace'), parts, path);
@@ -262,12 +313,14 @@ async function startSlipcurve() {
 
 async function main() {
   const apps = await installedApps();
+  const variants = await installedVariants(home);
+  if (variants.some(variant => apps.some(app => app.port === variant.port || app.id === variant.id))) throw Error('Variant conflicts with a base application');
   const consulting = await consultingPaths(join(home, 'CONSULTING')).catch(error => {
     if (error.code !== 'ENOENT') console.error(`CONSULTING release unavailable (${error.code || error.name})`);
     return null;
   });
   const url = `http://${address}:${portalPort}/`;
-  const installation = createHash('sha256').update(home).update(JSON.stringify(apps)).digest('hex');
+  const installation = createHash('sha256').update(home).update(JSON.stringify(apps)).update(JSON.stringify(variants)).digest('hex');
   if (await existingPortal(url, installation)) {
     console.log(`Intranet is already running at ${url}`);
     openBrowser(url);
@@ -288,10 +341,10 @@ async function main() {
       const active = await Promise.all(apps.map(async app => ({
         ...app, version: (await activeRuntime(home, { ...app, kind: 'web' })).version,
       })));
-      return json(req, res, { apps: active, native });
+      return json(req, res, { apps: active, native, variants });
     }
     if (first === 'health.json' && !remaining.length) {
-      return json(req, res, { service: 'access-is4s-folder-intranet', installation, apps: apps.length,
+      return json(req, res, { service: 'access-is4s-folder-intranet', installation, apps: apps.length, variants: variants.length,
         consultingRevision: consulting?.revision ?? null });
     }
     if (first === 'workspace') {
@@ -308,6 +361,7 @@ async function main() {
     return response(res, 404, 'File not found');
   })]]);
   for (const app of apps) services.set(app.port, runtimeServer(home, app));
+  for (const app of variants) services.set(app.port, runtimeServer(home, app));
   try {
     for (const [port, endpoint] of services) await listen(port, endpoint);
   } catch (error) {
