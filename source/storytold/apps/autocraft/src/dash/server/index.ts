@@ -32,6 +32,7 @@ import { saveUserTokens } from "./user-tokens.ts";
 import { FakeProvider, GitHubProvider, oauthProviderFor, providerFor, type GithubUser, type Provider, type Tokens } from "./provider.ts";
 import { retryWaiting } from "../../github/user-lane.ts";
 import { createSession, deleteSession, loadSession, makeUser, pruneExpired, SESSION_TTL, userForLogin, type Session } from "./sessions.ts";
+import { consumeNativeHandoff, initializeNativeSignIn, nativeHandoffPage, nativeOwner, nativeSessionCookie, nativeStateCookie } from "./native-signin.ts";
 import { answering, handleMcp, writes as mcpWrites, type Msg as McpMsg } from "../mcp/index.ts";
 import { loadToken, pruneTokens } from "../mcp/tokens.ts";
 import { handleDelivery, WEBHOOK_BODY_LIMIT, WEBHOOK_PATH } from "../../github/webhooks.ts";
@@ -162,6 +163,10 @@ function cookie(name: string, value: string, maxAgeSec: number): string {
 
 export function createApp(opts: AppOptions & { routes: Route[] }) {
   const { config, db } = opts;
+  const localOwner = nativeOwner(config);
+  const sessionCookie = nativeSessionCookie(config) ?? SESSION_COOKIE;
+  const stateCookie = nativeStateCookie(config) ?? STATE_COOKIE;
+  if (localOwner) initializeNativeSignIn(db);
   const provider = opts.provider ?? providerFor(config, () => githubIdentity(db));
   // The org setup link signs in with the OAuth App even when dashboard sign-in uses the GitHub App.
   const setupProvider = opts.provider ?? (config.devAuth ? provider : oauthProviderFor(config));
@@ -214,7 +219,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
   function secure(headers: Record<string, string | string[]>, csp: string): Record<string, string | string[]> {
     headers["content-security-policy"] = csp;
     headers["x-frame-options"] = "DENY";
-    headers["referrer-policy"] = "same-origin";
+    headers["referrer-policy"] ??= "same-origin";
     headers["x-content-type-options"] = "nosniff";
     headers["cross-origin-opener-policy"] = "same-origin";
     headers["cross-origin-resource-policy"] = "same-origin";
@@ -284,8 +289,9 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       json = await readJson(req);
       if (!safeEqual(String(req.headers[CSRF_HEADER] ?? ""), session.csrf)) return out(apiError(403, "missing or wrong CSRF token"));
       if (url.pathname === "/api/signout") {
-        deleteSession(db, parseCookies(req.headers.cookie).get(SESSION_COOKIE)!);
-        return send(res, nonce, { status: 204 }, [cookie(SESSION_COOKIE, "", 0)]);
+        deleteSession(db, parseCookies(req.headers.cookie).get(sessionCookie)!);
+        if (localOwner) db.prepare("DELETE FROM native_signin_handoffs WHERE product = ? AND login = ?").run(localOwner.product, session.login);
+        return send(res, nonce, { status: 204 }, [cookie(sessionCookie, "", 0)]);
       }
     }
     const { route, params, other } = match(routes, method, url.pathname);
@@ -313,7 +319,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
     if (live.full) return send(res, nonce, apiError(503, "too many live connections"));
     req.socket.setTimeout(0);
     req.socket.setNoDelay(true);
-    const cookieId = parseCookies(req.headers.cookie).get(SESSION_COOKIE);
+    const cookieId = parseCookies(req.headers.cookie).get(sessionCookie);
     const headers = secure({
       "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-cache, no-transform", "x-accel-buffering": "no",
       [CSRF_HEADER]: session.csrf,
@@ -332,7 +338,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       .run(state, verifier, returnTo, githubIdentity(db), new Date().toISOString());
     return {
       r: { redirect: p.authorizeUrl(state, pkceChallenge(verifier), callbackUrl, selectAccount, scopes) },
-      cookies: [cookie(STATE_COOKIE, state, 600)],
+      cookies: [cookie(stateCookie, state, 600)],
     };
   }
 
@@ -344,24 +350,45 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
   });
 
   async function auth(req: IncomingMessage, url: URL, nonce: string, cookies: Map<string, string>): Promise<{ r: Res; cookies?: string[] }> {
+    if (url.pathname === "/auth/native" || url.pathname === "/auth/native/finish") {
+      if (!localOwner) return { r: errorPage(nonce, 404, "Not found", "No such sign-in method.") };
+      if (!signinLimit.allow(clientIp(req))) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
+      if (req.method === "GET" && url.pathname === "/auth/native") {
+        return { r: { html: nativeHandoffPage(nonce), headers: {
+          "referrer-policy": "no-referrer",
+          "content-security-policy": `default-src 'none'; script-src 'nonce-${nonce}'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`,
+        } } };
+      }
+      if (req.method !== "POST" || url.pathname !== "/auth/native/finish") return { r: apiError(405, "method not allowed") };
+      if (req.headers.origin !== config.baseUrl || !sameOrigin(req)) return { r: apiError(403, "cross-origin request refused") };
+      if (contentType(req) !== "application/x-www-form-urlencoded") return { r: apiError(415, "invalid sign-in form") };
+      const form = new URLSearchParams((await readRaw(req, 512)).toString("utf8"));
+      if ([...form.keys()].join(",") !== "code") return { r: apiError(400, "invalid sign-in form") };
+      const id = consumeNativeHandoff(config, db, form.get("code") ?? "", req.headers["user-agent"]);
+      if (!id) return { r: errorPage(nonce, 400, "Sign-in expired", "Use the installed native sign-in launcher again.") };
+      return { r: { redirect: "/", headers: { "referrer-policy": "no-referrer" } }, cookies: [cookie(sessionCookie, id, SESSION_TTL / 1000)] };
+    }
     const ip = clientIp(req);
     const path = url.pathname;
     if (path.startsWith("/auth/setup") || path === "/auth/github-app/setup" || (path === "/auth/github-app/callback" && setup.ownsState(url.searchParams.get("state") ?? ""))) {
       if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
-      const out = await setup.handle(req, url, nonce, cookies, loadSession(db, cookies.get(SESSION_COOKIE))?.role === "operator");
+      const out = await setup.handle(req, url, nonce, cookies, loadSession(db, cookies.get(sessionCookie))?.role === "operator");
       if (out) return out;
     }
     if (req.method === "GET" && path === "/auth/signin") {
       if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
       const returnTo = safeReturnTo(url.searchParams.get("return_to"));
-      if (loadSession(db, cookies.get(SESSION_COOKIE))) return { r: { redirect: returnTo } };
+      if (loadSession(db, cookies.get(sessionCookie))) return { r: { redirect: returnTo } };
       if (signInBlocked()) return { r: noAppPage(nonce) };
+      if (localOwner && (!config.secrets.githubClientId || !config.secrets.githubClientSecret)) {
+        return { r: { html: plainPage(nonce, "Native sign-in", `<p>Use the installed native launcher to verify your existing GitHub sign-in.</p><p><a href="slipcurve-app://open/${localOwner.product}-autocraft">Sign in with the installed application</a></p>`) } };
+      }
       return startOAuth(returnTo, url.searchParams.get("select") === "1");
     }
     if (req.method === "GET" && path === "/auth/authorize-app") {
       if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
       const returnTo = safeReturnTo(url.searchParams.get("return_to"));
-      const s = loadSession(db, cookies.get(SESSION_COOKIE));
+      const s = loadSession(db, cookies.get(sessionCookie));
       if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: `/auth/authorize-app?${new URLSearchParams({ return_to: returnTo })}` })}` } };
       if (s.role !== "operator") return { r: errorPage(nonce, 403, "Not authorised", "Only operators authorize AutoCraft to act as them.") };
       const appProvider = appProviderNow();
@@ -370,7 +397,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
     }
     if (req.method === "GET" && path === "/auth/callback") {
       if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
-      const clear = [cookie(STATE_COOKIE, "", 0)];
+      const clear = [cookie(stateCookie, "", 0)];
       if (url.searchParams.get("error")) {
         return { r: errorPage(nonce, 400, "Sign-in cancelled", "GitHub sign-in did not complete."), cookies: clear };
       }
@@ -378,7 +405,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       const code = url.searchParams.get("code") ?? "";
       const row = db.prepare("SELECT verifier, return_to, identity, created_at FROM oauth_states WHERE state = ?").get(state) as
         { verifier: string; return_to: string | null; identity: string | null; created_at: string } | undefined;
-      const cookieState = cookies.get(STATE_COOKIE) ?? "";
+      const cookieState = cookies.get(stateCookie) ?? "";
       const stateOk = !!row && safeEqual(cookieState, state);
       if (stateOk) db.prepare("DELETE FROM oauth_states WHERE state = ?").run(state);
       if (!row || !code || !stateOk || Date.now() - Date.parse(row.created_at) > 600_000) {
@@ -408,7 +435,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       }
       if (row.return_to?.startsWith(AUTHORIZE_PREFIX)) {
         // "Act as you": only the user token is stored. The session and the sign-in are untouched.
-        const s = loadSession(db, cookies.get(SESSION_COOKIE));
+        const s = loadSession(db, cookies.get(sessionCookie));
         if (!s || s.role !== "operator" || s.login.toLowerCase() !== who.login.toLowerCase() || checkGithubId(db, s.login, who.id) === "mismatch") {
           // The token belongs to an account that may not act here: end it before answering.
           void (appProviderNow() ?? provider).revoke(tokens.access).catch(() => {});
@@ -435,34 +462,35 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       audit(db, access.login, "sign-in", access.login, { ip });
       return {
         r: { redirect: safeReturnTo(row.return_to) },
-        cookies: [...clear, cookie(SESSION_COOKIE, id, SESSION_TTL / 1000)],
+        cookies: [...clear, cookie(sessionCookie, id, SESSION_TTL / 1000)],
       };
     }
     if (req.method === "POST" && path === "/auth/github-app/start") {
       if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
       if (!sameOrigin(req)) return { r: errorPage(nonce, 403, "Refused", "This form was sent from another site.") };
       const form = await readBody(req);
-      const s = loadSession(db, cookies.get(SESSION_COOKIE));
+      const s = loadSession(db, cookies.get(sessionCookie));
       if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: "/admin/github-app" })}` } };
       if (!safeEqual(form.get("csrf") ?? "", s.csrf)) return { r: errorPage(nonce, 403, "Refused", "The form expired. Reload the page and try again.") };
       return { r: startRegistration(db, config, req, form, nonce, s) };
     }
     if (req.method === "GET" && path === "/auth/github-app/callback") {
       if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
-      const s = loadSession(db, cookies.get(SESSION_COOKIE));
+      const s = loadSession(db, cookies.get(sessionCookie));
       if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: "/admin/github-app" })}` } };
       return { r: await finishRegistration(db, config, appDeps, url, nonce, s) };
     }
     if (req.method === "POST" && path === "/auth/signout") {
       if (!sameOrigin(req)) return { r: errorPage(nonce, 403, "Refused", "This form was sent from another site.") };
       const form = await readBody(req);
-      const id = cookies.get(SESSION_COOKIE);
+      const id = cookies.get(sessionCookie);
       const s = loadSession(db, id);
       if (s) {
         if (!safeEqual(form.get("csrf") ?? "", s.csrf)) return { r: errorPage(nonce, 403, "Refused", "The form expired. Reload the page and try again.") };
         deleteSession(db, id!);
+        if (localOwner) db.prepare("DELETE FROM native_signin_handoffs WHERE product = ? AND login = ?").run(localOwner.product, s.login);
       }
-      return { r: { redirect: "/auth/signed-out" }, cookies: [cookie(SESSION_COOKIE, "", 0)] };
+      return { r: { redirect: "/auth/signed-out" }, cookies: [cookie(sessionCookie, "", 0)] };
     }
     if (req.method === "GET" && path === "/auth/signed-out") {
       return { r: { html: plainPage(nonce, "Signed out", `<p class="muted">You are signed out of the dashboard on this device.</p><p><a class="button" href="/auth/signin?select=1">Sign in again</a></p>`) } };
@@ -490,13 +518,13 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
 
   /** A request with an operator's or maintainer's session: /healthz/checks gives them its times and counts. */
   const staffCaller = (req: IncomingMessage): boolean => {
-    const role = loadSession(db, parseCookies(req.headers.cookie).get(SESSION_COOKIE))?.role;
+    const role = loadSession(db, parseCookies(req.headers.cookie).get(sessionCookie))?.role;
     return role === "operator" || role === "maintainer";
   };
 
   async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
-    const folderHost = `127.0.0.1:${config.port}`;
-    if (process.platform === "win32" && config.host === "127.0.0.1" && config.baseUrl === `http://${folderHost}` &&
+    const folderHost = localOwner ? new URL(config.baseUrl!).host : `127.0.0.1:${config.port}`;
+    if ((localOwner || process.platform === "win32" && config.host === "127.0.0.1" && config.baseUrl === `http://${folderHost}`) &&
         (req.headers.host !== folderHost || req.headers["x-forwarded-for"] !== undefined)) {
       const nonce = randomToken(16);
       return send(res, nonce, errorPage(nonce, 403, "Refused", "Open the AutoCraft folder URL on this computer."));
@@ -507,6 +535,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       if (Date.now() - lastPrune > 3_600_000) {
         lastPrune = Date.now();
         pruneExpired(db);
+        if (localOwner) db.prepare("DELETE FROM native_signin_handoffs WHERE expires_at <= ?").run(Date.now());
         pruneTokens(db);
         void vault.sweepRevocations().catch(() => {});
       }
@@ -537,7 +566,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       if (method === "GET" && url.pathname === DISCORD_TERMS_PATH) return send(res, nonce, { html: discordTermsPage(nonce, contactOf(db)) });
       // Public: the favicon and the preview image, which sign-in pages and link-preview crawlers load without a session.
       if (method === "GET" && PUBLIC_FILES.has(url.pathname)) return await sendWeb(res, nonce, url.pathname);
-      const session = loadSession(db, cookies.get(SESSION_COOKIE));
+      const session = loadSession(db, cookies.get(sessionCookie));
       if (!session) {
         const wantsPage = method === "GET" && /text\/html/.test(String(req.headers.accept ?? ""));
         if (wantsPage) {

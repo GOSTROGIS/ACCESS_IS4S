@@ -17,7 +17,9 @@ export type AppSecrets = {
   owner: AppOwner | null;
 };
 export type AppOwner = { login: string; type: "User" | "Organization" };
-export type Secrets = { githubClientId: string; githubClientSecret: string; sessionKey: string; app: AppSecrets | null };
+export type NativeOwner = { product: "access" | "slipcurve"; login: string; githubId: number };
+export const NATIVE_ORIGINS = Object.freeze({ access: "http://127.0.0.2:8993", slipcurve: "http://127.0.0.3:8994" });
+export type Secrets = { githubClientId: string | null; githubClientSecret: string | null; sessionKey: string; app: AppSecrets | null; nativeOwner?: NativeOwner | null };
 
 /**
  * Makes `secrets.app` follow the secrets file: it is read again whenever the file changes (another process or a
@@ -121,11 +123,22 @@ export function readSecrets(path: string | undefined): Secrets {
     if (typeof v !== "string" || v.length < min) throw new ConfigError(`secrets file: ${k} is missing or too short`);
     return v;
   };
+  let nativeOwner: NativeOwner | null = null;
+  if (raw.native_signin !== undefined) {
+    const value = raw.native_signin as Record<string, unknown> | null;
+    if (!value || !["access", "slipcurve"].includes(String(value.product)) ||
+        typeof value.owner_login !== "string" || !/^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/.test(value.owner_login) ||
+        !Number.isSafeInteger(value.github_id) || Number(value.github_id) <= 0) throw new ConfigError("invalid protected native sign-in owner");
+    nativeOwner = { product: value.product as NativeOwner["product"], login: value.owner_login, githubId: Number(value.github_id) };
+  }
+  const hasOAuth = raw.github_client_id !== undefined || raw.github_client_secret !== undefined;
+  if (!hasOAuth && !nativeOwner) throw new ConfigError("real OAuth credentials or protected native sign-in configuration are required");
   return {
-    githubClientId: get("github_client_id"),
-    githubClientSecret: get("github_client_secret"),
+    githubClientId: hasOAuth ? get("github_client_id") : null,
+    githubClientSecret: hasOAuth ? get("github_client_secret") : null,
     sessionKey: get("session_key", 32),
     app: appSecretsOf(raw),
+    nativeOwner,
   };
 }
 
@@ -269,6 +282,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     if (baseUrl !== u.origin) throw new ConfigError("AUTOCRAFT_BASE_URL must not have a path");
   } else if (!devAuth) {
     throw new ConfigError("AUTOCRAFT_BASE_URL is not set");
+  }
+  if (secrets.nativeOwner) {
+    const nativePort = secrets.nativeOwner.product === "access" ? 8993 : 8994;
+    if (devAuth || host !== "127.0.0.1" || port !== nativePort || baseUrl !== NATIVE_ORIGINS[secrets.nativeOwner.product] || envVar("TRUST_PROXY", env) === "1") {
+      throw new ConfigError("native sign-in requires its fixed product loopback origin without development authentication or proxy trust");
+    }
   }
   const webDistEnv = envVar("WEB_DIST", env);
   return {

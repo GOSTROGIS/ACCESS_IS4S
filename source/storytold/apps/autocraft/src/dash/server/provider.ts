@@ -61,10 +61,50 @@ function tokensFrom(body: Record<string, unknown>, now = Date.now()): Tokens | n
   };
 }
 
-export class GitHubProvider implements Provider {
+export class GitHubIdentityProvider {
+  async identity(access: string): Promise<GithubUser | null> {
+    const r = await this.api(access, "/user");
+    if (r.status === 401) return null;
+    if (!r.ok) throw new Error(`GET /user: HTTP ${r.status}`);
+    const body = (await r.json()) as { login?: unknown; id?: unknown };
+    return typeof body.login === "string" && typeof body.id === "number" && Number.isSafeInteger(body.id) ? { login: body.login, id: body.id } : null;
+  }
+  async permission(access: string, repo: string): Promise<Permission | "unauthorized"> {
+    const r = await this.api(access, `/repos/${ownerOf(repo)}/${encodeURIComponent(repo)}`);
+    if (r.status === 401) return "unauthorized";
+    if (r.status === 404) return "none";
+    if (!r.ok) throw new Error(`GET /repos/${ownerOf(repo)}/${repo}: HTTP ${r.status}`);
+    const p = ((await r.json()) as { permissions?: Record<string, boolean> }).permissions ?? {};
+    if (p.admin) return "admin";
+    if (p.maintain) return "maintain";
+    if (p.push) return "write";
+    if (p.triage) return "triage";
+    if (p.pull) return "read";
+    return "none";
+  }
+  private api(access: string, path: string): Promise<Response> {
+    return fetch(`https://api.github.com${path}`, {
+      redirect: "error",
+      headers: { authorization: `Bearer ${access}`, accept: "application/vnd.github+json", "x-github-api-version": "2022-11-28", "user-agent": UA },
+      signal: AbortSignal.timeout(10_000),
+    });
+  }
+}
+
+/** A credential borrowed from the owner's native credential manager is never an OAuth grant owned by this app. */
+export class NativeGitHubProvider extends GitHubIdentityProvider implements Provider {
+  authorizeUrl(): string { throw new Error("Use the installed native sign-in launcher."); }
+  async exchange(): Promise<null> { return null; }
+  async refresh(): Promise<null> { return null; }
+  async revoke(): Promise<void> { throw new Error("A native credential is managed by its credential manager; sign out locally instead."); }
+  async revokeGrant(): Promise<void> { throw new Error("A native credential's external grant cannot be revoked by this application."); }
+}
+
+export class GitHubProvider extends GitHubIdentityProvider implements Provider {
   #id: string;
   #secret: string;
   constructor(clientId: string, clientSecret: string) {
+    super();
     this.#id = clientId;
     this.#secret = clientSecret;
   }
@@ -112,37 +152,6 @@ export class GitHubProvider implements Provider {
       signal: AbortSignal.timeout(10_000),
     });
     if (!r.ok) throw new RevokeRefused(r.status);
-  }
-  async identity(access: string): Promise<GithubUser | null> {
-    const r = await this.#api(access, "/user");
-    if (r.status === 401) return null;
-    if (!r.ok) throw new Error(`GET /user: HTTP ${r.status}`);
-    const body = (await r.json()) as { login?: unknown; id?: unknown };
-    return typeof body.login === "string" && typeof body.id === "number" && Number.isSafeInteger(body.id) ? { login: body.login, id: body.id } : null;
-  }
-  async permission(access: string, repo: string): Promise<Permission | "unauthorized"> {
-    const r = await this.#api(access, `/repos/${ownerOf(repo)}/${encodeURIComponent(repo)}`);
-    if (r.status === 401) return "unauthorized";
-    // A private repo the token can't see answers 404. A 403 is usually a rate
-    // limit, so it throws rather than caching "none".
-    if (r.status === 404) return "none";
-    if (!r.ok) throw new Error(`GET /repos/${ownerOf(repo)}/${repo}: HTTP ${r.status}`);
-    const p = ((await r.json()) as { permissions?: Record<string, boolean> }).permissions ?? {};
-    if (p.admin) return "admin";
-    if (p.maintain) return "maintain";
-    if (p.push) return "write";
-    if (p.triage) return "triage";
-    if (p.pull) return "read";
-    return "none";
-  }
-  #api(access: string, path: string): Promise<Response> {
-    return fetch(`https://api.github.com${path}`, {
-      headers: {
-        authorization: `Bearer ${access}`, accept: "application/vnd.github+json",
-        "x-github-api-version": "2022-11-28", "user-agent": UA,
-      },
-      signal: AbortSignal.timeout(10_000),
-    });
   }
 }
 
@@ -241,7 +250,9 @@ export class FakeProvider implements Provider {
 export function oauthProviderFor(config: Config): Provider {
   if (config.devAuth) return new FakeProvider(config.devPermsFile, config.devTokenTtlMs ?? undefined);
   const { githubClientId, githubClientSecret } = config.secrets;
-  return new GitHubProvider(githubClientId, githubClientSecret);
+  if (githubClientId && githubClientSecret) return new GitHubProvider(githubClientId, githubClientSecret);
+  if (config.secrets.nativeOwner) return new NativeGitHubProvider();
+  throw new Error("OAuth credentials are not configured");
 }
 
 /**
@@ -252,7 +263,10 @@ export function providerFor(config: Config, identity: () => "box" | "app"): Prov
   if (config.devAuth) return new FakeProvider(config.devPermsFile, config.devTokenTtlMs ?? undefined);
   const now = (): Provider => {
     const { githubClientId, githubClientSecret, app } = config.secrets;
-    return identity() === "app" && app ? new GitHubProvider(app.clientId, app.clientSecret) : new GitHubProvider(githubClientId, githubClientSecret);
+    if (identity() === "app" && app) return new GitHubProvider(app.clientId, app.clientSecret);
+    if (githubClientId && githubClientSecret) return new GitHubProvider(githubClientId, githubClientSecret);
+    if (config.secrets.nativeOwner) return new NativeGitHubProvider();
+    throw new Error("OAuth credentials are not configured");
   };
   // Sign-in under the app identity never falls back to the OAuth App: without app keys it fails.
   const noFallback = (): Provider => {
