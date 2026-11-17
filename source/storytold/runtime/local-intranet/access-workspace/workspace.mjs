@@ -232,6 +232,7 @@ $('open-file').addEventListener('change', () => {
   }).finally(() => { $('open-file').value = ''; });
 });
 $('save').addEventListener('click', () => void run(async () => { send('save'); status('Requesting the editable file from the application…'); }));
+$('tools-tab').addEventListener('click', event => event.preventDefault());
 
 async function start() {
   $('context').textContent = `${context.label}: create a file, practise the skill, and keep your work.`;
