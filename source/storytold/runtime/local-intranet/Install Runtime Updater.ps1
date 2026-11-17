@@ -48,7 +48,7 @@ foreach ($name in $updaterFiles) {
     Copy-Item -LiteralPath (Join-Path $runtimeSource $name) -Destination $runner
 }
 $localFiles = @(
-    'intranet.mjs', 'runtime-state.mjs', 'native-profile.mjs', 'consulting-edition.mjs', 'consulting-release.mjs',
+    'intranet.mjs', 'runtime-state.mjs', 'product-runtimes.mjs', 'native-profile.mjs', 'consulting-edition.mjs', 'consulting-release.mjs',
     'consulting-serve.mjs', 'consulting-mcp.mjs', 'prepare.py', 'stage-runtime.py', 'update-runtimes.mjs'
 )
 foreach ($name in $localFiles) {
@@ -66,7 +66,7 @@ $slipcurveBrowser = if ($SlipcurveChrome) { (Get-Item -LiteralPath $SlipcurveChr
 if ($LASTEXITCODE -ne 0) { throw 'An installed application failed its updater regression. The launchers were not switched.' }
 
 $portalFiles = @(
-    'intranet.mjs', 'runtime-state.mjs', 'native-profile.mjs', 'native-open.mjs', 'consulting-edition.mjs', 'consulting-serve.mjs',
+    'intranet.mjs', 'runtime-state.mjs', 'product-runtimes.mjs', 'native-profile.mjs', 'native-open.mjs', 'consulting-edition.mjs', 'consulting-serve.mjs',
     'consulting-mcp.mjs', 'Schedule Runtime Updates.ps1', 'Update Runtimes.cmd'
 )
 foreach ($name in $portalFiles) {
