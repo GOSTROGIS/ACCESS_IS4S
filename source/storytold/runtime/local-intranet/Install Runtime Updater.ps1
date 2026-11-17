@@ -42,13 +42,13 @@ $updaterFiles = @(
     'verify-cadcraft-native.py', 'verify-creative-native.mjs', 'verify-deckcraft-native.py',
     'verify-consulting-browser.py', 'verify-consulting-mcp.mjs',
     'verify-office-browser.py', 'verify-pdfcraft-native.py', 'verify-photocraft-browser.py',
-    'verify-soundcraft-native.py', 'verify-vectorcraft-native.py'
+    'verify-runtime-native.py', 'verify-soundcraft-native.py', 'verify-vectorcraft-native.py'
 )
 foreach ($name in $updaterFiles) {
     Copy-Item -LiteralPath (Join-Path $runtimeSource $name) -Destination $runner
 }
 $localFiles = @(
-    'intranet.mjs', 'runtime-state.mjs', 'consulting-edition.mjs', 'consulting-release.mjs',
+    'intranet.mjs', 'runtime-state.mjs', 'native-profile.mjs', 'consulting-edition.mjs', 'consulting-release.mjs',
     'consulting-serve.mjs', 'consulting-mcp.mjs', 'prepare.py', 'stage-runtime.py', 'update-runtimes.mjs'
 )
 foreach ($name in $localFiles) {
@@ -66,12 +66,13 @@ $slipcurveBrowser = if ($SlipcurveChrome) { (Get-Item -LiteralPath $SlipcurveChr
 if ($LASTEXITCODE -ne 0) { throw 'An installed application failed its updater regression. The launchers were not switched.' }
 
 $portalFiles = @(
-    'intranet.mjs', 'runtime-state.mjs', 'consulting-edition.mjs', 'consulting-serve.mjs',
+    'intranet.mjs', 'runtime-state.mjs', 'native-profile.mjs', 'native-open.mjs', 'consulting-edition.mjs', 'consulting-serve.mjs',
     'consulting-mcp.mjs', 'Schedule Runtime Updates.ps1', 'Update Runtimes.cmd'
 )
 foreach ($name in $portalFiles) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $installationPath
 }
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'storytold-workspace') -Destination (Join-Path $installationPath 'tools') -Recurse -Force
 $consulting = Join-Path $installationPath 'CONSULTING'
 if (Test-Path -LiteralPath (Join-Path $consulting 'find-node.cmd') -PathType Leaf) {
     foreach ($name in @('Start CONSULTING.cmd', 'Start Atlas MCP.cmd')) {
@@ -79,6 +80,8 @@ if (Test-Path -LiteralPath (Join-Path $consulting 'find-node.cmd') -PathType Lea
     }
 }
 $template = Join-Path $PSScriptRoot 'Launch Managed Application.cmd'
-foreach ($name in @('cadcraft', 'effectcraft', 'lightcraft', 'vectorcraft', 'pdfcraft', 'deckcraft', 'soundcraft')) {
+foreach ($name in @('cadcraft', 'effectcraft', 'lightcraft', 'vectorcraft', 'pdfcraft', 'deckcraft', 'soundcraft',
+    'anicraft', 'filmcraft', 'figcraft', 'wordcraft', 'photocraft', 'designcraft', 'texturecraft',
+    'materialcraft', 'gridcraft', 'craft-anything')) {
     Copy-Item -LiteralPath $template -Destination (Join-Path $installationPath "Storytold/native/launchers/$name.cmd")
 }

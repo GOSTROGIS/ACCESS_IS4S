@@ -7,6 +7,7 @@ import { parseArgs, promisify } from 'node:util';
 import { download, signedChecksum, verifyArchive } from '../acquire-web-releases.mjs';
 import { serveCandidate } from './intranet.mjs';
 import { activeRuntime, newerVersion, promoteRuntime, resumeRuntime, rollbackRuntime, runtimeTree } from './runtime-state.mjs';
+import { nativeEnvironment } from './native-profile.mjs';
 
 const run = promisify(execFile);
 const source = dirname(fileURLToPath(import.meta.url));
@@ -18,6 +19,16 @@ const managed = [
   { key: 'pdfcraft-native', id: 'pdfcraft', kind: 'native', entry: 'pdfcraft.exe', gate: 'verify-pdfcraft-native.py' },
   { key: 'deckcraft-native', id: 'deckcraft', kind: 'native', entry: 'deckcraft.exe', gate: 'verify-deckcraft-native.py' },
   { key: 'soundcraft-native', id: 'soundcraft', kind: 'native', entry: 'soundcraft.exe', gate: 'verify-soundcraft-native.py' },
+  { key: 'anicraft-native', id: 'anicraft', kind: 'native', entry: 'anicraft.exe', gate: 'verify-runtime-native.py', arguments: ['anicraft'], ffmpeg: true },
+  { key: 'filmcraft-native', id: 'filmcraft', kind: 'native', entry: 'filmcraft.exe', gate: 'verify-runtime-native.py', arguments: ['filmcraft'], ffmpeg: true },
+  { key: 'figcraft-native', id: 'figcraft', kind: 'native', entry: 'figcraft.exe', gate: 'verify-runtime-native.py', arguments: ['figcraft'] },
+  { key: 'wordcraft-native', id: 'wordcraft', kind: 'native', entry: 'wordcraft.exe', gate: 'verify-runtime-native.py', arguments: ['wordcraft'] },
+  { key: 'photocraft-native', id: 'photocraft', kind: 'native', entry: 'photocraft.exe', gate: 'verify-runtime-native.py', arguments: ['photocraft'] },
+  { key: 'designcraft-native', id: 'designcraft', kind: 'native', entry: 'designcraft.exe', gate: 'verify-runtime-native.py', arguments: ['designcraft'] },
+  { key: 'texturecraft-native', id: 'texturecraft', kind: 'native', entry: 'texturecraft.exe', gate: 'verify-runtime-native.py', arguments: ['texturecraft'] },
+  { key: 'materialcraft-native', id: 'materialcraft', kind: 'native', entry: 'materialcraft.exe', gate: 'verify-runtime-native.py', arguments: ['materialcraft'] },
+  { key: 'gridcraft-native', id: 'gridcraft', kind: 'native', entry: 'gridcraft.exe', gate: 'verify-runtime-native.py', arguments: ['gridcraft'] },
+  { key: 'craft-anything-native', id: 'craft-anything', kind: 'native', entry: 'craft-anything.exe', gate: 'verify-runtime-native.py', arguments: ['craft-anything'] },
   { key: 'photocraft-web', id: 'photocraft', kind: 'web', entry: 'index.html', gate: 'verify-photocraft-browser.py' },
   { key: 'gridcraft-web', id: 'gridcraft', kind: 'web', entry: 'index.html', gate: 'verify-office-browser.py', arguments: ['gridcraft'] },
   { key: 'wordcraft-web', id: 'wordcraft', kind: 'web', entry: 'index.html', gate: 'verify-office-browser.py', arguments: ['wordcraft'] },
@@ -54,7 +65,9 @@ async function gate(root, app, path) {
     cwd: runner, timeout: 240_000, windowsHide: true,
   });
   if (app.kind === 'native') {
-    const result = await test([join(path, `${app.id}-cli.exe`)]);
+    const args = [...(app.arguments ?? []), join(path, `${app.id}-cli.exe`)];
+    if (app.ffmpeg) args.push('--ffmpeg', join(root, 'Storytold/native/dependencies/ffmpeg/9.0.2/bin/ffmpeg.exe'));
+    const result = await test(args);
     console.log(result.stdout.trim());
     return;
   }
@@ -194,7 +207,8 @@ async function main() {
       if (mode === 'launch') {
         const { version } = await activeRuntime(root, app);
         const cwd = runtimeTree(root, app, version);
-        const child = spawn(join(cwd, basename(app.entry)), [], { cwd, detached: true, stdio: 'ignore' });
+        const env = await nativeEnvironment(root, app, version);
+        const child = spawn(join(cwd, basename(app.entry)), [], { cwd, env, detached: true, stdio: 'ignore' });
         await new Promise((success, failure) => { child.once('spawn', success); child.once('error', failure); });
         child.unref();
         continue;

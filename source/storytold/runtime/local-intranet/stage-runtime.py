@@ -27,6 +27,13 @@ def main():
                          args.staging, args.entrypoint)
     source = Path(staged['appRoot'])
     if args.kind == 'native':
+        profiles = {'filmcraft': 'data', 'effectcraft': 'EffectCraftData', 'vectorcraft': 'VectorCraftData',
+                    'lightcraft': 'LightCraftData', 'soundcraft': 'SoundCraftData', 'designcraft': 'DesignCraftData',
+                    'photocraft': 'PhotoCraftData', 'figcraft': 'config', 'craft-anything': 'CraftAnythingData',
+                    'pdfcraft': 'PdfCraftData'}
+        mutable = profiles.get(args.application)
+        if mutable and (source / mutable).exists() and any((source / mutable).iterdir()):
+            raise ValueError('Signed release includes nonempty mutable profile data; review its packaging before activation')
         with (source / args.entrypoint).open('rb') as executable:
             if executable.read(2) != b'MZ':
                 raise ValueError('Expected a Windows executable')

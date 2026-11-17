@@ -5,6 +5,7 @@ from hashlib import sha256
 from html import escape
 import json
 from pathlib import Path
+import re
 import shutil
 import sys
 import tarfile
@@ -25,14 +26,30 @@ LABELS = {
     'figcraft': 'FigCraft', 'texturecraft': 'TextureCraft', 'materialcraft': 'MaterialCraft',
     'craft-anything': 'Craft Anything', 'craft-launcher': 'Craft Launcher',
 }
-PAGES = {
-    'index.html': [],
-    'skills/digital/index.html': list(LABELS),
-    'skills/digital/visual-studio/index.html': list(LABELS),
-    'skills/numeracy/index.html': ['cadcraft', 'gridcraft'],
-    'skills/writing/index.html': ['wordcraft', 'pdfcraft'],
-    'skills/communication/index.html': ['filmcraft', 'deckcraft', 'soundcraft'],
-    'skills/creativity-innovation/index.html': ['vectorcraft', 'effectcraft', 'photocraft', 'designcraft', 'texturecraft', 'materialcraft'],
+ACCESS_TOOLS = {
+    'vectorcraft': 'ACCESS Vector Drawing', 'filmcraft': 'ACCESS Video Editor',
+    'effectcraft': 'ACCESS Motion Effects', 'photocraft': 'ACCESS Image Editor',
+    'lightcraft': 'ACCESS Photo Development', 'cadcraft': 'ACCESS Technical Drawing',
+    'gridcraft': 'ACCESS Spreadsheets', 'wordcraft': 'ACCESS Documents',
+    'pdfcraft': 'ACCESS PDF Editor', 'designcraft': 'ACCESS Page Design',
+    'deckcraft': 'ACCESS Presentations', 'soundcraft': 'ACCESS Audio Editor',
+    'figcraft': 'ACCESS Interface Design', 'texturecraft': 'ACCESS Texture Studio',
+    'materialcraft': 'ACCESS Material Studio', 'craft-anything': 'ACCESS Creative Assistant',
+    'craft-launcher': 'ACCESS Application Launcher', 'artcraft': 'ACCESS Generative Studio',
+    'artcraftx': 'ACCESS Generative Studio Advanced', 'anicraft': 'ACCESS Animation Studio',
+    'autocraft': 'ACCESS Automation',
+}
+SKILL_TOOLS = {
+    'reading': ['pdfcraft', 'wordcraft', 'soundcraft'],
+    'writing': ['wordcraft', 'pdfcraft', 'designcraft', 'deckcraft'],
+    'numeracy': ['gridcraft', 'cadcraft'],
+    'digital': list(ACCESS_TOOLS),
+    'problem-solving': ['cadcraft', 'gridcraft', 'figcraft', 'autocraft'],
+    'communication': ['deckcraft', 'filmcraft', 'wordcraft', 'soundcraft'],
+    'collaboration': ['figcraft', 'wordcraft', 'gridcraft', 'deckcraft'],
+    'adaptability': ['wordcraft', 'gridcraft', 'craft-launcher', 'craft-anything'],
+    'creativity-innovation': ['vectorcraft', 'effectcraft', 'photocraft', 'designcraft',
+                             'texturecraft', 'materialcraft', 'artcraft', 'artcraftx', 'anicraft'],
 }
 WORKSPACES = {'gridcraft', 'wordcraft'}
 
@@ -73,20 +90,35 @@ def install_tree(source, destination, workspace=None):
 
 
 def browser_links(site, apps):
-    by_id = {app['id']: app for app in apps}
-    for page, tools in PAGES.items():
+    """Add context entry points to the real parent/editor workspace, retaining lessons."""
+    available = {app['id'] for app in apps}
+    if available != set(LABELS):
+        raise ValueError('ACCESS workspace requires all 17 installed browser applications')
+    pages = {'index.html': ('digital', []),
+             'skills/digital/visual-studio/index.html': ('digital', list(ACCESS_TOOLS))}
+    for skill, tools in SKILL_TOOLS.items():
+        root = site / 'skills' / skill
+        pages[f'skills/{skill}/index.html'] = (skill, tools)
+        # Put the work next to the learning task as well as its skill overview.
+        # Instructor and answer pages keep their original content and gates.
+        for learner in root.rglob('learner.html'):
+            pages[learner.relative_to(site).as_posix()] = (skill, tools[:4])
+    begin, end = '<!-- access-create:start -->', '<!-- access-create:end -->'
+    for page, (skill, tools) in pages.items():
         path = site / page
         html = path.read_text(encoding='utf-8')
+        html = re.sub(r'\s*<!-- access-create:start -->.*?<!-- access-create:end -->\s*', '', html, flags=re.S)
+        html = re.sub(r'\s*<section aria-label="Installed applications"><h2>Installed Storytold applications</h2>.*?</section>\s*', '', html, flags=re.S)
         links = []
         for identifier in tools:
-            app = by_id[identifier]
-            suffix = 'access-workspace/' if identifier in WORKSPACES else '?webgl' if identifier == 'texturecraft' else ''
-            links.append(f'<li><a href="http://127.0.0.1:{app["port"]}/{suffix}">{escape(app["label"])}</a></li>')
+            url = f'/workspace/?skill={skill}&app={identifier}'
+            links.append(f'<li><a href="{escape(url, quote=True)}">Create / edit with {escape(ACCESS_TOOLS[identifier])}</a></li>')
         if page.endswith('visual-studio/index.html'):
-            links.append('<li><a href="storytold-labs.md">PhotoCraft and CADCraft labs</a></li>')
-        section = ('\n<section aria-label="Installed applications"><h2>Installed Storytold applications</h2>'
-                   '<p><a href="/">Open the folder intranet</a> for browser and desktop applications.</p>'
-                   + (f'<ul>{"".join(links)}</ul>' if links else '') + '</section>\n')
+            links.append('<li><a href="storytold-labs.md">Image and technical drawing practice</a></li>')
+        section = (f'\n{begin}\n<section aria-label="Create and edit"><h2>Create / edit</h2>'
+                   f'<p><a href="/workspace/?skill={skill}">Open your ACCESS project workspace</a> to make and edit files for this skill. '
+                   'Use the full application controls, save your work with a project, and download a backup.</p>'
+                   + (f'<ul>{"".join(links)}</ul>' if links else '') + f'</section>\n{end}\n')
         closing = html.rfind('</main>')
         if closing < 0:
             closing = html.rfind('</body>')
@@ -141,13 +173,17 @@ def deploy(args):
         install_tree(site, args.destination / 'ACCESS_IS4S')
     tools = args.destination / 'tools'
     tools.mkdir(parents=True, exist_ok=True)
+    # Parent integration lives outside the immutable upstream runtime trees.
+    # Keep both editions' adapters alongside their verified application bytes.
+    for directory in ['access-workspace', 'storytold-workspace']:
+        shutil.copytree(SOURCE / directory, tools / directory, dirs_exist_ok=True)
     if digest(args.node / 'node.exe') != args.node_sha256:
         raise ValueError('Bundled Node executable differs from the official release digest')
     installed_node = tools / 'node.exe'
     if not installed_node.is_file() or digest(installed_node) != args.node_sha256:
         shutil.copyfile(args.node / 'node.exe', installed_node)
     shutil.copyfile(args.node / 'LICENSE', tools / 'node-LICENSE.txt')
-    for filename in ['index.html', 'portal.css', 'portal.mjs', 'intranet.mjs', 'runtime-state.mjs', 'consulting-edition.mjs',
+    for filename in ['index.html', 'portal.css', 'portal.mjs', 'intranet.mjs', 'runtime-state.mjs', 'native-profile.mjs', 'native-open.mjs', 'consulting-edition.mjs',
                      'Start Intranet.cmd', 'Open Native Applications.cmd', 'README.md']:
         shutil.copyfile(SOURCE / filename, args.destination / filename)
     pointer = args.destination / 'installed-web.json'

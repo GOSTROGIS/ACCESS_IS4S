@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
-import { readFile, realpath, stat } from 'node:fs/promises';
+import { readFile, readdir, realpath, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -166,12 +166,31 @@ export async function serveCandidate(root, app) {
 
 export function runtimeServer(home, app) {
   const target = { ...app, kind: 'web' };
-  return editionServer(home, app, () => activeRuntime(home, target), version => runtimeTree(home, target, version));
+  return editionServer(home, app, () => activeRuntime(home, target), version => runtimeTree(home, target, version), true);
 }
 
-function editionServer(home, app, readActive, resolveTree) {
+function editionServer(home, app, readActive, resolveTree, projectWorkspace = false) {
   return server(app.port, async (req, res, path) => {
     const active = await readActive();
+    if (projectWorkspace && path.segments[0] === 'slipcurve-workspace') {
+      res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-src 'self'; connect-src 'self' blob:; img-src 'self' blob: data:; worker-src 'self' blob:; frame-ancestors 'self' http://127.0.0.1:4184 http://127.0.0.1:4180; base-uri 'none'");
+      const parts = path.segments.slice(1);
+      if (parts.join('/') === 'editor.json') {
+        const entry = versionedWebApps.has(app.id) ? `/_edition/${active.version}/` : '/';
+        let pdf = {};
+        if (app.id === 'pdfcraft') {
+          const names = await readdir(resolveTree(active.version));
+          const loader = names.find(name => /^pdfcraft-web-[a-f0-9]+\.js$/.test(name));
+          const wasm = names.find(name => /^pdfcraft-web-[a-f0-9]+_bg\.wasm$/.test(name));
+          const worker = names.find(name => /^pdfcraft-ocr-worker-[a-f0-9]+_loader\.js$/.test(name));
+          if (!loader || !wasm || !worker) throw Error('Unsupported installed PdfCraft artifact layout');
+          pdf = { loader: entry + loader, wasm: entry + wasm, worker: entry + worker };
+        }
+        return json(req, res, { id: app.id, label: app.label, entry, ...pdf });
+      }
+      if (parts.length > 1 || (parts.length && !['index.html', 'workspace.mjs', 'pdfcraft.html', 'pdfcraft-page.mjs'].includes(parts[0]))) return response(res, 404, 'Workspace file not found');
+      return fileResponse(req, res, join(home, 'tools/storytold-workspace'), parts, path);
+    }
     let { version } = active;
     let { segments } = path;
     let edition = false;
@@ -274,6 +293,10 @@ async function main() {
     if (first === 'health.json' && !remaining.length) {
       return json(req, res, { service: 'access-is4s-folder-intranet', installation, apps: apps.length,
         consultingRevision: consulting?.revision ?? null });
+    }
+    if (first === 'workspace') {
+      res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; frame-src http://127.0.0.1:4190 http://127.0.0.1:4191 http://127.0.0.1:4192 http://127.0.0.1:4193 http://127.0.0.1:4194 http://127.0.0.1:4195 http://127.0.0.1:4196 http://127.0.0.1:4197 http://127.0.0.1:4198 http://127.0.0.1:4199 http://127.0.0.1:4200 http://127.0.0.1:4201 http://127.0.0.1:4202 http://127.0.0.1:4203 http://127.0.0.1:4204 http://127.0.0.1:4205 http://127.0.0.1:4206; img-src 'self' data: blob:; base-uri 'none'; frame-ancestors 'self'; form-action 'none'");
+      return fileResponse(req, res, join(home, 'tools/access-workspace'), remaining, path, true);
     }
     if (first === 'ACCESS_IS4S') return fileResponse(req, res, join(home, 'ACCESS_IS4S'), remaining, path, true);
     if (first === 'CONSULTING' && consulting) return fileResponse(req, res, consulting.site, remaining, path, true);

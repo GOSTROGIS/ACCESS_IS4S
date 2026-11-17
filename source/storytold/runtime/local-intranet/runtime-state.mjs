@@ -3,6 +3,7 @@ import { createReadStream } from 'node:fs';
 import { lstat, open, readFile, readdir, realpath, rename, rm } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { join, relative } from 'node:path';
+import { mutableDirectories } from './native-profile.mjs';
 
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const versionPattern = /^v?\d{1,6}\.\d{1,6}\.\d{1,6}(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$/;
@@ -57,7 +58,7 @@ export async function activeRuntime(root, app) {
   return { ...row.current, hold: row.hold, retained };
 }
 
-export async function treeDigest(root, { prefetch = false } = {}) {
+export async function treeDigest(root, { prefetch = false, mutable = [] } = {}) {
   if (relative(root, await realpath(root)) !== '') throw Error('Linked runtime directory');
   const result = createHash('sha256');
   const append = (name, size) => result.update(JSON.stringify([name, size]) + '\n');
@@ -67,6 +68,7 @@ export async function treeDigest(root, { prefetch = false } = {}) {
       const entries = await readdir(directory, { withFileTypes: true });
       entries.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
       for (const entry of entries) {
+        if (!prefix && mutable.includes(entry.name)) continue;
         const path = join(directory, entry.name);
         if (entry.isDirectory()) await collect(path, `${prefix}${entry.name}/`);
         else if (entry.isFile()) files.push({ path, name: `${prefix}${entry.name}` });
@@ -93,6 +95,7 @@ export async function treeDigest(root, { prefetch = false } = {}) {
   }
   async function walk(directory, prefix) {
     for (const name of (await readdir(directory)).sort()) {
+      if (!prefix && mutable.includes(name)) continue;
       const path = join(directory, name);
       const item = await lstat(path);
       if (item.isDirectory()) {
@@ -107,6 +110,10 @@ export async function treeDigest(root, { prefetch = false } = {}) {
   }
   await walk(root, '');
   return result.digest('hex');
+}
+
+export function runtimeDigest(root, app) {
+  return treeDigest(root, { mutable: app.kind === 'native' ? mutableDirectories(app.id) : [] });
 }
 
 async function writeState(root, state) {
@@ -160,7 +167,7 @@ function locked(root, action) {
 
 async function verifyRecord(root, app, record) {
   checkRecord(root, app, record);
-  if (await treeDigest(runtimeTree(root, app, record.version)) !== record.treeSha256) {
+  if (await runtimeDigest(runtimeTree(root, app, record.version), app) !== record.treeSha256) {
     throw Error(`Runtime ${record.version} changed on disk`);
   }
 }
@@ -168,13 +175,13 @@ async function verifyRecord(root, app, record) {
 export async function promoteRuntime(root, app, candidate, gate) {
   const path = runtimeTree(root, app, candidate.version);
   if (!hash.test(candidate.artifact) || !(await lstat(join(path, app.entry))).isFile()) throw Error('Invalid release candidate');
-  const next = { ...candidate, treeSha256: await treeDigest(path) };
+  const next = { ...candidate, treeSha256: await runtimeDigest(path, app) };
   await gate(path);
   await verifyRecord(root, app, next);
   return locked(root, async state => {
     const key = appKey(app);
     const row = state.apps[key];
-    const current = row?.current ?? { version: app.version, artifact: null, treeSha256: await treeDigest(runtimeTree(root, app)) };
+    const current = row?.current ?? { version: app.version, artifact: null, treeSha256: await runtimeDigest(runtimeTree(root, app), app) };
     if (row?.hold || !newerVersion(candidate.version, current.version)) throw Error('Runtime update is held or would downgrade the active version');
     await verifyRecord(root, app, current);
     state.apps[key] = { current: next, previous: current, retained: [...new Set([...(row?.retained ?? []), current.version])] };

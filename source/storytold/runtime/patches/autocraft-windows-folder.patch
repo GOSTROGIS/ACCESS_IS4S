@@ -21,20 +21,24 @@ index 0000000..e10bb2a
 +pause
 diff --git a/LOCAL-STATUS.md b/LOCAL-STATUS.md
 new file mode 100644
-index 0000000..a67934c
+index 0000000..53d142e
 --- /dev/null
 +++ b/LOCAL-STATUS.md
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,14 @@
 +# AutoCraft in the folder intranet
 +
-+This installation contains the production dashboard and Node/SQLite service from Storytold AutoCraft commit `0bcc1f8d681609233d2f6f0d1f4e359e994079e0`. The folder launcher binds the dashboard to `127.0.0.1:8993` and uses GitHub sign-in. The current Windows user, SYSTEM and Administrators are the only principals allowed in the protected default `.private` directory.
++This installation contains the production dashboard and Node/SQLite service from Storytold AutoCraft commit `0bcc1f8d681609233d2f6f0d1f4e359e994079e0`. The folder launcher binds the dashboard to `127.0.0.1:8993` and uses GitHub sign-in. Private state defaults to `%LOCALAPPDATA%/ACCESS/Intranet/AutoCraft`. `AUTOCRAFT_PRIVATE_DIR` can select another protected directory. The current Windows user, SYSTEM and Administrators are the only principals allowed there.
 +
 +1. Register or reuse an approved GitHub OAuth app with callback `http://127.0.0.1:8993/auth/callback`. See [GitHub's loopback callback documentation](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#loopback-redirect-urls).
-+2. Run `Configure AutoCraft.cmd` and enter the OAuth client ID and secret in that local window. It creates the secrets file once and generates the session key. Keep `.private` outside source control and backups accessible to other users.
++2. Run `Configure AutoCraft.cmd` and enter the OAuth client ID and secret in that local window. It creates the secrets file once and generates the session key. Keep this private directory outside source control, synchronized intranet folders and backups accessible to other users.
 +3. Set the first operator from a terminal with `"AutoCraft CLI.cmd" access add YOUR-GITHUB-LOGIN --operator`.
 +4. Run `Start AutoCraft.cmd` and open [AutoCraft](http://127.0.0.1:8993/).
 +
-+`AutoCraft CLI.cmd` uses `.private/mirror.db` by default. Keep the database and session key together when backing up this installation. The upstream runner's provider-backed tools require a supported isolated Linux runtime with bubblewrap and configured model and repository credentials. See the bundled [operations guide](docs/operations.md).
++`AutoCraft CLI.cmd` keeps its database, session key and runner logs in the private state directory. On first start, legacy `.private` data is copied into it through a staging directory. SQLite backup and integrity checks verify the imported database, and the original files remain available. An existing conflicting destination is preserved and reported. Keep the database and session key together when backing up this installation. The upstream runner's provider-backed tools require a supported isolated Linux runtime with bubblewrap and configured model and repository credentials. See the bundled [operations guide](docs/operations.md).
++
++The installed Windows runner passed its built-in local ranking workflow through both the CLI and queued runner. It ranked two synthetic issues, saved the actual job results and item ranks, and passed SQLite integrity checking with zero model calls. The Windows port uses filesystem paths for child processes so jobs can find the installed CLI.
++
++The same workflow also passed on the unmodified pinned source in a verified Debian 13 guest with Node 24.22.3 and locked production dependencies. Bubblewrap 0.12.0 passed a separate namespace probe with private files inaccessible, only loopback networking, a read-only system tree and disposable writable storage. Real GitHub sign-in and model-backed jobs still require the registered OAuth client and scoped provider credentials.
 diff --git a/Start AutoCraft.cmd b/Start AutoCraft.cmd
 new file mode 100644
 index 0000000..7e164f6
@@ -47,7 +51,7 @@ index 0000000..7e164f6
 +if errorlevel 1 pause
 diff --git a/configure-folder-oauth.ps1 b/configure-folder-oauth.ps1
 new file mode 100644
-index 0000000..962d069
+index 0000000..5d6b668
 --- /dev/null
 +++ b/configure-folder-oauth.ps1
 @@ -0,0 +1,36 @@
@@ -55,9 +59,9 @@ index 0000000..962d069
 +if ($env:AUTOCRAFT_SECRETS_FILE) { throw 'Configure the custom secrets path separately or clear AUTOCRAFT_SECRETS_FILE for this setup.' }
 +$node = Join-Path $PSScriptRoot '..\..\tools\node.exe'
 +$launcher = Join-Path $PSScriptRoot 'windows-folder.mjs'
-+& $node $launcher protect
++$private = & $node $launcher private-dir
 +if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-+$file = Join-Path $PSScriptRoot '.private\secrets.json'
++$file = Join-Path $private 'secrets.json'
 +if (Test-Path -LiteralPath $file) { throw 'AutoCraft already has a secrets file. Setup leaves the existing file in place.' }
 +Write-Host 'Use the GitHub OAuth application registered for http://127.0.0.1:8993/auth/callback.'
 +$id = (Read-Host 'GitHub OAuth client ID').Trim()
@@ -87,49 +91,530 @@ index 0000000..962d069
 +    $secret.Dispose()
 +}
 +Write-Host 'OAuth settings saved in the protected AutoCraft data folder.'
+diff --git a/folder-state.mjs b/folder-state.mjs
+new file mode 100644
+index 0000000..83df2b8
+--- /dev/null
++++ b/folder-state.mjs
+@@ -0,0 +1,110 @@
++import { createHash, randomUUID } from 'node:crypto';
++import { constants, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, writeFileSync } from 'node:fs';
++import { basename, dirname, join, resolve } from 'node:path';
++import { DatabaseSync, backup } from 'node:sqlite';
++import { windowsSecretAcl } from './src/dash/server/windows-secret-acl.ts';
++
++const receiptName = 'legacy-import.json';
++const sha256 = file => createHash('sha256').update(readFileSync(file)).digest('hex');
++
++export function privateDirectory(env = process.env) {
++  if (!env.AUTOCRAFT_PRIVATE_DIR && !env.LOCALAPPDATA) throw Error('LOCALAPPDATA or AUTOCRAFT_PRIVATE_DIR is required for AutoCraft private data.');
++  let ancestor = resolve(env.AUTOCRAFT_PRIVATE_DIR || join(env.LOCALAPPDATA, 'ACCESS', 'Intranet', 'AutoCraft'));
++  const suffix = [];
++  while (!existsSync(ancestor)) {
++    suffix.unshift(basename(ancestor));
++    const parent = dirname(ancestor);
++    if (parent === ancestor) throw Error('AutoCraft private storage needs an existing local ancestor.');
++    ancestor = parent;
++  }
++  return join(realpathSync.native(ancestor),...suffix);
++}
++
++function inventory(root) {
++  if (realpathSync.native(root).toLowerCase() !== resolve(root).toLowerCase()) throw Error('Private data may not use a linked directory.');
++  const files = {};
++  function visit(directory, prefix = '') {
++    if (realpathSync.native(directory).toLowerCase() !== resolve(directory).toLowerCase()) throw Error('Private data may not use linked directories.');
++    for (const entry of readdirSync(directory, {withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name))) {
++      const path = join(directory, entry.name);
++      const relative = prefix + entry.name;
++      if (entry.isDirectory()) visit(path, relative + '/');
++      else if (entry.isFile()) files[relative] = sha256(path);
++      else throw Error('Private data may contain only regular files and directories.');
++    }
++  }
++  visit(root);
++  return files;
++}
++
++function createProtected(directory) {
++  mkdirSync(directory, {recursive:true});
++  windowsSecretAcl('ProtectDirectory', directory);
++}
++
++function persistentInventory(directory) {
++  const files = inventory(directory);
++  const databases = Object.keys(files).filter(file=>file.endsWith('.db'));
++  return Object.fromEntries(Object.entries(files).filter(([file]) => {
++    if (databases.some(database => file === database + '-shm')) return false;
++    if (databases.some(database => file === database + '-wal')) return statSync(join(directory, file)).size > 0;
++    return true;
++  }));
++}
++
++export async function preparePrivateDirectory(root, target = privateDirectory()) {
++  const legacy = join(root, '.private');
++  if (!existsSync(legacy) || resolve(legacy).toLowerCase() === resolve(target).toLowerCase()) {
++    if (!existsSync(target)) createProtected(target);
++    windowsSecretAcl('CheckDirectory', target);
++    return target;
++  }
++  windowsSecretAcl('CheckDirectory', legacy);
++  const source = persistentInventory(legacy);
++  if (existsSync(target)) {
++    windowsSecretAcl('CheckDirectory', target);
++    const receipt = join(target, receiptName);
++    if (existsSync(receipt) && JSON.stringify(JSON.parse(readFileSync(receipt,'utf8')).source) === JSON.stringify(source)) return target;
++  }
++  const stage = join(dirname(target), `.autocraft-import-${randomUUID()}`);
++  createProtected(stage);
++  const sqlite = Object.keys(source).filter(file => file.endsWith('.db'));
++  for (const [relative, hash] of Object.entries(source)) {
++    if (sqlite.some(database => relative === database || relative === database+'-wal' || relative === database+'-shm')) continue;
++    const destination = join(stage, relative);
++    mkdirSync(dirname(destination), {recursive:true});
++    copyFileSync(join(legacy,relative), destination, constants.COPYFILE_EXCL);
++    if (sha256(destination) !== hash) throw Error('Private file import verification failed.');
++  }
++  for (const relative of sqlite) {
++    const destination = join(stage, relative);
++    mkdirSync(dirname(destination), {recursive:true});
++    const database = new DatabaseSync(join(legacy,relative), {readOnly:true});
++    try { await backup(database, destination); } finally { database.close(); }
++    const imported = new DatabaseSync(destination,{readOnly:true});
++    try {
++      if (imported.prepare('PRAGMA quick_check').get().quick_check !== 'ok') throw Error('Imported SQLite data failed integrity checking.');
++    } finally { imported.close(); }
++  }
++  if (JSON.stringify(persistentInventory(legacy)) !== JSON.stringify(source)) throw Error('Legacy data changed during import. Start again with its writers stopped.');
++  writeFileSync(join(stage,receiptName), JSON.stringify({schema:1,source})+'\n',{flag:'wx'});
++  windowsSecretAcl('CheckDirectory', stage);
++  if (existsSync(target)) {
++    const staged = inventory(stage);
++    const existing = inventory(target);
++    if (Object.entries(existing).some(([relative,hash])=>staged[relative] !== hash)) {
++      throw Error('The private data destination already contains different files. Both copies have been preserved.');
++    }
++    for (const relative of Object.keys(staged).filter(file=>file !== receiptName)) {
++      const destination = join(target,relative);
++      if (!existsSync(destination)) {
++        mkdirSync(dirname(destination),{recursive:true});
++        copyFileSync(join(stage,relative),destination,constants.COPYFILE_EXCL);
++      }
++    }
++    copyFileSync(join(stage,receiptName),join(target,receiptName),constants.COPYFILE_EXCL);
++  } else {
++    renameSync(stage,target);
++  }
++  return target;
++}
 diff --git a/src/dash/server/config.ts b/src/dash/server/config.ts
-index a0dcf09..51fa847 100644
+index a0dcf09..4c3ca83 100644
 --- a/src/dash/server/config.ts
 +++ b/src/dash/server/config.ts
-@@ -1,11 +1,12 @@
- import { chmodSync, readFileSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync } from "node:fs";
- import { isIP } from "node:net";
+@@ -1,260 +1,283 @@
+-import { chmodSync, readFileSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+-import { isIP } from "node:net";
 -import { resolve } from "node:path";
-+import { dirname, resolve } from "node:path";
- import { fileURLToPath } from "node:url";
- import { randomToken } from "./crypto.ts";
- import { dbPath } from "../../db.ts";
- import { defaultImageCacheDir } from "./images.ts";
- import { envVar } from "../../env.ts";
-+import { windowsSecretAcl } from "./windows-secret-acl.ts";
-
- // The GitHub App that AutoCraft registered through the manifest flow. The
- // private key and client secret leave this object only to sign a JWT or to
-@@ -34,7 +35,7 @@ export function followAppSecrets(secrets: Secrets, file: string): void {
-       if (now !== stamp) {
-         if (now === "none") { cached = null; stamp = now; }
-         else {
+-import { fileURLToPath } from "node:url";
+-import { randomToken } from "./crypto.ts";
+-import { dbPath } from "../../db.ts";
+-import { defaultImageCacheDir } from "./images.ts";
+-import { envVar } from "../../env.ts";
+-
+-// The GitHub App that AutoCraft registered through the manifest flow. The
+-// private key and client secret leave this object only to sign a JWT or to
+-// sign a user in; the webhook secret is stored but unused (webhooks are off).
+-export type AppSecrets = {
+-  id: string; slug: string; privateKey: string; clientId: string; clientSecret: string; webhookSecret: string | null;
+-  /** Who owns the app on GitHub (a user or an organization); null when unknown. */
+-  owner: AppOwner | null;
+-};
+-export type AppOwner = { login: string; type: "User" | "Organization" };
+-export type Secrets = { githubClientId: string; githubClientSecret: string; sessionKey: string; app: AppSecrets | null };
+-
+-/**
+- * Makes `secrets.app` follow the secrets file: it is read again whenever the file changes (another process or a
+- * registration may have rewritten it), so registering or removing the app takes effect without a restart. An
+- * unreadable file keeps the last good value.
+- */
+-export function followAppSecrets(secrets: Secrets, file: string): void {
+-  const stampOf = (): string => { try { const st = statSync(file); return `${st.ino}:${st.size}:${st.mtimeMs}`; } catch { return "none"; } };
+-  let cached = secrets.app;
+-  let stamp = stampOf();
+-  Object.defineProperty(secrets, "app", {
+-    enumerable: true, configurable: true,
+-    get(): AppSecrets | null {
+-      const now = stampOf();
+-      if (now !== stamp) {
+-        if (now === "none") { cached = null; stamp = now; }
+-        else {
 -          try { cached = appSecretsOf(JSON.parse(readFileSync(file, "utf8")) as Record<string, unknown>); stamp = now; } catch { /* mid-write or unreadable: keep the last good value */ }
+-        }
+-      }
+-      return cached;
+-    },
+-    set(v: AppSecrets | null) { cached = v; stamp = stampOf(); },
+-  });
+-}
+-
+-export type Config = {
+-  host: string;
+-  port: number;
+-  baseUrl: string | null;          // null only with dev auth, where every URL the server builds is relative
+-  dbPath: string;
+-  webDist: string;                 // the frontend's build output (web/dist)
+-  devAuth: boolean;
+-  devPermsFile: string | null;
+-  devTokenTtlMs: number | null;    // fake provider's access-token lifetime
+-  trustProxy: boolean;
+-  imageCacheDir: string | null;    // the image proxy's disk cache; null: none
+-  secrets: Secrets;
+-  secretsFile: string | null;      // where registration writes the app's secrets
+-};
+-
+-export const DEFAULT_WEB_DIST = fileURLToPath(new URL("../../../web/dist", import.meta.url));
+-
+-export class ConfigError extends Error {}
+-
+-// Dev auth signs in as any login typed on a form, so it is for this machine
+-// only. Its default port differs from the real dashboard's, so a dev server
+-// never answers on the port a reverse proxy forwards to.
+-export const DEFAULT_LISTEN = "127.0.0.1:8993";
+-export const DEV_LISTEN = "127.0.0.1:8994";
+-
+-export function parseListen(value: string): { host: string; port: number } {
+-  const m = /^(?:\[([0-9a-fA-F:.]+)\]|([^:\[\]]+)):(\d{1,5})$/.exec(value);
+-  if (!m) throw new ConfigError(`AUTOCRAFT_LISTEN must be host:port, got ${JSON.stringify(value)}`);
+-  const port = Number(m[3]);
+-  if (port > 65535) throw new ConfigError("AUTOCRAFT_LISTEN: port out of range");
+-  return { host: m[1] ?? m[2]!, port };
+-}
+-
+-export function isLoopback(host: string): boolean {
+-  if (host === "localhost") return true;
+-  if (isIP(host) === 4) return host.split(".")[0] === "127";
+-  if (isIP(host) === 6) return host === "::1" || /^::ffff:127\./i.test(host);
+-  return false;
+-}
+-
+-/** True when a Host header names this machine (with or without a port). */
+-export function isLoopbackHost(hostHeader: string | undefined): boolean {
+-  if (!hostHeader) return false;
+-  const m = /^(?:\[([0-9a-fA-F:.]+)\]|([^:\[\]]+))(?::\d{1,5})?$/.exec(hostHeader.trim());
+-  return !!m && isLoopback(m[1] ?? m[2]!);
+-}
+-
+-/** Refuses a secrets file that is missing or open to group or others. Every reader of the file checks it first. */
+-export function checkSecretsFileMode(path: string): void {
+-  let mode: number;
+-  try {
+-    mode = statSync(path).mode;
+-  } catch {
+-    throw new ConfigError("secrets file not found");
+-  }
+-  if (mode & 0o077) throw new ConfigError("secrets file is readable or writable by group or others; chmod 600 it");
+-}
+-
+-export function readSecrets(path: string | undefined): Secrets {
+-  if (!path) throw new ConfigError("AUTOCRAFT_SECRETS_FILE is not set");
+-  checkSecretsFileMode(path);
+-  let raw: Record<string, unknown>;
+-  try {
+-    raw = JSON.parse(readFileSync(path, "utf8"));
+-  } catch {
+-    throw new ConfigError("secrets file is not valid JSON");
+-  }
+-  const get = (k: string, min = 1): string => {
+-    const v = raw?.[k];
+-    if (typeof v !== "string" || v.length < min) throw new ConfigError(`secrets file: ${k} is missing or too short`);
+-    return v;
+-  };
+-  return {
+-    githubClientId: get("github_client_id"),
+-    githubClientSecret: get("github_client_secret"),
+-    sessionKey: get("session_key", 32),
+-    app: appSecretsOf(raw),
+-  };
+-}
+-
+-/** The app's keys from a parsed secrets file; null unless all required ones are present. */
+-export function appSecretsOf(raw: Record<string, unknown>): AppSecrets | null {
+-  const opt = (k: string): string | null => (typeof raw?.[k] === "string" && (raw[k] as string).length > 0 ? (raw[k] as string) : null);
+-  const id = opt("github_app_id"), slug = opt("github_app_slug"), privateKey = opt("github_app_private_key");
+-  const clientId = opt("github_app_client_id"), clientSecret = opt("github_app_client_secret");
+-  if (!id || !slug || !privateKey || !clientId || !clientSecret) return null;
+-  const o = raw.github_app_owner as { login?: unknown; type?: unknown } | undefined;
+-  const owner: AppOwner | null = typeof o?.login === "string" && o.login && (o.type === "User" || o.type === "Organization") ? { login: o.login, type: o.type } : null;
+-  return { id, slug, privateKey, clientId, clientSecret, webhookSecret: opt("github_app_webhook_secret"), owner };
+-}
+-
+-function readRawSecrets(path: string): Record<string, unknown> {
+-  try {
+-    return JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+-  } catch (e) {
+-    if ((e as NodeJS.ErrnoException).code === "ENOENT") return {};
+-    throw new ConfigError("secrets file is not valid JSON");
+-  }
+-}
+-
+-/** A sibling of the target with a random name, created exclusively (`wx`) so it never follows or replaces an existing file. */
+-function writeTemp(target: string, body: string): string {
+-  const tmp = `${target}.${randomToken(6)}.tmp`;
+-  try {
+-    writeFileSync(tmp, body, { mode: 0o600, flag: "wx" });
+-    chmodSync(tmp, 0o600);
+-  } catch (e) {
+-    try { unlinkSync(tmp); } catch { /* not created */ }
+-    throw e;
+-  }
+-  return tmp;
+-}
+-
+-/** The file a write must replace: the secrets file itself, or the file a symlink there points to. */
+-function secretsTarget(path: string): string {
+-  try {
+-    return realpathSync(path);
+-  } catch (e) {
+-    if ((e as NodeJS.ErrnoException).code === "ENOENT") return path;
+-    throw e;
+-  }
+-}
+-
+-/** Throws unless a later `writeAppSecrets` can succeed: the file parses and a temporary file can be created beside it. */
+-export function checkSecretsWritable(path: string): void {
+-  readRawSecrets(path);
+-  unlinkSync(writeTemp(secretsTarget(path), ""));
+-}
+-
+-/**
+- * Adds the app's keys to the secrets file through a temporary file in the same
+- * directory and a rename, mode 0600. Other keys stay as they are, and a
+- * symlinked secrets file stays a symlink.
+- */
+-export function writeAppSecrets(path: string, app: AppSecrets): void {
+-  const target = secretsTarget(path);
+-  const next = {
+-    ...readRawSecrets(target),
+-    github_app_id: app.id, github_app_slug: app.slug, github_app_private_key: app.privateKey,
+-    github_app_client_id: app.clientId, github_app_client_secret: app.clientSecret, github_app_webhook_secret: app.webhookSecret ?? "",
+-    github_app_owner: app.owner,
+-  };
+-  const tmp = writeTemp(target, `${JSON.stringify(next, null, 2)}\n`);
+-  try {
+-    renameSync(tmp, target);
+-  } catch (e) {
+-    try { unlinkSync(tmp); } catch { /* already gone */ }
+-    throw e;
+-  }
+-}
+-
+-/** Removes every `github_app_*` key from the file the same way: temporary file, rename, mode 0600. */
+-export function removeAppSecrets(path: string): void {
+-  const target = secretsTarget(path);
+-  const next = Object.fromEntries(Object.entries(readRawSecrets(target)).filter(([k]) => !k.startsWith("github_app_")));
+-  const tmp = writeTemp(target, `${JSON.stringify(next, null, 2)}\n`);
+-  try {
+-    renameSync(tmp, target);
+-  } catch (e) {
+-    try { unlinkSync(tmp); } catch { /* already gone */ }
+-    throw e;
+-  }
+-}
+-
+-export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
+-  const { host, port } = parseListen(envVar("LISTEN", env) ?? (envVar("DEV_AUTH", env) === "1" ? DEV_LISTEN : DEFAULT_LISTEN));
+-  const devAuth = envVar("DEV_AUTH", env) === "1";
+-  let secrets: Secrets;
+-  let baseUrl: string | null = null;
+-  if (devAuth) {
+-    if (!isLoopback(host)) throw new ConfigError("AUTOCRAFT_DEV_AUTH=1 is allowed only on a loopback listen address");
+-    // Dev sessions don't survive a restart: the key lives only in this process.
+-    secrets = { githubClientId: "dev", githubClientSecret: "dev", sessionKey: randomToken(), app: null };
+-  } else {
+-    secrets = readSecrets(envVar("SECRETS_FILE", env));
+-  }
+-  const secretsFile = envVar("SECRETS_FILE", env) ?? null;
+-  // A dev server reads the app's keys from a secrets file when one is given, so registration can be tried locally.
+-  if (devAuth && secretsFile) {
+-    let loose = false;
+-    try { loose = (statSync(secretsFile).mode & 0o077) !== 0; } catch { /* no file yet */ }
+-    if (loose) throw new ConfigError("secrets file is readable or writable by group or others; chmod 600 it");
+-    try {
+-      secrets.app = appSecretsOf(JSON.parse(readFileSync(secretsFile, "utf8")) as Record<string, unknown>);
+-    } catch { /* no file yet: registration creates it */ }
+-  }
+-  if (secretsFile) followAppSecrets(secrets, secretsFile);
+-  const rawBaseUrl = envVar("BASE_URL", env);
+-  if (rawBaseUrl) {
+-    let u: URL;
+-    try {
+-      u = new URL(rawBaseUrl);
+-    } catch {
+-      throw new ConfigError("AUTOCRAFT_BASE_URL is not a URL");
+-    }
+-    if (u.protocol !== "https:" && u.protocol !== "http:") throw new ConfigError("AUTOCRAFT_BASE_URL must be http(s)");
+-    if (devAuth && (u.protocol !== "http:" || (u.hostname !== "localhost" && u.hostname !== "127.0.0.1"))) {
+-      throw new ConfigError("AUTOCRAFT_DEV_AUTH=1 allows AUTOCRAFT_BASE_URL only as an http://localhost or http://127.0.0.1 URL");
+-    }
+-    baseUrl = u.origin + u.pathname.replace(/\/+$/, "");
+-    if (baseUrl !== u.origin) throw new ConfigError("AUTOCRAFT_BASE_URL must not have a path");
+-  } else if (!devAuth) {
+-    throw new ConfigError("AUTOCRAFT_BASE_URL is not set");
+-  }
+-  const webDistEnv = envVar("WEB_DIST", env);
+-  return {
+-    host, port, baseUrl, devAuth, secrets, secretsFile,
+-    dbPath: envVar("DB", env) ?? dbPath(),
+-    webDist: webDistEnv ? resolve(webDistEnv) : DEFAULT_WEB_DIST,
+-    devPermsFile: devAuth ? (envVar("DEV_PERMS", env) ?? null) : null,
+-    devTokenTtlMs: devAuth && envVar("DEV_TOKEN_TTL", env) ? Number(envVar("DEV_TOKEN_TTL", env)) * 1000 || null : null,
+-    trustProxy: envVar("TRUST_PROXY", env) === "1",
+-    imageCacheDir: envVar("IMG_CACHE", env) === "" ? null : defaultImageCacheDir(env),
+-  };
+-}
++import { chmodSync, readFileSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync } from "node:fs";
++import { isIP } from "node:net";
++import { dirname, resolve } from "node:path";
++import { fileURLToPath } from "node:url";
++import { randomToken } from "./crypto.ts";
++import { dbPath } from "../../db.ts";
++import { defaultImageCacheDir } from "./images.ts";
++import { envVar } from "../../env.ts";
++import { windowsSecretAcl } from "./windows-secret-acl.ts";
++
++// The GitHub App that AutoCraft registered through the manifest flow. The
++// private key and client secret leave this object only to sign a JWT or to
++// sign a user in; the webhook secret is stored but unused (webhooks are off).
++export type AppSecrets = {
++  id: string; slug: string; privateKey: string; clientId: string; clientSecret: string; webhookSecret: string | null;
++  /** Who owns the app on GitHub (a user or an organization); null when unknown. */
++  owner: AppOwner | null;
++};
++export type AppOwner = { login: string; type: "User" | "Organization" };
++export type Secrets = { githubClientId: string; githubClientSecret: string; sessionKey: string; app: AppSecrets | null };
++
++/**
++ * Makes `secrets.app` follow the secrets file: it is read again whenever the file changes (another process or a
++ * registration may have rewritten it), so registering or removing the app takes effect without a restart. An
++ * unreadable file keeps the last good value.
++ */
++export function followAppSecrets(secrets: Secrets, file: string): void {
++  const stampOf = (): string => { try { const st = statSync(file); return `${st.ino}:${st.size}:${st.mtimeMs}`; } catch { return "none"; } };
++  let cached = secrets.app;
++  let stamp = stampOf();
++  Object.defineProperty(secrets, "app", {
++    enumerable: true, configurable: true,
++    get(): AppSecrets | null {
++      const now = stampOf();
++      if (now !== stamp) {
++        if (now === "none") { cached = null; stamp = now; }
++        else {
 +          try { cached = appSecretsOf(readRawSecrets(file)); stamp = now; } catch { /* mid-write or unreadable: keep the last good value */ }
-         }
-       }
-       return cached;
-@@ -98,6 +99,11 @@ export function checkSecretsFileMode(path: string): void {
-   } catch {
-     throw new ConfigError("secrets file not found");
-   }
++        }
++      }
++      return cached;
++    },
++    set(v: AppSecrets | null) { cached = v; stamp = stampOf(); },
++  });
++}
++
++export type Config = {
++  host: string;
++  port: number;
++  baseUrl: string | null;          // null only with dev auth, where every URL the server builds is relative
++  dbPath: string;
++  webDist: string;                 // the frontend's build output (web/dist)
++  devAuth: boolean;
++  devPermsFile: string | null;
++  devTokenTtlMs: number | null;    // fake provider's access-token lifetime
++  trustProxy: boolean;
++  imageCacheDir: string | null;    // the image proxy's disk cache; null: none
++  secrets: Secrets;
++  secretsFile: string | null;      // where registration writes the app's secrets
++};
++
++export const DEFAULT_WEB_DIST = fileURLToPath(new URL("../../../web/dist", import.meta.url));
++
++export class ConfigError extends Error {}
++
++// Dev auth signs in as any login typed on a form, so it is for this machine
++// only. Its default port differs from the real dashboard's, so a dev server
++// never answers on the port a reverse proxy forwards to.
++export const DEFAULT_LISTEN = "127.0.0.1:8993";
++export const DEV_LISTEN = "127.0.0.1:8994";
++
++export function parseListen(value: string): { host: string; port: number } {
++  const m = /^(?:\[([0-9a-fA-F:.]+)\]|([^:\[\]]+)):(\d{1,5})$/.exec(value);
++  if (!m) throw new ConfigError(`AUTOCRAFT_LISTEN must be host:port, got ${JSON.stringify(value)}`);
++  const port = Number(m[3]);
++  if (port > 65535) throw new ConfigError("AUTOCRAFT_LISTEN: port out of range");
++  return { host: m[1] ?? m[2]!, port };
++}
++
++export function isLoopback(host: string): boolean {
++  if (host === "localhost") return true;
++  if (isIP(host) === 4) return host.split(".")[0] === "127";
++  if (isIP(host) === 6) return host === "::1" || /^::ffff:127\./i.test(host);
++  return false;
++}
++
++/** True when a Host header names this machine (with or without a port). */
++export function isLoopbackHost(hostHeader: string | undefined): boolean {
++  if (!hostHeader) return false;
++  const m = /^(?:\[([0-9a-fA-F:.]+)\]|([^:\[\]]+))(?::\d{1,5})?$/.exec(hostHeader.trim());
++  return !!m && isLoopback(m[1] ?? m[2]!);
++}
++
++/** Refuses a secrets file that is missing or open to group or others. Every reader of the file checks it first. */
++export function checkSecretsFileMode(path: string): void {
++  let mode: number;
++  try {
++    mode = statSync(path).mode;
++  } catch {
++    throw new ConfigError("secrets file not found");
++  }
 +  if (process.platform === "win32") {
 +    try { windowsSecretAcl("CheckFile", path); }
 +    catch { throw new ConfigError("secrets file failed the Windows ACL check; use the protected AutoCraft data folder"); }
 +    return;
 +  }
-   if (mode & 0o077) throw new ConfigError("secrets file is readable or writable by group or others; chmod 600 it");
- }
-
-@@ -135,6 +141,14 @@ export function appSecretsOf(raw: Record<string, unknown>): AppSecrets | null {
- }
-
- function readRawSecrets(path: string): Record<string, unknown> {
++  if (mode & 0o077) throw new ConfigError("secrets file is readable or writable by group or others; chmod 600 it");
++}
++
++export function readSecrets(path: string | undefined): Secrets {
++  if (!path) throw new ConfigError("AUTOCRAFT_SECRETS_FILE is not set");
++  checkSecretsFileMode(path);
++  let raw: Record<string, unknown>;
++  try {
++    raw = JSON.parse(readFileSync(path, "utf8"));
++  } catch {
++    throw new ConfigError("secrets file is not valid JSON");
++  }
++  const get = (k: string, min = 1): string => {
++    const v = raw?.[k];
++    if (typeof v !== "string" || v.length < min) throw new ConfigError(`secrets file: ${k} is missing or too short`);
++    return v;
++  };
++  return {
++    githubClientId: get("github_client_id"),
++    githubClientSecret: get("github_client_secret"),
++    sessionKey: get("session_key", 32),
++    app: appSecretsOf(raw),
++  };
++}
++
++/** The app's keys from a parsed secrets file; null unless all required ones are present. */
++export function appSecretsOf(raw: Record<string, unknown>): AppSecrets | null {
++  const opt = (k: string): string | null => (typeof raw?.[k] === "string" && (raw[k] as string).length > 0 ? (raw[k] as string) : null);
++  const id = opt("github_app_id"), slug = opt("github_app_slug"), privateKey = opt("github_app_private_key");
++  const clientId = opt("github_app_client_id"), clientSecret = opt("github_app_client_secret");
++  if (!id || !slug || !privateKey || !clientId || !clientSecret) return null;
++  const o = raw.github_app_owner as { login?: unknown; type?: unknown } | undefined;
++  const owner: AppOwner | null = typeof o?.login === "string" && o.login && (o.type === "User" || o.type === "Organization") ? { login: o.login, type: o.type } : null;
++  return { id, slug, privateKey, clientId, clientSecret, webhookSecret: opt("github_app_webhook_secret"), owner };
++}
++
++function readRawSecrets(path: string): Record<string, unknown> {
 +  if (process.platform === "win32") {
 +    try { statSync(path); }
 +    catch (e) {
@@ -138,44 +623,100 @@ index a0dcf09..51fa847 100644
 +    }
 +    checkSecretsFileMode(path);
 +  }
-   try {
-     return JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
-   } catch (e) {
-@@ -146,9 +160,11 @@ function readRawSecrets(path: string): Record<string, unknown> {
- /** A sibling of the target with a random name, created exclusively (`wx`) so it never follows or replaces an existing file. */
- function writeTemp(target: string, body: string): string {
-   const tmp = `${target}.${randomToken(6)}.tmp`;
++  try {
++    return JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
++  } catch (e) {
++    if ((e as NodeJS.ErrnoException).code === "ENOENT") return {};
++    throw new ConfigError("secrets file is not valid JSON");
++  }
++}
++
++/** A sibling of the target with a random name, created exclusively (`wx`) so it never follows or replaces an existing file. */
++function writeTemp(target: string, body: string): string {
++  const tmp = `${target}.${randomToken(6)}.tmp`;
 +  if (process.platform === "win32") windowsSecretAcl("CheckDirectory", dirname(target));
-   try {
-     writeFileSync(tmp, body, { mode: 0o600, flag: "wx" });
--    chmodSync(tmp, 0o600);
++  try {
++    writeFileSync(tmp, body, { mode: 0o600, flag: "wx" });
 +    if (process.platform === "win32") windowsSecretAcl("CheckFile", tmp);
 +    else chmodSync(tmp, 0o600);
-   } catch (e) {
-     try { unlinkSync(tmp); } catch { /* not created */ }
-     throw e;
-@@ -159,6 +175,11 @@ function writeTemp(target: string, body: string): string {
- /** The file a write must replace: the secrets file itself, or the file a symlink there points to. */
- function secretsTarget(path: string): string {
-   try {
++  } catch (e) {
++    try { unlinkSync(tmp); } catch { /* not created */ }
++    throw e;
++  }
++  return tmp;
++}
++
++/** The file a write must replace: the secrets file itself, or the file a symlink there points to. */
++function secretsTarget(path: string): string {
++  try {
 +    if (process.platform === "win32") {
 +      statSync(path);
 +      checkSecretsFileMode(path);
 +      return path;
 +    }
-     return realpathSync(path);
-   } catch (e) {
-     if ((e as NodeJS.ErrnoException).code === "ENOENT") return path;
-@@ -222,12 +243,14 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
-   const secretsFile = envVar("SECRETS_FILE", env) ?? null;
-   // A dev server reads the app's keys from a secrets file when one is given, so registration can be tried locally.
-   if (devAuth && secretsFile) {
--    let loose = false;
--    try { loose = (statSync(secretsFile).mode & 0o077) !== 0; } catch { /* no file yet */ }
--    if (loose) throw new ConfigError("secrets file is readable or writable by group or others; chmod 600 it");
--    try {
--      secrets.app = appSecretsOf(JSON.parse(readFileSync(secretsFile, "utf8")) as Record<string, unknown>);
--    } catch { /* no file yet: registration creates it */ }
++    return realpathSync(path);
++  } catch (e) {
++    if ((e as NodeJS.ErrnoException).code === "ENOENT") return path;
++    throw e;
++  }
++}
++
++/** Throws unless a later `writeAppSecrets` can succeed: the file parses and a temporary file can be created beside it. */
++export function checkSecretsWritable(path: string): void {
++  readRawSecrets(path);
++  unlinkSync(writeTemp(secretsTarget(path), ""));
++}
++
++/**
++ * Adds the app's keys to the secrets file through a temporary file in the same
++ * directory and a rename, mode 0600. Other keys stay as they are, and a
++ * symlinked secrets file stays a symlink.
++ */
++export function writeAppSecrets(path: string, app: AppSecrets): void {
++  const target = secretsTarget(path);
++  const next = {
++    ...readRawSecrets(target),
++    github_app_id: app.id, github_app_slug: app.slug, github_app_private_key: app.privateKey,
++    github_app_client_id: app.clientId, github_app_client_secret: app.clientSecret, github_app_webhook_secret: app.webhookSecret ?? "",
++    github_app_owner: app.owner,
++  };
++  const tmp = writeTemp(target, `${JSON.stringify(next, null, 2)}\n`);
++  try {
++    renameSync(tmp, target);
++  } catch (e) {
++    try { unlinkSync(tmp); } catch { /* already gone */ }
++    throw e;
++  }
++}
++
++/** Removes every `github_app_*` key from the file the same way: temporary file, rename, mode 0600. */
++export function removeAppSecrets(path: string): void {
++  const target = secretsTarget(path);
++  const next = Object.fromEntries(Object.entries(readRawSecrets(target)).filter(([k]) => !k.startsWith("github_app_")));
++  const tmp = writeTemp(target, `${JSON.stringify(next, null, 2)}\n`);
++  try {
++    renameSync(tmp, target);
++  } catch (e) {
++    try { unlinkSync(tmp); } catch { /* already gone */ }
++    throw e;
++  }
++}
++
++export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
++  const { host, port } = parseListen(envVar("LISTEN", env) ?? (envVar("DEV_AUTH", env) === "1" ? DEV_LISTEN : DEFAULT_LISTEN));
++  const devAuth = envVar("DEV_AUTH", env) === "1";
++  let secrets: Secrets;
++  let baseUrl: string | null = null;
++  if (devAuth) {
++    if (!isLoopback(host)) throw new ConfigError("AUTOCRAFT_DEV_AUTH=1 is allowed only on a loopback listen address");
++    // Dev sessions don't survive a restart: the key lives only in this process.
++    secrets = { githubClientId: "dev", githubClientSecret: "dev", sessionKey: randomToken(), app: null };
++  } else {
++    secrets = readSecrets(envVar("SECRETS_FILE", env));
++  }
++  const secretsFile = envVar("SECRETS_FILE", env) ?? null;
++  // A dev server reads the app's keys from a secrets file when one is given, so registration can be tried locally.
++  if (devAuth && secretsFile) {
 +    let exists = false;
 +    try { statSync(secretsFile); exists = true; }
 +    catch (e) { if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e; }
@@ -184,26 +725,1493 @@ index a0dcf09..51fa847 100644
 +      try { secrets.app = appSecretsOf(readRawSecrets(secretsFile)); }
 +      catch { /* allow registration to replace an invalid config */ }
 +    }
-   }
-   if (secretsFile) followAppSecrets(secrets, secretsFile);
-   const rawBaseUrl = envVar("BASE_URL", env);
++  }
++  if (secretsFile) followAppSecrets(secrets, secretsFile);
++  const rawBaseUrl = envVar("BASE_URL", env);
++  if (rawBaseUrl) {
++    let u: URL;
++    try {
++      u = new URL(rawBaseUrl);
++    } catch {
++      throw new ConfigError("AUTOCRAFT_BASE_URL is not a URL");
++    }
++    if (u.protocol !== "https:" && u.protocol !== "http:") throw new ConfigError("AUTOCRAFT_BASE_URL must be http(s)");
++    if (devAuth && (u.protocol !== "http:" || (u.hostname !== "localhost" && u.hostname !== "127.0.0.1"))) {
++      throw new ConfigError("AUTOCRAFT_DEV_AUTH=1 allows AUTOCRAFT_BASE_URL only as an http://localhost or http://127.0.0.1 URL");
++    }
++    baseUrl = u.origin + u.pathname.replace(/\/+$/, "");
++    if (baseUrl !== u.origin) throw new ConfigError("AUTOCRAFT_BASE_URL must not have a path");
++  } else if (!devAuth) {
++    throw new ConfigError("AUTOCRAFT_BASE_URL is not set");
++  }
++  const webDistEnv = envVar("WEB_DIST", env);
++  return {
++    host, port, baseUrl, devAuth, secrets, secretsFile,
++    dbPath: envVar("DB", env) ?? dbPath(),
++    webDist: webDistEnv ? resolve(webDistEnv) : DEFAULT_WEB_DIST,
++    devPermsFile: devAuth ? (envVar("DEV_PERMS", env) ?? null) : null,
++    devTokenTtlMs: devAuth && envVar("DEV_TOKEN_TTL", env) ? Number(envVar("DEV_TOKEN_TTL", env)) * 1000 || null : null,
++    trustProxy: envVar("TRUST_PROXY", env) === "1",
++    imageCacheDir: envVar("IMG_CACHE", env) === "" ? null : defaultImageCacheDir(env),
++  };
++}
 diff --git a/src/dash/server/index.ts b/src/dash/server/index.ts
-index 1f0c736..94586e9 100644
+index 1f0c736..0636540 100644
 --- a/src/dash/server/index.ts
 +++ b/src/dash/server/index.ts
-@@ -495,6 +495,12 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
-   };
-
-   async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
+@@ -1,723 +1,729 @@
+-// HTTP server: sign-in, sessions, CSRF, rate limits, security headers and
+-// routing for the dashboard. Handlers only ever see authenticated requests.
+-import { maintainerWritesOn } from "../../settlers.ts";
+-import { readFile, realpath } from "node:fs/promises";
+-import { isAbsolute, relative, resolve, sep } from "node:path";
+-import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
+-import type { AddressInfo } from "node:net";
+-import type { DatabaseSync } from "node:sqlite";
+-import { LOGIN, checkGithubId, getAccess } from "../../access.ts";
+-import { audit, auditRefusedSignIn } from "../audit.ts";
+-import type { Req, Res, Route } from "../types.ts";
+-import { isLoopbackHost, type Config } from "./config.ts";
+-import { resealLegacyValues } from "./reseal.ts";
+-import { pkceChallenge, randomToken, safeEqual, TokenBox } from "./crypto.ts";
+-import { ImageIndex } from "./image-index.ts";
+-import { visibleTo } from "../api/visible.ts";
+-import { allowedImage, ImageProxy, imageTokenSource, registerImageRepos } from "./images.ts";
+-import { TokenBucket } from "./limits.ts";
+-import { dbReady, serveHealth } from "../../health.ts";
+-import { serveChecks } from "../../health-checks.ts";
+-import { discordPrivacyPage, DISCORD_PRIVACY_PATH } from "./discord-privacy.ts";
+-import { reporterSignIn, REPORTER_CALLBACK_PATH, REPORTER_START_PATH } from "./reporter-signin.ts";
+-import { FILING_IN_DISCORD } from "../../discord/file-issue.ts";
+-import { discordTermsPage, DISCORD_TERMS_PATH } from "./discord-terms.ts";
+-import { contactOf } from "../api/discord.ts";
+-import { LiveHub, type LiveOptions } from "./live.ts";
+-import { finishRegistration, githubAppRoutes, startRegistration } from "./github-app.ts";
+-import { OrgSetup } from "./github-setup.ts";
+-import { Vault } from "../../github/vault.ts";
+-import { githubIdentity } from "../../github/identity.ts";
+-import { saveUserTokens } from "./user-tokens.ts";
+-import { FakeProvider, GitHubProvider, oauthProviderFor, providerFor, type GithubUser, type Provider, type Tokens } from "./provider.ts";
+-import { retryWaiting } from "../../github/user-lane.ts";
+-import { createSession, deleteSession, loadSession, makeUser, pruneExpired, SESSION_TTL, userForLogin, type Session } from "./sessions.ts";
+-import { answering, handleMcp, writes as mcpWrites, type Msg as McpMsg } from "../mcp/index.ts";
+-import { loadToken, pruneTokens } from "../mcp/tokens.ts";
+-import { handleDelivery, WEBHOOK_BODY_LIMIT, WEBHOOK_PATH } from "../../github/webhooks.ts";
+-import { esc, HttpError, parseCookies, plainPage, previewTags, RateLimiter, safeReturnTo } from "./util.ts";
+-
+-export const SESSION_COOKIE = "__Host-craft_session";
+-/** `oauth_states.return_to` of an "act as you" authorization, which the shared sign-in callback tells apart from a sign-in by this prefix. */
+-const AUTHORIZE_PREFIX = "authorize:";
+-const STATE_COOKIE = "__Host-craft_oauth";
+-const BODY_LIMIT = 64 * 1024;
+-const PUBLIC_FILES = new Set(["/artcraft-mark.svg", "/artcraft-mark.png"]);
+-const FILE_TYPES: Record<string, string> = {
+-  css: "text/css; charset=utf-8", js: "text/javascript; charset=utf-8", svg: "image/svg+xml",
+-  png: "image/png", ico: "image/x-icon", woff2: "font/woff2", json: "application/json",
+-  txt: "text/plain; charset=utf-8", webmanifest: "application/manifest+json",
+-};
+-
+-// The one inline style the frontend needs: react-remove-scroll-bar (under
+-// Radix Dialog and DropdownMenu) injects a <style> while a modal is open. Its
+-// text depends only on the page scrollbar's width and the body's margins,
+-// which the app's CSS fixes at 0 (body has no margin and overflow: hidden),
+-// so the text is always the same. Recompute the hash if that package changes
+-// the text; Chrome's console names the expected hash on a violation.
+-const RADIX_SCROLL_LOCK_STYLE = "'sha256-nzTgYzXYDNe6BAHiiI7NNlfK8n/auuOAhh2t92YvuXo='";
+-
+-// The React app (web/): scripts and styles from this origin only, no nonce.
+-export const APP_CSP = [
+-  "default-src 'none'", "script-src 'self'", `style-src 'self' ${RADIX_SCROLL_LOCK_STYLE}`,
+-  "img-src 'self' data:", "font-src 'self'", "connect-src 'self'", "form-action 'self'",
+-  "base-uri 'none'", "frame-ancestors 'none'",
+-].join("; ");
+-
+-export type AppOptions = {
+-  config: Config;
+-  db: DatabaseSync;
+-  provider?: Provider;
+-  routes?: Route[];          // default: the JSON API
+-  images?: ImageProxy;       // default: fetches with global fetch and the bot's gh token
+-  live?: LiveOptions;        // GET /api/live timing; defaults suit production
+-  // Opinions and comments per login per hour. The dashboard's routes and the MCP server's feedback must share one instance.
+-  feedbackLimiter?: RateLimiter;
+-  githubUserId?: (login: string) => Promise<number | null>; // numeric GitHub id of a login for new access entries; default: GitHub's API
+-  githubApi?: string;        // base URL of the GitHub API for the GitHub App calls; default: api.github.com
+-};
+-
+-type Compiled = Route & { parts: string[] };
+-
+-
+-export async function defaultRoutes(feedbackLimiter?: RateLimiter, githubUserId?: AppOptions["githubUserId"]): Promise<Route[]> {
+-  const { apiRoutes } = await import("../api/index.ts");
+-  return apiRoutes({ limiter: feedbackLimiter, ...(githubUserId && { githubUserId }) });
+-}
+-
+-function compile(routes: Route[]): Compiled[] {
+-  return routes.map((r) => ({ ...r, parts: r.pattern.split("/").filter(Boolean) }));
+-}
+-
+-function match(routes: Compiled[], method: string, path: string): { route?: Compiled; params?: Record<string, string>; other: boolean } {
+-  const segs = path.split("/").filter(Boolean);
+-  let other = false;
+-  for (const r of routes) {
+-    if (r.parts.length !== segs.length) continue;
+-    const params: Record<string, string> = {};
+-    let ok = true;
+-    for (let i = 0; i < segs.length && ok; i++) {
+-      const p = r.parts[i]!;
+-      if (p.startsWith(":")) {
+-        try {
+-          params[p.slice(1)] = decodeURIComponent(segs[i]!);
+-        } catch {
+-          ok = false;
+-        }
+-      } else ok = p === segs[i];
+-    }
+-    if (!ok) continue;
+-    if (r.method === method) return { route: r, params, other };
+-    other = true;
+-  }
+-  return { other };
+-}
+-
+-async function readRaw(req: IncomingMessage, limit: number = BODY_LIMIT): Promise<Buffer> {
+-  const declared = Number(req.headers["content-length"] ?? 0);
+-  if (declared > limit) throw new HttpError(413, "Request too large");
+-  const chunks: Buffer[] = [];
+-  let size = 0;
+-  for await (const c of req as AsyncIterable<Buffer>) {
+-    size += c.length;
+-    if (size > limit) throw new HttpError(413, "Request too large");
+-    chunks.push(c);
+-  }
+-  return Buffer.concat(chunks);
+-}
+-
+-const contentType = (req: IncomingMessage): string => (req.headers["content-type"] ?? "").split(";")[0]!.trim().toLowerCase();
+-
+-async function readBody(req: IncomingMessage): Promise<URLSearchParams> {
+-  const raw = await readRaw(req);
+-  if (raw.length === 0) return new URLSearchParams();
+-  if (contentType(req) !== "application/x-www-form-urlencoded") throw new HttpError(415, "Forms must be sent as application/x-www-form-urlencoded");
+-  return new URLSearchParams(raw.toString("utf8"));
+-}
+-
+-async function readJson(req: IncomingMessage): Promise<unknown> {
+-  const raw = await readRaw(req);
+-  if (raw.length === 0) return undefined;
+-  if (contentType(req) !== "application/json") throw new HttpError(415, "Send the body as application/json");
+-  try {
+-    return JSON.parse(raw.toString("utf8"));
+-  } catch {
+-    throw new HttpError(400, "The body is not valid JSON");
+-  }
+-}
+-
+-// API clients send the session's CSRF token in this header; every /api/
+-// response carries it, so the client reads it from GET /api/me.
+-export const CSRF_HEADER = "x-csrf-token";
+-/** The web app's project: one repo name a `scoped` route narrows its list to, or absent for every repo. */
+-export const SCOPE_HEADER = "x-autocraft-scope";
+-const scopeOf = (req: IncomingMessage): string | null => {
+-  const v = req.headers[SCOPE_HEADER];
+-  return typeof v === "string" && v ? v : null;
+-};
+-
+-function cookie(name: string, value: string, maxAgeSec: number): string {
+-  return `${name}=${value}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAgeSec}`;
+-}
+-
+-export function createApp(opts: AppOptions & { routes: Route[] }) {
+-  const { config, db } = opts;
+-  const provider = opts.provider ?? providerFor(config, () => githubIdentity(db));
+-  // The org setup link signs in with the OAuth App even when dashboard sign-in uses the GitHub App.
+-  const setupProvider = opts.provider ?? (config.devAuth ? provider : oauthProviderFor(config));
+-  const box = new TokenBox(config.secrets.sessionKey);
+-  const resealed = resealLegacyValues(db, box);
+-  const resealedTotal = Object.values(resealed).reduce((a, b) => a + b, 0);
+-  if (resealedTotal) console.log(`re-sealed ${resealedTotal} stored token values under the current key (${Object.entries(resealed).map(([t, n]) => `${t} ${n}`).join(", ")})`);
+-  // The GitHub App's own provider: it signs users in under login=github-app, and always makes and refreshes their user tokens (the "act as you" authorization).
+-  // Read at each use: registering or removing the app takes effect without a restart.
+-  const appProviderNow = (): Provider | null => {
+-    const appKeys = config.secrets.app;
+-    return opts.provider ?? (config.devAuth ? provider : appKeys ? new GitHubProvider(appKeys.clientId, appKeys.clientSecret) : null);
+-  };
+-  const vault = new Vault(db, box, () => appProviderNow() ?? provider);
+-  const appDeps = { apiBase: opts.githubApi };
+-  const routes = compile([...opts.routes, ...githubAppRoutes(config, appDeps)]);
+-  const signinLimit = new RateLimiter(60, 10 * 60_000);
+-  const writeLimitSession = new RateLimiter(60, 60_000);
+-  const writeLimitIp = new RateLimiter(300, 60_000);
+-  const imageIndex = new ImageIndex(db);
+-  registerImageRepos((href) => imageIndex.reposOf(href));
+-  const images = opts.images ?? new ImageProxy({
+-    cacheDir: config.imageCacheDir, repos: (href) => imageIndex.reposOf(href),
+-    token: imageTokenSource(process.env),
+-  });
+-  const imageLimit = new RateLimiter(120, 60_000);    // upstream fetches per session; cache hits are free
+-  const imageLimitIp = new RateLimiter(240, 60_000);  // and per client address
+-  // GET endpoints that aggregate the mirror or run the embedder: a burst, then 30 a minute, per session.
+-  const expensiveGets = new TokenBucket(20, 0.5);
+-  const live = new LiveHub(db, opts.live);
+-  // The Inbox MCP server (POST /mcp): calls per login and failed authentications per client address, and feedback posts per login as on the dashboard.
+-  const mcpLimitToken = new RateLimiter(120, 60_000);
+-  const mcpLimitIp = new RateLimiter(300, 60_000);
+-  const webhookLimitIp = new RateLimiter(5000, 60_000);  // flood guard only; the periodic sync still runs. Before the body is read or the signature checked
+-  // Feedback shares the dashboard's limiter, so the two doors together stay within one budget per login.
+-  const mcpFeedback = opts.feedbackLimiter ?? new RateLimiter(60, 3600_000);
+-  // list_repos and list_fixups aggregate the mirror like the dashboard's expensive GETs: a burst, then 30 a minute, per login.
+-  const mcpExpensive = new TokenBucket(20, 0.5);
+-  const callbackUrl = `${config.baseUrl ?? ""}/auth/callback`;
+-  let lastPrune = 0;
+-
+-  function clientIp(req: IncomingMessage): string {
+-    if (config.trustProxy) {
+-      const xff = String(req.headers["x-forwarded-for"] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+-      if (xff.length) return xff[xff.length - 1]!;
+-    }
+-    return req.socket.remoteAddress ?? "?";
+-  }
+-
+-  function secure(headers: Record<string, string | string[]>, csp: string): Record<string, string | string[]> {
+-    headers["content-security-policy"] = csp;
+-    headers["x-frame-options"] = "DENY";
+-    headers["referrer-policy"] = "same-origin";
+-    headers["x-content-type-options"] = "nosniff";
+-    headers["cross-origin-opener-policy"] = "same-origin";
+-    headers["cross-origin-resource-policy"] = "same-origin";
+-    headers["permissions-policy"] = "camera=(), microphone=(), geolocation=()";
+-    if (config.baseUrl?.startsWith("https:")) headers["strict-transport-security"] = "max-age=31536000; includeSubDomains";
+-    return headers;
+-  }
+-
+-  function send(res: ServerResponse, nonce: string, r: Res, extraCookies: string[] = []): void {
+-    const status = r.status ?? (r.redirect ? 303 : 200);
+-    const headers: Record<string, string | string[]> = { ...r.headers };
+-    headers["cache-control"] ??= "no-store";
+-    // A handler may set its own policy (artifact downloads use `sandbox`).
+-    const csp = headers["content-security-policy"] as string | undefined;
+-    delete headers["content-security-policy"];
+-    secure(headers, csp ?? [
+-      "default-src 'none'", `script-src 'self' 'nonce-${nonce}'`, `style-src 'self' 'nonce-${nonce}'`,
+-      "img-src 'self' data:", "font-src 'self'", "connect-src 'self'", "form-action 'self'",
+-      "base-uri 'none'", "frame-ancestors 'none'",
+-    ].join("; "));
+-    if (extraCookies.length) headers["set-cookie"] = extraCookies;
+-    let body: string | Buffer = "";
+-    if (r.redirect) headers.location = r.redirect;
+-    if (r.html !== undefined) {
+-      headers["content-type"] ??= "text/html; charset=utf-8";
+-      body = r.html;
+-    } else if (r.body !== undefined) {
+-      body = r.body;
+-    } else if (r.json !== undefined) {
+-      headers["content-type"] ??= "application/json; charset=utf-8";
+-      body = JSON.stringify(r.json);
+-    }
+-    res.writeHead(status, headers);
+-    res.end(body);
+-  }
+-
+-  const errorPage = (nonce: string, status: number, title: string, text: string): Res =>
+-    ({ status, html: plainPage(nonce, title, `<p>${esc(text)}</p><p><a href="/">Dashboard</a></p>`) });
+-  const apiError = (status: number, error: string): Res => ({ status, json: { error } });
+-
+-  // A browser sends Origin on every POST it makes with fetch, and
+-  // Sec-Fetch-Site on current engines; either one from another site is refused.
+-  // Clients that send neither still need the CSRF header.
+-  function sameOrigin(req: IncomingMessage): boolean {
+-    const site = req.headers["sec-fetch-site"];
+-    if (site !== undefined && site !== "same-origin") return false;
+-    const origin = req.headers.origin;
+-    if (origin === undefined) return true;
+-    const expected = config.baseUrl ?? `http://${req.headers.host ?? ""}`;
+-    try {
+-      return origin === new URL(expected).origin;
+-    } catch {
+-      return false;
+-    }
+-  }
+-
+-  async function handleApi(req: IncomingMessage, res: ServerResponse, url: URL, nonce: string, session: Session): Promise<void> {
+-    const method = req.method;
+-    const out = (r: Res, cookies?: string[]) =>
+-      send(res, nonce, { ...r, headers: { ...r.headers, [CSRF_HEADER]: session.csrf } }, cookies);
+-    if (method !== "GET" && method !== "POST" && method !== "PUT" && method !== "DELETE") return out(apiError(405, "method not allowed"));
+-    const writes = method !== "GET";
+-    let json: unknown;
+-    if (writes) {
+-      if (!sameOrigin(req)) return out(apiError(403, "cross-origin request refused"));
+-      if (!writeLimitSession.allow(session.idHash) || !writeLimitIp.allow(clientIp(req))) return out(apiError(429, "too many requests; wait a minute"));
+-      json = await readJson(req);
+-      if (!safeEqual(String(req.headers[CSRF_HEADER] ?? ""), session.csrf)) return out(apiError(403, "missing or wrong CSRF token"));
+-      if (url.pathname === "/api/signout") {
+-        deleteSession(db, parseCookies(req.headers.cookie).get(SESSION_COOKIE)!);
+-        return send(res, nonce, { status: 204 }, [cookie(SESSION_COOKIE, "", 0)]);
+-      }
+-    }
+-    const { route, params, other } = match(routes, method, url.pathname);
+-    if (!route) return out(other ? apiError(405, "method not allowed") : apiError(404, "not found"));
+-    // Decided on the matched route, so every spelling of its path spends the same budget.
+-    if (!writes && route.expensive && (route.expensive === true || route.expensive(url.searchParams))) {
+-      const wait = expensiveGets.take(session.idHash);
+-      if (wait) return out({ status: 429, json: { error: "too many requests; wait a moment" }, headers: { "retry-after": String(wait) } });
+-    }
+-    if (route.operator && session.role !== "operator") return out(apiError(403, "operators only"));
+-    const r: Req = {
+-      method, path: url.pathname, params: params!, query: url.searchParams, form: new URLSearchParams(), json,
+-      user: makeUser(db, box, provider, session, writes, githubIdentity(db) === "app"),
+-      scope: route.scoped && !writes ? scopeOf(req) : null,
+-      csrf: session.csrf, nonce,
+-    };
+-    const res2 = await route.handler(db, r);
+-    // The writer sees its own change at once; other processes' writes arrive on the watcher's next read.
+-    if (writes) live.poke();
+-    return out(res2);
+-  }
+-
+-  // GET /api/live: same session as /api, but no rate limit and no request timeout.
+-  function handleLive(req: IncomingMessage, res: ServerResponse, nonce: string, session: Session): void {
+-    if (live.full) return send(res, nonce, apiError(503, "too many live connections"));
+-    req.socket.setTimeout(0);
+-    req.socket.setNoDelay(true);
+-    const cookieId = parseCookies(req.headers.cookie).get(SESSION_COOKIE);
+-    const headers = secure({
+-      "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-cache, no-transform", "x-accel-buffering": "no",
+-      [CSRF_HEADER]: session.csrf,
+-    }, "default-src 'none'");
+-    res.writeHead(200, headers);
+-    live.add(res, () => loadSession(db, cookieId) !== null, session.idHash);
+-  }
+-
+-  /** Under the app identity with no app keys, sign-in has nothing to go through: it is refused, never sent to the OAuth App. */
+-  const signInBlocked = (): boolean => githubIdentity(db) === "app" && !opts.provider && !config.devAuth && !config.secrets.app;
+-  const noAppPage = (nonce: string): Res => errorPage(nonce, 503, "Sign-in unavailable", "GitHub sign-in is set to the GitHub App, but no app keys are available. An operator must restore the app's keys or switch the GitHub identity back to the box account.");
+-
+-  function startOAuth(returnTo: string, selectAccount: boolean, scopes?: string[], p: Provider = provider): { r: Res; cookies: string[] } {
+-    const state = randomToken(24), verifier = randomToken(48);
+-    db.prepare("INSERT INTO oauth_states (state, verifier, return_to, identity, created_at) VALUES (?, ?, ?, ?, ?)")
+-      .run(state, verifier, returnTo, githubIdentity(db), new Date().toISOString());
+-    return {
+-      r: { redirect: p.authorizeUrl(state, pkceChallenge(verifier), callbackUrl, selectAccount, scopes) },
+-      cookies: [cookie(STATE_COOKIE, state, 600)],
+-    };
+-  }
+-
+-  const setup = new OrgSetup({
+-    db, config, deps: appDeps, provider: setupProvider,
+-    startOAuth: (returnTo, scopes) => startOAuth(returnTo, true, scopes, setupProvider),
+-    sameOrigin: (req) => sameOrigin(req),
+-    readForm: readBody,
+-  });
+-
+-  async function auth(req: IncomingMessage, url: URL, nonce: string, cookies: Map<string, string>): Promise<{ r: Res; cookies?: string[] }> {
+-    const ip = clientIp(req);
+-    const path = url.pathname;
+-    if (path.startsWith("/auth/setup") || path === "/auth/github-app/setup" || (path === "/auth/github-app/callback" && setup.ownsState(url.searchParams.get("state") ?? ""))) {
+-      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
+-      const out = await setup.handle(req, url, nonce, cookies, loadSession(db, cookies.get(SESSION_COOKIE))?.role === "operator");
+-      if (out) return out;
+-    }
+-    if (req.method === "GET" && path === "/auth/signin") {
+-      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
+-      const returnTo = safeReturnTo(url.searchParams.get("return_to"));
+-      if (loadSession(db, cookies.get(SESSION_COOKIE))) return { r: { redirect: returnTo } };
+-      if (signInBlocked()) return { r: noAppPage(nonce) };
+-      return startOAuth(returnTo, url.searchParams.get("select") === "1");
+-    }
+-    if (req.method === "GET" && path === "/auth/authorize-app") {
+-      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
+-      const returnTo = safeReturnTo(url.searchParams.get("return_to"));
+-      const s = loadSession(db, cookies.get(SESSION_COOKIE));
+-      if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: `/auth/authorize-app?${new URLSearchParams({ return_to: returnTo })}` })}` } };
+-      if (s.role !== "operator") return { r: errorPage(nonce, 403, "Not authorised", "Only operators authorize AutoCraft to act as them.") };
+-      const appProvider = appProviderNow();
+-      if (!appProvider) return { r: errorPage(nonce, 409, "No GitHub App", "No GitHub App is registered, so there is nothing to authorize.") };
+-      return startOAuth(`${AUTHORIZE_PREFIX}${returnTo}`, false, undefined, appProvider);
+-    }
+-    if (req.method === "GET" && path === "/auth/callback") {
+-      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
+-      const clear = [cookie(STATE_COOKIE, "", 0)];
+-      if (url.searchParams.get("error")) {
+-        return { r: errorPage(nonce, 400, "Sign-in cancelled", "GitHub sign-in did not complete."), cookies: clear };
+-      }
+-      const state = url.searchParams.get("state") ?? "";
+-      const code = url.searchParams.get("code") ?? "";
+-      const row = db.prepare("SELECT verifier, return_to, identity, created_at FROM oauth_states WHERE state = ?").get(state) as
+-        { verifier: string; return_to: string | null; identity: string | null; created_at: string } | undefined;
+-      const cookieState = cookies.get(STATE_COOKIE) ?? "";
+-      const stateOk = !!row && safeEqual(cookieState, state);
+-      if (stateOk) db.prepare("DELETE FROM oauth_states WHERE state = ?").run(state);
+-      if (!row || !code || !stateOk || Date.now() - Date.parse(row.created_at) > 600_000) {
+-        return { r: errorPage(nonce, 400, "Sign-in expired", "Start again from the sign-in link."), cookies: clear };
+-      }
+-      const plainSignIn = !row.return_to?.startsWith("setup:") && !row.return_to?.startsWith(AUTHORIZE_PREFIX);
+-      // A sign-in finishes under the identity it started with; if that is no longer the current one, it starts again.
+-      const startedAs: "box" | "app" = row.identity === "app" ? "app" : row.identity === "box" ? "box" : githubIdentity(db);
+-      const changed = (): boolean => plainSignIn && startedAs !== githubIdentity(db);
+-      if (plainSignIn && signInBlocked()) return { r: noAppPage(nonce), cookies: clear };
+-      if (changed()) return { r: errorPage(nonce, 400, "Sign-in failed", "The GitHub identity changed during sign-in. Start again."), cookies: clear };
+-      let tokens: Tokens | null, who: GithubUser | null;
+-      try {
+-        const p = row.return_to?.startsWith("setup:") ? setupProvider : row.return_to?.startsWith(AUTHORIZE_PREFIX) ? (appProviderNow() ?? provider) : opts.provider || config.devAuth ? provider : providerFor(config, () => startedAs);
+-        tokens = await p.exchange(code, row.verifier, callbackUrl);
+-        who = tokens ? await p.identity(tokens.access) : null;
+-      } catch (e) {
+-        console.error(`sign-in: ${(e as Error).message}`);
+-        return { r: errorPage(nonce, 502, "Sign-in failed", "GitHub did not answer. Try again in a minute."), cookies: clear };
+-      }
+-      if (!tokens || !who) {
+-        return { r: errorPage(nonce, 400, "Sign-in failed", "GitHub did not accept the sign-in. Start again."), cookies: clear };
+-      }
+-      if (row.return_to?.startsWith("setup:")) {
+-        const out = await setup.signedIn(row.return_to, tokens, who, nonce, cookies);
+-        return { r: out.r, cookies: [...clear, ...(out.cookies ?? [])] };
+-      }
+-      if (row.return_to?.startsWith(AUTHORIZE_PREFIX)) {
+-        // "Act as you": only the user token is stored. The session and the sign-in are untouched.
+-        const s = loadSession(db, cookies.get(SESSION_COOKIE));
+-        if (!s || s.role !== "operator" || s.login.toLowerCase() !== who.login.toLowerCase() || checkGithubId(db, s.login, who.id) === "mismatch") {
+-          // The token belongs to an account that may not act here: end it before answering.
+-          void (appProviderNow() ?? provider).revoke(tokens.access).catch(() => {});
+-          return { r: errorPage(nonce, 403, "Not authorised", "Sign in to the dashboard as the GitHub account you authorize, then try again."), cookies: clear };
+-        }
+-        saveUserTokens(db, box, s.login, who.id, tokens);
+-        retryWaiting(db, s.login);
+-        audit(db, s.login, "github-app-authorize", s.login, { ip });
+-        return { r: { redirect: safeReturnTo(row.return_to.slice(AUTHORIZE_PREFIX.length)) }, cookies: clear };
+-      }
+-      const login = who.login;
+-      const access = getAccess(db, login);
+-      if (!access) {
+-        auditRefusedSignIn(db, login, { ip });
+-        return { r: errorPage(nonce, 403, "Not authorised", `The GitHub account ${login} is not on this dashboard's access list.`), cookies: clear };
+-      }
+-      if (checkGithubId(db, access.login, who.id) === "mismatch") {
+-        auditRefusedSignIn(db, login, { ip, reason: "github-id-mismatch" });
+-        return { r: errorPage(nonce, 403, "Not authorised", `The GitHub account ${login} is not the account that was added to this dashboard's access list.`), cookies: clear };
+-      }
+-      if (changed()) return { r: errorPage(nonce, 400, "Sign-in failed", "The GitHub identity changed during sign-in. Start again."), cookies: clear };
+-      const id = createSession(db, box, access.login, tokens, req.headers["user-agent"]);
+-      if (startedAs === "app") { saveUserTokens(db, box, access.login, who.id, tokens); retryWaiting(db, access.login); }
+-      audit(db, access.login, "sign-in", access.login, { ip });
+-      return {
+-        r: { redirect: safeReturnTo(row.return_to) },
+-        cookies: [...clear, cookie(SESSION_COOKIE, id, SESSION_TTL / 1000)],
+-      };
+-    }
+-    if (req.method === "POST" && path === "/auth/github-app/start") {
+-      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
+-      if (!sameOrigin(req)) return { r: errorPage(nonce, 403, "Refused", "This form was sent from another site.") };
+-      const form = await readBody(req);
+-      const s = loadSession(db, cookies.get(SESSION_COOKIE));
+-      if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: "/admin/github-app" })}` } };
+-      if (!safeEqual(form.get("csrf") ?? "", s.csrf)) return { r: errorPage(nonce, 403, "Refused", "The form expired. Reload the page and try again.") };
+-      return { r: startRegistration(db, config, req, form, nonce, s) };
+-    }
+-    if (req.method === "GET" && path === "/auth/github-app/callback") {
+-      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
+-      const s = loadSession(db, cookies.get(SESSION_COOKIE));
+-      if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: "/admin/github-app" })}` } };
+-      return { r: await finishRegistration(db, config, appDeps, url, nonce, s) };
+-    }
+-    if (req.method === "POST" && path === "/auth/signout") {
+-      if (!sameOrigin(req)) return { r: errorPage(nonce, 403, "Refused", "This form was sent from another site.") };
+-      const form = await readBody(req);
+-      const id = cookies.get(SESSION_COOKIE);
+-      const s = loadSession(db, id);
+-      if (s) {
+-        if (!safeEqual(form.get("csrf") ?? "", s.csrf)) return { r: errorPage(nonce, 403, "Refused", "The form expired. Reload the page and try again.") };
+-        deleteSession(db, id!);
+-      }
+-      return { r: { redirect: "/auth/signed-out" }, cookies: [cookie(SESSION_COOKIE, "", 0)] };
+-    }
+-    if (req.method === "GET" && path === "/auth/signed-out") {
+-      return { r: { html: plainPage(nonce, "Signed out", `<p class="muted">You are signed out of the dashboard on this device.</p><p><a class="button" href="/auth/signin?select=1">Sign in again</a></p>`) } };
+-    }
+-    if (req.method === "GET" && path === "/auth/dev/authorize" && provider instanceof FakeProvider) {
+-      const q = url.searchParams;
+-      if (q.get("redirect_uri") !== callbackUrl) return { r: errorPage(nonce, 400, "Bad request", "Unknown redirect_uri.") };
+-      const login = q.get("login");
+-      if (login !== null) {
+-        if (!LOGIN.test(login)) return { r: errorPage(nonce, 400, "Bad request", "Not a GitHub login.") };
+-        const code = provider.issueCode(login, q.get("code_challenge") ?? "", callbackUrl);
+-        return { r: { redirect: `${callbackUrl}?${new URLSearchParams({ code, state: q.get("state") ?? "" })}` } };
+-      }
+-      const hidden = ["state", "code_challenge", "redirect_uri"]
+-        .map((k) => `<input type="hidden" name="${k}" value="${esc(q.get(k))}">`).join("");
+-      return {
+-        r: {
+-          html: plainPage(nonce, "Development sign-in", `<p class="muted">Fake GitHub sign-in. Development only.</p>
+-<form method="get" action="/auth/dev/authorize">${hidden}<label>GitHub login <input name="login" required autofocus></label> <button>Sign in</button></form>`),
+-        },
+-      };
+-    }
+-    return { r: errorPage(nonce, 404, "Not found", "No such page.") };
+-  }
+-
+-  /** A request with an operator's or maintainer's session: /healthz/checks gives them its times and counts. */
+-  const staffCaller = (req: IncomingMessage): boolean => {
+-    const role = loadSession(db, parseCookies(req.headers.cookie).get(SESSION_COOKIE))?.role;
+-    return role === "operator" || role === "maintainer";
+-  };
+-
+-  async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
+-    if (serveHealth(req, res, () => dbReady(db)) || serveChecks(req, res, db, Date.now(), 5_000, staffCaller)) return;
+-    const nonce = randomToken(16);
+-    try {
+-      if (Date.now() - lastPrune > 3_600_000) {
+-        lastPrune = Date.now();
+-        pruneExpired(db);
+-        pruneTokens(db);
+-        void vault.sweepRevocations().catch(() => {});
+-      }
+-      // A revoked session's token is revoked at once, not at the next hourly sweep; failures are retried by that sweep.
+-      if (db.prepare("SELECT 1 FROM user_token_revocations WHERE attempts = 0 LIMIT 1").get()) void vault.sweepRevocations(true).catch(() => {});
+-      // Dev auth lets anyone who reaches the port sign in as any login, so
+-      // a request that came through a proxy or under a public name is refused.
+-      if (config.devAuth && (req.headers["x-forwarded-for"] !== undefined || !isLoopbackHost(req.headers.host))) {
+-        return send(res, nonce, errorPage(nonce, 403, "Refused", "Development sign-in answers only on localhost."));
+-      }
+-      const url = new URL(req.url ?? "/", "http://dashboard.invalid");
+-      const cookies = parseCookies(req.headers.cookie);
+-      if (url.pathname.startsWith("/auth/")) {
+-        const { r, cookies: set } = await auth(req, url, nonce, cookies);
+-        return send(res, nonce, r, set);
+-      }
+-      if (url.pathname === "/mcp") return await handleMcpHttp(req, res);
+-      if (url.pathname === WEBHOOK_PATH) return await handleWebhook(req, res);
+-      const method = req.method;
+-      // Public: the Discord bot's privacy notice must be readable by people who are not dashboard users.
+-      if (method === "GET" && url.pathname === DISCORD_PRIVACY_PATH) return send(res, nonce, { html: discordPrivacyPage(nonce, contactOf(db)) });
+-      // Public: a Discord reporter's GitHub sign-in for filing issues (no dashboard session).
+-      if (FILING_IN_DISCORD && method === "GET" && (url.pathname === REPORTER_START_PATH || url.pathname === REPORTER_CALLBACK_PATH)) {
+-        if (!signinLimit.allow(clientIp(req))) return send(res, nonce, errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again."));
+-        const out = await reporterSignIn({ db, box, provider: appProviderNow(), baseUrl: config.baseUrl }, url, cookies, nonce);
+-        if (out) return send(res, nonce, out.r, out.cookies);
+-      }
+-      if (method === "GET" && url.pathname === DISCORD_TERMS_PATH) return send(res, nonce, { html: discordTermsPage(nonce, contactOf(db)) });
+-      // Public: the favicon and the preview image, which sign-in pages and link-preview crawlers load without a session.
+-      if (method === "GET" && PUBLIC_FILES.has(url.pathname)) return await sendWeb(res, nonce, url.pathname);
+-      const session = loadSession(db, cookies.get(SESSION_COOKIE));
+-      if (!session) {
+-        const wantsPage = method === "GET" && /text\/html/.test(String(req.headers.accept ?? ""));
+-        if (wantsPage) {
+-          // A page with preview tags that moves on to sign-in at once: link-preview crawlers read the tags and stop here,
+-          // where a redirect would take them to the identity provider's page and its preview.
+-          const to = `/auth/signin?${new URLSearchParams({ return_to: url.pathname + url.search })}`;
+-          return send(res, nonce, { html: plainPage(nonce, "Sign in", `<p><a class="button" href="${esc(to)}">Sign in with GitHub</a></p>`,
+-            `<meta http-equiv="refresh" content="0;url=${esc(to)}">${previewTags(config.baseUrl, url.pathname)}`) });
+-        }
+-        return send(res, nonce, { status: 401, json: { error: "sign-in required" } });
+-      }
+-      if (method === "GET" && url.pathname === "/api/live") return handleLive(req, res, nonce, session);
+-      if (url.pathname.startsWith("/api/")) return await handleApi(req, res, url, nonce, session);
+-      if (url.pathname === "/img") return await sendImage(req, res, url, session);
+-      // Every other address belongs to the React app, which routes on the client.
+-      if (method === "GET") return await sendWeb(res, nonce, url.pathname);
+-      return send(res, nonce, errorPage(nonce, 405, "Not allowed", "This address does not accept that request."));
+-    } catch (e) {
+-      const api = (req.url ?? "").startsWith("/api/");
+-      if (e instanceof HttpError) return send(res, nonce, api ? apiError(e.status, e.message) : errorPage(nonce, e.status, "Request refused", e.message));
+-      console.error(`${req.method} ${(req.url ?? "").split("?")[0]}: ${(e as Error).stack ?? e}`);
+-      if (!res.headersSent) send(res, nonce, api ? apiError(500, "server error; it is logged") : errorPage(nonce, 500, "Something went wrong", "The error is logged on the server."));
+-      else res.destroy();
+-    }
+-  }
+-
+-  // POST /mcp: one JSON-RPC message, authenticated by an agent token (Authorization: Bearer), never by the session
+-  // cookie, so a browser page cannot make a signed-in user's browser call it. A request from a browser
+-  // context on another site (Origin or Sec-Fetch-Site) is refused, which also covers DNS rebinding.
+-  // GitHub App deliveries: no session and no CSRF check; the HMAC signature over the raw body is the authentication.
+-  async function handleWebhook(req: IncomingMessage, res: ServerResponse): Promise<void> {
+-    const reply = (status: number, allow?: string): void => {
+-      res.writeHead(status, secure({ "cache-control": "no-store", "content-type": "text/plain; charset=utf-8", ...(allow ? { allow } : {}) }, "default-src 'none'"));
+-      res.end("");
+-    };
+-    if (req.method !== "POST") return reply(405, "POST");
+-    if (!webhookLimitIp.allow(clientIp(req))) return reply(429);
+-    let raw: Buffer;
+-    try {
+-      raw = await readRaw(req, WEBHOOK_BODY_LIMIT);
+-    } catch (e) {
+-      if (e instanceof HttpError) return reply(e.status);
+-      throw e;
+-    }
+-    const one = (v: string | string[] | undefined): string | undefined => (Array.isArray(v) ? v[0] : v);
+-    const v = handleDelivery(db, config.secrets.app?.webhookSecret ?? null, { signature: one(req.headers["x-hub-signature-256"]), event: one(req.headers["x-github-event"]) }, raw, safeEqual);
+-    return reply(v.status);
+-  }
+-
+-  async function handleMcpHttp(req: IncomingMessage, res: ServerResponse): Promise<void> {
+-    const reply = (status: number, body: unknown, headers: Record<string, string> = {}): void => {
+-      res.writeHead(status, secure({ "cache-control": "no-store", ...(body === null ? {} : { "content-type": "application/json; charset=utf-8" }), ...headers }, "default-src 'none'"));
+-      res.end(body === null ? "" : JSON.stringify(body));
+-    };
+-    const rpcError = (code: number, message: string) => ({ jsonrpc: "2.0", id: null, error: { code, message } });
+-    if (req.method !== "POST") return reply(405, rpcError(-32000, "POST one JSON-RPC message; this server has no event stream"), { allow: "POST" });
+-    if (!sameOrigin(req)) return reply(403, rpcError(-32000, "cross-origin request refused"));
+-    const auth = String(req.headers.authorization ?? "");
+-    const caller = loadToken(db, /^Bearer\s+(\S+)$/i.exec(auth)?.[1]);
+-    // The per-address limit counts failed authentications only: behind a proxy every client shares one address.
+-    if (!caller && !mcpLimitIp.allow(clientIp(req))) return reply(429, rpcError(-32000, "too many requests; wait a minute"), { "retry-after": "60" });
+-    if (!caller) return reply(401, rpcError(-32001, "a valid AutoCraft agent token is required (Authorization: Bearer <token>); make one on the dashboard's Connect page"), { "www-authenticate": 'Bearer realm="autocraft"' });
+-    if (!mcpLimitToken.allow(caller.login.toLowerCase())) return reply(429, rpcError(-32000, "too many requests for this login; wait a minute"), { "retry-after": "60" });
+-    let msg: unknown;
+-    try {
+-      msg = await readJson(req);
+-    } catch (e) {
+-      if (e instanceof HttpError) return reply(e.status, rpcError(e.status === 400 ? -32700 : -32600, e.message));
+-      throw e;
+-    }
+-    if (!msg || typeof msg !== "object" || Array.isArray(msg)) return reply(400, rpcError(-32600, "send one JSON-RPC message as an object; batches are not supported"));
+-    const m = msg as McpMsg;
+-    const out = await handleMcp({
+-      db, baseUrl: config.baseUrl, limiter: mcpFeedback, expensive: () => mcpExpensive.take(caller.login.toLowerCase()), canAnswer: answering.enabled && caller.canAnswer && (caller.role === "operator" || (caller.role === "maintainer" && maintainerWritesOn(db))),
+-      user: (forWrite) => userForLogin(db, box, provider, caller.login, caller.role, forWrite),
+-    }, m);
+-    if (mcpWrites(m)) live.poke();
+-    // A notification or a response from the client: accepted, nothing to say.
+-    if (!out) return reply(202, null);
+-    return reply(200, out);
+-  }
+-
+-  async function sendImage(req: IncomingMessage, res: ServerResponse, url: URL, session: Session): Promise<void> {
+-    if (req.method !== "GET") {
+-      res.writeHead(405, secure({ "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" }, "default-src 'none'"));
+-      return void res.end("method not allowed");
+-    }
+-    const ip = clientIp(req);
+-    // An image is served only when one of the repos whose text contains it is visible to this user.
+-    const raw = url.searchParams.get("u") ?? "";
+-    const href = allowedImage(raw)?.href;
+-    const owners = href ? imageIndex.reposOf(href) : [];
+-    if (owners.length) {
+-      const visible = new Set(await visibleTo(db, makeUser(db, box, provider, session, false, githubIdentity(db) === "app")));
+-      if (!owners.some((o) => visible.has(o))) {
+-        res.writeHead(404, secure({ "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" }, "default-src 'none'"));
+-        return void res.end("not an image of a tracked repo");
+-      }
+-    }
+-    const r = await images.get(raw, () => imageLimit.allow(session.idHash) && imageLimitIp.allow(ip));
+-    if (r.status !== 200) {
+-      const retry: Record<string, string> = r.status === 429 ? { "retry-after": "10" } : {};
+-      res.writeHead(r.status, secure({ "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", ...retry }, "default-src 'none'"));
+-      return void res.end(r.error ?? "");
+-    }
+-    return sendFile(res, r.type!, "private, max-age=86400", "default-src 'none'", r.data!);
+-  }
+-
+-  function sendFile(res: ServerResponse, type: string, cache: string, csp: string, data: Buffer): void {
+-    res.writeHead(200, secure({ "content-type": type, "cache-control": cache }, csp));
+-    res.end(data);
+-  }
+-
+-  async function readDist(rel: string[]): Promise<Buffer | null> {
+-    const full = resolve(config.webDist, ...rel);
+-    const r = relative(config.webDist, full);
+-    if (!r || r === ".." || r.startsWith(`..${sep}`) || isAbsolute(r)) return null;
+-    try {
+-      const real = await realpath(full);
+-      const root = await realpath(config.webDist);
+-      const rr = relative(root, real);
+-      if (!rr || rr === ".." || rr.startsWith(`..${sep}`) || isAbsolute(rr)) return null;
+-      return await readFile(real);
+-    } catch {
+-      return null;    // missing, or a directory
+-    }
+-  }
+-
+-  // The frontend's build output: hashed files under /assets/ are cached for a
+-  // year; any other path gets index.html, never cached, so a new build is
+-  // picked up on the next load.
+-  async function sendWeb(res: ServerResponse, nonce: string, pathname: string): Promise<void> {
+-    const notFound = () => send(res, nonce, errorPage(nonce, 404, "Not found", "No such file."));
+-    const rel: string[] = [];
+-    for (const raw of pathname.split("/")) {
+-      let seg: string;
+-      try {
+-        seg = decodeURIComponent(raw);
+-      } catch {
+-        return notFound();
+-      }
+-      if (seg === "") continue;
+-      if (seg === "." || seg === ".." || /[\\/\0]/.test(seg)) return notFound();
+-      rel.push(seg);
+-    }
+-    const ext = rel.length ? /\.([a-z0-9]+)$/.exec(rel[rel.length - 1]!)?.[1] : undefined;
+-    if (rel[0] === "assets") {
+-      const data = ext && FILE_TYPES[ext] ? await readDist(rel) : null;
+-      if (!data) return notFound();
+-      return sendFile(res, FILE_TYPES[ext!]!, "private, max-age=31536000, immutable", "default-src 'none'", data);
+-    }
+-    if (rel.length === 1 && ext && FILE_TYPES[ext]) {
+-      const data = await readDist(rel);
+-      if (data) return sendFile(res, FILE_TYPES[ext]!, "private, max-age=3600", "default-src 'none'", data);
+-    }
+-    const index = await readDist(["index.html"]);
+-    if (!index) {
+-      return send(res, nonce, {
+-        status: 503,
+-        html: plainPage(nonce, "Frontend not built", `<p>The dashboard's frontend is not built: there is no <code>index.html</code> in the directory <code>AUTOCRAFT_WEB_DIST</code> names (default <code>web/dist</code> in the repo).</p>
+-<p>Build it with <code>pnpm -C web install</code> and <code>pnpm -C web build</code>, then reload.</p>`),
+-      });
+-    }
+-    return sendFile(res, "text/html; charset=utf-8", "no-store", APP_CSP, index);
+-  }
+-
+-  return { handle, routes: opts.routes, provider, live, close: () => live.close() };
+-}
+-
+-export async function startServer(opts: AppOptions): Promise<{ server: Server; url: string; app: ReturnType<typeof createApp>; close(): Promise<void> }> {
+-  const feedbackLimiter = opts.feedbackLimiter ?? new RateLimiter(60, 3600_000);
+-  const app = createApp({ ...opts, feedbackLimiter, routes: opts.routes ?? (await defaultRoutes(feedbackLimiter, opts.githubUserId)) });
+-  const server = createServer({ requestTimeout: 30_000, headersTimeout: 15_000 }, (req, res) => void app.handle(req, res));
+-  await new Promise<void>((resolve, reject) => {
+-    server.once("error", reject);
+-    server.listen(opts.config.port, opts.config.host, resolve);
+-  });
+-  const addr = server.address() as AddressInfo;
+-  const host = addr.family === "IPv6" ? `[${addr.address}]` : addr.address;
+-  return {
+-    server, app,
+-    url: `http://${host}:${addr.port}`,
+-    close: () => new Promise<void>((resolve) => {
+-      app.close();
+-      server.closeAllConnections();
+-      server.close(() => resolve());
+-    }),
+-  };
+-}
++// HTTP server: sign-in, sessions, CSRF, rate limits, security headers and
++// routing for the dashboard. Handlers only ever see authenticated requests.
++import { maintainerWritesOn } from "../../settlers.ts";
++import { readFile, realpath } from "node:fs/promises";
++import { isAbsolute, relative, resolve, sep } from "node:path";
++import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
++import type { AddressInfo } from "node:net";
++import type { DatabaseSync } from "node:sqlite";
++import { LOGIN, checkGithubId, getAccess } from "../../access.ts";
++import { audit, auditRefusedSignIn } from "../audit.ts";
++import type { Req, Res, Route } from "../types.ts";
++import { isLoopbackHost, type Config } from "./config.ts";
++import { resealLegacyValues } from "./reseal.ts";
++import { pkceChallenge, randomToken, safeEqual, TokenBox } from "./crypto.ts";
++import { ImageIndex } from "./image-index.ts";
++import { visibleTo } from "../api/visible.ts";
++import { allowedImage, ImageProxy, imageTokenSource, registerImageRepos } from "./images.ts";
++import { TokenBucket } from "./limits.ts";
++import { dbReady, serveHealth } from "../../health.ts";
++import { serveChecks } from "../../health-checks.ts";
++import { discordPrivacyPage, DISCORD_PRIVACY_PATH } from "./discord-privacy.ts";
++import { reporterSignIn, REPORTER_CALLBACK_PATH, REPORTER_START_PATH } from "./reporter-signin.ts";
++import { FILING_IN_DISCORD } from "../../discord/file-issue.ts";
++import { discordTermsPage, DISCORD_TERMS_PATH } from "./discord-terms.ts";
++import { contactOf } from "../api/discord.ts";
++import { LiveHub, type LiveOptions } from "./live.ts";
++import { finishRegistration, githubAppRoutes, startRegistration } from "./github-app.ts";
++import { OrgSetup } from "./github-setup.ts";
++import { Vault } from "../../github/vault.ts";
++import { githubIdentity } from "../../github/identity.ts";
++import { saveUserTokens } from "./user-tokens.ts";
++import { FakeProvider, GitHubProvider, oauthProviderFor, providerFor, type GithubUser, type Provider, type Tokens } from "./provider.ts";
++import { retryWaiting } from "../../github/user-lane.ts";
++import { createSession, deleteSession, loadSession, makeUser, pruneExpired, SESSION_TTL, userForLogin, type Session } from "./sessions.ts";
++import { answering, handleMcp, writes as mcpWrites, type Msg as McpMsg } from "../mcp/index.ts";
++import { loadToken, pruneTokens } from "../mcp/tokens.ts";
++import { handleDelivery, WEBHOOK_BODY_LIMIT, WEBHOOK_PATH } from "../../github/webhooks.ts";
++import { esc, HttpError, parseCookies, plainPage, previewTags, RateLimiter, safeReturnTo } from "./util.ts";
++
++export const SESSION_COOKIE = "__Host-craft_session";
++/** `oauth_states.return_to` of an "act as you" authorization, which the shared sign-in callback tells apart from a sign-in by this prefix. */
++const AUTHORIZE_PREFIX = "authorize:";
++const STATE_COOKIE = "__Host-craft_oauth";
++const BODY_LIMIT = 64 * 1024;
++const PUBLIC_FILES = new Set(["/artcraft-mark.svg", "/artcraft-mark.png"]);
++const FILE_TYPES: Record<string, string> = {
++  css: "text/css; charset=utf-8", js: "text/javascript; charset=utf-8", svg: "image/svg+xml",
++  png: "image/png", ico: "image/x-icon", woff2: "font/woff2", json: "application/json",
++  txt: "text/plain; charset=utf-8", webmanifest: "application/manifest+json",
++};
++
++// The one inline style the frontend needs: react-remove-scroll-bar (under
++// Radix Dialog and DropdownMenu) injects a <style> while a modal is open. Its
++// text depends only on the page scrollbar's width and the body's margins,
++// which the app's CSS fixes at 0 (body has no margin and overflow: hidden),
++// so the text is always the same. Recompute the hash if that package changes
++// the text; Chrome's console names the expected hash on a violation.
++const RADIX_SCROLL_LOCK_STYLE = "'sha256-nzTgYzXYDNe6BAHiiI7NNlfK8n/auuOAhh2t92YvuXo='";
++
++// The React app (web/): scripts and styles from this origin only, no nonce.
++export const APP_CSP = [
++  "default-src 'none'", "script-src 'self'", `style-src 'self' ${RADIX_SCROLL_LOCK_STYLE}`,
++  "img-src 'self' data:", "font-src 'self'", "connect-src 'self'", "form-action 'self'",
++  "base-uri 'none'", "frame-ancestors 'none'",
++].join("; ");
++
++export type AppOptions = {
++  config: Config;
++  db: DatabaseSync;
++  provider?: Provider;
++  routes?: Route[];          // default: the JSON API
++  images?: ImageProxy;       // default: fetches with global fetch and the bot's gh token
++  live?: LiveOptions;        // GET /api/live timing; defaults suit production
++  // Opinions and comments per login per hour. The dashboard's routes and the MCP server's feedback must share one instance.
++  feedbackLimiter?: RateLimiter;
++  githubUserId?: (login: string) => Promise<number | null>; // numeric GitHub id of a login for new access entries; default: GitHub's API
++  githubApi?: string;        // base URL of the GitHub API for the GitHub App calls; default: api.github.com
++};
++
++type Compiled = Route & { parts: string[] };
++
++
++export async function defaultRoutes(feedbackLimiter?: RateLimiter, githubUserId?: AppOptions["githubUserId"]): Promise<Route[]> {
++  const { apiRoutes } = await import("../api/index.ts");
++  return apiRoutes({ limiter: feedbackLimiter, ...(githubUserId && { githubUserId }) });
++}
++
++function compile(routes: Route[]): Compiled[] {
++  return routes.map((r) => ({ ...r, parts: r.pattern.split("/").filter(Boolean) }));
++}
++
++function match(routes: Compiled[], method: string, path: string): { route?: Compiled; params?: Record<string, string>; other: boolean } {
++  const segs = path.split("/").filter(Boolean);
++  let other = false;
++  for (const r of routes) {
++    if (r.parts.length !== segs.length) continue;
++    const params: Record<string, string> = {};
++    let ok = true;
++    for (let i = 0; i < segs.length && ok; i++) {
++      const p = r.parts[i]!;
++      if (p.startsWith(":")) {
++        try {
++          params[p.slice(1)] = decodeURIComponent(segs[i]!);
++        } catch {
++          ok = false;
++        }
++      } else ok = p === segs[i];
++    }
++    if (!ok) continue;
++    if (r.method === method) return { route: r, params, other };
++    other = true;
++  }
++  return { other };
++}
++
++async function readRaw(req: IncomingMessage, limit: number = BODY_LIMIT): Promise<Buffer> {
++  const declared = Number(req.headers["content-length"] ?? 0);
++  if (declared > limit) throw new HttpError(413, "Request too large");
++  const chunks: Buffer[] = [];
++  let size = 0;
++  for await (const c of req as AsyncIterable<Buffer>) {
++    size += c.length;
++    if (size > limit) throw new HttpError(413, "Request too large");
++    chunks.push(c);
++  }
++  return Buffer.concat(chunks);
++}
++
++const contentType = (req: IncomingMessage): string => (req.headers["content-type"] ?? "").split(";")[0]!.trim().toLowerCase();
++
++async function readBody(req: IncomingMessage): Promise<URLSearchParams> {
++  const raw = await readRaw(req);
++  if (raw.length === 0) return new URLSearchParams();
++  if (contentType(req) !== "application/x-www-form-urlencoded") throw new HttpError(415, "Forms must be sent as application/x-www-form-urlencoded");
++  return new URLSearchParams(raw.toString("utf8"));
++}
++
++async function readJson(req: IncomingMessage): Promise<unknown> {
++  const raw = await readRaw(req);
++  if (raw.length === 0) return undefined;
++  if (contentType(req) !== "application/json") throw new HttpError(415, "Send the body as application/json");
++  try {
++    return JSON.parse(raw.toString("utf8"));
++  } catch {
++    throw new HttpError(400, "The body is not valid JSON");
++  }
++}
++
++// API clients send the session's CSRF token in this header; every /api/
++// response carries it, so the client reads it from GET /api/me.
++export const CSRF_HEADER = "x-csrf-token";
++/** The web app's project: one repo name a `scoped` route narrows its list to, or absent for every repo. */
++export const SCOPE_HEADER = "x-autocraft-scope";
++const scopeOf = (req: IncomingMessage): string | null => {
++  const v = req.headers[SCOPE_HEADER];
++  return typeof v === "string" && v ? v : null;
++};
++
++function cookie(name: string, value: string, maxAgeSec: number): string {
++  return `${name}=${value}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAgeSec}`;
++}
++
++export function createApp(opts: AppOptions & { routes: Route[] }) {
++  const { config, db } = opts;
++  const provider = opts.provider ?? providerFor(config, () => githubIdentity(db));
++  // The org setup link signs in with the OAuth App even when dashboard sign-in uses the GitHub App.
++  const setupProvider = opts.provider ?? (config.devAuth ? provider : oauthProviderFor(config));
++  const box = new TokenBox(config.secrets.sessionKey);
++  const resealed = resealLegacyValues(db, box);
++  const resealedTotal = Object.values(resealed).reduce((a, b) => a + b, 0);
++  if (resealedTotal) console.log(`re-sealed ${resealedTotal} stored token values under the current key (${Object.entries(resealed).map(([t, n]) => `${t} ${n}`).join(", ")})`);
++  // The GitHub App's own provider: it signs users in under login=github-app, and always makes and refreshes their user tokens (the "act as you" authorization).
++  // Read at each use: registering or removing the app takes effect without a restart.
++  const appProviderNow = (): Provider | null => {
++    const appKeys = config.secrets.app;
++    return opts.provider ?? (config.devAuth ? provider : appKeys ? new GitHubProvider(appKeys.clientId, appKeys.clientSecret) : null);
++  };
++  const vault = new Vault(db, box, () => appProviderNow() ?? provider);
++  const appDeps = { apiBase: opts.githubApi };
++  const routes = compile([...opts.routes, ...githubAppRoutes(config, appDeps)]);
++  const signinLimit = new RateLimiter(60, 10 * 60_000);
++  const writeLimitSession = new RateLimiter(60, 60_000);
++  const writeLimitIp = new RateLimiter(300, 60_000);
++  const imageIndex = new ImageIndex(db);
++  registerImageRepos((href) => imageIndex.reposOf(href));
++  const images = opts.images ?? new ImageProxy({
++    cacheDir: config.imageCacheDir, repos: (href) => imageIndex.reposOf(href),
++    token: imageTokenSource(process.env),
++  });
++  const imageLimit = new RateLimiter(120, 60_000);    // upstream fetches per session; cache hits are free
++  const imageLimitIp = new RateLimiter(240, 60_000);  // and per client address
++  // GET endpoints that aggregate the mirror or run the embedder: a burst, then 30 a minute, per session.
++  const expensiveGets = new TokenBucket(20, 0.5);
++  const live = new LiveHub(db, opts.live);
++  // The Inbox MCP server (POST /mcp): calls per login and failed authentications per client address, and feedback posts per login as on the dashboard.
++  const mcpLimitToken = new RateLimiter(120, 60_000);
++  const mcpLimitIp = new RateLimiter(300, 60_000);
++  const webhookLimitIp = new RateLimiter(5000, 60_000);  // flood guard only; the periodic sync still runs. Before the body is read or the signature checked
++  // Feedback shares the dashboard's limiter, so the two doors together stay within one budget per login.
++  const mcpFeedback = opts.feedbackLimiter ?? new RateLimiter(60, 3600_000);
++  // list_repos and list_fixups aggregate the mirror like the dashboard's expensive GETs: a burst, then 30 a minute, per login.
++  const mcpExpensive = new TokenBucket(20, 0.5);
++  const callbackUrl = `${config.baseUrl ?? ""}/auth/callback`;
++  let lastPrune = 0;
++
++  function clientIp(req: IncomingMessage): string {
++    if (config.trustProxy) {
++      const xff = String(req.headers["x-forwarded-for"] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
++      if (xff.length) return xff[xff.length - 1]!;
++    }
++    return req.socket.remoteAddress ?? "?";
++  }
++
++  function secure(headers: Record<string, string | string[]>, csp: string): Record<string, string | string[]> {
++    headers["content-security-policy"] = csp;
++    headers["x-frame-options"] = "DENY";
++    headers["referrer-policy"] = "same-origin";
++    headers["x-content-type-options"] = "nosniff";
++    headers["cross-origin-opener-policy"] = "same-origin";
++    headers["cross-origin-resource-policy"] = "same-origin";
++    headers["permissions-policy"] = "camera=(), microphone=(), geolocation=()";
++    if (config.baseUrl?.startsWith("https:")) headers["strict-transport-security"] = "max-age=31536000; includeSubDomains";
++    return headers;
++  }
++
++  function send(res: ServerResponse, nonce: string, r: Res, extraCookies: string[] = []): void {
++    const status = r.status ?? (r.redirect ? 303 : 200);
++    const headers: Record<string, string | string[]> = { ...r.headers };
++    headers["cache-control"] ??= "no-store";
++    // A handler may set its own policy (artifact downloads use `sandbox`).
++    const csp = headers["content-security-policy"] as string | undefined;
++    delete headers["content-security-policy"];
++    secure(headers, csp ?? [
++      "default-src 'none'", `script-src 'self' 'nonce-${nonce}'`, `style-src 'self' 'nonce-${nonce}'`,
++      "img-src 'self' data:", "font-src 'self'", "connect-src 'self'", "form-action 'self'",
++      "base-uri 'none'", "frame-ancestors 'none'",
++    ].join("; "));
++    if (extraCookies.length) headers["set-cookie"] = extraCookies;
++    let body: string | Buffer = "";
++    if (r.redirect) headers.location = r.redirect;
++    if (r.html !== undefined) {
++      headers["content-type"] ??= "text/html; charset=utf-8";
++      body = r.html;
++    } else if (r.body !== undefined) {
++      body = r.body;
++    } else if (r.json !== undefined) {
++      headers["content-type"] ??= "application/json; charset=utf-8";
++      body = JSON.stringify(r.json);
++    }
++    res.writeHead(status, headers);
++    res.end(body);
++  }
++
++  const errorPage = (nonce: string, status: number, title: string, text: string): Res =>
++    ({ status, html: plainPage(nonce, title, `<p>${esc(text)}</p><p><a href="/">Dashboard</a></p>`) });
++  const apiError = (status: number, error: string): Res => ({ status, json: { error } });
++
++  // A browser sends Origin on every POST it makes with fetch, and
++  // Sec-Fetch-Site on current engines; either one from another site is refused.
++  // Clients that send neither still need the CSRF header.
++  function sameOrigin(req: IncomingMessage): boolean {
++    const site = req.headers["sec-fetch-site"];
++    if (site !== undefined && site !== "same-origin") return false;
++    const origin = req.headers.origin;
++    if (origin === undefined) return true;
++    const expected = config.baseUrl ?? `http://${req.headers.host ?? ""}`;
++    try {
++      return origin === new URL(expected).origin;
++    } catch {
++      return false;
++    }
++  }
++
++  async function handleApi(req: IncomingMessage, res: ServerResponse, url: URL, nonce: string, session: Session): Promise<void> {
++    const method = req.method;
++    const out = (r: Res, cookies?: string[]) =>
++      send(res, nonce, { ...r, headers: { ...r.headers, [CSRF_HEADER]: session.csrf } }, cookies);
++    if (method !== "GET" && method !== "POST" && method !== "PUT" && method !== "DELETE") return out(apiError(405, "method not allowed"));
++    const writes = method !== "GET";
++    let json: unknown;
++    if (writes) {
++      if (!sameOrigin(req)) return out(apiError(403, "cross-origin request refused"));
++      if (!writeLimitSession.allow(session.idHash) || !writeLimitIp.allow(clientIp(req))) return out(apiError(429, "too many requests; wait a minute"));
++      json = await readJson(req);
++      if (!safeEqual(String(req.headers[CSRF_HEADER] ?? ""), session.csrf)) return out(apiError(403, "missing or wrong CSRF token"));
++      if (url.pathname === "/api/signout") {
++        deleteSession(db, parseCookies(req.headers.cookie).get(SESSION_COOKIE)!);
++        return send(res, nonce, { status: 204 }, [cookie(SESSION_COOKIE, "", 0)]);
++      }
++    }
++    const { route, params, other } = match(routes, method, url.pathname);
++    if (!route) return out(other ? apiError(405, "method not allowed") : apiError(404, "not found"));
++    // Decided on the matched route, so every spelling of its path spends the same budget.
++    if (!writes && route.expensive && (route.expensive === true || route.expensive(url.searchParams))) {
++      const wait = expensiveGets.take(session.idHash);
++      if (wait) return out({ status: 429, json: { error: "too many requests; wait a moment" }, headers: { "retry-after": String(wait) } });
++    }
++    if (route.operator && session.role !== "operator") return out(apiError(403, "operators only"));
++    const r: Req = {
++      method, path: url.pathname, params: params!, query: url.searchParams, form: new URLSearchParams(), json,
++      user: makeUser(db, box, provider, session, writes, githubIdentity(db) === "app"),
++      scope: route.scoped && !writes ? scopeOf(req) : null,
++      csrf: session.csrf, nonce,
++    };
++    const res2 = await route.handler(db, r);
++    // The writer sees its own change at once; other processes' writes arrive on the watcher's next read.
++    if (writes) live.poke();
++    return out(res2);
++  }
++
++  // GET /api/live: same session as /api, but no rate limit and no request timeout.
++  function handleLive(req: IncomingMessage, res: ServerResponse, nonce: string, session: Session): void {
++    if (live.full) return send(res, nonce, apiError(503, "too many live connections"));
++    req.socket.setTimeout(0);
++    req.socket.setNoDelay(true);
++    const cookieId = parseCookies(req.headers.cookie).get(SESSION_COOKIE);
++    const headers = secure({
++      "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-cache, no-transform", "x-accel-buffering": "no",
++      [CSRF_HEADER]: session.csrf,
++    }, "default-src 'none'");
++    res.writeHead(200, headers);
++    live.add(res, () => loadSession(db, cookieId) !== null, session.idHash);
++  }
++
++  /** Under the app identity with no app keys, sign-in has nothing to go through: it is refused, never sent to the OAuth App. */
++  const signInBlocked = (): boolean => githubIdentity(db) === "app" && !opts.provider && !config.devAuth && !config.secrets.app;
++  const noAppPage = (nonce: string): Res => errorPage(nonce, 503, "Sign-in unavailable", "GitHub sign-in is set to the GitHub App, but no app keys are available. An operator must restore the app's keys or switch the GitHub identity back to the box account.");
++
++  function startOAuth(returnTo: string, selectAccount: boolean, scopes?: string[], p: Provider = provider): { r: Res; cookies: string[] } {
++    const state = randomToken(24), verifier = randomToken(48);
++    db.prepare("INSERT INTO oauth_states (state, verifier, return_to, identity, created_at) VALUES (?, ?, ?, ?, ?)")
++      .run(state, verifier, returnTo, githubIdentity(db), new Date().toISOString());
++    return {
++      r: { redirect: p.authorizeUrl(state, pkceChallenge(verifier), callbackUrl, selectAccount, scopes) },
++      cookies: [cookie(STATE_COOKIE, state, 600)],
++    };
++  }
++
++  const setup = new OrgSetup({
++    db, config, deps: appDeps, provider: setupProvider,
++    startOAuth: (returnTo, scopes) => startOAuth(returnTo, true, scopes, setupProvider),
++    sameOrigin: (req) => sameOrigin(req),
++    readForm: readBody,
++  });
++
++  async function auth(req: IncomingMessage, url: URL, nonce: string, cookies: Map<string, string>): Promise<{ r: Res; cookies?: string[] }> {
++    const ip = clientIp(req);
++    const path = url.pathname;
++    if (path.startsWith("/auth/setup") || path === "/auth/github-app/setup" || (path === "/auth/github-app/callback" && setup.ownsState(url.searchParams.get("state") ?? ""))) {
++      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
++      const out = await setup.handle(req, url, nonce, cookies, loadSession(db, cookies.get(SESSION_COOKIE))?.role === "operator");
++      if (out) return out;
++    }
++    if (req.method === "GET" && path === "/auth/signin") {
++      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
++      const returnTo = safeReturnTo(url.searchParams.get("return_to"));
++      if (loadSession(db, cookies.get(SESSION_COOKIE))) return { r: { redirect: returnTo } };
++      if (signInBlocked()) return { r: noAppPage(nonce) };
++      return startOAuth(returnTo, url.searchParams.get("select") === "1");
++    }
++    if (req.method === "GET" && path === "/auth/authorize-app") {
++      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
++      const returnTo = safeReturnTo(url.searchParams.get("return_to"));
++      const s = loadSession(db, cookies.get(SESSION_COOKIE));
++      if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: `/auth/authorize-app?${new URLSearchParams({ return_to: returnTo })}` })}` } };
++      if (s.role !== "operator") return { r: errorPage(nonce, 403, "Not authorised", "Only operators authorize AutoCraft to act as them.") };
++      const appProvider = appProviderNow();
++      if (!appProvider) return { r: errorPage(nonce, 409, "No GitHub App", "No GitHub App is registered, so there is nothing to authorize.") };
++      return startOAuth(`${AUTHORIZE_PREFIX}${returnTo}`, false, undefined, appProvider);
++    }
++    if (req.method === "GET" && path === "/auth/callback") {
++      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
++      const clear = [cookie(STATE_COOKIE, "", 0)];
++      if (url.searchParams.get("error")) {
++        return { r: errorPage(nonce, 400, "Sign-in cancelled", "GitHub sign-in did not complete."), cookies: clear };
++      }
++      const state = url.searchParams.get("state") ?? "";
++      const code = url.searchParams.get("code") ?? "";
++      const row = db.prepare("SELECT verifier, return_to, identity, created_at FROM oauth_states WHERE state = ?").get(state) as
++        { verifier: string; return_to: string | null; identity: string | null; created_at: string } | undefined;
++      const cookieState = cookies.get(STATE_COOKIE) ?? "";
++      const stateOk = !!row && safeEqual(cookieState, state);
++      if (stateOk) db.prepare("DELETE FROM oauth_states WHERE state = ?").run(state);
++      if (!row || !code || !stateOk || Date.now() - Date.parse(row.created_at) > 600_000) {
++        return { r: errorPage(nonce, 400, "Sign-in expired", "Start again from the sign-in link."), cookies: clear };
++      }
++      const plainSignIn = !row.return_to?.startsWith("setup:") && !row.return_to?.startsWith(AUTHORIZE_PREFIX);
++      // A sign-in finishes under the identity it started with; if that is no longer the current one, it starts again.
++      const startedAs: "box" | "app" = row.identity === "app" ? "app" : row.identity === "box" ? "box" : githubIdentity(db);
++      const changed = (): boolean => plainSignIn && startedAs !== githubIdentity(db);
++      if (plainSignIn && signInBlocked()) return { r: noAppPage(nonce), cookies: clear };
++      if (changed()) return { r: errorPage(nonce, 400, "Sign-in failed", "The GitHub identity changed during sign-in. Start again."), cookies: clear };
++      let tokens: Tokens | null, who: GithubUser | null;
++      try {
++        const p = row.return_to?.startsWith("setup:") ? setupProvider : row.return_to?.startsWith(AUTHORIZE_PREFIX) ? (appProviderNow() ?? provider) : opts.provider || config.devAuth ? provider : providerFor(config, () => startedAs);
++        tokens = await p.exchange(code, row.verifier, callbackUrl);
++        who = tokens ? await p.identity(tokens.access) : null;
++      } catch (e) {
++        console.error(`sign-in: ${(e as Error).message}`);
++        return { r: errorPage(nonce, 502, "Sign-in failed", "GitHub did not answer. Try again in a minute."), cookies: clear };
++      }
++      if (!tokens || !who) {
++        return { r: errorPage(nonce, 400, "Sign-in failed", "GitHub did not accept the sign-in. Start again."), cookies: clear };
++      }
++      if (row.return_to?.startsWith("setup:")) {
++        const out = await setup.signedIn(row.return_to, tokens, who, nonce, cookies);
++        return { r: out.r, cookies: [...clear, ...(out.cookies ?? [])] };
++      }
++      if (row.return_to?.startsWith(AUTHORIZE_PREFIX)) {
++        // "Act as you": only the user token is stored. The session and the sign-in are untouched.
++        const s = loadSession(db, cookies.get(SESSION_COOKIE));
++        if (!s || s.role !== "operator" || s.login.toLowerCase() !== who.login.toLowerCase() || checkGithubId(db, s.login, who.id) === "mismatch") {
++          // The token belongs to an account that may not act here: end it before answering.
++          void (appProviderNow() ?? provider).revoke(tokens.access).catch(() => {});
++          return { r: errorPage(nonce, 403, "Not authorised", "Sign in to the dashboard as the GitHub account you authorize, then try again."), cookies: clear };
++        }
++        saveUserTokens(db, box, s.login, who.id, tokens);
++        retryWaiting(db, s.login);
++        audit(db, s.login, "github-app-authorize", s.login, { ip });
++        return { r: { redirect: safeReturnTo(row.return_to.slice(AUTHORIZE_PREFIX.length)) }, cookies: clear };
++      }
++      const login = who.login;
++      const access = getAccess(db, login);
++      if (!access) {
++        auditRefusedSignIn(db, login, { ip });
++        return { r: errorPage(nonce, 403, "Not authorised", `The GitHub account ${login} is not on this dashboard's access list.`), cookies: clear };
++      }
++      if (checkGithubId(db, access.login, who.id) === "mismatch") {
++        auditRefusedSignIn(db, login, { ip, reason: "github-id-mismatch" });
++        return { r: errorPage(nonce, 403, "Not authorised", `The GitHub account ${login} is not the account that was added to this dashboard's access list.`), cookies: clear };
++      }
++      if (changed()) return { r: errorPage(nonce, 400, "Sign-in failed", "The GitHub identity changed during sign-in. Start again."), cookies: clear };
++      const id = createSession(db, box, access.login, tokens, req.headers["user-agent"]);
++      if (startedAs === "app") { saveUserTokens(db, box, access.login, who.id, tokens); retryWaiting(db, access.login); }
++      audit(db, access.login, "sign-in", access.login, { ip });
++      return {
++        r: { redirect: safeReturnTo(row.return_to) },
++        cookies: [...clear, cookie(SESSION_COOKIE, id, SESSION_TTL / 1000)],
++      };
++    }
++    if (req.method === "POST" && path === "/auth/github-app/start") {
++      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
++      if (!sameOrigin(req)) return { r: errorPage(nonce, 403, "Refused", "This form was sent from another site.") };
++      const form = await readBody(req);
++      const s = loadSession(db, cookies.get(SESSION_COOKIE));
++      if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: "/admin/github-app" })}` } };
++      if (!safeEqual(form.get("csrf") ?? "", s.csrf)) return { r: errorPage(nonce, 403, "Refused", "The form expired. Reload the page and try again.") };
++      return { r: startRegistration(db, config, req, form, nonce, s) };
++    }
++    if (req.method === "GET" && path === "/auth/github-app/callback") {
++      if (!signinLimit.allow(ip)) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
++      const s = loadSession(db, cookies.get(SESSION_COOKIE));
++      if (!s) return { r: { redirect: `/auth/signin?${new URLSearchParams({ return_to: "/admin/github-app" })}` } };
++      return { r: await finishRegistration(db, config, appDeps, url, nonce, s) };
++    }
++    if (req.method === "POST" && path === "/auth/signout") {
++      if (!sameOrigin(req)) return { r: errorPage(nonce, 403, "Refused", "This form was sent from another site.") };
++      const form = await readBody(req);
++      const id = cookies.get(SESSION_COOKIE);
++      const s = loadSession(db, id);
++      if (s) {
++        if (!safeEqual(form.get("csrf") ?? "", s.csrf)) return { r: errorPage(nonce, 403, "Refused", "The form expired. Reload the page and try again.") };
++        deleteSession(db, id!);
++      }
++      return { r: { redirect: "/auth/signed-out" }, cookies: [cookie(SESSION_COOKIE, "", 0)] };
++    }
++    if (req.method === "GET" && path === "/auth/signed-out") {
++      return { r: { html: plainPage(nonce, "Signed out", `<p class="muted">You are signed out of the dashboard on this device.</p><p><a class="button" href="/auth/signin?select=1">Sign in again</a></p>`) } };
++    }
++    if (req.method === "GET" && path === "/auth/dev/authorize" && provider instanceof FakeProvider) {
++      const q = url.searchParams;
++      if (q.get("redirect_uri") !== callbackUrl) return { r: errorPage(nonce, 400, "Bad request", "Unknown redirect_uri.") };
++      const login = q.get("login");
++      if (login !== null) {
++        if (!LOGIN.test(login)) return { r: errorPage(nonce, 400, "Bad request", "Not a GitHub login.") };
++        const code = provider.issueCode(login, q.get("code_challenge") ?? "", callbackUrl);
++        return { r: { redirect: `${callbackUrl}?${new URLSearchParams({ code, state: q.get("state") ?? "" })}` } };
++      }
++      const hidden = ["state", "code_challenge", "redirect_uri"]
++        .map((k) => `<input type="hidden" name="${k}" value="${esc(q.get(k))}">`).join("");
++      return {
++        r: {
++          html: plainPage(nonce, "Development sign-in", `<p class="muted">Fake GitHub sign-in. Development only.</p>
++<form method="get" action="/auth/dev/authorize">${hidden}<label>GitHub login <input name="login" required autofocus></label> <button>Sign in</button></form>`),
++        },
++      };
++    }
++    return { r: errorPage(nonce, 404, "Not found", "No such page.") };
++  }
++
++  /** A request with an operator's or maintainer's session: /healthz/checks gives them its times and counts. */
++  const staffCaller = (req: IncomingMessage): boolean => {
++    const role = loadSession(db, parseCookies(req.headers.cookie).get(SESSION_COOKIE))?.role;
++    return role === "operator" || role === "maintainer";
++  };
++
++  async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
 +    const folderHost = `127.0.0.1:${config.port}`;
 +    if (process.platform === "win32" && config.host === "127.0.0.1" && config.baseUrl === `http://${folderHost}` &&
 +        (req.headers.host !== folderHost || req.headers["x-forwarded-for"] !== undefined)) {
 +      const nonce = randomToken(16);
 +      return send(res, nonce, errorPage(nonce, 403, "Refused", "Open the AutoCraft folder URL on this computer."));
 +    }
-     if (serveHealth(req, res, () => dbReady(db)) || serveChecks(req, res, db, Date.now(), 5_000, staffCaller)) return;
-     const nonce = randomToken(16);
-     try {
++    if (serveHealth(req, res, () => dbReady(db)) || serveChecks(req, res, db, Date.now(), 5_000, staffCaller)) return;
++    const nonce = randomToken(16);
++    try {
++      if (Date.now() - lastPrune > 3_600_000) {
++        lastPrune = Date.now();
++        pruneExpired(db);
++        pruneTokens(db);
++        void vault.sweepRevocations().catch(() => {});
++      }
++      // A revoked session's token is revoked at once, not at the next hourly sweep; failures are retried by that sweep.
++      if (db.prepare("SELECT 1 FROM user_token_revocations WHERE attempts = 0 LIMIT 1").get()) void vault.sweepRevocations(true).catch(() => {});
++      // Dev auth lets anyone who reaches the port sign in as any login, so
++      // a request that came through a proxy or under a public name is refused.
++      if (config.devAuth && (req.headers["x-forwarded-for"] !== undefined || !isLoopbackHost(req.headers.host))) {
++        return send(res, nonce, errorPage(nonce, 403, "Refused", "Development sign-in answers only on localhost."));
++      }
++      const url = new URL(req.url ?? "/", "http://dashboard.invalid");
++      const cookies = parseCookies(req.headers.cookie);
++      if (url.pathname.startsWith("/auth/")) {
++        const { r, cookies: set } = await auth(req, url, nonce, cookies);
++        return send(res, nonce, r, set);
++      }
++      if (url.pathname === "/mcp") return await handleMcpHttp(req, res);
++      if (url.pathname === WEBHOOK_PATH) return await handleWebhook(req, res);
++      const method = req.method;
++      // Public: the Discord bot's privacy notice must be readable by people who are not dashboard users.
++      if (method === "GET" && url.pathname === DISCORD_PRIVACY_PATH) return send(res, nonce, { html: discordPrivacyPage(nonce, contactOf(db)) });
++      // Public: a Discord reporter's GitHub sign-in for filing issues (no dashboard session).
++      if (FILING_IN_DISCORD && method === "GET" && (url.pathname === REPORTER_START_PATH || url.pathname === REPORTER_CALLBACK_PATH)) {
++        if (!signinLimit.allow(clientIp(req))) return send(res, nonce, errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again."));
++        const out = await reporterSignIn({ db, box, provider: appProviderNow(), baseUrl: config.baseUrl }, url, cookies, nonce);
++        if (out) return send(res, nonce, out.r, out.cookies);
++      }
++      if (method === "GET" && url.pathname === DISCORD_TERMS_PATH) return send(res, nonce, { html: discordTermsPage(nonce, contactOf(db)) });
++      // Public: the favicon and the preview image, which sign-in pages and link-preview crawlers load without a session.
++      if (method === "GET" && PUBLIC_FILES.has(url.pathname)) return await sendWeb(res, nonce, url.pathname);
++      const session = loadSession(db, cookies.get(SESSION_COOKIE));
++      if (!session) {
++        const wantsPage = method === "GET" && /text\/html/.test(String(req.headers.accept ?? ""));
++        if (wantsPage) {
++          // A page with preview tags that moves on to sign-in at once: link-preview crawlers read the tags and stop here,
++          // where a redirect would take them to the identity provider's page and its preview.
++          const to = `/auth/signin?${new URLSearchParams({ return_to: url.pathname + url.search })}`;
++          return send(res, nonce, { html: plainPage(nonce, "Sign in", `<p><a class="button" href="${esc(to)}">Sign in with GitHub</a></p>`,
++            `<meta http-equiv="refresh" content="0;url=${esc(to)}">${previewTags(config.baseUrl, url.pathname)}`) });
++        }
++        return send(res, nonce, { status: 401, json: { error: "sign-in required" } });
++      }
++      if (method === "GET" && url.pathname === "/api/live") return handleLive(req, res, nonce, session);
++      if (url.pathname.startsWith("/api/")) return await handleApi(req, res, url, nonce, session);
++      if (url.pathname === "/img") return await sendImage(req, res, url, session);
++      // Every other address belongs to the React app, which routes on the client.
++      if (method === "GET") return await sendWeb(res, nonce, url.pathname);
++      return send(res, nonce, errorPage(nonce, 405, "Not allowed", "This address does not accept that request."));
++    } catch (e) {
++      const api = (req.url ?? "").startsWith("/api/");
++      if (e instanceof HttpError) return send(res, nonce, api ? apiError(e.status, e.message) : errorPage(nonce, e.status, "Request refused", e.message));
++      console.error(`${req.method} ${(req.url ?? "").split("?")[0]}: ${(e as Error).stack ?? e}`);
++      if (!res.headersSent) send(res, nonce, api ? apiError(500, "server error; it is logged") : errorPage(nonce, 500, "Something went wrong", "The error is logged on the server."));
++      else res.destroy();
++    }
++  }
++
++  // POST /mcp: one JSON-RPC message, authenticated by an agent token (Authorization: Bearer), never by the session
++  // cookie, so a browser page cannot make a signed-in user's browser call it. A request from a browser
++  // context on another site (Origin or Sec-Fetch-Site) is refused, which also covers DNS rebinding.
++  // GitHub App deliveries: no session and no CSRF check; the HMAC signature over the raw body is the authentication.
++  async function handleWebhook(req: IncomingMessage, res: ServerResponse): Promise<void> {
++    const reply = (status: number, allow?: string): void => {
++      res.writeHead(status, secure({ "cache-control": "no-store", "content-type": "text/plain; charset=utf-8", ...(allow ? { allow } : {}) }, "default-src 'none'"));
++      res.end("");
++    };
++    if (req.method !== "POST") return reply(405, "POST");
++    if (!webhookLimitIp.allow(clientIp(req))) return reply(429);
++    let raw: Buffer;
++    try {
++      raw = await readRaw(req, WEBHOOK_BODY_LIMIT);
++    } catch (e) {
++      if (e instanceof HttpError) return reply(e.status);
++      throw e;
++    }
++    const one = (v: string | string[] | undefined): string | undefined => (Array.isArray(v) ? v[0] : v);
++    const v = handleDelivery(db, config.secrets.app?.webhookSecret ?? null, { signature: one(req.headers["x-hub-signature-256"]), event: one(req.headers["x-github-event"]) }, raw, safeEqual);
++    return reply(v.status);
++  }
++
++  async function handleMcpHttp(req: IncomingMessage, res: ServerResponse): Promise<void> {
++    const reply = (status: number, body: unknown, headers: Record<string, string> = {}): void => {
++      res.writeHead(status, secure({ "cache-control": "no-store", ...(body === null ? {} : { "content-type": "application/json; charset=utf-8" }), ...headers }, "default-src 'none'"));
++      res.end(body === null ? "" : JSON.stringify(body));
++    };
++    const rpcError = (code: number, message: string) => ({ jsonrpc: "2.0", id: null, error: { code, message } });
++    if (req.method !== "POST") return reply(405, rpcError(-32000, "POST one JSON-RPC message; this server has no event stream"), { allow: "POST" });
++    if (!sameOrigin(req)) return reply(403, rpcError(-32000, "cross-origin request refused"));
++    const auth = String(req.headers.authorization ?? "");
++    const caller = loadToken(db, /^Bearer\s+(\S+)$/i.exec(auth)?.[1]);
++    // The per-address limit counts failed authentications only: behind a proxy every client shares one address.
++    if (!caller && !mcpLimitIp.allow(clientIp(req))) return reply(429, rpcError(-32000, "too many requests; wait a minute"), { "retry-after": "60" });
++    if (!caller) return reply(401, rpcError(-32001, "a valid AutoCraft agent token is required (Authorization: Bearer <token>); make one on the dashboard's Connect page"), { "www-authenticate": 'Bearer realm="autocraft"' });
++    if (!mcpLimitToken.allow(caller.login.toLowerCase())) return reply(429, rpcError(-32000, "too many requests for this login; wait a minute"), { "retry-after": "60" });
++    let msg: unknown;
++    try {
++      msg = await readJson(req);
++    } catch (e) {
++      if (e instanceof HttpError) return reply(e.status, rpcError(e.status === 400 ? -32700 : -32600, e.message));
++      throw e;
++    }
++    if (!msg || typeof msg !== "object" || Array.isArray(msg)) return reply(400, rpcError(-32600, "send one JSON-RPC message as an object; batches are not supported"));
++    const m = msg as McpMsg;
++    const out = await handleMcp({
++      db, baseUrl: config.baseUrl, limiter: mcpFeedback, expensive: () => mcpExpensive.take(caller.login.toLowerCase()), canAnswer: answering.enabled && caller.canAnswer && (caller.role === "operator" || (caller.role === "maintainer" && maintainerWritesOn(db))),
++      user: (forWrite) => userForLogin(db, box, provider, caller.login, caller.role, forWrite),
++    }, m);
++    if (mcpWrites(m)) live.poke();
++    // A notification or a response from the client: accepted, nothing to say.
++    if (!out) return reply(202, null);
++    return reply(200, out);
++  }
++
++  async function sendImage(req: IncomingMessage, res: ServerResponse, url: URL, session: Session): Promise<void> {
++    if (req.method !== "GET") {
++      res.writeHead(405, secure({ "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" }, "default-src 'none'"));
++      return void res.end("method not allowed");
++    }
++    const ip = clientIp(req);
++    // An image is served only when one of the repos whose text contains it is visible to this user.
++    const raw = url.searchParams.get("u") ?? "";
++    const href = allowedImage(raw)?.href;
++    const owners = href ? imageIndex.reposOf(href) : [];
++    if (owners.length) {
++      const visible = new Set(await visibleTo(db, makeUser(db, box, provider, session, false, githubIdentity(db) === "app")));
++      if (!owners.some((o) => visible.has(o))) {
++        res.writeHead(404, secure({ "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" }, "default-src 'none'"));
++        return void res.end("not an image of a tracked repo");
++      }
++    }
++    const r = await images.get(raw, () => imageLimit.allow(session.idHash) && imageLimitIp.allow(ip));
++    if (r.status !== 200) {
++      const retry: Record<string, string> = r.status === 429 ? { "retry-after": "10" } : {};
++      res.writeHead(r.status, secure({ "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", ...retry }, "default-src 'none'"));
++      return void res.end(r.error ?? "");
++    }
++    return sendFile(res, r.type!, "private, max-age=86400", "default-src 'none'", r.data!);
++  }
++
++  function sendFile(res: ServerResponse, type: string, cache: string, csp: string, data: Buffer): void {
++    res.writeHead(200, secure({ "content-type": type, "cache-control": cache }, csp));
++    res.end(data);
++  }
++
++  async function readDist(rel: string[]): Promise<Buffer | null> {
++    const full = resolve(config.webDist, ...rel);
++    const r = relative(config.webDist, full);
++    if (!r || r === ".." || r.startsWith(`..${sep}`) || isAbsolute(r)) return null;
++    try {
++      const real = await realpath(full);
++      const root = await realpath(config.webDist);
++      const rr = relative(root, real);
++      if (!rr || rr === ".." || rr.startsWith(`..${sep}`) || isAbsolute(rr)) return null;
++      return await readFile(real);
++    } catch {
++      return null;    // missing, or a directory
++    }
++  }
++
++  // The frontend's build output: hashed files under /assets/ are cached for a
++  // year; any other path gets index.html, never cached, so a new build is
++  // picked up on the next load.
++  async function sendWeb(res: ServerResponse, nonce: string, pathname: string): Promise<void> {
++    const notFound = () => send(res, nonce, errorPage(nonce, 404, "Not found", "No such file."));
++    const rel: string[] = [];
++    for (const raw of pathname.split("/")) {
++      let seg: string;
++      try {
++        seg = decodeURIComponent(raw);
++      } catch {
++        return notFound();
++      }
++      if (seg === "") continue;
++      if (seg === "." || seg === ".." || /[\\/\0]/.test(seg)) return notFound();
++      rel.push(seg);
++    }
++    const ext = rel.length ? /\.([a-z0-9]+)$/.exec(rel[rel.length - 1]!)?.[1] : undefined;
++    if (rel[0] === "assets") {
++      const data = ext && FILE_TYPES[ext] ? await readDist(rel) : null;
++      if (!data) return notFound();
++      return sendFile(res, FILE_TYPES[ext!]!, "private, max-age=31536000, immutable", "default-src 'none'", data);
++    }
++    if (rel.length === 1 && ext && FILE_TYPES[ext]) {
++      const data = await readDist(rel);
++      if (data) return sendFile(res, FILE_TYPES[ext]!, "private, max-age=3600", "default-src 'none'", data);
++    }
++    const index = await readDist(["index.html"]);
++    if (!index) {
++      return send(res, nonce, {
++        status: 503,
++        html: plainPage(nonce, "Frontend not built", `<p>The dashboard's frontend is not built: there is no <code>index.html</code> in the directory <code>AUTOCRAFT_WEB_DIST</code> names (default <code>web/dist</code> in the repo).</p>
++<p>Build it with <code>pnpm -C web install</code> and <code>pnpm -C web build</code>, then reload.</p>`),
++      });
++    }
++    return sendFile(res, "text/html; charset=utf-8", "no-store", APP_CSP, index);
++  }
++
++  return { handle, routes: opts.routes, provider, live, close: () => live.close() };
++}
++
++export async function startServer(opts: AppOptions): Promise<{ server: Server; url: string; app: ReturnType<typeof createApp>; close(): Promise<void> }> {
++  const feedbackLimiter = opts.feedbackLimiter ?? new RateLimiter(60, 3600_000);
++  const app = createApp({ ...opts, feedbackLimiter, routes: opts.routes ?? (await defaultRoutes(feedbackLimiter, opts.githubUserId)) });
++  const server = createServer({ requestTimeout: 30_000, headersTimeout: 15_000 }, (req, res) => void app.handle(req, res));
++  await new Promise<void>((resolve, reject) => {
++    server.once("error", reject);
++    server.listen(opts.config.port, opts.config.host, resolve);
++  });
++  const addr = server.address() as AddressInfo;
++  const host = addr.family === "IPv6" ? `[${addr.address}]` : addr.address;
++  return {
++    server, app,
++    url: `http://${host}:${addr.port}`,
++    close: () => new Promise<void>((resolve) => {
++      app.close();
++      server.closeAllConnections();
++      server.close(() => resolve());
++    }),
++  };
++}
 diff --git a/src/dash/server/windows-secret-acl.ps1 b/src/dash/server/windows-secret-acl.ps1
 new file mode 100644
 index 0000000..3d5a72f
@@ -269,7 +2277,7 @@ index 0000000..3d5a72f
 +}
 diff --git a/src/dash/server/windows-secret-acl.ts b/src/dash/server/windows-secret-acl.ts
 new file mode 100644
-index 0000000..435af93
+index 0000000..56d82b0
 --- /dev/null
 +++ b/src/dash/server/windows-secret-acl.ts
 @@ -0,0 +1,22 @@
@@ -291,36 +2299,1181 @@ index 0000000..435af93
 +  const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => name.toLowerCase() !== "psmodulepath"));
 +  env.PSModulePath = join(powershellHome, "Modules");
 +  const result = spawnSync(powershell, ["-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "RemoteSigned", "-File", script, "-Action", action, "-LiteralPath", path], {
-+    env, stdio: "ignore", windowsHide: true, timeout: 15_000,
++    env, stdio: "ignore", windowsHide: true, timeout: 60_000,
 +  });
 +  if (result.status !== 0) throw new Error("AutoCraft private data failed the Windows ACL check.");
 +}
+diff --git a/src/runner/cli-job.ts b/src/runner/cli-job.ts
+index 9824624..325b06f 100644
+--- a/src/runner/cli-job.ts
++++ b/src/runner/cli-job.ts
+@@ -1,96 +1,97 @@
+-// Command-line runs of pipeline steps go through the job path: the same checks as a queued job and the planner's
+-// gate() rules that are not pacing (a job of the step for the same repo is queued or running, the daily limit, a pause), a jobs row
+-// (requested by `cli`, so counted toward the limits and visible on the Pipeline page), and the runner's exec child, whose
+-// output is shown here. The writer is an operator (CLI_BY): the guard skips the global switch, the approvals still apply.
+-// Commands not listed in CLI_STEPS, and runs with options a step has no parameter for, keep their own direct path.
+-import { spawn } from "node:child_process";
+-import { closeSync, createWriteStream, mkdirSync, openSync } from "node:fs";
+-import type { DatabaseSync } from "node:sqlite";
+-import { dbPath } from "../db.ts";
+-import { cliGate, jobLimit } from "./autopilot.ts";
+-import { checkRequest, endJob, JobError, now } from "./jobs.ts";
+-import { logsDir } from "./runner.ts";
+-import { loadSteps, type StepDef } from "./steps.ts";
+-
+-/** How a command maps to a step. `apply`: a job only with --apply (a dry run without it stays read-only); `dry-run`: a job unless --dry-run; `always`: always. */
+-export type CliStep = { step: string; when: "apply" | "dry-run" | "always" };
+-
+-export const CLI_STEPS: Record<string, CliStep> = {
+-  act: { step: "act", when: "apply" }, merge: { step: "merge", when: "apply" }, premerge: { step: "premerge", when: "apply" },
+-  "review-post": { step: "review-post", when: "apply" }, cifix: { step: "cifix", when: "apply" }, "cifix-rerun": { step: "cifix-rerun", when: "apply" },
+-  "main-fix": { step: "main-fix", when: "apply" }, fixissue: { step: "fixissue", when: "apply" }, "fixissue-collect": { step: "fixissue-collect", when: "apply" },
+-  fixup: { step: "fixup", when: "apply" },
+-  verify: { step: "verify", when: "dry-run" }, "verify-collect": { step: "verify-collect", when: "dry-run" }, "opus-review": { step: "opus-review", when: "dry-run" },
+-  dupes: { step: "dupes", when: "dry-run" }, "dupe-compare": { step: "dupes-compare", when: "dry-run" }, decide: { step: "decide", when: "dry-run" },
+-  prioritize: { step: "prioritize", when: "always" }, rank: { step: "rank", when: "always" }, checks: { step: "checks", when: "always" }, "merge-ask": { step: "merge-ask", when: "always" },
+-};
+-
+-export type CliRequest = { step: string; params: Record<string, string | number> };
+-
+-/** The job a command line stands for, or null when the command runs its own way (dry run, another subcommand, an option the step has no parameter for). */
+-export function cliRequest(command: string, args: string[], steps: Map<string, StepDef>): CliRequest | null {
+-  const map = CLI_STEPS[command];
+-  const step = map && steps.get(map.step);
+-  if (!map || !step) return null;
+-  let apply = false;
+-  const params: Record<string, string | number> = {};
+-  for (let i = 0; i < args.length; i++) {
+-    const a = args[i]!;
+-    if (a === "--apply" && map.when === "apply") { apply = true; continue; }
+-    if (a === "--dry-run" && map.when === "dry-run") return null;
+-    const p = a.startsWith("--") ? step.params.find((x) => x.name === a.slice(2)) : undefined;
+-    const v = args[i + 1];
+-    if (!p || v === undefined || p.name in params) return null;
+-    params[p.name] = p.kind === "int" ? Number(v) : v;
+-    i++;
+-  }
+-  return map.when === "apply" && !apply ? null : { step: step.name, params };
+-}
+-
+-/** Runs the request as an operator job here and returns the exit code. */
+-export async function runCliJob(db: DatabaseSync, req: CliRequest): Promise<number> {
+-  const steps = await loadSteps();
+-  let job: number;
+-  try {
+-    const { step, params } = await checkRequest(db, req.step, req.params);
+-    // The gate and the insert are one write transaction, so two CLI runs cannot both pass the gate.
+-    db.exec("BEGIN IMMEDIATE");
+-    try {
+-      const why = cliGate(db, step, steps, params);
+-      if (why) throw new JobError(409, why);
+-      const lim = jobLimit(db, step, Date.now(), typeof params.limit === "number" ? params.limit : undefined);
+-      if (!lim) throw new JobError(409, `the daily limit of ${step.name} leaves too little for a run`);
+-      const full: Record<string, unknown> = { ...params, ...lim };
+-      mkdirSync(logsDir(), { recursive: true });
+-      const t = now();
+-      const repo = typeof full.repo === "string" ? full.repo : null;
+-      job = Number(db.prepare("INSERT INTO jobs (step, params, repo, requested_by, requested_at, state, started_at) VALUES (?, ?, ?, 'cli', ?, 'running', ?)")
+-        .run(step.name, JSON.stringify(full), repo, t, t).lastInsertRowid);
+-      db.exec("COMMIT");
+-    } catch (e) {
+-      db.exec("ROLLBACK");
+-      throw e;
+-    }
+-  } catch (e) {
+-    if (e instanceof JobError) { console.error(`${req.step}: ${e.message}`); return 1; }
+-    throw e;
+-  }
+-  const logPath = `${logsDir()}/job-${job}.log`;
+-  closeSync(openSync(logPath, "a"));
+-  db.prepare("UPDATE jobs SET log_path = ? WHERE id = ?").run(logPath, job);
+-  const log = createWriteStream(logPath, { flags: "a" });
+-  const child = spawn(process.execPath, [new URL("../cli.ts", import.meta.url).pathname, "runner", "exec", String(job)], {
+-    stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, AUTOCRAFT_DB: dbPath() },
+-  });
+-  db.prepare("UPDATE jobs SET pid = ? WHERE id = ?").run(child.pid ?? null, job);
+-  child.stdout.on("data", (b: Buffer) => { log.write(b); process.stdout.write(b); });
+-  child.stderr.on("data", (b: Buffer) => { log.write(b); process.stderr.write(b); });
+-  for (const sig of ["SIGINT", "SIGTERM"] as const) process.once(sig, () => child.kill(sig));
+-  let spawnError: string | null = null;
+-  child.on("error", (e) => (spawnError = e.message));
+-  const [code, signal] = await new Promise<[number | null, NodeJS.Signals | null]>((resolve) => child.on("close", (c, s) => resolve([c, s])));
+-  log.end();
+-  const r = endJob(db, job, code, signal, spawnError);
+-  console.error(`job ${job}: ${r?.state ?? "ended"}${r?.error ? `: ${r.error}` : ""}`);
+-  return r?.state === "done" ? 0 : 1;
+-}
++// Command-line runs of pipeline steps go through the job path: the same checks as a queued job and the planner's
++// gate() rules that are not pacing (a job of the step for the same repo is queued or running, the daily limit, a pause), a jobs row
++// (requested by `cli`, so counted toward the limits and visible on the Pipeline page), and the runner's exec child, whose
++// output is shown here. The writer is an operator (CLI_BY): the guard skips the global switch, the approvals still apply.
++// Commands not listed in CLI_STEPS, and runs with options a step has no parameter for, keep their own direct path.
++import { spawn } from "node:child_process";
++import { fileURLToPath } from "node:url";
++import { closeSync, createWriteStream, mkdirSync, openSync } from "node:fs";
++import type { DatabaseSync } from "node:sqlite";
++import { dbPath } from "../db.ts";
++import { cliGate, jobLimit } from "./autopilot.ts";
++import { checkRequest, endJob, JobError, now } from "./jobs.ts";
++import { logsDir } from "./runner.ts";
++import { loadSteps, type StepDef } from "./steps.ts";
++
++/** How a command maps to a step. `apply`: a job only with --apply (a dry run without it stays read-only); `dry-run`: a job unless --dry-run; `always`: always. */
++export type CliStep = { step: string; when: "apply" | "dry-run" | "always" };
++
++export const CLI_STEPS: Record<string, CliStep> = {
++  act: { step: "act", when: "apply" }, merge: { step: "merge", when: "apply" }, premerge: { step: "premerge", when: "apply" },
++  "review-post": { step: "review-post", when: "apply" }, cifix: { step: "cifix", when: "apply" }, "cifix-rerun": { step: "cifix-rerun", when: "apply" },
++  "main-fix": { step: "main-fix", when: "apply" }, fixissue: { step: "fixissue", when: "apply" }, "fixissue-collect": { step: "fixissue-collect", when: "apply" },
++  fixup: { step: "fixup", when: "apply" },
++  verify: { step: "verify", when: "dry-run" }, "verify-collect": { step: "verify-collect", when: "dry-run" }, "opus-review": { step: "opus-review", when: "dry-run" },
++  dupes: { step: "dupes", when: "dry-run" }, "dupe-compare": { step: "dupes-compare", when: "dry-run" }, decide: { step: "decide", when: "dry-run" },
++  prioritize: { step: "prioritize", when: "always" }, rank: { step: "rank", when: "always" }, checks: { step: "checks", when: "always" }, "merge-ask": { step: "merge-ask", when: "always" },
++};
++
++export type CliRequest = { step: string; params: Record<string, string | number> };
++
++/** The job a command line stands for, or null when the command runs its own way (dry run, another subcommand, an option the step has no parameter for). */
++export function cliRequest(command: string, args: string[], steps: Map<string, StepDef>): CliRequest | null {
++  const map = CLI_STEPS[command];
++  const step = map && steps.get(map.step);
++  if (!map || !step) return null;
++  let apply = false;
++  const params: Record<string, string | number> = {};
++  for (let i = 0; i < args.length; i++) {
++    const a = args[i]!;
++    if (a === "--apply" && map.when === "apply") { apply = true; continue; }
++    if (a === "--dry-run" && map.when === "dry-run") return null;
++    const p = a.startsWith("--") ? step.params.find((x) => x.name === a.slice(2)) : undefined;
++    const v = args[i + 1];
++    if (!p || v === undefined || p.name in params) return null;
++    params[p.name] = p.kind === "int" ? Number(v) : v;
++    i++;
++  }
++  return map.when === "apply" && !apply ? null : { step: step.name, params };
++}
++
++/** Runs the request as an operator job here and returns the exit code. */
++export async function runCliJob(db: DatabaseSync, req: CliRequest): Promise<number> {
++  const steps = await loadSteps();
++  let job: number;
++  try {
++    const { step, params } = await checkRequest(db, req.step, req.params);
++    // The gate and the insert are one write transaction, so two CLI runs cannot both pass the gate.
++    db.exec("BEGIN IMMEDIATE");
++    try {
++      const why = cliGate(db, step, steps, params);
++      if (why) throw new JobError(409, why);
++      const lim = jobLimit(db, step, Date.now(), typeof params.limit === "number" ? params.limit : undefined);
++      if (!lim) throw new JobError(409, `the daily limit of ${step.name} leaves too little for a run`);
++      const full: Record<string, unknown> = { ...params, ...lim };
++      mkdirSync(logsDir(), { recursive: true });
++      const t = now();
++      const repo = typeof full.repo === "string" ? full.repo : null;
++      job = Number(db.prepare("INSERT INTO jobs (step, params, repo, requested_by, requested_at, state, started_at) VALUES (?, ?, ?, 'cli', ?, 'running', ?)")
++        .run(step.name, JSON.stringify(full), repo, t, t).lastInsertRowid);
++      db.exec("COMMIT");
++    } catch (e) {
++      db.exec("ROLLBACK");
++      throw e;
++    }
++  } catch (e) {
++    if (e instanceof JobError) { console.error(`${req.step}: ${e.message}`); return 1; }
++    throw e;
++  }
++  const logPath = `${logsDir()}/job-${job}.log`;
++  closeSync(openSync(logPath, "a"));
++  db.prepare("UPDATE jobs SET log_path = ? WHERE id = ?").run(logPath, job);
++  const log = createWriteStream(logPath, { flags: "a" });
++  const child = spawn(process.execPath, [fileURLToPath(new URL("../cli.ts", import.meta.url)), "runner", "exec", String(job)], {
++    stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, AUTOCRAFT_DB: dbPath() },
++  });
++  db.prepare("UPDATE jobs SET pid = ? WHERE id = ?").run(child.pid ?? null, job);
++  child.stdout.on("data", (b: Buffer) => { log.write(b); process.stdout.write(b); });
++  child.stderr.on("data", (b: Buffer) => { log.write(b); process.stderr.write(b); });
++  for (const sig of ["SIGINT", "SIGTERM"] as const) process.once(sig, () => child.kill(sig));
++  let spawnError: string | null = null;
++  child.on("error", (e) => (spawnError = e.message));
++  const [code, signal] = await new Promise<[number | null, NodeJS.Signals | null]>((resolve) => child.on("close", (c, s) => resolve([c, s])));
++  log.end();
++  const r = endJob(db, job, code, signal, spawnError);
++  console.error(`job ${job}: ${r?.state ?? "ended"}${r?.error ? `: ${r.error}` : ""}`);
++  return r?.state === "done" ? 0 : 1;
++}
+diff --git a/src/runner/runner.ts b/src/runner/runner.ts
+index ce7272b..928e734 100644
+--- a/src/runner/runner.ts
++++ b/src/runner/runner.ts
+@@ -1,471 +1,472 @@
+-// `autocraft runner serve`: the only process that runs pipeline steps. It
+-// polls the jobs table, runs each job in its own child process (`autocraft
+-// runner exec <id>`, its own process group, output to a per-job log file),
+-// stops jobs whose cancel was requested, runs the autopilot (queues jobs while the
+-// pipeline switch is on) and marks
+-// jobs left running by an earlier runner as failed.
+-import { spawn, type ChildProcess } from "node:child_process";
+-import { appendFileSync, statSync, closeSync, mkdirSync, openSync, readFileSync, utimesSync } from "node:fs";
+-import { homedir } from "node:os";
+-import { basename, join } from "node:path";
+-import type { DatabaseSync } from "node:sqlite";
+-import { dbPath } from "../db.ts";
+-import { advancePreapprovals } from "../preapproval/index.ts";
+-import { applyProposals, AUTOPILOT_USER, isDraining, isEnabled, planDue, type Detected } from "./autopilot.ts";
+-import { recordUsageSamples } from "../agents/accounts.ts";
+-import { AccountWatcher } from "../agents/manage.ts";
+-import { failRunning, pruneRuns } from "../agents/runs.ts";
+-import { pruneTasks, reapLost } from "../build/tasks.ts";
+-import { pruneBench } from "../nightly/index.ts";
+-import { prunePlanHistory } from "../core/plan-cache.ts";
+-import { checkPendingUpdate } from "../build/worker-update.ts";
+-import { endJob, JOB_KEEP_MS, now, pruneJobs, RUNNER_STOPPED } from "./jobs.ts";
+-import { advanceSecurityFixes, autoFixConfirmed } from "../security/actions.ts";
+-import { advanceScanTests } from "../security/scantest.ts";
+-import { OffThread } from "./offthread.ts";
+-import { loadSteps, modelsOf, usesClaude, type Params } from "./steps.ts";
+-import { jobBlock } from "./concurrency.ts";
+-import { queueRoom } from "../agents/call.ts";
+-import { stepDeadlineMin, stepNoProgressMin } from "./deadlines.ts";
+-import { envVar } from "../env.ts";
+-
+-export const logsDir = (): string => envVar("RUNNER_LOGS") ?? join(homedir(), ".cache/autocraft-logs/jobs");
+-
+-export function runnerLockPath(): string {
+-  const dir = envVar("LOCK_DIR") ?? join(homedir(), ".cache/autocraft-logs");
+-  return join(dir, `runner-${basename(dbPath())}.lock`);
+-}
+-
+-export const HEARTBEAT_KEY = "runner_heartbeat";
+-/** How often the runner brings the flowchart summary up to date (src/flow/summary.ts). */
+-export const FLOW_EVERY_MS = 20_000;
+-/** How often queued webhook items are read again from GitHub. */
+-export const WEBHOOK_DRAIN_MS = 5_000;
+-const CLI = new URL("../cli.ts", import.meta.url).pathname;
+-
+-/** Job processes at once. A job that calls Claude also waits for a free account slot (see startJobs). */
+-export const DEFAULT_MAX_JOBS = 32;
+-
+-export type RunnerOptions = {
+-  db: DatabaseSync;
+-  /** Database file the children open; default AUTOCRAFT_DB or the default path. */
+-  dbFile?: string;
+-  logs?: string;
+-  /** Most job processes running at once. */
+-  maxJobs?: number;
+-  /** Time a job gets to stop after SIGTERM before SIGKILL. */
+-  killAfterMs?: number;
+-  lockFile?: string;
+-  log?: (line: string) => void;
+-  /** The planner's detection pass (default: a worker thread on its own connection to `dbFile`). Tests pass a fake. */
+-  detect?: (nowMs: number) => Promise<Detected>;
+-  /** The flowchart summary refresh (default: a worker thread). */
+-  refreshFlow?: () => Promise<unknown>;
+-  /** Longest run of a job of a step in minutes, given the job's `limit` param (default: stepDeadlineMin). Tests pass a short one. */
+-  maxMin?: (step: string, items?: number) => number;
+-  /** Minutes a job may show no progress, by step (default: stepNoProgressMin). */
+-  noProgressMin?: (step: string) => number;
+-  /** How long past its deadline a job may finish its current item before the runner stops its process (default 10 minutes). */
+-  graceMs?: number;
+-};
+-
+-type Running = { child: ChildProcess; termAt: number | null; exited: Promise<void>; startedAt: number; deadlineMin: number; logPath: string; /** When the job was told to finish its current item and stop. */ flaggedAt: number | null; noProgressMin: number; /** Why it was told to stop. */ stopMsg: string | null };
+-
+-/** The error of a job the runner stopped for running past its step's limit. */
+-export const deadlineError = (min: number): string => `stopped: ran past ${min} min`;
+-export const noProgressError = (min: number): string => `stopped: no progress for ${min} min`;
+-
+-/** True when `pid` is alive and is the child of job `id`. */
+-function isJobProcess(pid: number, id: number): boolean {
+-  try {
+-    return readFileSync(`/proc/${pid}/cmdline`, "utf8").split("\0").join(" ").includes(`runner exec ${id}`);
+-  } catch {
+-    return false;
+-  }
+-}
+-
+-function killGroup(pid: number, signal: NodeJS.Signals): void {
+-  try {
+-    process.kill(-pid, signal);
+-  } catch {
+-    // already gone
+-  }
+-}
+-
+-export class Runner {
+-  readonly db: DatabaseSync;
+-  readonly running = new Map<number, Running>();
+-  private stopping = false;
+-  private flowAt = 0;
+-  private webhookAt = 0;
+-  private webhooking: Promise<void> | null = null;
+-  private webhookClient: import("../mirror.ts").Client | null = null;
+-  private planning: Promise<void> | null = null;
+-  private detected: Detected | null = null;
+-  private flowing: Promise<void> | null = null;
+-  private readonly planThread: OffThread;
+-  private readonly flowThread: OffThread;
+-  private readonly o: Required<Omit<RunnerOptions, "db" | "lockFile" | "detect" | "refreshFlow" | "maxMin" | "graceMs" | "noProgressMin">> & { lockFile: string | null };
+-  private readonly detect: (nowMs: number) => Promise<Detected>;
+-  private readonly refreshFlow: () => Promise<unknown>;
+-  private readonly maxMin: (step: string, items?: number) => number;
+-  private readonly graceMs: number;
+-  private readonly noProgressMin: (step: string) => number;
+-
+-  constructor(opts: RunnerOptions) {
+-    this.db = opts.db;
+-    this.o = {
+-      dbFile: opts.dbFile ?? dbPath(), logs: opts.logs ?? logsDir(), maxJobs: opts.maxJobs ?? DEFAULT_MAX_JOBS, killAfterMs: opts.killAfterMs ?? 10_000,
+-      lockFile: opts.lockFile ?? null, log: opts.log ?? ((l) => console.log(l)),
+-    };
+-    mkdirSync(this.o.logs, { recursive: true });
+-    this.planThread = new OffThread(this.o.dbFile);
+-    this.flowThread = new OffThread(this.o.dbFile);
+-    this.detect = opts.detect ?? ((t) => this.planThread.plan(t));
+-    this.maxMin = opts.maxMin ?? stepDeadlineMin;
+-    this.graceMs = opts.graceMs ?? 600_000;
+-    this.noProgressMin = opts.noProgressMin ?? stepNoProgressMin;
+-    this.refreshFlow = opts.refreshFlow ?? (() => this.flowThread.flow());
+-  }
+-
+-  /** Jobs left `running` belong to a runner that is gone: stop what is left of them and mark them failed. */
+-  recover(): number {
+-    // Model calls of a runner that is gone no longer hold an account slot.
+-    const orphans = failRunning(this.db, "The runner stopped during this call.");
+-    if (orphans) this.o.log(`${orphans} agent runs left running by an earlier runner, marked failed`);
+-    this.db.prepare("DELETE FROM model_waits").run();
+-    this.db.prepare("DELETE FROM work_leases").run();
+-    const rows = this.db.prepare("SELECT id, pid, cancel_requested_at FROM jobs WHERE state = 'running'").all() as { id: number; pid: number | null; cancel_requested_at: string | null }[];
+-    for (const r of rows) {
+-      if (this.running.has(r.id)) continue;
+-      if (r.pid && isJobProcess(r.pid, r.id)) killGroup(r.pid, "SIGKILL");
+-      const cancelled = r.cancel_requested_at !== null;
+-      this.db.prepare("UPDATE jobs SET state = ?, ended_at = ?, pid = NULL, error = COALESCE(error, ?) WHERE id = ? AND state = 'running'")
+-        .run(cancelled ? "cancelled" : "failed", now(), cancelled ? null : RUNNER_STOPPED, r.id);
+-      this.o.log(`job ${r.id}: left running by an earlier runner, marked ${cancelled ? "cancelled" : "failed"}`);
+-    }
+-    return rows.length;
+-  }
+-
+-  /** One pass: heartbeat, cancels, autopilot, new jobs. */
+-  async tick(): Promise<void> {
+-    const t = now();
+-    this.db.prepare("INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").run(HEARTBEAT_KEY, t);
+-    if (this.o.lockFile) {
+-      try {
+-        utimesSync(this.o.lockFile, new Date(), new Date());
+-      } catch {
+-        // removed under us; the next start notices
+-      }
+-    }
+-    this.cancels();
+-    if (this.stopping) return;
+-    try {
+-      const lost = reapLost(this.db);
+-      if (lost) this.o.log(`${lost} build tasks lost their worker`);
+-    } catch (e) {
+-      this.o.log(`build tasks: ${(e as Error).message}`);
+-    }
+-    this.webhookTick();
+-    this.usageTick();
+-    this.workerUpdateTick();
+-    await this.autopilot();
+-    await this.startJobs();
+-    if (!this.flowing && Date.now() - this.flowAt >= FLOW_EVERY_MS) {
+-      this.flowAt = Date.now();
+-      this.flowing = this.refreshFlow().then(() => undefined, (e) => this.o.log(`flowchart summary: ${(e as Error).message}`)).finally(() => (this.flowing = null));
+-    }
+-  }
+-
+-  /** Reads the items GitHub App webhooks named again from GitHub, off the tick, while no sync run holds its lock. The poll covers any that fail. */
+-  private webhookTick(): void {
+-    if (this.webhooking || Date.now() - this.webhookAt < WEBHOOK_DRAIN_MS) return;
+-    this.webhookAt = Date.now();
+-    if (!this.db.prepare("SELECT 1 FROM main.sync_requests LIMIT 1").get()) return;
+-    this.webhooking = (async () => {
+-      const { lockHeld, lockPath, fullLockPath, Client } = await import("../mirror.ts");
+-      if (lockHeld(lockPath()) || lockHeld(fullLockPath())) return;
+-      // One client for the runner's life, seeded from the last sync's reading, so the reserve holds from the first read.
+-      if (!this.webhookClient) this.webhookClient = new Client(1000);
+-      const c = this.webhookClient;
+-      const get = (k: string): string | undefined => (this.db.prepare("SELECT value FROM main.settings WHERE key = ?").get(k) as { value: string } | undefined)?.value;
+-      const seen = Number(get("sync_rate_remaining"));
+-      const reset = Date.parse(get("sync_rate_reset_at") ?? "");
+-      // Below the reserve nothing is read until the limit resets; the sync's reading is newer than ours when it is the later one.
+-      if (Number.isFinite(seen) && Number.isFinite(reset) && reset > Date.now()) {
+-        c.remaining = c.remaining === null ? seen : Math.min(c.remaining, seen);
+-        c.resetAt = new Date(reset);
+-      } else if (c.resetAt && c.resetAt.getTime() <= Date.now()) {
+-        c.remaining = null;
+-        c.resetAt = null;
+-      }
+-      const { drainSyncRequests } = await import("../github/webhooks.ts");
+-      const n = await drainSyncRequests(this.db, c, { limit: 10, log: this.o.log });
+-      if (n) this.o.log(`webhooks: read ${n} items again`);
+-    })().catch((e) => this.o.log(`webhooks: ${(e as Error).message}`)).finally(() => (this.webhooking = null));
+-  }
+-
+-  /**
+-   * The planner. Detection reads a lot and runs off the loop, at most one pass at a time; the
+-   * tick queues what it found, so a slow detection never delays the heartbeat or cancels.
+-   */
+-  private async autopilot(): Promise<void> {
+-    const found = this.detected;
+-    this.detected = null;
+-    if (found) {
+-      for (const l of found.logs) this.o.log(l);
+-      try {
+-        // Detection read the database a moment ago; the switch may have been turned off since.
+-        if (isEnabled(this.db)) {
+-          await applyProposals(this.db, found.proposals, { log: this.o.log, wakeAt: found.wakeAt ?? null, ...(found.status ? { status: found.status } : {}) });
+-          // A private fix that a switch-off cancelled is queued again once the pipeline is on.
+-          const fixes = await autoFixConfirmed(this.db);
+-          if (fixes) this.o.log(`autopilot: started the private fix of ${fixes} confirmed security findings`);
+-        }
+-      } catch (e) {
+-        this.o.log(`autopilot: ${(e as Error).message}`);
+-      }
+-    }
+-    // A private fix waits for its build without a job; the next job starts when the build tasks end, for operator-started fixes with the pipeline off too.
+-    try {
+-      const next = await advanceSecurityFixes(this.db, isEnabled(this.db));
+-      if (next) this.o.log(`security: continued the private fix of ${next} findings after their builds`);
+-    } catch (e) { this.o.log(`security fixes: ${(e as Error).message}`); }
+-    // The build task of a scan test is read here (database only); a finding whose test ended can then start its automatic fix.
+-    try {
+-      for (const t of advanceScanTests(this.db)) {
+-        this.o.log(`security: scan test of ${t.repo} finding ${t.number}: ${t.state}`);
+-        if (isEnabled(this.db) && t.state !== "not-shown") await autoFixConfirmed(this.db, t.repo, t.number);
+-      }
+-    } catch (e) { this.o.log(`security scan tests: ${(e as Error).message}`); }
+-    // Pre-approved merges move on rows other steps wrote; they are read here, not on a timer of their own.
+-    try { advancePreapprovals(this.db, this.o.log); } catch (e) { this.o.log(`preapprovals: ${(e as Error).message}`); }
+-    if (this.planning || !planDue(this.db)) return;
+-    this.planning = this.detect(Date.now())
+-      .then((d) => { this.detected = d; }, (e) => this.o.log(`autopilot: detection failed: ${(e as Error).message}`))
+-      .finally(() => (this.planning = null));
+-  }
+-
+-  private updateAt = 0;
+-  private updating = false;
+-
+-  /** About once a minute, runs the sandbox worker update that a deploy left pending once its tasks have finished. */
+-  private workerUpdateTick(): void {
+-    if (this.updating || Date.now() - this.updateAt < 60_000) return;
+-    this.updateAt = Date.now();
+-    this.updating = true;
+-    checkPendingUpdate(this.db, undefined, this.o.log)
+-      .catch((e) => this.o.log(`worker update: ${(e as Error).message}`))
+-      .finally(() => (this.updating = false));
+-  }
+-
+-  private usageAt = 0;
+-  private refreshAt = 0;
+-  private pruneAt = 0;
+-  private watcher: AccountWatcher | undefined;
+-
+-  /** Records usage readings that changed (at most every 15 s), reads sign-in state (every 15 minutes) and plan usage (every 5) of accounts through the claude command, and prunes old agent data hourly. */
+-  private usageTick(): void {
+-    const t = Date.now();
+-    if (t - this.usageAt >= 15_000) {
+-      this.usageAt = t;
+-      try {
+-        recordUsageSamples(this.db, t);
+-      } catch (e) {
+-        this.o.log(`usage samples: ${(e as Error).message}`);
+-      }
+-    }
+-    if (t - this.refreshAt >= 60_000) {
+-      this.refreshAt = t;
+-      void (this.watcher ??= new AccountWatcher(this.db, (m) => this.o.log(m))).tick(t);
+-    }
+-    if (t - this.pruneAt >= 3600_000) {
+-      this.pruneAt = t;
+-      try {
+-        pruneJobs(this.db, t);
+-      } catch (e) {
+-        this.o.log(`prune jobs: ${(e as Error).message}`);
+-      }
+-      try {
+-        prunePlanHistory(this.db, JOB_KEEP_MS, t);
+-      } catch (e) {
+-        this.o.log(`prune plan history: ${(e as Error).message}`);
+-      }
+-      try {
+-        pruneTasks(this.db, t);
+-      } catch (e) {
+-        this.o.log(`prune build tasks: ${(e as Error).message}`);
+-      }
+-      try {
+-        pruneBench(this.db, t);
+-      } catch (e) {
+-        this.o.log(`prune nightly bench: ${(e as Error).message}`);
+-      }
+-      try {
+-        pruneRuns(this.db, t);
+-      } catch (e) {
+-        this.o.log(`prune agent runs: ${(e as Error).message}`);
+-      }
+-    }
+-  }
+-
+-  private cancels(): void {
+-    for (const [id, r] of this.running) {
+-      const row = this.db.prepare("SELECT cancel_requested_at FROM jobs WHERE id = ?").get(id) as { cancel_requested_at: string | null } | undefined;
+-      const late = Date.now() - r.startedAt >= r.deadlineMin * 60_000;
+-      const cancel = !!row?.cancel_requested_at || this.stopping;
+-      // Progress is a new line in the job's log (the job's own output: progress lines, check-tool notes, results); reading its mtime costs one stat.
+-      let lastLine = r.startedAt;
+-      try { lastLine = Math.max(lastLine, statSync(r.logPath).mtimeMs); } catch { /* no log yet */ }
+-      const idle = r.flaggedAt === null && Date.now() - lastLine >= r.noProgressMin * 60_000;
+-      // Past its deadline a job is first asked to stop: the failure is recorded, which the job reads at its item boundaries (ctx.cancelled)
+-      // and finishes the writes of its current item. Only after the grace does the process get the signals a cancel gets.
+-      if ((late || idle) && !cancel && r.flaggedAt === null && r.termAt === null) {
+-        r.flaggedAt = Date.now();
+-        const msg = r.stopMsg = idle && !late ? noProgressError(r.noProgressMin) : deadlineError(r.deadlineMin);
+-        this.db.prepare("UPDATE jobs SET error = ? WHERE id = ? AND state = 'running'").run(msg, id);
+-        try { appendFileSync(r.logPath, `${now()} ${msg}; the job may finish its current item, and is stopped ${Math.round(this.graceMs / 60_000)} min from now\n`); } catch { /* the log is gone */ }
+-        this.o.log(`job ${id}: ${msg}; finishing its current item`);
+-      }
+-      const graceOver = r.flaggedAt !== null && Date.now() - r.flaggedAt >= this.graceMs;
+-      if (!cancel && !graceOver) continue;
+-      const pid = r.child.pid;
+-      if (!pid) continue;
+-      if (r.termAt === null) {
+-        r.termAt = Date.now();
+-        const deadline = !cancel;
+-        if (deadline) {
+-          try { appendFileSync(r.logPath, `${now()} ${r.stopMsg ?? deadlineError(r.deadlineMin)}; the job did not finish in time and is stopped\n`); } catch { /* the log is gone */ }
+-        }
+-        killGroup(pid, "SIGTERM");
+-        this.o.log(`job ${id}: stopping (${this.stopping ? "runner stopping" : deadline ? `${r.stopMsg} grace over` : "cancel requested"})`);
+-      } else if (Date.now() - r.termAt >= this.o.killAfterMs) {
+-        killGroup(pid, "SIGKILL");
+-      }
+-    }
+-  }
+-
+-  /**
+-   * Starts queued jobs: security first (priority 2), then by id. A job whose step calls Claude starts only while the
+-   * model queue has room for its class, so processes do not sit waiting for slots, unless no job of its step runs.
+-   */
+-  private async startJobs(): Promise<void> {
+-    const steps = await loadSteps();
+-    const queued = (this.db.prepare("SELECT id, step, params, requested_by FROM jobs WHERE state = 'queued' ORDER BY id").all() as { id: number; step: string; params: string; requested_by: string }[])
+-      .sort((a, b) => (steps.get(b.step)?.priority ?? 0) - (steps.get(a.step)?.priority ?? 0) || a.id - b.id);
+-    // Automatic jobs wait while the pipeline is off; they are cancelled when it is switched off. While it drains, nothing new starts.
+-    const on = isEnabled(this.db), draining = isDraining(this.db);
+-    const room = new Map<number, number>();
+-    for (const q of queued) {
+-      if (draining || (q.requested_by === AUTOPILOT_USER && !on)) continue;
+-      if (this.running.size >= this.o.maxJobs) return;
+-      const step = steps.get(q.step);
+-      if (!step) {
+-        this.db.prepare("UPDATE jobs SET state = 'failed', ended_at = ?, error = ? WHERE id = ? AND state = 'queued'").run(now(), "This step does not exist in this build.", q.id);
+-        continue;
+-      }
+-      if (this.blocked(steps, q.id)) continue;
+-      let claude = false;
+-      try { claude = usesClaude(modelsOf(step, JSON.parse(q.params) as Params)); } catch { /* params are checked when the job runs */ }
+-      const cls = step.priority ?? 0;
+-      if (claude && !this.db.prepare("SELECT 1 FROM jobs WHERE step = ? AND state = 'running' LIMIT 1").get(step.name)) {
+-        // Nothing of the step runs: it starts anyway, and takes a slot of the room.
+-      } else if (claude) {
+-        if (!room.has(cls)) room.set(cls, queueRoom(this.db, cls));
+-        if (room.get(cls)! <= 0) continue;
+-      }
+-      if (this.start(q.id, step.name, steps) && claude) room.set(cls, (room.get(cls) ?? queueRoom(this.db, cls)) - 1);
+-    }
+-  }
+-
+-  /** Why the queued job cannot start: a running job (of this runner or a command-line run) of the same step and repo, a full step, or a held mutex. */
+-  private blocked(steps: Awaited<ReturnType<typeof loadSteps>>, id: number): string | null {
+-    const r = this.db.prepare("SELECT step, repo, json_extract(params, '$.number') AS number FROM jobs WHERE id = ?").get(id) as { step: string; repo: string | null; number: number | null } | undefined;
+-    return r ? jobBlock(this.db, steps, r, { states: ["running"], mutex: true }) : "gone";
+-  }
+-
+-  /** The job's `limit` param (its items), when it has one. */
+-  private limitOf(id: number): number | undefined {
+-    try {
+-      const p = JSON.parse((this.db.prepare("SELECT params FROM jobs WHERE id = ?").get(id) as { params: string }).params) as { limit?: unknown };
+-      return typeof p.limit === "number" ? p.limit : undefined;
+-    } catch { return undefined; }
+-  }
+-
+-  private start(id: number, stepName: string, steps: Awaited<ReturnType<typeof loadSteps>>): boolean {
+-    const logPath = join(this.o.logs, `job-${id}.log`);
+-    // The check and the claim are one write transaction, so a command-line run cannot take the step in between.
+-    this.db.exec("BEGIN IMMEDIATE");
+-    let claimed: number | bigint;
+-    try {
+-      claimed = this.blocked(steps, id) ? 0
+-        : this.db.prepare("UPDATE jobs SET state = 'running', started_at = ?, log_path = ? WHERE id = ? AND state = 'queued'").run(now(), logPath, id).changes;
+-      this.db.exec("COMMIT");
+-    } catch (e) {
+-      this.db.exec("ROLLBACK");
+-      throw e;
+-    }
+-    if (!claimed) return false;
+-    const fd = openSync(logPath, "a");
+-    let child: ChildProcess;
+-    try {
+-      child = spawn(process.execPath, [CLI, "runner", "exec", String(id)], {
+-        detached: true,
+-        stdio: ["ignore", fd, fd],
+-        env: { ...process.env, AUTOCRAFT_DB: this.o.dbFile },
+-      });
+-    } finally {
+-      closeSync(fd);
+-    }
+-    this.db.prepare("UPDATE jobs SET pid = ? WHERE id = ?").run(child.pid ?? null, id);
+-    this.o.log(`job ${id}: started (pid ${child.pid})`);
+-    let spawnError: string | null = null;
+-    child.on("error", (e) => (spawnError = e.message));
+-    const exited = new Promise<void>((resolve) => {
+-      child.on("close", (code, signal) => {
+-        this.finish(id, code, signal, spawnError);
+-        this.running.delete(id);
+-        resolve();
+-      });
+-    });
+-    this.running.set(id, { child, termAt: null, exited, startedAt: Date.now(), deadlineMin: this.maxMin(stepName, this.limitOf(id)), logPath, flaggedAt: null, noProgressMin: this.noProgressMin(stepName), stopMsg: null });
+-    return true;
+-  }
+-
+-  private finish(id: number, code: number | null, signal: NodeJS.Signals | null, spawnError: string | null): void {
+-    const r = endJob(this.db, id, code, signal, spawnError, this.stopping);
+-    if (r) this.o.log(`job ${id}: ${r.state}${r.state === "failed" && r.error ? `: ${r.error}` : ""}`);
+-  }
+-
+-  /** Resolves when every running job has ended. */
+-  async idle(): Promise<void> {
+-    while (this.running.size) await Promise.all([...this.running.values()].map((r) => r.exited));
+-  }
+-
+-  /** Stops every running job (SIGTERM, then SIGKILL after the grace time) and waits for them. */
+-  async stop(): Promise<void> {
+-    this.stopping = true;
+-    const timer = setInterval(() => this.cancels(), 500);
+-    this.cancels();
+-    await this.idle();
+-    clearInterval(timer);
+-    await Promise.all([this.planThread.close(), this.flowThread.close()]);
+-  }
+-
+-  /** Polls until `signal` aborts, then stops running jobs. */
+-  async serve(signal: AbortSignal, pollMs = 2000): Promise<void> {
+-    this.recover();
+-    while (!signal.aborted) {
+-      try {
+-        await this.tick();
+-      } catch (e) {
+-        this.o.log(`runner: ${(e as Error).stack ?? e}`);
+-      }
+-      await new Promise<void>((resolve) => {
+-        const t = setTimeout(resolve, pollMs);
+-        signal.addEventListener("abort", () => (clearTimeout(t), resolve()), { once: true });
+-      });
+-    }
+-    await this.stop();
+-  }
+-}
++// `autocraft runner serve`: the only process that runs pipeline steps. It
++// polls the jobs table, runs each job in its own child process (`autocraft
++// runner exec <id>`, its own process group, output to a per-job log file),
++// stops jobs whose cancel was requested, runs the autopilot (queues jobs while the
++// pipeline switch is on) and marks
++// jobs left running by an earlier runner as failed.
++import { spawn, type ChildProcess } from "node:child_process";
++import { fileURLToPath } from "node:url";
++import { appendFileSync, statSync, closeSync, mkdirSync, openSync, readFileSync, utimesSync } from "node:fs";
++import { homedir } from "node:os";
++import { basename, join } from "node:path";
++import type { DatabaseSync } from "node:sqlite";
++import { dbPath } from "../db.ts";
++import { advancePreapprovals } from "../preapproval/index.ts";
++import { applyProposals, AUTOPILOT_USER, isDraining, isEnabled, planDue, type Detected } from "./autopilot.ts";
++import { recordUsageSamples } from "../agents/accounts.ts";
++import { AccountWatcher } from "../agents/manage.ts";
++import { failRunning, pruneRuns } from "../agents/runs.ts";
++import { pruneTasks, reapLost } from "../build/tasks.ts";
++import { pruneBench } from "../nightly/index.ts";
++import { prunePlanHistory } from "../core/plan-cache.ts";
++import { checkPendingUpdate } from "../build/worker-update.ts";
++import { endJob, JOB_KEEP_MS, now, pruneJobs, RUNNER_STOPPED } from "./jobs.ts";
++import { advanceSecurityFixes, autoFixConfirmed } from "../security/actions.ts";
++import { advanceScanTests } from "../security/scantest.ts";
++import { OffThread } from "./offthread.ts";
++import { loadSteps, modelsOf, usesClaude, type Params } from "./steps.ts";
++import { jobBlock } from "./concurrency.ts";
++import { queueRoom } from "../agents/call.ts";
++import { stepDeadlineMin, stepNoProgressMin } from "./deadlines.ts";
++import { envVar } from "../env.ts";
++
++export const logsDir = (): string => envVar("RUNNER_LOGS") ?? join(homedir(), ".cache/autocraft-logs/jobs");
++
++export function runnerLockPath(): string {
++  const dir = envVar("LOCK_DIR") ?? join(homedir(), ".cache/autocraft-logs");
++  return join(dir, `runner-${basename(dbPath())}.lock`);
++}
++
++export const HEARTBEAT_KEY = "runner_heartbeat";
++/** How often the runner brings the flowchart summary up to date (src/flow/summary.ts). */
++export const FLOW_EVERY_MS = 20_000;
++/** How often queued webhook items are read again from GitHub. */
++export const WEBHOOK_DRAIN_MS = 5_000;
++const CLI = fileURLToPath(new URL("../cli.ts", import.meta.url));
++
++/** Job processes at once. A job that calls Claude also waits for a free account slot (see startJobs). */
++export const DEFAULT_MAX_JOBS = 32;
++
++export type RunnerOptions = {
++  db: DatabaseSync;
++  /** Database file the children open; default AUTOCRAFT_DB or the default path. */
++  dbFile?: string;
++  logs?: string;
++  /** Most job processes running at once. */
++  maxJobs?: number;
++  /** Time a job gets to stop after SIGTERM before SIGKILL. */
++  killAfterMs?: number;
++  lockFile?: string;
++  log?: (line: string) => void;
++  /** The planner's detection pass (default: a worker thread on its own connection to `dbFile`). Tests pass a fake. */
++  detect?: (nowMs: number) => Promise<Detected>;
++  /** The flowchart summary refresh (default: a worker thread). */
++  refreshFlow?: () => Promise<unknown>;
++  /** Longest run of a job of a step in minutes, given the job's `limit` param (default: stepDeadlineMin). Tests pass a short one. */
++  maxMin?: (step: string, items?: number) => number;
++  /** Minutes a job may show no progress, by step (default: stepNoProgressMin). */
++  noProgressMin?: (step: string) => number;
++  /** How long past its deadline a job may finish its current item before the runner stops its process (default 10 minutes). */
++  graceMs?: number;
++};
++
++type Running = { child: ChildProcess; termAt: number | null; exited: Promise<void>; startedAt: number; deadlineMin: number; logPath: string; /** When the job was told to finish its current item and stop. */ flaggedAt: number | null; noProgressMin: number; /** Why it was told to stop. */ stopMsg: string | null };
++
++/** The error of a job the runner stopped for running past its step's limit. */
++export const deadlineError = (min: number): string => `stopped: ran past ${min} min`;
++export const noProgressError = (min: number): string => `stopped: no progress for ${min} min`;
++
++/** True when `pid` is alive and is the child of job `id`. */
++function isJobProcess(pid: number, id: number): boolean {
++  try {
++    return readFileSync(`/proc/${pid}/cmdline`, "utf8").split("\0").join(" ").includes(`runner exec ${id}`);
++  } catch {
++    return false;
++  }
++}
++
++function killGroup(pid: number, signal: NodeJS.Signals): void {
++  try {
++    process.kill(-pid, signal);
++  } catch {
++    // already gone
++  }
++}
++
++export class Runner {
++  readonly db: DatabaseSync;
++  readonly running = new Map<number, Running>();
++  private stopping = false;
++  private flowAt = 0;
++  private webhookAt = 0;
++  private webhooking: Promise<void> | null = null;
++  private webhookClient: import("../mirror.ts").Client | null = null;
++  private planning: Promise<void> | null = null;
++  private detected: Detected | null = null;
++  private flowing: Promise<void> | null = null;
++  private readonly planThread: OffThread;
++  private readonly flowThread: OffThread;
++  private readonly o: Required<Omit<RunnerOptions, "db" | "lockFile" | "detect" | "refreshFlow" | "maxMin" | "graceMs" | "noProgressMin">> & { lockFile: string | null };
++  private readonly detect: (nowMs: number) => Promise<Detected>;
++  private readonly refreshFlow: () => Promise<unknown>;
++  private readonly maxMin: (step: string, items?: number) => number;
++  private readonly graceMs: number;
++  private readonly noProgressMin: (step: string) => number;
++
++  constructor(opts: RunnerOptions) {
++    this.db = opts.db;
++    this.o = {
++      dbFile: opts.dbFile ?? dbPath(), logs: opts.logs ?? logsDir(), maxJobs: opts.maxJobs ?? DEFAULT_MAX_JOBS, killAfterMs: opts.killAfterMs ?? 10_000,
++      lockFile: opts.lockFile ?? null, log: opts.log ?? ((l) => console.log(l)),
++    };
++    mkdirSync(this.o.logs, { recursive: true });
++    this.planThread = new OffThread(this.o.dbFile);
++    this.flowThread = new OffThread(this.o.dbFile);
++    this.detect = opts.detect ?? ((t) => this.planThread.plan(t));
++    this.maxMin = opts.maxMin ?? stepDeadlineMin;
++    this.graceMs = opts.graceMs ?? 600_000;
++    this.noProgressMin = opts.noProgressMin ?? stepNoProgressMin;
++    this.refreshFlow = opts.refreshFlow ?? (() => this.flowThread.flow());
++  }
++
++  /** Jobs left `running` belong to a runner that is gone: stop what is left of them and mark them failed. */
++  recover(): number {
++    // Model calls of a runner that is gone no longer hold an account slot.
++    const orphans = failRunning(this.db, "The runner stopped during this call.");
++    if (orphans) this.o.log(`${orphans} agent runs left running by an earlier runner, marked failed`);
++    this.db.prepare("DELETE FROM model_waits").run();
++    this.db.prepare("DELETE FROM work_leases").run();
++    const rows = this.db.prepare("SELECT id, pid, cancel_requested_at FROM jobs WHERE state = 'running'").all() as { id: number; pid: number | null; cancel_requested_at: string | null }[];
++    for (const r of rows) {
++      if (this.running.has(r.id)) continue;
++      if (r.pid && isJobProcess(r.pid, r.id)) killGroup(r.pid, "SIGKILL");
++      const cancelled = r.cancel_requested_at !== null;
++      this.db.prepare("UPDATE jobs SET state = ?, ended_at = ?, pid = NULL, error = COALESCE(error, ?) WHERE id = ? AND state = 'running'")
++        .run(cancelled ? "cancelled" : "failed", now(), cancelled ? null : RUNNER_STOPPED, r.id);
++      this.o.log(`job ${r.id}: left running by an earlier runner, marked ${cancelled ? "cancelled" : "failed"}`);
++    }
++    return rows.length;
++  }
++
++  /** One pass: heartbeat, cancels, autopilot, new jobs. */
++  async tick(): Promise<void> {
++    const t = now();
++    this.db.prepare("INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").run(HEARTBEAT_KEY, t);
++    if (this.o.lockFile) {
++      try {
++        utimesSync(this.o.lockFile, new Date(), new Date());
++      } catch {
++        // removed under us; the next start notices
++      }
++    }
++    this.cancels();
++    if (this.stopping) return;
++    try {
++      const lost = reapLost(this.db);
++      if (lost) this.o.log(`${lost} build tasks lost their worker`);
++    } catch (e) {
++      this.o.log(`build tasks: ${(e as Error).message}`);
++    }
++    this.webhookTick();
++    this.usageTick();
++    this.workerUpdateTick();
++    await this.autopilot();
++    await this.startJobs();
++    if (!this.flowing && Date.now() - this.flowAt >= FLOW_EVERY_MS) {
++      this.flowAt = Date.now();
++      this.flowing = this.refreshFlow().then(() => undefined, (e) => this.o.log(`flowchart summary: ${(e as Error).message}`)).finally(() => (this.flowing = null));
++    }
++  }
++
++  /** Reads the items GitHub App webhooks named again from GitHub, off the tick, while no sync run holds its lock. The poll covers any that fail. */
++  private webhookTick(): void {
++    if (this.webhooking || Date.now() - this.webhookAt < WEBHOOK_DRAIN_MS) return;
++    this.webhookAt = Date.now();
++    if (!this.db.prepare("SELECT 1 FROM main.sync_requests LIMIT 1").get()) return;
++    this.webhooking = (async () => {
++      const { lockHeld, lockPath, fullLockPath, Client } = await import("../mirror.ts");
++      if (lockHeld(lockPath()) || lockHeld(fullLockPath())) return;
++      // One client for the runner's life, seeded from the last sync's reading, so the reserve holds from the first read.
++      if (!this.webhookClient) this.webhookClient = new Client(1000);
++      const c = this.webhookClient;
++      const get = (k: string): string | undefined => (this.db.prepare("SELECT value FROM main.settings WHERE key = ?").get(k) as { value: string } | undefined)?.value;
++      const seen = Number(get("sync_rate_remaining"));
++      const reset = Date.parse(get("sync_rate_reset_at") ?? "");
++      // Below the reserve nothing is read until the limit resets; the sync's reading is newer than ours when it is the later one.
++      if (Number.isFinite(seen) && Number.isFinite(reset) && reset > Date.now()) {
++        c.remaining = c.remaining === null ? seen : Math.min(c.remaining, seen);
++        c.resetAt = new Date(reset);
++      } else if (c.resetAt && c.resetAt.getTime() <= Date.now()) {
++        c.remaining = null;
++        c.resetAt = null;
++      }
++      const { drainSyncRequests } = await import("../github/webhooks.ts");
++      const n = await drainSyncRequests(this.db, c, { limit: 10, log: this.o.log });
++      if (n) this.o.log(`webhooks: read ${n} items again`);
++    })().catch((e) => this.o.log(`webhooks: ${(e as Error).message}`)).finally(() => (this.webhooking = null));
++  }
++
++  /**
++   * The planner. Detection reads a lot and runs off the loop, at most one pass at a time; the
++   * tick queues what it found, so a slow detection never delays the heartbeat or cancels.
++   */
++  private async autopilot(): Promise<void> {
++    const found = this.detected;
++    this.detected = null;
++    if (found) {
++      for (const l of found.logs) this.o.log(l);
++      try {
++        // Detection read the database a moment ago; the switch may have been turned off since.
++        if (isEnabled(this.db)) {
++          await applyProposals(this.db, found.proposals, { log: this.o.log, wakeAt: found.wakeAt ?? null, ...(found.status ? { status: found.status } : {}) });
++          // A private fix that a switch-off cancelled is queued again once the pipeline is on.
++          const fixes = await autoFixConfirmed(this.db);
++          if (fixes) this.o.log(`autopilot: started the private fix of ${fixes} confirmed security findings`);
++        }
++      } catch (e) {
++        this.o.log(`autopilot: ${(e as Error).message}`);
++      }
++    }
++    // A private fix waits for its build without a job; the next job starts when the build tasks end, for operator-started fixes with the pipeline off too.
++    try {
++      const next = await advanceSecurityFixes(this.db, isEnabled(this.db));
++      if (next) this.o.log(`security: continued the private fix of ${next} findings after their builds`);
++    } catch (e) { this.o.log(`security fixes: ${(e as Error).message}`); }
++    // The build task of a scan test is read here (database only); a finding whose test ended can then start its automatic fix.
++    try {
++      for (const t of advanceScanTests(this.db)) {
++        this.o.log(`security: scan test of ${t.repo} finding ${t.number}: ${t.state}`);
++        if (isEnabled(this.db) && t.state !== "not-shown") await autoFixConfirmed(this.db, t.repo, t.number);
++      }
++    } catch (e) { this.o.log(`security scan tests: ${(e as Error).message}`); }
++    // Pre-approved merges move on rows other steps wrote; they are read here, not on a timer of their own.
++    try { advancePreapprovals(this.db, this.o.log); } catch (e) { this.o.log(`preapprovals: ${(e as Error).message}`); }
++    if (this.planning || !planDue(this.db)) return;
++    this.planning = this.detect(Date.now())
++      .then((d) => { this.detected = d; }, (e) => this.o.log(`autopilot: detection failed: ${(e as Error).message}`))
++      .finally(() => (this.planning = null));
++  }
++
++  private updateAt = 0;
++  private updating = false;
++
++  /** About once a minute, runs the sandbox worker update that a deploy left pending once its tasks have finished. */
++  private workerUpdateTick(): void {
++    if (this.updating || Date.now() - this.updateAt < 60_000) return;
++    this.updateAt = Date.now();
++    this.updating = true;
++    checkPendingUpdate(this.db, undefined, this.o.log)
++      .catch((e) => this.o.log(`worker update: ${(e as Error).message}`))
++      .finally(() => (this.updating = false));
++  }
++
++  private usageAt = 0;
++  private refreshAt = 0;
++  private pruneAt = 0;
++  private watcher: AccountWatcher | undefined;
++
++  /** Records usage readings that changed (at most every 15 s), reads sign-in state (every 15 minutes) and plan usage (every 5) of accounts through the claude command, and prunes old agent data hourly. */
++  private usageTick(): void {
++    const t = Date.now();
++    if (t - this.usageAt >= 15_000) {
++      this.usageAt = t;
++      try {
++        recordUsageSamples(this.db, t);
++      } catch (e) {
++        this.o.log(`usage samples: ${(e as Error).message}`);
++      }
++    }
++    if (t - this.refreshAt >= 60_000) {
++      this.refreshAt = t;
++      void (this.watcher ??= new AccountWatcher(this.db, (m) => this.o.log(m))).tick(t);
++    }
++    if (t - this.pruneAt >= 3600_000) {
++      this.pruneAt = t;
++      try {
++        pruneJobs(this.db, t);
++      } catch (e) {
++        this.o.log(`prune jobs: ${(e as Error).message}`);
++      }
++      try {
++        prunePlanHistory(this.db, JOB_KEEP_MS, t);
++      } catch (e) {
++        this.o.log(`prune plan history: ${(e as Error).message}`);
++      }
++      try {
++        pruneTasks(this.db, t);
++      } catch (e) {
++        this.o.log(`prune build tasks: ${(e as Error).message}`);
++      }
++      try {
++        pruneBench(this.db, t);
++      } catch (e) {
++        this.o.log(`prune nightly bench: ${(e as Error).message}`);
++      }
++      try {
++        pruneRuns(this.db, t);
++      } catch (e) {
++        this.o.log(`prune agent runs: ${(e as Error).message}`);
++      }
++    }
++  }
++
++  private cancels(): void {
++    for (const [id, r] of this.running) {
++      const row = this.db.prepare("SELECT cancel_requested_at FROM jobs WHERE id = ?").get(id) as { cancel_requested_at: string | null } | undefined;
++      const late = Date.now() - r.startedAt >= r.deadlineMin * 60_000;
++      const cancel = !!row?.cancel_requested_at || this.stopping;
++      // Progress is a new line in the job's log (the job's own output: progress lines, check-tool notes, results); reading its mtime costs one stat.
++      let lastLine = r.startedAt;
++      try { lastLine = Math.max(lastLine, statSync(r.logPath).mtimeMs); } catch { /* no log yet */ }
++      const idle = r.flaggedAt === null && Date.now() - lastLine >= r.noProgressMin * 60_000;
++      // Past its deadline a job is first asked to stop: the failure is recorded, which the job reads at its item boundaries (ctx.cancelled)
++      // and finishes the writes of its current item. Only after the grace does the process get the signals a cancel gets.
++      if ((late || idle) && !cancel && r.flaggedAt === null && r.termAt === null) {
++        r.flaggedAt = Date.now();
++        const msg = r.stopMsg = idle && !late ? noProgressError(r.noProgressMin) : deadlineError(r.deadlineMin);
++        this.db.prepare("UPDATE jobs SET error = ? WHERE id = ? AND state = 'running'").run(msg, id);
++        try { appendFileSync(r.logPath, `${now()} ${msg}; the job may finish its current item, and is stopped ${Math.round(this.graceMs / 60_000)} min from now\n`); } catch { /* the log is gone */ }
++        this.o.log(`job ${id}: ${msg}; finishing its current item`);
++      }
++      const graceOver = r.flaggedAt !== null && Date.now() - r.flaggedAt >= this.graceMs;
++      if (!cancel && !graceOver) continue;
++      const pid = r.child.pid;
++      if (!pid) continue;
++      if (r.termAt === null) {
++        r.termAt = Date.now();
++        const deadline = !cancel;
++        if (deadline) {
++          try { appendFileSync(r.logPath, `${now()} ${r.stopMsg ?? deadlineError(r.deadlineMin)}; the job did not finish in time and is stopped\n`); } catch { /* the log is gone */ }
++        }
++        killGroup(pid, "SIGTERM");
++        this.o.log(`job ${id}: stopping (${this.stopping ? "runner stopping" : deadline ? `${r.stopMsg} grace over` : "cancel requested"})`);
++      } else if (Date.now() - r.termAt >= this.o.killAfterMs) {
++        killGroup(pid, "SIGKILL");
++      }
++    }
++  }
++
++  /**
++   * Starts queued jobs: security first (priority 2), then by id. A job whose step calls Claude starts only while the
++   * model queue has room for its class, so processes do not sit waiting for slots, unless no job of its step runs.
++   */
++  private async startJobs(): Promise<void> {
++    const steps = await loadSteps();
++    const queued = (this.db.prepare("SELECT id, step, params, requested_by FROM jobs WHERE state = 'queued' ORDER BY id").all() as { id: number; step: string; params: string; requested_by: string }[])
++      .sort((a, b) => (steps.get(b.step)?.priority ?? 0) - (steps.get(a.step)?.priority ?? 0) || a.id - b.id);
++    // Automatic jobs wait while the pipeline is off; they are cancelled when it is switched off. While it drains, nothing new starts.
++    const on = isEnabled(this.db), draining = isDraining(this.db);
++    const room = new Map<number, number>();
++    for (const q of queued) {
++      if (draining || (q.requested_by === AUTOPILOT_USER && !on)) continue;
++      if (this.running.size >= this.o.maxJobs) return;
++      const step = steps.get(q.step);
++      if (!step) {
++        this.db.prepare("UPDATE jobs SET state = 'failed', ended_at = ?, error = ? WHERE id = ? AND state = 'queued'").run(now(), "This step does not exist in this build.", q.id);
++        continue;
++      }
++      if (this.blocked(steps, q.id)) continue;
++      let claude = false;
++      try { claude = usesClaude(modelsOf(step, JSON.parse(q.params) as Params)); } catch { /* params are checked when the job runs */ }
++      const cls = step.priority ?? 0;
++      if (claude && !this.db.prepare("SELECT 1 FROM jobs WHERE step = ? AND state = 'running' LIMIT 1").get(step.name)) {
++        // Nothing of the step runs: it starts anyway, and takes a slot of the room.
++      } else if (claude) {
++        if (!room.has(cls)) room.set(cls, queueRoom(this.db, cls));
++        if (room.get(cls)! <= 0) continue;
++      }
++      if (this.start(q.id, step.name, steps) && claude) room.set(cls, (room.get(cls) ?? queueRoom(this.db, cls)) - 1);
++    }
++  }
++
++  /** Why the queued job cannot start: a running job (of this runner or a command-line run) of the same step and repo, a full step, or a held mutex. */
++  private blocked(steps: Awaited<ReturnType<typeof loadSteps>>, id: number): string | null {
++    const r = this.db.prepare("SELECT step, repo, json_extract(params, '$.number') AS number FROM jobs WHERE id = ?").get(id) as { step: string; repo: string | null; number: number | null } | undefined;
++    return r ? jobBlock(this.db, steps, r, { states: ["running"], mutex: true }) : "gone";
++  }
++
++  /** The job's `limit` param (its items), when it has one. */
++  private limitOf(id: number): number | undefined {
++    try {
++      const p = JSON.parse((this.db.prepare("SELECT params FROM jobs WHERE id = ?").get(id) as { params: string }).params) as { limit?: unknown };
++      return typeof p.limit === "number" ? p.limit : undefined;
++    } catch { return undefined; }
++  }
++
++  private start(id: number, stepName: string, steps: Awaited<ReturnType<typeof loadSteps>>): boolean {
++    const logPath = join(this.o.logs, `job-${id}.log`);
++    // The check and the claim are one write transaction, so a command-line run cannot take the step in between.
++    this.db.exec("BEGIN IMMEDIATE");
++    let claimed: number | bigint;
++    try {
++      claimed = this.blocked(steps, id) ? 0
++        : this.db.prepare("UPDATE jobs SET state = 'running', started_at = ?, log_path = ? WHERE id = ? AND state = 'queued'").run(now(), logPath, id).changes;
++      this.db.exec("COMMIT");
++    } catch (e) {
++      this.db.exec("ROLLBACK");
++      throw e;
++    }
++    if (!claimed) return false;
++    const fd = openSync(logPath, "a");
++    let child: ChildProcess;
++    try {
++      child = spawn(process.execPath, [CLI, "runner", "exec", String(id)], {
++        detached: true,
++        stdio: ["ignore", fd, fd],
++        env: { ...process.env, AUTOCRAFT_DB: this.o.dbFile },
++      });
++    } finally {
++      closeSync(fd);
++    }
++    this.db.prepare("UPDATE jobs SET pid = ? WHERE id = ?").run(child.pid ?? null, id);
++    this.o.log(`job ${id}: started (pid ${child.pid})`);
++    let spawnError: string | null = null;
++    child.on("error", (e) => (spawnError = e.message));
++    const exited = new Promise<void>((resolve) => {
++      child.on("close", (code, signal) => {
++        this.finish(id, code, signal, spawnError);
++        this.running.delete(id);
++        resolve();
++      });
++    });
++    this.running.set(id, { child, termAt: null, exited, startedAt: Date.now(), deadlineMin: this.maxMin(stepName, this.limitOf(id)), logPath, flaggedAt: null, noProgressMin: this.noProgressMin(stepName), stopMsg: null });
++    return true;
++  }
++
++  private finish(id: number, code: number | null, signal: NodeJS.Signals | null, spawnError: string | null): void {
++    const r = endJob(this.db, id, code, signal, spawnError, this.stopping);
++    if (r) this.o.log(`job ${id}: ${r.state}${r.state === "failed" && r.error ? `: ${r.error}` : ""}`);
++  }
++
++  /** Resolves when every running job has ended. */
++  async idle(): Promise<void> {
++    while (this.running.size) await Promise.all([...this.running.values()].map((r) => r.exited));
++  }
++
++  /** Stops every running job (SIGTERM, then SIGKILL after the grace time) and waits for them. */
++  async stop(): Promise<void> {
++    this.stopping = true;
++    const timer = setInterval(() => this.cancels(), 500);
++    this.cancels();
++    await this.idle();
++    clearInterval(timer);
++    await Promise.all([this.planThread.close(), this.flowThread.close()]);
++  }
++
++  /** Polls until `signal` aborts, then stops running jobs. */
++  async serve(signal: AbortSignal, pollMs = 2000): Promise<void> {
++    this.recover();
++    while (!signal.aborted) {
++      try {
++        await this.tick();
++      } catch (e) {
++        this.o.log(`runner: ${(e as Error).stack ?? e}`);
++      }
++      await new Promise<void>((resolve) => {
++        const t = setTimeout(resolve, pollMs);
++        signal.addEventListener("abort", () => (clearTimeout(t), resolve()), { once: true });
++      });
++    }
++    await this.stop();
++  }
++}
 diff --git a/windows-folder.mjs b/windows-folder.mjs
 new file mode 100644
-index 0000000..233ff8f
+index 0000000..35cf421
 --- /dev/null
 +++ b/windows-folder.mjs
 @@ -0,0 +1,41 @@
 +import { spawn } from 'node:child_process';
-+import { existsSync, mkdirSync } from 'node:fs';
 +import { join } from 'node:path';
 +import { fileURLToPath } from 'node:url';
 +import { windowsSecretAcl } from './src/dash/server/windows-secret-acl.ts';
++import { preparePrivateDirectory, privateDirectory } from './folder-state.mjs';
 +
 +const root = fileURLToPath(new URL('.', import.meta.url));
-+const privateDir = join(root, '.private');
++const privateDir = privateDirectory();
 +const defaultSecrets = join(privateDir, 'secrets.json');
 +const callback = 'http://127.0.0.1:8993';
 +const [mode, ...args] = process.argv.slice(2);
 +
 +try {
-+  if (!existsSync(privateDir)) {
-+    mkdirSync(privateDir);
-+    windowsSecretAcl('ProtectDirectory', privateDir);
-+  }
++  await preparePrivateDirectory(root, privateDir);
 +  if (mode === 'protect') {
 +    windowsSecretAcl('ProtectDirectory', privateDir);
-+    console.log('AutoCraft private folder protected. Keep the OAuth secrets file here.');
++    console.log(privateDir);
++  } else if (mode === 'private-dir') {
++    console.log(privateDir);
 +  } else {
 +    windowsSecretAcl('CheckDirectory', privateDir);
 +    const env = {
@@ -332,6 +3485,7 @@ index 0000000..233ff8f
 +      AUTOCRAFT_DB: process.env.AUTOCRAFT_DB || join(privateDir, 'mirror.db'),
 +      AUTOCRAFT_SECRETS_FILE: process.env.AUTOCRAFT_SECRETS_FILE || defaultSecrets,
 +      AUTOCRAFT_LOCK_DIR: process.env.AUTOCRAFT_LOCK_DIR || join(privateDir, 'locks'),
++      AUTOCRAFT_RUNNER_LOGS: process.env.AUTOCRAFT_RUNNER_LOGS || join(privateDir, 'logs'),
 +    };
 +    const command = mode === 'dashboard' ? ['dash', 'serve'] : args;
 +    const child = spawn(process.execPath, [join(root, 'src', 'cli.ts'), ...command], { cwd: root, env, stdio: 'inherit' });

@@ -207,7 +207,7 @@ def build(home, git, repo, revision, stage, scratch, env, node, npm):
     app = [node, npm, '--prefix', repo / 'app', 'run']
     # Run all three upstream check scripts with a larger Vitest budget on the
     # Windows folder host, where PDF and canvas tests exceeded five seconds.
-    for check in (['typecheck'], ['test', '--', '--maxWorkers=2', '--testTimeout=30000'], ['build']):
+    for check in (['typecheck'], ['test', '--', '--pool=threads', '--maxWorkers=1', '--testTimeout=30000'], ['build']):
         print(run([*app, *check], env=env), flush=True)
     target = stage / 'client'
     run([sys.executable, '-I', '-B', repo / 'tools' / 'pages-deploy.py', '--output', target], env=env)
