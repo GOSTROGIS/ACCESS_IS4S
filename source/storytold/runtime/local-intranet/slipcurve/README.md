@@ -1,0 +1,9 @@
+# SLIPCURVE folder release selection
+
+The updater checks the owned `GOSTROGIS/SLIPCURVE` repository's `main` ref. For an advancing revision it fetches a clean detached checkout, verifies the Git archive's commit, and records its SHA-256. It runs the locked app build and tests, verifies the upstream client projection and its file hashes, then runs the actual browser and authenticated server against disposable SQLite data. A failed build, test, or integrity check leaves the active release selected. SQLite migration code changes require a migration and rollback review before unattended activation.
+
+The Windows launcher and the intranet portal still call `SLIPCURVE/serve.py`. That launcher selects the active release at startup. If the server is already running, its next launch uses the new version. This lets an open workspace finish its current session. New runtime files go under `SLIPCURVE/releases`. The installed `SLIPCURVE/data` directory stays outside the release trees, so the selected version opens the same user accounts and workspaces.
+
+`slipcurve-release.py status --root <SLIPCURVE>` prints the selected revision and, after a promotion, the retained previous revision and digests. `verify` checks the selected runtime and client file integrity. `rollback` selects the verified previous release for the next launch and holds automatic updates. `resume` clears the hold. Use the installation's bundled Python to run these commands.
+
+For setup, copy the original installed WSGI `serve.py` to `folder-serve.py` before installing the stable `serve.py`, `slipcurve-release.py`, and `verify-slipcurve-release.py` at the installation's `SLIPCURVE` root. The scheduler uses the installed Git executable, Node, npm, Playwright dependencies and the configured Chromium executable. `install-npm.py` extracts the npm subtree from the pinned Node Windows archive into the updater tools folder after verifying the official archive SHA-256.

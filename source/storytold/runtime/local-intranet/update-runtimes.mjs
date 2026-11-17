@@ -15,6 +15,9 @@ const managed = [
   { key: 'effectcraft-native', id: 'effectcraft', kind: 'native', entry: 'effectcraft.exe', gate: 'verify-creative-native.mjs' },
   { key: 'lightcraft-native', id: 'lightcraft', kind: 'native', entry: 'lightcraft.exe', gate: 'verify-creative-native.mjs' },
   { key: 'vectorcraft-native', id: 'vectorcraft', kind: 'native', entry: 'vectorcraft.exe', gate: 'verify-vectorcraft-native.py' },
+  { key: 'pdfcraft-native', id: 'pdfcraft', kind: 'native', entry: 'pdfcraft.exe', gate: 'verify-pdfcraft-native.py' },
+  { key: 'deckcraft-native', id: 'deckcraft', kind: 'native', entry: 'deckcraft.exe', gate: 'verify-deckcraft-native.py' },
+  { key: 'soundcraft-native', id: 'soundcraft', kind: 'native', entry: 'soundcraft.exe', gate: 'verify-soundcraft-native.py' },
   { key: 'photocraft-web', id: 'photocraft', kind: 'web', entry: 'index.html', gate: 'verify-photocraft-browser.py' },
   { key: 'gridcraft-web', id: 'gridcraft', kind: 'web', entry: 'index.html', gate: 'verify-office-browser.py', arguments: ['gridcraft'] },
   { key: 'wordcraft-web', id: 'wordcraft', kind: 'web', entry: 'index.html', gate: 'verify-office-browser.py', arguments: ['wordcraft'] },
@@ -118,6 +121,48 @@ async function update(root, app, tag) {
   }
 }
 
+async function slipcurveRuntime(root, mode, report) {
+  const app = join(root, 'SLIPCURVE');
+  const runner = join(root, 'tools', 'runtime-update');
+  const script = join(app, 'slipcurve-release.py');
+  if (relative(script, await realpath(script)) !== '') throw Error('SLIPCURVE updater may not be redirected');
+  const args = ['-I', '-B', script, mode, '--root', app];
+  if (mode === 'update') {
+    const settings = await readJson(join(runner, 'settings.json'));
+    if (!settings.git) throw Error('Set the installed git.exe path in the folder updater settings');
+    args.push('--git', settings.git, '--python-deps', join(runner, 'python-deps'), '--chrome', settings.slipcurveChrome || settings.chrome,
+      '--npm-cli', join(runner, 'npm', 'bin', 'npm-cli.js'));
+  }
+  await projectRuntime('SLIPCURVE', mode, join(app, 'runtime', 'python.exe'), args, report);
+}
+
+async function projectRuntime(name, mode, executable, args, report) {
+  try {
+    const result = await run(executable, args, { windowsHide: true, timeout: 3_300_000 });
+    const outcome = result.stdout.trim().split(/\r?\n/).at(-1) || `${name} ${mode} passed`;
+    console.log(outcome);
+    await updateLog(report, outcome);
+  } catch (error) {
+    const outcome = `${name} ${mode} failed: ${error.stderr?.trim() || error.message}`;
+    console.error(outcome);
+    await updateLog(report, outcome);
+    process.exitCode = 1;
+  }
+}
+
+async function consultingRuntime(root, mode, report) {
+  const script = join(source, 'consulting-release.mjs');
+  if (relative(script, await realpath(script)) !== '') throw Error('CONSULTING updater may not be redirected');
+  await projectRuntime('CONSULTING', mode, process.execPath, [script, mode, '--root', root], report);
+}
+
+async function installed(file) {
+  return lstat(file).then(item => item.isFile()).catch(error => {
+    if (error.code !== 'ENOENT') throw error;
+    return false;
+  });
+}
+
 async function main() {
   const { positionals, values } = parseArgs({ allowPositionals: true, options: {
     root: { type: 'string' }, only: { type: 'string' }, tag: { type: 'string' },
@@ -127,12 +172,20 @@ async function main() {
       (values.tag && (!tagPattern.test(values.tag) || mode !== 'update' || !values.only)) ||
       (['rollback', 'resume', 'launch'].includes(mode) && !values.only)) throw Error('Use update, verify, rollback, resume or launch. Specify --only for one application.');
   const root = await realpath(resolve(values.root || join(source, '../../..')));
+  const report = join(root, 'tools/runtime-update/update.log');
+  if (values.only === 'slipcurve') {
+    if (values.tag || mode === 'launch') throw Error('SLIPCURVE updates use owned main and the installed launcher');
+    return slipcurveRuntime(root, mode, report);
+  }
+  if (values.only === 'consulting') {
+    if (values.tag || mode === 'launch') throw Error('CONSULTING updates use owned main and the installed launcher');
+    return consultingRuntime(root, mode, report);
+  }
   const selected = values.only ? managed.filter(app => app.key === values.only) : managed;
   if (!selected.length) throw Error('No functional update gate for that application');
   const { targets } = await readJson(join(source, '../app-targets.json'));
   const web = await readJson(join(root, 'installed-web.json'));
   const native = await readJson(join(root, 'Storytold/native/native-apps.json'));
-  const report = join(root, 'tools/runtime-update/update.log');
   for (const app of selected) {
     try {
       const inventory = app.kind === 'web' ? web.apps : native.apps;
@@ -166,6 +219,10 @@ async function main() {
       await updateLog(report, outcome);
       process.exitCode = 1;
     }
+  }
+  if (!values.only && mode === 'update') {
+    if (await installed(join(root, 'SLIPCURVE', 'slipcurve-release.py'))) await slipcurveRuntime(root, mode, report);
+    if (await installed(join(root, 'CONSULTING', 'site', 'index.html'))) await consultingRuntime(root, mode, report);
   }
 }
 

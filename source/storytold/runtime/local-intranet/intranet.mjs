@@ -5,6 +5,7 @@ import { readFile, realpath, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { consultingPaths } from './consulting-edition.mjs';
 import { activeRuntime, runtimeTree, versionedWebApps } from './runtime-state.mjs';
 
 const home = dirname(fileURLToPath(import.meta.url));
@@ -242,6 +243,10 @@ async function startSlipcurve() {
 
 async function main() {
   const apps = await installedApps();
+  const consulting = await consultingPaths(join(home, 'CONSULTING')).catch(error => {
+    if (error.code !== 'ENOENT') console.error(`CONSULTING release unavailable (${error.code || error.name})`);
+    return null;
+  });
   const url = `http://${address}:${portalPort}/`;
   const installation = createHash('sha256').update(home).update(JSON.stringify(apps)).digest('hex');
   if (await existingPortal(url, installation)) {
@@ -267,10 +272,12 @@ async function main() {
       return json(req, res, { apps: active, native });
     }
     if (first === 'health.json' && !remaining.length) {
-      return json(req, res, { service: 'access-is4s-folder-intranet', installation, apps: apps.length });
+      return json(req, res, { service: 'access-is4s-folder-intranet', installation, apps: apps.length,
+        consultingRevision: consulting?.revision ?? null });
     }
     if (first === 'ACCESS_IS4S') return fileResponse(req, res, join(home, 'ACCESS_IS4S'), remaining, path, true);
-    if (first === 'CONSULTING') return fileResponse(req, res, join(home, 'CONSULTING', 'site'), remaining, path, true);
+    if (first === 'CONSULTING' && consulting) return fileResponse(req, res, consulting.site, remaining, path, true);
+    if (first === 'CONSULTING') return response(res, 503, 'CONSULTING release unavailable');
     if (!first || (!remaining.length && portalFiles.has(first))) {
       res.setHeader('Content-Security-Policy', "default-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
       return fileResponse(req, res, home, [first ?? 'index.html'], path);

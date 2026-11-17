@@ -147,7 +147,7 @@ def deploy(args):
     if not installed_node.is_file() or digest(installed_node) != args.node_sha256:
         shutil.copyfile(args.node / 'node.exe', installed_node)
     shutil.copyfile(args.node / 'LICENSE', tools / 'node-LICENSE.txt')
-    for filename in ['index.html', 'portal.css', 'portal.mjs', 'intranet.mjs', 'runtime-state.mjs',
+    for filename in ['index.html', 'portal.css', 'portal.mjs', 'intranet.mjs', 'runtime-state.mjs', 'consulting-edition.mjs',
                      'Start Intranet.cmd', 'Open Native Applications.cmd', 'README.md']:
         shutil.copyfile(SOURCE / filename, args.destination / filename)
     pointer = args.destination / 'installed-web.json'

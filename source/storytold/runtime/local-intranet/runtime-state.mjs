@@ -57,9 +57,40 @@ export async function activeRuntime(root, app) {
   return { ...row.current, hold: row.hold, retained };
 }
 
-export async function treeDigest(root) {
+export async function treeDigest(root, { prefetch = false } = {}) {
   if (relative(root, await realpath(root)) !== '') throw Error('Linked runtime directory');
   const result = createHash('sha256');
+  const append = (name, size) => result.update(JSON.stringify([name, size]) + '\n');
+  if (prefetch) {
+    const files = [];
+    async function collect(directory, prefix) {
+      const entries = await readdir(directory, { withFileTypes: true });
+      entries.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+      for (const entry of entries) {
+        const path = join(directory, entry.name);
+        if (entry.isDirectory()) await collect(path, `${prefix}${entry.name}/`);
+        else if (entry.isFile()) files.push({ path, name: `${prefix}${entry.name}` });
+        else throw Error('Runtime contains a link or special file');
+      }
+    }
+    await collect(root, '');
+    for (let offset = 0; offset < files.length; offset += 8) {
+      const batch = await Promise.all(files.slice(offset, offset + 8).map(async file => {
+        const item = await lstat(file.path);
+        if (!item.isFile()) throw Error('Runtime contains a link or special file');
+        if (item.size > 16 * 1024 * 1024) return { ...file, size: item.size };
+        const data = await readFile(file.path);
+        if (data.length !== item.size) throw Error('Runtime file changed while hashing');
+        return { ...file, size: item.size, data };
+      }));
+      for (const { name, path, size, data } of batch) {
+        append(name, size);
+        if (data) result.update(data);
+        else for await (const chunk of createReadStream(path)) result.update(chunk);
+      }
+    }
+    return result.digest('hex');
+  }
   async function walk(directory, prefix) {
     for (const name of (await readdir(directory)).sort()) {
       const path = join(directory, name);
@@ -67,7 +98,7 @@ export async function treeDigest(root) {
       if (item.isDirectory()) {
         await walk(path, `${prefix}${name}/`);
       } else if (item.isFile()) {
-        result.update(JSON.stringify([prefix + name, item.size]) + '\n');
+        append(prefix + name, item.size);
         for await (const chunk of createReadStream(path)) result.update(chunk);
       } else {
         throw Error('Runtime contains a link or special file');
@@ -94,7 +125,7 @@ async function writeState(root, state) {
   }
 }
 
-async function locked(root, action) {
+export async function withRuntimeLease(root, action) {
   if (process.platform === 'win32') {
     // Windows closes the pipe even if Task Scheduler terminates the process.
     const key = createHash('sha256').update((await realpath(root)).toLowerCase()).digest('hex');
@@ -104,7 +135,7 @@ async function locked(root, action) {
       lease.listen(`\\\\.\\pipe\\access-is4s-update-${key}`, accept);
     });
     try {
-      return await action(await readState(root));
+      return await action();
     } finally {
       await new Promise(accept => lease.close(accept));
     }
@@ -116,11 +147,15 @@ async function locked(root, action) {
   });
   try {
     await file.writeFile(String(process.pid));
-    return await action(await readState(root));
+    return await action();
   } finally {
     await file.close();
     await rm(path);
   }
+}
+
+function locked(root, action) {
+  return withRuntimeLease(root, async () => action(await readState(root)));
 }
 
 async function verifyRecord(root, app, record) {

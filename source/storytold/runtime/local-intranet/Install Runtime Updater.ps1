@@ -2,7 +2,9 @@ param(
     [Parameter(Mandatory)][string]$Installation,
     [Parameter(Mandatory)][string]$OpenPgpPackage,
     [Parameter(Mandatory)][string]$PythonDependencies,
-    [Parameter(Mandatory)][string]$Chrome
+    [Parameter(Mandatory)][string]$Chrome,
+    [string]$SlipcurveChrome,
+    [string]$Git = (Get-Command git.exe -ErrorAction SilentlyContinue).Source
 )
 
 $ErrorActionPreference = 'Stop'
@@ -35,21 +37,48 @@ if ($pythonDependenciesPath -ne $pythonModules) {
     Get-ChildItem -LiteralPath $pythonDependenciesPath -Force | Copy-Item -Destination $pythonModules -Recurse -Force
 }
 $runtimeSource = Split-Path -Parent $PSScriptRoot
-foreach ($name in @('acquire-web-releases.mjs', 'app-targets.json', 'import_releases.py', 'verify-cadcraft-native.py', 'verify-photocraft-browser.py', 'verify-office-browser.py', 'verify-creative-native.mjs', 'verify-vectorcraft-native.py')) {
+$updaterFiles = @(
+    'acquire-web-releases.mjs', 'app-targets.json', 'import_releases.py',
+    'verify-cadcraft-native.py', 'verify-creative-native.mjs', 'verify-deckcraft-native.py',
+    'verify-consulting-browser.py', 'verify-consulting-mcp.mjs',
+    'verify-office-browser.py', 'verify-pdfcraft-native.py', 'verify-photocraft-browser.py',
+    'verify-soundcraft-native.py', 'verify-vectorcraft-native.py'
+)
+foreach ($name in $updaterFiles) {
     Copy-Item -LiteralPath (Join-Path $runtimeSource $name) -Destination $runner
 }
-foreach ($name in @('intranet.mjs', 'runtime-state.mjs', 'prepare.py', 'stage-runtime.py', 'update-runtimes.mjs')) {
+$localFiles = @(
+    'intranet.mjs', 'runtime-state.mjs', 'consulting-edition.mjs', 'consulting-release.mjs',
+    'consulting-serve.mjs', 'consulting-mcp.mjs', 'prepare.py', 'stage-runtime.py', 'update-runtimes.mjs'
+)
+foreach ($name in $localFiles) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $local
 }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'workspace') -Destination $local -Recurse -Force
-[IO.File]::WriteAllText((Join-Path $runner 'settings.json'), (@{ chrome = $chromePath } | ConvertTo-Json))
+$gitPath = if ($Git) { (Get-Item -LiteralPath $Git).FullName }
+$settingsFile = Join-Path $runner 'settings.json'
+$previous = if (Test-Path -LiteralPath $settingsFile) {
+    Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json
+}
+$slipcurveBrowser = if ($SlipcurveChrome) { (Get-Item -LiteralPath $SlipcurveChrome).FullName } else { $previous.slipcurveChrome }
+[IO.File]::WriteAllText($settingsFile, (@{ chrome = $chromePath; slipcurveChrome = $slipcurveBrowser; git = $gitPath } | ConvertTo-Json))
 & $node (Join-Path $local 'update-runtimes.mjs') verify --root $installationPath
 if ($LASTEXITCODE -ne 0) { throw 'An installed application failed its updater regression. The launchers were not switched.' }
 
-foreach ($name in @('intranet.mjs', 'runtime-state.mjs', 'Schedule Runtime Updates.ps1', 'Update Runtimes.cmd')) {
+$portalFiles = @(
+    'intranet.mjs', 'runtime-state.mjs', 'consulting-edition.mjs', 'consulting-serve.mjs',
+    'consulting-mcp.mjs', 'Schedule Runtime Updates.ps1', 'Update Runtimes.cmd'
+)
+foreach ($name in $portalFiles) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $installationPath
 }
+$consulting = Join-Path $installationPath 'CONSULTING'
+if (Test-Path -LiteralPath (Join-Path $consulting 'find-node.cmd') -PathType Leaf) {
+    foreach ($name in @('Start CONSULTING.cmd', 'Start Atlas MCP.cmd')) {
+        Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $consulting
+    }
+}
 $template = Join-Path $PSScriptRoot 'Launch Managed Application.cmd'
-foreach ($name in @('cadcraft', 'effectcraft', 'lightcraft', 'vectorcraft')) {
+foreach ($name in @('cadcraft', 'effectcraft', 'lightcraft', 'vectorcraft', 'pdfcraft', 'deckcraft', 'soundcraft')) {
     Copy-Item -LiteralPath $template -Destination (Join-Path $installationPath "Storytold/native/launchers/$name.cmd")
 }
