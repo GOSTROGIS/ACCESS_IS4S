@@ -1,0 +1,16 @@
+# Replace @ROOT@ (install root) and @USER@ (app user), copy to /etc/systemd/system/, then
+# systemctl daemon-reload && systemctl enable --now <unit>. All settings come from
+# @ROOT@/config/autocraft.env, which the unit loads as the app user (README, "Production install").
+[Unit]
+Description=AutoCraft incremental sync of the GitHub mirror
+
+[Service]
+Type=oneshot
+User=@USER@
+WorkingDirectory=@ROOT@/app
+Environment=DISABLE_AUTOUPDATER=1
+Environment=PATH=@ROOT@/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/bash -c 'set -a; . @ROOT@/config/autocraft.env; set +a; exec /usr/bin/node --no-warnings @ROOT@/app/src/cli.ts sync'
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full

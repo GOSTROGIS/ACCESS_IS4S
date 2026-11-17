@@ -1,0 +1,27 @@
+[package]
+name = "filmcraft-interchange"
+description = "FilmCraft interchange: CMX 3600 EDL, Final Cut Pro 7 XML (xmeml), FCPXML and OpenTimelineIO import/export"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+craft-timeline = { workspace = true, features = ["xml", "otio"] }
+filmcraft-time = { workspace = true }
+filmcraft-geom = { workspace = true }
+filmcraft-color = { workspace = true }
+filmcraft-media = { workspace = true }
+filmcraft-project = { workspace = true }
+filmcraft-cfb = { workspace = true }
+craft-audio = { workspace = true, features = ["pcm-encode"] }
+craft-aaf = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+[dev-dependencies]
+roxmltree = { workspace = true }
+proptest = { workspace = true }

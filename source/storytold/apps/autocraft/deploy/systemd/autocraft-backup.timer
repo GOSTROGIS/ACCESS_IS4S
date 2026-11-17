@@ -1,0 +1,11 @@
+# Install next to autocraft-backup.service; enable the timer, not the service.
+[Unit]
+Description=Daily AutoCraft database snapshot
+
+[Timer]
+OnCalendar=*-*-* 03:20:00 UTC
+RandomizedDelaySec=10m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

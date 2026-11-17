@@ -1,0 +1,30 @@
+# systemd user unit for the pipeline runner (`autocraft runner serve`).
+# Replace the @...@ placeholders, copy to ~/.config/systemd/user/, then:
+#   systemctl --user daemon-reload && systemctl --user enable --now craft-runner
+# Logs of the runner itself: journalctl --user -u craft-runner
+#
+# @REPO@      absolute path of this checkout
+# @NODE@      absolute path of Node 24 (`command -v node`)
+# @ENV_FILE@  file with the AUTOCRAFT_* variables the CLI and the dashboard use
+#             (at least AUTOCRAFT_DB if not the default); see README
+# @PATH@      a PATH that reaches `jev` and `claude`, which the classify steps call
+
+[Unit]
+Description=autocraft pipeline runner
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@REPO@
+ExecStart=@NODE@ @REPO@/src/cli.ts runner serve
+EnvironmentFile=-@ENV_FILE@
+Environment=PATH=@PATH@
+Restart=on-failure
+RestartSec=10
+# SIGTERM goes to the runner, which stops its jobs (10 s each to end) and
+# exits; anything left is killed when the stop timeout runs out.
+KillMode=mixed
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

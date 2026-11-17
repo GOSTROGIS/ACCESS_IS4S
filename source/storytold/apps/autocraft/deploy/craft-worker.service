@@ -1,0 +1,36 @@
+# systemd user unit for a build worker (`autocraft worker serve`).
+# Install as the user that runs the sandbox (rootless Podman), then:
+#   mkdir -p ~/.config/systemd/user && cp craft-worker.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now craft-worker
+# For a worker that survives logout: loginctl enable-linger <user> (run as root).
+# Logs: journalctl --user -u craft-worker
+#
+# Assumes a checkout of autocraft in ~/autocraft, Node 24 on
+# the PATH below, and the config file ~/.config/craft-worker/config.json
+# (see "Running a worker" in the README). Edit the paths if yours differ.
+
+[Unit]
+Description=autocraft build worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/autocraft
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=AUTOCRAFT_WORKER_CONFIG=%h/.config/craft-worker/config.json
+ExecStart=/usr/bin/env node %h/autocraft/src/cli.ts worker serve
+Restart=on-failure
+RestartSec=10
+# SIGTERM stops running tasks (their containers are killed and removed) and
+# exits; the coordinator requeues them after the heartbeat timeout.
+KillMode=mixed
+TimeoutStopSec=60
+# The worker needs no extra privileges of its own.
+# No NoNewPrivileges= or PrivateTmp=: rootless Podman needs the setuid
+# newuidmap, and PrivateTmp= in a user service adds a user namespace that
+# maps only this uid, so Podman can't map its subuid range. Isolation comes
+# from the containers.
+
+[Install]
+WantedBy=default.target

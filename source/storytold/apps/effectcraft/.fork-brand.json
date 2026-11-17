@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "product": "access",
+  "label": "ACCESS IS4S Motion Effects",
+  "sourceCommit": "91f9e9b1ef1185f4561b21465e83e5387f40c8a1",
+  "status": "Source branding applied; this does not establish that a rebuilt application passed its workflows.",
+  "files": {
+    "docs/brand/artcraft-logo-white.png": {
+      "upstreamSha256": "8b86aeb06a12a90ba77a60e0d90329272310e244ee5c1f9b161b391280ca79d8",
+      "sha256": "81b8838300285c752ecfd7d0112e59a3c01400574e7336b92213b7ee85cb6617",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "docs/brand/artcraft-logo-white.svg": {
+      "upstreamSha256": "a3e03dc49f9ad4225b8517d5424309c8d1c864d3996d862190d9cc797d5af427",
+      "sha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "docs/brand/artcraft-logo.png": {
+      "upstreamSha256": "08fc6d9d3717e8f13417bac6f9025b50e11d1e0b32e9e000883d2fe0c4a0c67b",
+      "sha256": "81b8838300285c752ecfd7d0112e59a3c01400574e7336b92213b7ee85cb6617",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "docs/brand/artcraft-logo.svg": {
+      "upstreamSha256": "3188971e1affdf4f6be4fa65f715376a7a305e6aa741ec78b0296c8f934eff08",
+      "sha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "docs/brand/artcraft-mark-black.png": {
+      "upstreamSha256": "5954cc0306e1b9d7beb47097e2e842157113a39d9aba078b57304902687936a9",
+      "sha256": "81b8838300285c752ecfd7d0112e59a3c01400574e7336b92213b7ee85cb6617",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "docs/brand/artcraft-mark-black.svg": {
+      "upstreamSha256": "570adcb4f7ba8ca0647f97074476bab81d3272988f1cdee52efa21bf026036a4",
+      "sha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "docs/brand/artcraft-mark.png": {
+      "upstreamSha256": "9d372157a949c147318561e629b11561c28b7cbc14c84b516a3fe6e84d8fbbad",
+      "sha256": "81b8838300285c752ecfd7d0112e59a3c01400574e7336b92213b7ee85cb6617",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "docs/brand/artcraft-mark.svg": {
+      "upstreamSha256": "f87af81b6fa411da8820eed2bfdcc54c0ee9cd453b4e868c64f56c69db142d0e",
+      "sha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "README.md": {
+      "upstreamSha256": "20a2ef18e8d44516ec59f2c426448ec2d4528da423de9e5159677901772f6a6f",
+      "sha256": "fe4d78343def6fbfd49ea96423c0bcfc74674a8336fd4e90c5d695dd6cc66dc6",
+      "purpose": "Identify the owner fork; preserve plain upstream credit and licences"
+    },
+    "apps/effectcraft-web/web/index.html": {
+      "upstreamSha256": "3fb03ccd8d46c5839fb2a09b950004b187840867caae49816221ec76559dc0f3",
+      "sha256": "89f0a2120b22a6120855aaba04abaea60769d0e4d946ebf128b9d6067433f42c",
+      "purpose": "Owner window or page display label; no protocol or format changes"
+    },
+    "apps/effectcraft/src/main.rs": {
+      "upstreamSha256": "6f786ae66aae9c6a9a1c122b91aec4accd507e4fb60da4994efff26a0a2f4286",
+      "sha256": "f46b69075fdff17a72e22dae01f6b2ae7a847f5a8f08067ec10007d980dc38df",
+      "purpose": "Owner window or page display label; no protocol or format changes"
+    }
+  }
+}

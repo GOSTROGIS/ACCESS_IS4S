@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "product": "access",
+  "label": "ACCESS IS4S Automation",
+  "sourceCommit": "0bcc1f8d681609233d2f6f0d1f4e359e994079e0",
+  "status": "Source branding applied; this does not establish that a rebuilt application passed its workflows.",
+  "files": {
+    "web/public/artcraft-mark.png": {
+      "upstreamSha256": "9d372157a949c147318561e629b11561c28b7cbc14c84b516a3fe6e84d8fbbad",
+      "sha256": "81b8838300285c752ecfd7d0112e59a3c01400574e7336b92213b7ee85cb6617",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "web/public/artcraft-mark.svg": {
+      "upstreamSha256": "f87af81b6fa411da8820eed2bfdcc54c0ee9cd453b4e868c64f56c69db142d0e",
+      "sha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9",
+      "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    }
+  }
+}

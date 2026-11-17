@@ -1,0 +1,14 @@
+.git
+node_modules
+web/node_modules
+web/dist
+*.db
+*.db-*
+export/
+test/
+deploy/systemd/
+**/.env*
+**/*.db
+**/*.db-*
+.claude/
+CLAUDE.local.md

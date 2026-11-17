@@ -1,0 +1,31 @@
+[package]
+name = "designcraft-images"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "DesignCraft placed-graphic decoding: raster formats (PNG, JPEG, GIF, WebP, TIFF, BMP, PSD) and SVG"
+
+[lints]
+workspace = true
+
+[dependencies]
+craft-eps = { workspace = true }
+craft-svg = { workspace = true }
+designcraft-color = { workspace = true }
+designcraft-fonts = { workspace = true }
+image = { workspace = true }
+skrifa = { workspace = true }
+log = { workspace = true }
+craft-cms = { workspace = true }
+quick-xml = { workspace = true }
+craft-image-codecs = { workspace = true }
+craft-psd = { workspace = true }
+craft-file-formats = { workspace = true }
+# Reduced-size JPEG decoding (1/2, 1/4, 1/8 through the DCT) for screen proxies.
+jpeg-decoder = { version = "0.3", default-features = false }
+
+[dev-dependencies]
+image = { workspace = true, features = ["png", "jpeg", "webp", "gif", "tiff", "bmp"] }
+designcraft-fonts = { workspace = true, features = ["testing"] }
+flate2 = "1"
+tiff = { workspace = true }

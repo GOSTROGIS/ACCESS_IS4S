@@ -1,0 +1,22 @@
+[package]
+name = "designcraft-textimport"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "DesignCraft text import: plain text, Word (.docx) and RTF into stories"
+
+[lints]
+workspace = true
+
+[dependencies]
+designcraft-doc = { workspace = true }
+craft-rtf = { workspace = true }
+craft-xlsx = { workspace = true }
+craft-docx = { workspace = true }
+craft-wordmodel = { workspace = true }
+craft-idml = { workspace = true }
+craft-file-formats = { workspace = true }
+zip = { workspace = true }
+
+[dev-dependencies]
+zip = { workspace = true }

@@ -1,0 +1,10 @@
+# Install next to autocraft-sync.service; enable the timer, not the service.
+[Unit]
+Description=Run the AutoCraft sync every minute
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=1min
+
+[Install]
+WantedBy=timers.target

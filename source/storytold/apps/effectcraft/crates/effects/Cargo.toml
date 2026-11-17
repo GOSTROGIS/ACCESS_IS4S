@@ -1,0 +1,26 @@
+[package]
+name = "effectcraft-effects"
+description = "Effect registry (specs, parameters, categories) and CPU implementations of the effects library"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+craft-cms = { version = "0.1.0", git = "https://github.com/storytold/craft-libs", rev = "58964adec11197594d9b6b79a94ae6232221211a" }
+effectcraft-geom = { workspace = true }
+effectcraft-color = { workspace = true }
+effectcraft-keyframe = { workspace = true }
+effectcraft-project = { workspace = true }
+effectcraft-raster = { workspace = true }
+effectcraft-segment = { workspace = true }
+effectcraft-track = { workspace = true }
+rayon = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+log = { workspace = true }
+chrono = { workspace = true }
+

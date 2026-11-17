@@ -1,0 +1,26 @@
+# Replace @ROOT@ (install root) and @USER@ (app user), copy to /etc/systemd/system/, then
+# systemctl daemon-reload && systemctl enable --now <unit>. All settings come from
+# @ROOT@/config/autocraft.env, which the unit loads as the app user (README, "Production install").
+[Unit]
+Description=AutoCraft pipeline runner (also serves the worker API)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=@USER@
+WorkingDirectory=@ROOT@/app
+Environment=DISABLE_AUTOUPDATER=1
+Environment=PATH=@ROOT@/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/bash -c 'set -a; . @ROOT@/config/autocraft.env; set +a; exec /usr/bin/node --no-warnings @ROOT@/app/src/cli.ts runner serve'
+Restart=on-failure
+RestartSec=10
+# SIGTERM stops the jobs (10 s each to end); the rest is killed after the stop timeout.
+KillMode=mixed
+TimeoutStopSec=30
+# Lighter than the dashboard: jobs run git, gh, claude (in bubblewrap) and jev.
+# No NoNewPrivileges=: bwrap needs its AppArmor profile transition to create user namespaces.
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

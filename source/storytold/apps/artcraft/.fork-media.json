@@ -1,0 +1,500 @@
+{
+  "files": [
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Baseball Bunt.webp",
+      "upstreamSha256": "6a5568fb208d26cc743e57978328478fc94fe6b385b2d843a4207c653e575bf0",
+      "replacementSha256": "1881d6e8c54215c02b43e7343a2f9194ab3e84d919f0c3c885ab59f190ca7c14",
+      "bytes": 56208
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Breakdance Ready.webp",
+      "upstreamSha256": "ab53275a7d4d172fa9d632dd0d65803ea6c37854d91672bfafd32b6cad6a0c19",
+      "replacementSha256": "392893e728bd4604b1e4f5adbdf75def5cd93d4b1daa631c6df7ea48e134eec4",
+      "bytes": 57506
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Breakdance Uprock Var 1.webp",
+      "upstreamSha256": "9509b7c25f1d9e99eb1591a10aac9e61b6f29a756368e6e87b9d365ffd0e3031",
+      "replacementSha256": "392893e728bd4604b1e4f5adbdf75def5cd93d4b1daa631c6df7ea48e134eec4",
+      "bytes": 57506
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Catwalk Walk Forward Crossed.webp",
+      "upstreamSha256": "78d763f03b85b85226f18cc11fa9abfef5dc110dd19f62c8a5f1218365110f00",
+      "replacementSha256": "06efb78a446caf814cfaddcc3cbfed907aa5f2cde1ca4db274a515adc77a3dce",
+      "bytes": 58526
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Convulsing.webp",
+      "upstreamSha256": "a8d766c5319d84f2cdca987546d696e0283fd6658206f26f2faf346feff679ae",
+      "replacementSha256": "8317d2dfc13313fdb539ea9bfcb74ca8f40bdee49c5d8010fdc17b56ce8c330e",
+      "bytes": 55058
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Corkscrew Evade.webp",
+      "upstreamSha256": "271e68403257c5f38fbcd2d0a8ca2236f43c2e428a6ce72c3ede9eafe768e85d",
+      "replacementSha256": "40787e868ec163afb1f45f54ccf589fea0edbd1a588aade388acda7322eac106",
+      "bytes": 60108
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Femme Peek Around Corner.webp",
+      "upstreamSha256": "1c89fb22f3380117ad7c4411ec0e5c29914cddefc97341f1177264c30dd6b0ff",
+      "replacementSha256": "e53e02ed227fbdfb2b80f4605b92549596bfb193d1b8e311967b01388ae13610",
+      "bytes": 53566
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Getting Bit.webp",
+      "upstreamSha256": "63d893f5d39147aa94151ab109a99fdc4ed4af9698174d08aa483cff7a1e4e6f",
+      "replacementSha256": "1881d6e8c54215c02b43e7343a2f9194ab3e84d919f0c3c885ab59f190ca7c14",
+      "bytes": 56208
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Ginga Variation 3.webp",
+      "upstreamSha256": "f70f58e334f248052cd9d24e096f86f44d6dce76a67e6209dc1f037978d2aea9",
+      "replacementSha256": "40787e868ec163afb1f45f54ccf589fea0edbd1a588aade388acda7322eac106",
+      "bytes": 60108
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Great Sword Impact.webp",
+      "upstreamSha256": "3c7fb697733c09968ef1c54e63a949c6930f8f6fa3ec9aad8664639bd9077284",
+      "replacementSha256": "752a144a38b068b4ae9193918c04f7c379526ccd2409220013dcf239d96eeffa",
+      "bytes": 52454
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Jump Forward.webp",
+      "upstreamSha256": "fdf3a6f6ac9958bcac44b4eedf44108d75c2b07f71cd28e478b47f3711aa6ae8",
+      "replacementSha256": "6e34a73425a9e4fbea91a3dcb25e035841c351530f6f13f3e50bb1c39394fefb",
+      "bytes": 54344
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Laying Breathless.webp",
+      "upstreamSha256": "16082b43c7858bbdcf0c33a95215841d57c4538e110b50a05b91a28e3651b47e",
+      "replacementSha256": "ac38c118fba2b5e331beaf0f64da40b841ee288af1cc776f4664793c4eb1075f",
+      "bytes": 50306
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Leaning.webp",
+      "upstreamSha256": "866556deebdfdf3b4179ca979aae41826236028b6a3a83f118ee3cc0db401b4a",
+      "replacementSha256": "2f14acdd6d93b4ac2074e28d792d9f370befd9e45340002b2f11505b6ce19b63",
+      "bytes": 67592
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Lengthy Head Nod.webp",
+      "upstreamSha256": "c1bd2831efcb2ae9c2429eeeaf1f1d595851b4d626a98e006c1acf0598f0517c",
+      "replacementSha256": "4df113b646afc5c78cd61f1a65ba51cc0ed0bd4bc7d6560dc75826db3a00ad1b",
+      "bytes": 54950
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Look Around.webp",
+      "upstreamSha256": "2c6ba6b84bae42b178de429b2d39563c34f9c0402aa65078ec52b938180d2540",
+      "replacementSha256": "4df113b646afc5c78cd61f1a65ba51cc0ed0bd4bc7d6560dc75826db3a00ad1b",
+      "bytes": 54950
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Orc Walk.webp",
+      "upstreamSha256": "dc2a6f520e3c787094f7153ba15e024c09230ceb522585b58c7330d3308ee61a",
+      "replacementSha256": "034d680ffe94892e09f2f4862b3d6f7fd368afcae906ca7e5c7a55101cb07a41",
+      "bytes": 58542
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Pushing.webp",
+      "upstreamSha256": "df6b0d40f361b552551747bcad944b1b10b87b2dd8fe823e7ead88cd26d03d2b",
+      "replacementSha256": "1881d6e8c54215c02b43e7343a2f9194ab3e84d919f0c3c885ab59f190ca7c14",
+      "bytes": 56208
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Right Hook.webp",
+      "upstreamSha256": "0a3206349616bdcb3121899a2526c8902ca773c57542a6c0070869c814029a16",
+      "replacementSha256": "d75be3f43e0b2a457301547858ad94dd2d05ac89bdb96b71e005e006bc47bac4",
+      "bytes": 49194
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Right Strafe Walking.webp",
+      "upstreamSha256": "63c9f71a6169e18ea0388766db61307ed9f2e021d59c24f7c63ef3e60de33372",
+      "replacementSha256": "06efb78a446caf814cfaddcc3cbfed907aa5f2cde1ca4db274a515adc77a3dce",
+      "bytes": 58526
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Run Look Back.webp",
+      "upstreamSha256": "ab16ef35412a6d0fb75bbc4c9c109b9003358ea5917607676296426510891d31",
+      "replacementSha256": "267832d12f4ac230b1dcac471a7af30dbb89e668149ed8d8c317c410cd0c5020",
+      "bytes": 62054
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Sitting Yell.webp",
+      "upstreamSha256": "148aa05680ce1cff94a0ebb4098ba023d80c66d6001f796456eec917a6794730",
+      "replacementSha256": "ed0af189717dde5ad88e5e89439e1fa45462e12b85b5c8b3bfd1171813cd09cf",
+      "bytes": 58722
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Sneaking Forward.webp",
+      "upstreamSha256": "45699f89552b65174041321e8b1656b65416308cd9e21cb10608e94683a70daf",
+      "replacementSha256": "034d680ffe94892e09f2f4862b3d6f7fd368afcae906ca7e5c7a55101cb07a41",
+      "bytes": 58542
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Standard Walk.webp",
+      "upstreamSha256": "009d04fdb7f8cb689eae975444f5337f400c8bcfa0bbb0dfa6b30a24399f8be3",
+      "replacementSha256": "06efb78a446caf814cfaddcc3cbfed907aa5f2cde1ca4db274a515adc77a3dce",
+      "bytes": 58526
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Sword And Shield Casting.webp",
+      "upstreamSha256": "9af0126969f96360454cd97208ddf3dbf75a098a369cd4eda351d7a20589115a",
+      "replacementSha256": "752a144a38b068b4ae9193918c04f7c379526ccd2409220013dcf239d96eeffa",
+      "bytes": 52454
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Sword And Shield Jump.webp",
+      "upstreamSha256": "9a0f28d5103dea08280b05dcf4017243a3a9de8c3ae2f01901fa8d9dc7403908",
+      "replacementSha256": "6e34a73425a9e4fbea91a3dcb25e035841c351530f6f13f3e50bb1c39394fefb",
+      "bytes": 54344
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Texting While Standing.webp",
+      "upstreamSha256": "658ff4e6384b8203759e2525f0da5c8a94eef7da7e72bc53aa9e0f8167401ea1",
+      "replacementSha256": "891f7340efbf05b39719be8b01aa214a9c37a8a4f24b99b98a8b5d002a4b1df7",
+      "bytes": 57586
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Texting.webp",
+      "upstreamSha256": "e1eca7f6b26d21f1dea2d6a210385676b19f5ddd2b029e86d4b0cf77201d58fe",
+      "replacementSha256": "baf8cb6ee3f25883fa4361d917cc8c04744577870bfde178a09bae5ca40f3b1c",
+      "bytes": 60516
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Tonic Seizure.webp",
+      "upstreamSha256": "e0d0fb862fea7c9f27a20def413832ca8935d20122d03b7d587f2d96f1a97d9f",
+      "replacementSha256": "8317d2dfc13313fdb539ea9bfcb74ca8f40bdee49c5d8010fdc17b56ce8c330e",
+      "bytes": 55058
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Twist Dance.webp",
+      "upstreamSha256": "2afa2eb3ba0f558a6836daa64bcf585749f79d3558936f03b26b65f00c40f09b",
+      "replacementSha256": "40787e868ec163afb1f45f54ccf589fea0edbd1a588aade388acda7322eac106",
+      "bytes": 60108
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Uppercut.webp",
+      "upstreamSha256": "7550054bffe5450e23be46f5b26ad2ce4131ef246176bfd8df42280fe6429e18",
+      "replacementSha256": "34d3c26b730da8b0eb007889a47c34e1dd90e79116661bb325c447d1e22a3993",
+      "bytes": 48752
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/characters_gif/Zombie Biting.webp",
+      "upstreamSha256": "6eafe573b6b872007a594333ea36f208f1efbe16bf3661f020f88f8b6bbfc8a3",
+      "replacementSha256": "1881d6e8c54215c02b43e7343a2f9194ab3e84d919f0c3c885ab59f190ca7c14",
+      "bytes": 56208
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/memes/doge.jpg",
+      "upstreamSha256": "786c0c91e3da14f38fe8e1838ea537227f8f4da113fb21e638b87b65080e48ad",
+      "replacementSha256": "378e1ee44e6d903931167af7cfb71e4b85d75bc8fa276c31237d77b78af7ed73",
+      "bytes": 243583
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/memes/grimace.jpg",
+      "upstreamSha256": "5b82ea6fdc247327712b7d3b06b06cc6d0a4107c8ff6e95b88ee08ec6504c78f",
+      "replacementSha256": "263ed9b961c6500e3aaaa03b6abb22269bb936e01ce7620f899c7bd3111c010f",
+      "bytes": 288727
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/memes/jd_vance.jpg",
+      "upstreamSha256": "e670ae163b91490c3fa178d42efd157e9224f22595992fff4fa791c9fefe63fa",
+      "replacementSha256": "3bc9f2a24a7363180bd570a73f1c2b6426ed71b90e6a5945663482a1a4727532",
+      "bytes": 219476
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/memes/lil_jd.jpg",
+      "upstreamSha256": "9d8ad1fe8938c43538709fa63e0980474b9dbe074105e5a175602b43bf2af952",
+      "replacementSha256": "99a9a3460cfc465d7b9497450265d96f3806234a7ea9dfc40e41b70721328021",
+      "bytes": 264904
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/memes/roblox.jpg",
+      "upstreamSha256": "5c324c58618a0863b4198e3e2f59f83418dbe13534a345611873490d4a0dde9f",
+      "replacementSha256": "27ac343bfb52afc5db0d4b4b29cca76d4fcfb950e67971f70aa5c31cb4e6016f",
+      "bytes": 234600
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/memes/toothless.jpg",
+      "upstreamSha256": "39e4097d9e057a1f775fd0332f87d396a3d7f45cfe000b31ab1224a50e9bb48a",
+      "replacementSha256": "a98ab7f1622ae9b3d438b235f4448e5c6c4a610abc18538290e4f75332ce1849",
+      "bytes": 266095
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/pose/Lumine Idle cycle.vmd",
+      "upstreamSha256": "65ed7fe63b3311993d732463e5bf515d847ade62f6c9e4b54e59bfdd7e269779",
+      "replacementSha256": "7d35cbea801643fa3bb4b40da961af9c2c78d460e39c8b9338bbcdf2fc0f9f31",
+      "bytes": 5513
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/gray/Sky_AllSky_Overcast4_Low_Cam_0_FrontZ.webp",
+      "upstreamSha256": "1c7c235fbebcb840b5acd815bc8438f5097f48b612bbad2c27d2c382f32c66db",
+      "replacementSha256": "98e32200799e3a6f25cb562b831eed401e429f32703892910182b132c727e5b2",
+      "bytes": 47186
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/gray/Sky_AllSky_Overcast4_Low_Cam_1_Back-Z.webp",
+      "upstreamSha256": "f637a51d78222be07435f830e3077ecb940bdfa502e3ba50f09d00a84cc9ef45",
+      "replacementSha256": "a3cf516c8c64dadabab4ab6d7c38f4b069434690465eb1df0842c08c331099ee",
+      "bytes": 45610
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/gray/Sky_AllSky_Overcast4_Low_Cam_2_LeftX.webp",
+      "upstreamSha256": "9b72634529cff259e54f561bf70eb1613f816240dce8ce9c9b8b4fd1627f4f59",
+      "replacementSha256": "2e95ac9b13dc102eac8fe909af4a754464db56dbf4a0c12592ed852e0a5a7b6d",
+      "bytes": 39520
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/gray/Sky_AllSky_Overcast4_Low_Cam_3_Right-X.webp",
+      "upstreamSha256": "bf279cd39db80a15c8bef3d6b02c9531213508dae1bad8deb1f8c799ef9666f5",
+      "replacementSha256": "fac04f0e2631caf0c317964d3b10245916027605567cac54ce4c27f37c901a77",
+      "bytes": 41386
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/gray/Sky_AllSky_Overcast4_Low_Cam_4_UpY.webp",
+      "upstreamSha256": "e102d0fcd1d6920775ed263069f210b42329b22b583cb7ceeb957e20564f08c4",
+      "replacementSha256": "b31e0d900e76a50c6e5727ae827234c40a1b409cdb7c8dd74e65727d331a44d8",
+      "bytes": 48078
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/gray/Sky_AllSky_Overcast4_Low_Cam_5_Down-Y.webp",
+      "upstreamSha256": "46321f6f04b88443d33ee28209f9e26187cf4544f297fb0ae3408bb4f8ed874e",
+      "replacementSha256": "1d706ea8edc0dde2b18c02bb5d576a01046915bea5637258986a9d9f70a47ac7",
+      "bytes": 33012
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/night/Night_Moon_Burst_Cam_0_FrontZ.webp",
+      "upstreamSha256": "a03d30e6e153b89082300093b11fbadc4613bda1a5cd5a9ac243f20fafc2a8c7",
+      "replacementSha256": "7227b2b070cee286c00eee1e2f6546b805e927ca7e6b4dd76fd8d24c44496666",
+      "bytes": 63906
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/night/Night_Moon_Burst_Cam_1_Back-Z.webp",
+      "upstreamSha256": "6387f693d0612e5b4864ef785d4244e41ca55ac58aa46cf36a17e987b91ea27e",
+      "replacementSha256": "d30e8f888b463043530f7d74c03738958b58fe960e5fe967c2526b9cd2abc85b",
+      "bytes": 56352
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/night/Night_Moon_Burst_Cam_2_LeftX.webp",
+      "upstreamSha256": "07020258a1ec88a76d6829f8069b3ba430d4919a7dec8ea63dcf7a8e8068de2c",
+      "replacementSha256": "638241a4575b3635c14768b93e85ff5bc163507d382bd313bec737ce7698efe9",
+      "bytes": 63276
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/night/Night_Moon_Burst_Cam_3_Right-X.webp",
+      "upstreamSha256": "dd050ffbbf398462561dde9554cf7df95de748b0b1feb5299c0c24d7610859a8",
+      "replacementSha256": "94cedfc00a827a58dadfc60eb978801b5353ed00e47040b4d098099a6bf4df2d",
+      "bytes": 80036
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/night/Night_Moon_Burst_Cam_4_UpY.webp",
+      "upstreamSha256": "37ea44b1e4522c2880b22024c16c2f4a50e0e1e6a9d492ee9588a0b3c62d73a7",
+      "replacementSha256": "4aa79abb9cf5c8333d99c5af19116cead4e3e6f2aa2d93432c31411fda13ec27",
+      "bytes": 118944
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/skybox/night/Night_Moon_Burst_Cam_5_Down-Y.webp",
+      "upstreamSha256": "0fb55eb6092ee2f2d5446550edcd5e62ef2b6e3b4cbfda6deec30c758a78852d",
+      "replacementSha256": "b000f4451ad344c44bc50aa60e7f9f219d83751cc124445dd2b4278c70253160",
+      "bytes": 35172
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_101.wav",
+      "upstreamSha256": "f77a1685ea54d1706f5458d1d3dfe6dc352b68d115b71fca994e2801e02531db",
+      "replacementSha256": "f3f3a1d79985c335281efe0540f35249f1365b794b9077a69d5fdf039e7811b8",
+      "bytes": 91772
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_102.wav",
+      "upstreamSha256": "42104b87354732b918d362f1a87ed4154da28b4710aeefd28ea02e8348d3f6b6",
+      "replacementSha256": "9ca9273da060e98e6d64ca7e83bb00241be9f1e10619b5f55f16d91068f741da",
+      "bytes": 82952
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_111.wav",
+      "upstreamSha256": "2b9bbd32e51a40cc8e156b90010d46fd4e7022da3566aef8a9f9666726ea4b2b",
+      "replacementSha256": "24fd2c00c8d4e707108cb066a90c9e591b13a5eb776247080b566881370b10f5",
+      "bytes": 49436
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_113.wav",
+      "upstreamSha256": "51e17efdecb0d6fb52e784c0022e1dbecdb50076f848619b20cc6b400b6dee06",
+      "replacementSha256": "85340c5d40776e083f0393aaf09945b66e6780062eb5d64a952ef173cc31ca3b",
+      "bytes": 150148
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_135.wav",
+      "upstreamSha256": "798637ea8680bc8679a62b54b36c58e35e6158b0e4d549cf6b8efdafb5e42d93",
+      "replacementSha256": "ca4f3156eb17ce52a27b4930f34557747a3c3b1016dc71524efb7c3a9bb27a67",
+      "bytes": 86480
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_173.wav",
+      "upstreamSha256": "b6d687c2a506cf076c65e0c7187c0e79178ec92e168d8191674200f7e34b7d58",
+      "replacementSha256": "79111535a1dc020a63b8973687fabc35a0670980fde4f366b2def2f5bd409cf4",
+      "bytes": 145172
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_174.wav",
+      "upstreamSha256": "4122ff2ac8cce427edd2b1c4dc71342e3408f377bb7bddfccbbd76a8b1c51cdd",
+      "replacementSha256": "4ae03fba7090ef1c5297d57164563e4d37ae7cbcfa7efa3deb8df726be48bd16",
+      "bytes": 148464
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_175.wav",
+      "upstreamSha256": "17c6de1302bca88286527e3587799858f2bd6cf3b2300dda8adfca8b14bb89a8",
+      "replacementSha256": "c879b642e21b67fe7b2a688b0319d6079e47f228236bbbd03cf08583959017ac",
+      "bytes": 144636
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/goldensun_214.wav",
+      "upstreamSha256": "657505ae5d5b6b2eb17e1f59046d12901a0aaba56cae6ad284dac6eb3b4d4a32",
+      "replacementSha256": "7dfb2e58f08efacf838ef1c028b584cbb5818e2495ba19b2bc7ca506ff77387f",
+      "bytes": 142928
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/metroidprime_UI_12.wav",
+      "upstreamSha256": "142b8b1092fb548c13a882d4b133b4dc99a5837780d220c514f241116b484caa",
+      "replacementSha256": "5c0f8aa441efb9d495b697c899025be90a280d80b193715efdf303b7e7e1ecd1",
+      "bytes": 13032
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/metroidprime_UI_13.wav",
+      "upstreamSha256": "86cd5f9340ba3f3a903a83a6f54222486de2934356af86b3db963905ae9a135c",
+      "replacementSha256": "59f4812b87bcf323c29745aecd644e465770271c4869535608dc800344ddc0f7",
+      "bytes": 13004
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/metroidprime_UI_14.wav",
+      "upstreamSha256": "eeafb602b66abbffa3afa77984e119b41f8d07ea63697ff47117127a9b8a098e",
+      "replacementSha256": "2425d7fc10c25cc3ff4272b3e9e2ddfee6602bc27d035971f65380ae64650023",
+      "bytes": 7140
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/metroidprime_UI_15.wav",
+      "upstreamSha256": "487c2978d7dc2d284b5aa72f9ba4ce51a4e46f96063f161d050688630da0f78a",
+      "replacementSha256": "ec29df27e4b253fd3f9237ec7966e7efc31d7fa76590b81b6217a47828770f18",
+      "bytes": 3128
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/metroidprime_UI_18.wav",
+      "upstreamSha256": "a822c9e6ce5fefc21a500d6a06fc5e09f96ce7187fc275a3abf32604f713eb5c",
+      "replacementSha256": "87676ebca8abefd382de94927a8de5bb16bf7b69ea79d3ab7dd9942d051596a0",
+      "bytes": 5700
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/metroidprime_UI_51.wav",
+      "upstreamSha256": "4d599f73434d383add45d5631ab66c52554c297c63d8ee7a932da1b4ed5d5a0c",
+      "replacementSha256": "6601ab5c37bd67599c77cbb267c93832dd7a8f59d99abb691636e867999643cf",
+      "bytes": 16194
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/metroidprime_UI_52.wav",
+      "upstreamSha256": "5b4a10df73c33a6efeb416c0972747b56eb87dc7d4f0825a47918f6cb1197a5c",
+      "replacementSha256": "e203e65a5f42c25982802d7d90293eb3cd74200d2734674ebafbff304b4857c9",
+      "bytes": 23276
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/oot_dialogue_done.wav",
+      "upstreamSha256": "347296f806cd3285db95bb4629b13edd04692edb6c22c84c5aa8650d4a96b82a",
+      "replacementSha256": "910d5aab92f27fa1b837001d6fce0c33e5b5408075442fd4408748519b665724",
+      "bytes": 101720
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/oot_dialogue_next.wav",
+      "upstreamSha256": "ddf98c9211cccec89a179031a3666c44ad0a6586f295ba7b19379a9958ddcf23",
+      "replacementSha256": "e966435b3abe6521e902a2d0d60d0696c8cd8761bb92a5e7b9ad816a771e0dd5",
+      "bytes": 24464
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/oot_scrub_crumble.wav",
+      "upstreamSha256": "d710d74c68326a5140ad3d46d48a66d7fa79d1a5381aa0fe94206c80540df32a",
+      "replacementSha256": "8c022523e99f8e5301f5fd79dc71c83f7ef03525874f551d262b91eb34b21bad",
+      "bytes": 23794
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_character_extrapower.wav",
+      "upstreamSha256": "1416b0197b1baf83f4e969985ecfd970c8045c7121834faad34fc5f4f19c4995",
+      "replacementSha256": "9d5f60c9abee5dd55da45a132a5a3ce19f11690a45b97cac4187a31f789a4a49",
+      "bytes": 139308
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_click.wav",
+      "upstreamSha256": "298699fc9647882ef254527243a9dfc5355132067ac10cb659db3d58faa53ad8",
+      "replacementSha256": "ec5787ce8d9d1c1eb7cd2927d2d1b8aeca3a6beec66305d353da6386a03ed726",
+      "bytes": 19500
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_correct.wav",
+      "upstreamSha256": "add6e59aa33a19a0c84205a92b0fe3a1f191f58d337c3a35b7d1e7cd4299648e",
+      "replacementSha256": "031a9d09f81ba829322b96843108149e2f30071cc74c52e902bf9f6bfffeeab6",
+      "bytes": 74796
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_drybones_crumble.wav",
+      "upstreamSha256": "ee224b0d18e3d2705df68c783d3337e8f9265042f1c0917ed414a1238708df66",
+      "replacementSha256": "5a8bff018905ba3952e6cde5332c2c0d089a296f8692c1e0cd2b9dea37bed25a",
+      "bytes": 42028
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_enemy_spikethrow.wav",
+      "upstreamSha256": "f9835aac4b15aa902a8c37a6ca9a5943fc7bba85e92b4df0ae19026d22c839b8",
+      "replacementSha256": "04da761a68bd2409dbd04bd7fcef6de3f6e3f3de78e6eaabce6b9670775f5dea",
+      "bytes": 18476
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_flower.wav",
+      "upstreamSha256": "151db04e985a111e566ac0304d6d3d775c0291b55657040084488180ebee1aa9",
+      "replacementSha256": "e8c778a26426a5ce9dc4cf0dcaf5fe8e37b0a1726d3c618206bef4b73eae4641",
+      "bytes": 58412
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_ghost.wav",
+      "upstreamSha256": "f6875482b8af41ecd3f125251c68726c1b30bf36f55bb2f0f966c47f31ef26d9",
+      "replacementSha256": "d08b6e1aa130e7ad8ab63c066817ff5ff187609b0200a80260dda80037413cfc",
+      "bytes": 79916
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_mario_giantshellkick.wav",
+      "upstreamSha256": "3a5c02006fcef8f9b398ff32926ed91978466daf149e0f5863599a4ebaf0c47e",
+      "replacementSha256": "f3f89d57c280f1ddaa3798905313eee85d4dc78646428691262f8d4e56ba7a2e",
+      "bytes": 49196
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_specialflower.wav",
+      "upstreamSha256": "cc9fd6efe25405b3b2a21ea5208b339aad521964a3cd9a65132ab1bbd4e71ddc",
+      "replacementSha256": "c584fe2db3ce376fa841cdc8bcfc579cda5d6df99a3723a84458e99d4a376258",
+      "bytes": 73772
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/sound/smrpg_wrong.wav",
+      "upstreamSha256": "93b2883bbe44b6889c1a2992db39848d78d61c7c40a41b785a62ed2446235867",
+      "replacementSha256": "59710b0dafae0e9f336553b31fcc5b52d955fb9113133e56277829ca2e30f0c7",
+      "bytes": 37932
+    }
+  ],
+  "assets": 79,
+  "creation": {
+    "reactions": "Original built-in imagegen images converted with genuine PhotoCraft0.23.1",
+    "skyboxes": "Original built-in imagegen panoramas projected to the existing cube faces",
+    "sounds": "Original synthesized multi-note PCM cues",
+    "motion": "Original skeletal idle animation",
+    "previews": "Original code-native animated humanoid illustrations"
+  },
+  "product": "ACCESS IS4S",
+  "formatChecks": {
+    "assets": 79,
+    "counts": {
+      ".webp": 43,
+      ".jpg": 6,
+      ".vmd": 1,
+      ".wav": 29
+    },
+    "allDecoded": true,
+    "all31PreviewsAnimated": true
+  },
+  "motionCheck": "Actual application MMD parser decoded49keys,7bones and2seconds",
+  "integrationStatus": "Resource formats and reference paths verified; rebuilt application workflows remain separate"
+}

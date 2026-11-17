@@ -1,0 +1,25 @@
+# Replace @ROOT@ (install root) and @USER@ (app user), copy to /etc/systemd/system/, then
+# systemctl daemon-reload && systemctl enable --now <unit>. All settings come from
+# @ROOT@/config/autocraft.env, which the unit loads as the app user (README, "Production install").
+[Unit]
+Description=AutoCraft dashboard
+After=network.target
+
+[Service]
+User=@USER@
+WorkingDirectory=@ROOT@/app
+Environment=PATH=@ROOT@/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/bash -c 'set -a; . @ROOT@/config/autocraft.env; set +a; exec /usr/bin/node --no-warnings @ROOT@/app/src/cli.ts dash serve'
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=@ROOT@
+# The settings file every unit sources as shell, the deployed code and the tools on PATH stay read-only for the
+# dashboard, the process that faces the network: it writes only its database, caches and config/secrets.json.
+ReadOnlyPaths=@ROOT@/config/autocraft.env @ROOT@/releases @ROOT@/repo.git -@ROOT@/.local
+
+[Install]
+WantedBy=multi-user.target

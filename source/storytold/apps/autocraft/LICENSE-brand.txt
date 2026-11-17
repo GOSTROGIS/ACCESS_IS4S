@@ -1,0 +1,6 @@
+ArtCraft brand assets
+
+web/public/artcraft-mark.svg and web/public/artcraft-mark.png are the ArtCraft mark, owned by the
+ArtCraft Team. They are trademarks and are not covered by this repository's license. They are
+included, unmodified, only to identify this AutoCraft instance as the ArtCraft team's tool. Forks
+and other deployments must remove or replace them.

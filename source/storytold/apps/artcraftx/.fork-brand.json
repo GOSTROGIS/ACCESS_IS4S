@@ -1,0 +1,303 @@
+{
+  "product": "ACCESS IS4S",
+  "application": "artcraftx",
+  "displayName": "ACCESS IS4S Creative Studio",
+  "changes": [
+    {
+      "path": "crates/artcraftx/icons/128x128.png",
+      "upstreamSha256": "3ce48f45cf63959b4c44be11cd2e87ebbc0f7fa3c5f15e33d56f11de7214cdd4",
+      "replacementSha256": "11440f6fa4e378a5e73788d3bb9698431f75765b8848f24736ad9f99eb66e2c7"
+    },
+    {
+      "path": "crates/artcraftx/icons/128x128@2x.png",
+      "upstreamSha256": "ed677ff568c3cefecec303c3cea5884b3c1f7ee59f6c9b08628a2a09fb55d6e7",
+      "replacementSha256": "8b4694c6343da56bd572413675574345080d9d0095efd4f012af3051f9e79b22"
+    },
+    {
+      "path": "crates/artcraftx/icons/32x32.png",
+      "upstreamSha256": "ffe51ff6e0df0f8ef1d74a6133f1c403594b0de5f240db9f19e3544664c3268c",
+      "replacementSha256": "cfce584fee310fcb6a20371cad11bf908b7962b120f82def443efdea4cf614b1"
+    },
+    {
+      "path": "crates/artcraftx/icons/64x64.png",
+      "upstreamSha256": "acb53b487e7adfe022945b8dd8316f94857e057018a618c02b0ac8c19dd1eb04",
+      "replacementSha256": "07459dc77852d8cf30b0dde34fc94b4a5eb6e148d6ea7efcd31a5af09e9f5f54"
+    },
+    {
+      "path": "crates/artcraftx/icons/icon.icns",
+      "upstreamSha256": "187e91a7ab0d2e53a3a6866711a3a305660d1e8064488ebdab2bc85186baaadb",
+      "replacementSha256": "f50ce8e2400631d926d23e984ce3b127412c48f423e0c5d5b687cacbdb92d65b"
+    },
+    {
+      "path": "crates/artcraftx/icons/icon.ico",
+      "upstreamSha256": "6947f93a67bfd396a428062b0d099f920161ba2023881a06e11879c09cf0118f",
+      "replacementSha256": "46b511beedc42668acfd32c3e2b3e2a7891e3e0eaf47779d07cba5b939aab74f"
+    },
+    {
+      "path": "crates/artcraftx/icons/icon.png",
+      "upstreamSha256": "5a75053441feaf53b0b3c1516894655287b0f799ebc7d0055b8041e987a69c78",
+      "replacementSha256": "e45b6bbe6ea1e4844c29be476c9ecdc190aae11f7fb2122c70bf6fc69f369a0b"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square107x107Logo.png",
+      "upstreamSha256": "149236b54d85e3eeac70a3f94a5037e590e18c7b449d6b194e80575087370a06",
+      "replacementSha256": "8408a456991c620a43f02377fe24fe6543ee91b01e9a31331f964e5aab63048e"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square142x142Logo.png",
+      "upstreamSha256": "b6336a07c4b11eabfc7a83d0a474f32903eef40e9c8dc9434460d9b48a4dd693",
+      "replacementSha256": "952f77cfcac1feb1448b8697a71a40d668f3ad160b8ecb759c96bd955af1d6e7"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square150x150Logo.png",
+      "upstreamSha256": "60c80eecc3002a7455bbef31d3fe03d4be1a1bb40bf88d0d9c20a539b7427f40",
+      "replacementSha256": "76e728b5964ee4be5f44c1f895fe88630294ba9a555c51df4f9396db6a86c418"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square284x284Logo.png",
+      "upstreamSha256": "d4ffdb17a34c8417e2a5a84830167089e552460d1855ff0167665c6e5d6d24d8",
+      "replacementSha256": "c7e975acf4949859c3559ff8c2b5e3b03f71b41cc99cabbec636ae76571859bc"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square30x30Logo.png",
+      "upstreamSha256": "9c536f941688ffc1632d92eae068df5f6ee210f034a54328145aed451b2880ed",
+      "replacementSha256": "396bbb7d4d5ac7cea2a7e191c0c24fe9655a2f5a7281f61a6241734875c609b8"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square310x310Logo.png",
+      "upstreamSha256": "469418a03db0666e0c86cdf5fbbd53767ae0a72fe934f8958ba37fb41486e0b3",
+      "replacementSha256": "418ab41c1bed6a66ac5b44660e0a6221a5e80ea58a391252a4a68d15aa82e216"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square44x44Logo.png",
+      "upstreamSha256": "f18e323dac2a69563cf9bfe94e0d2c3c0f522d82e87a565647f659e13c37ee69",
+      "replacementSha256": "5b8097550229170aed7d86749ff1b6af09611a7739ae6238ff49e20f89b86c77"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square71x71Logo.png",
+      "upstreamSha256": "a919c14e306ad4274766cd2333fe096372cafa81cc0e6a9bb5be568ccdab2ac1",
+      "replacementSha256": "b34c2ccf92f619ff102d47d03faf8eeb78831c8c067267b52cf5471bb7128f20"
+    },
+    {
+      "path": "crates/artcraftx/icons/Square89x89Logo.png",
+      "upstreamSha256": "a40bc2c432bb3d9fe7c974ea80bba65582b5ea2495e665160e8153891d728ef8",
+      "replacementSha256": "fa304cf6e59cb47ba9bf406e260c28e42469a561b3cb9f93db5b952a998ef87d"
+    },
+    {
+      "path": "crates/artcraftx/icons/StoreLogo.png",
+      "upstreamSha256": "0b700d273fa7595ddd646a6d9f52c7469e56761d023da5a3cab8846d54dadbac",
+      "replacementSha256": "48a8a6f0c7e8bb120f7d362d74c949174c418c3c65166e44cb5dcb5a35f7556d"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-20x20@1x.png",
+      "upstreamSha256": "0ef31404d9b953f15a6a49d98aaeb1945f510dbcbca8c18364456d6451b979fc",
+      "replacementSha256": "51bf30c6b943d3c9bc25fb4a860c86f3a2044bfb1f2f7052a380d9a74a8de061"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-20x20@2x-1.png",
+      "upstreamSha256": "ce9eebd49288e578872856c7009d7c7e572acae8c17fb085a2a7bfffbb60b452",
+      "replacementSha256": "c6390ef38b2639ef5770d7c48d0d8e88d0a041b307f1e15b2d757be748ddc613"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-20x20@2x.png",
+      "upstreamSha256": "ce9eebd49288e578872856c7009d7c7e572acae8c17fb085a2a7bfffbb60b452",
+      "replacementSha256": "c6390ef38b2639ef5770d7c48d0d8e88d0a041b307f1e15b2d757be748ddc613"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-20x20@3x.png",
+      "upstreamSha256": "b3afb110109b3d3efbc4da756f1a86ffb60eaabd1349e8e748d33a7b0328877e",
+      "replacementSha256": "9809250a5c399fdb0acc414cc348a675f1620caf86ce458e83465ccd544be186"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-29x29@1x.png",
+      "upstreamSha256": "c4103b229a8474f067a723da4e4b571c12e26bfd07eac5963e1e271e667f14e0",
+      "replacementSha256": "52abf57571bb1ae4c5fffb0ec86885ec6e24acdc657914fa9a9b8bd961f13647"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-29x29@2x-1.png",
+      "upstreamSha256": "977ad88e119272760fcafe736142707e0891a72092fca9656fb2879c9bad82ae",
+      "replacementSha256": "cc838907016dd87af12a20237864314cba19b5834410650fd8434118bb6c7e41"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-29x29@2x.png",
+      "upstreamSha256": "977ad88e119272760fcafe736142707e0891a72092fca9656fb2879c9bad82ae",
+      "replacementSha256": "cc838907016dd87af12a20237864314cba19b5834410650fd8434118bb6c7e41"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-29x29@3x.png",
+      "upstreamSha256": "6b7ab09d5ade2e02db1b5b0571c3f1a6f00d1a08964cdda9f9543318013e3d59",
+      "replacementSha256": "9f1059196381768b38ddc2df6b2164728199ccdcb1a55df87d7fb819ca7cddb5"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-40x40@1x.png",
+      "upstreamSha256": "ce9eebd49288e578872856c7009d7c7e572acae8c17fb085a2a7bfffbb60b452",
+      "replacementSha256": "c6390ef38b2639ef5770d7c48d0d8e88d0a041b307f1e15b2d757be748ddc613"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-40x40@2x-1.png",
+      "upstreamSha256": "6784d4e9ccc4712e89135a2be34743877cde0e9b81f66f57fa8cb0da93d684cb",
+      "replacementSha256": "c2e7517029087e1b99edd6755bf1d9c3c66265b2689c79954849fd7f84f42d97"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-40x40@2x.png",
+      "upstreamSha256": "6784d4e9ccc4712e89135a2be34743877cde0e9b81f66f57fa8cb0da93d684cb",
+      "replacementSha256": "c2e7517029087e1b99edd6755bf1d9c3c66265b2689c79954849fd7f84f42d97"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-40x40@3x.png",
+      "upstreamSha256": "1182124335fa0cdafe0eb7b3e75cb0014910bf6aa9cd1aed11098aa2230b58ab",
+      "replacementSha256": "8f6d4ef9c41aebded2d3c08ad6d8142cadfa3491bc44d85980c8bd5fd8af23fd"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-512@2x.png",
+      "upstreamSha256": "a80b1cdf12bfa3a7331d16d10e492c8e2f0fc0799afcc6dc2a25fa002d5cf32b",
+      "replacementSha256": "ed94a7e4ee7178af231678556075f7eeac7bbf891fa8f178cde2e7d83a5ccf7a"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-60x60@2x.png",
+      "upstreamSha256": "1182124335fa0cdafe0eb7b3e75cb0014910bf6aa9cd1aed11098aa2230b58ab",
+      "replacementSha256": "8f6d4ef9c41aebded2d3c08ad6d8142cadfa3491bc44d85980c8bd5fd8af23fd"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-60x60@3x.png",
+      "upstreamSha256": "ef8c2f2e87930c93291235bd105518ec5215a08708f3e85b4a6e4b4edf1a23cb",
+      "replacementSha256": "b738a6ac943921c92f6b81d277c71c7f1ba80a3a0d57033078ea7305195a7cb8"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-76x76@1x.png",
+      "upstreamSha256": "edf24acc2126192c81ef342fcf67e73f6ffdb618ee0b7b2e2cdd1402f17f0494",
+      "replacementSha256": "10386949dd35cbabb7eb513bfe8a1c97d27f5422bc5e748764f00484452aff36"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-76x76@2x.png",
+      "upstreamSha256": "9c98102d4e712bb041f8553bc1ef0dc8b00facb1bd1b87395c144ec6df94816c",
+      "replacementSha256": "9d7c48190b5aa6d90ac68a7ba5e6a812b760d2c7a29e932672a9832c1a9983f9"
+    },
+    {
+      "path": "crates/artcraftx/icons/ios/AppIcon-83.5x83.5@2x.png",
+      "upstreamSha256": "bbaf57d76bca2262ac0e7c2e778e48c49b93b0c236cca9c460d5a598eb97ffc3",
+      "replacementSha256": "c086ba2a5fe188758115257f3d538f4b47e4701df8dcb2c0211acd3e48159407"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-hdpi/ic_launcher.png",
+      "upstreamSha256": "592a4460e0b1fe4e68b501f81a88da4de3d2f23d9f3d0347a87c99b3a058a8ca",
+      "replacementSha256": "ffcb0ee4e9956b868d8a29a52c12888876515ec1bb4dfe575ed0e77021aad657"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-hdpi/ic_launcher_foreground.png",
+      "upstreamSha256": "ce6e5661342dd24f8bf39897cf9b50bbe3d101483ec0d847c534bc5267744eb0",
+      "replacementSha256": "87a31ebd80dbd1ba85a8626927ee545fd809da73ed825014d629f02ebafa36fa"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-hdpi/ic_launcher_round.png",
+      "upstreamSha256": "592a4460e0b1fe4e68b501f81a88da4de3d2f23d9f3d0347a87c99b3a058a8ca",
+      "replacementSha256": "ffcb0ee4e9956b868d8a29a52c12888876515ec1bb4dfe575ed0e77021aad657"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-mdpi/ic_launcher.png",
+      "upstreamSha256": "c2bf33ea4fc09a2baf4f2305cd3bdd472c45c19565edfe89550f87daf409c17d",
+      "replacementSha256": "a95b6f5bd85e5709ec990e377022454992a2bb9fb73f8984d6d33c9bc26d8b20"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-mdpi/ic_launcher_foreground.png",
+      "upstreamSha256": "913a6a64535fd2c80ef4b370923362090c232d662424b117b4d718dc01eb58a7",
+      "replacementSha256": "34894f3c683d7a757a012ba15b00e3c63929d508a21672ed458052914caa7987"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-mdpi/ic_launcher_round.png",
+      "upstreamSha256": "c2bf33ea4fc09a2baf4f2305cd3bdd472c45c19565edfe89550f87daf409c17d",
+      "replacementSha256": "a95b6f5bd85e5709ec990e377022454992a2bb9fb73f8984d6d33c9bc26d8b20"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xhdpi/ic_launcher.png",
+      "upstreamSha256": "796a60fde8f3cd0692b8e0ceb82a50dd269d7777176d434b11e4a4c66e796291",
+      "replacementSha256": "8599817093254e09a88cb62633b2cb95a73a40f5b255223e311bf9d6c9780564"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xhdpi/ic_launcher_foreground.png",
+      "upstreamSha256": "17f277d93bd000da590528691b86e28583b65d0f19efe4e5d2070669cdbab6db",
+      "replacementSha256": "5f02b4c1a0c794c374b7c84e460440cc212969b5302caff6e1f0f5b00adff80b"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xhdpi/ic_launcher_round.png",
+      "upstreamSha256": "796a60fde8f3cd0692b8e0ceb82a50dd269d7777176d434b11e4a4c66e796291",
+      "replacementSha256": "8599817093254e09a88cb62633b2cb95a73a40f5b255223e311bf9d6c9780564"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xxhdpi/ic_launcher.png",
+      "upstreamSha256": "0838457bbf1744366753298224d75992cca22dc6162fccad05cfa36105506e79",
+      "replacementSha256": "f78b3e025d54a450a18b36794e954f02319f7a190bb37052e26f5d2b626887d4"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xxhdpi/ic_launcher_foreground.png",
+      "upstreamSha256": "3f5f92571f9a216eb44b8dccf0408cc7bfb7a4e4718df4119cedf4d95e80be65",
+      "replacementSha256": "d84b986f19f500a582f189d620e0176eec9e1f46ee1f49b145547501ff2e050b"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xxhdpi/ic_launcher_round.png",
+      "upstreamSha256": "0838457bbf1744366753298224d75992cca22dc6162fccad05cfa36105506e79",
+      "replacementSha256": "f78b3e025d54a450a18b36794e954f02319f7a190bb37052e26f5d2b626887d4"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xxxhdpi/ic_launcher.png",
+      "upstreamSha256": "5337cb675f49f0b8ce8333648029c74e1fb560e0b3d13de4bfebbe138703d84b",
+      "replacementSha256": "45fd042a4da448f3debc1ba76baaeab2d1f68e99546af139dcd06bc91d63c887"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xxxhdpi/ic_launcher_foreground.png",
+      "upstreamSha256": "9218f4536f1e64282e72b463a5cf3f0c0eda3817d8aefca316f4ff521565418c",
+      "replacementSha256": "e141944d56cf57e5f3cff31ee2129ee3e6cf97af050f6b075465418f0d80ed30"
+    },
+    {
+      "path": "crates/artcraftx/icons/android/mipmap-xxxhdpi/ic_launcher_round.png",
+      "upstreamSha256": "5337cb675f49f0b8ce8333648029c74e1fb560e0b3d13de4bfebbe138703d84b",
+      "replacementSha256": "45fd042a4da448f3debc1ba76baaeab2d1f68e99546af139dcd06bc91d63c887"
+    },
+    {
+      "path": "docs/images/artcraftx-screenshot.png",
+      "upstreamSha256": "4b2cc858acc379550ea1122a46d352458c09a61281970ad26cc84213c709d02b",
+      "replacementSha256": "005a3334745ecb19bf4001c0d5fca5a3bd7a2ef89b9ce21cf202a6e71a725335"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/favicon.ico",
+      "upstreamSha256": "46e27c6a5c524ce6926b43263d4d836224f0be3559fd6584a4c3aa63922bf684",
+      "replacementSha256": "46b511beedc42668acfd32c3e2b3e2a7891e3e0eaf47779d07cba5b939aab74f"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/gifs/artcraft-logo-load.gif",
+      "upstreamSha256": "48a47db49246569c9c6ec2370a94402cc9ad1748e118eedf49faf9668b9889be",
+      "replacementSha256": "ccdf44394abaeec164e96e4ecc13ed75140f0dc23452da700fa6f76e7d67f5cc"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/images/services/artcraft.svg",
+      "upstreamSha256": "bfcebc664072969a92650c79e53dda5820b85cbec91be4090409d1fca0b7a387",
+      "replacementSha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/index.html",
+      "upstreamSha256": "5d4fb672d076d8a4e9a6c74e5b0fdfd5fe086d0ebe44a34255510a14c55fcd53",
+      "replacementSha256": "c576c6c24bdfefbddf2a24f14779544d08ccad7fa70f8968f2650c78f43db31f"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/src/components/signaled/TopBar/TopBar.tsx",
+      "upstreamSha256": "fa1bc98f0f4382c8ac749a527868a92854f1cbe0c6e71e6e35b426ef4ee05105",
+      "replacementSha256": "da966c4134662239f9219fc43efa4f2f6d7d8b7549f95ac0bb681a6434516059"
+    },
+    {
+      "path": "frontend/libs/components/settings-modal/src/lib/settings-modal.tsx",
+      "upstreamSha256": "71f35c53b80137c6703432b33ac5e9373ccb7a1b0eadbc3823046b6844b9ac27",
+      "replacementSha256": "843fb123470a454ad97acb407f14b1156e9abc9a6310026cc378903fe86b10fd"
+    },
+    {
+      "path": "crates/artcraftx/tauri.conf.json",
+      "upstreamSha256": "2ff9ef39f638384e5f84f4ddc7017b0c1d514634bd947923aec53045307ca957",
+      "replacementSha256": "4c6dc151384d4a8e9dd405d19a9c7fcb99cc111228ef5f43d853bf20c128e340"
+    },
+    {
+      "path": "crates/artcraftx/tauri-mac.conf.json",
+      "upstreamSha256": "896d0b2d98d7858175ebfa97dadf2df5cff2ca84aef5ee3d8a1fee39ce8eafe0",
+      "replacementSha256": "66b543d8298404f499b5dfaf59e3f61e6ea954c6539a84add6e92bfff0631177"
+    }
+  ],
+  "compiledStatus": "Source identity overlay; source-specific native rebuild and workflow verification remain pending"
+}

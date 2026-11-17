@@ -1,0 +1,25 @@
+# Toolchain image "rust-nightly" for nightly checks (miri, fuzz, bench, asan). Build and name it as in
+# docs/operations.md (Nightly toolchain images); never at runtime: the sandbox runs steps offline and read-only.
+#
+#   podman build -f deploy/container/Containerfile.rust-nightly -t rust-nightly deploy/container
+FROM docker.io/library/rust:1-bookworm
+
+# Everything is installed under paths the unprivileged step user can read; steps write only to /src, /target, /cache and /out.
+ENV RUSTUP_TOOLCHAIN=nightly \
+    MIRI_SYSROOT=/opt/miri-sysroot \
+    XDG_CACHE_HOME=/opt/cache
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends clang lld; \
+    rm -rf /var/lib/apt/lists/*; \
+    rustup toolchain install nightly --profile minimal \
+      --component miri --component rust-src --component llvm-tools --component rustfmt --component clippy \
+      --target wasm32-unknown-unknown; \
+    # cargo-fuzz is built once here, so a fuzz step needs no network.
+    cargo install cargo-fuzz --locked; \
+    # The miri sysroot is built now: `cargo miri test` in a step has no network to build it.
+    mkdir -p "$MIRI_SYSROOT" "$XDG_CACHE_HOME"; \
+    cargo miri setup; \
+    rm -rf "$CARGO_HOME/registry" "$CARGO_HOME/git"; \
+    chmod -R a+rX /usr/local/rustup /usr/local/cargo "$MIRI_SYSROOT" "$XDG_CACHE_HOME"

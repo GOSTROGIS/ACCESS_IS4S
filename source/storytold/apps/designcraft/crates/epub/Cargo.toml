@@ -1,0 +1,18 @@
+[package]
+name = "designcraft-epub"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "DesignCraft EPUB 3 (reflowable) export: stories in reading order, CSS from styles, images"
+
+[lints]
+workspace = true
+
+[dependencies]
+craft-mime = { workspace = true }
+craft-epub = { workspace = true }
+designcraft-doc = { workspace = true }
+designcraft-color = { workspace = true }
+
+[dev-dependencies]
+zip = { workspace = true }

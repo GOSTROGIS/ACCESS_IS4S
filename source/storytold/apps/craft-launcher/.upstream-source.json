@@ -1,0 +1,1404 @@
+{
+  "id": "craft-launcher",
+  "repository": "https://github.com/storytold/craft-launcher",
+  "commit": "cbe639c5927712db69ce43476509d5ee97dc2cad",
+  "files": {
+    ".cargo/config.toml": {
+      "bytes": 34,
+      "sha256": "c185a2b859850d94af015a9672c1568e1ef73b12612d820f596ef967b835f637",
+      "mode": 436
+    },
+    ".coderabbit.yaml": {
+      "bytes": 229,
+      "sha256": "9320d26b38853d186491995277166b29c261c06d9b38abc28233e0b592dc4e55",
+      "mode": 436
+    },
+    ".gitattributes": {
+      "bytes": 134,
+      "sha256": "ea3d812430c090f356465319b36f7fe21dfbd3678730f3f067f875d0b404c52b",
+      "mode": 436
+    },
+    ".github/dependabot.yml": {
+      "bytes": 691,
+      "sha256": "3b20cbca5e653d1fd232a00beb05cfe83987168284ec0eef8d06e9d987d81403",
+      "mode": 436
+    },
+    ".github/workflows/ci.yml": {
+      "bytes": 2155,
+      "sha256": "9818a0198afffae579c856fb3077bf7dc29d7f913ffcd1d51401fa648648dc1b",
+      "mode": 436
+    },
+    ".github/workflows/freebsd.yml": {
+      "bytes": 1248,
+      "sha256": "8bd7fad6d138e1efca8c5ac5c89ff29e2d54466934eb91b6b397ab4e0e76032a",
+      "mode": 436
+    },
+    ".github/workflows/house-rules.yml": {
+      "bytes": 507,
+      "sha256": "accb090083593d08217f5a2bc198362cec9768d977fc5a04b186f60668ecbcd6",
+      "mode": 436
+    },
+    ".github/workflows/nix.yml": {
+      "bytes": 827,
+      "sha256": "b539c9c86f38a38140e85e5e92dbb3e91c8b53c59aa5463bd1a9486e35e7f832",
+      "mode": 436
+    },
+    ".github/workflows/packaging-lint.yml": {
+      "bytes": 3137,
+      "sha256": "f491d5f1dcc985f386e0d5a2b4dd62db2c593a288696c0ae7ffed95f81b14387",
+      "mode": 436
+    },
+    ".github/workflows/release.yml": {
+      "bytes": 1654,
+      "sha256": "9b65dd62a0531b675a0b15310c34333542a3c6d2286806c519d92797d6e3c483",
+      "mode": 436
+    },
+    ".github/workflows/sonarcloud.yml": {
+      "bytes": 551,
+      "sha256": "dc8475573e8ba3535f49ca9dad9ce0fcce903b031acb45a3571111d7937019be",
+      "mode": 436
+    },
+    ".github/workflows/windows-arm64.yml": {
+      "bytes": 1330,
+      "sha256": "ac5d2502f5db125f5302b1783083dd4313135a434e81e49822e81c3fb0395f19",
+      "mode": 436
+    },
+    ".gitignore": {
+      "bytes": 80,
+      "sha256": "2f2f2aa8d73757055f9355f500c92258b13a77c7763c332dd556aed4ffc3ffd5",
+      "mode": 436
+    },
+    "AGENTS.md": {
+      "bytes": 19437,
+      "sha256": "1847c8cf56184a9b3214eec7b384394f0f3abaab6158414ef77e804d7bdbc96d",
+      "mode": 436
+    },
+    "ATTRIBUTION.md": {
+      "bytes": 19022,
+      "sha256": "b905c7522b9d20c1f76a337154280a61911f5074c2c476ab231cb1e6221822fb",
+      "mode": 436
+    },
+    "CLAUDE.md": {
+      "bytes": 11,
+      "sha256": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+      "mode": 436
+    },
+    "Cargo.lock": {
+      "bytes": 164406,
+      "sha256": "beabba2170d1b4406250cc0d142c8e37548e2b028e8b1fea724c0d6e78d8899d",
+      "mode": 436
+    },
+    "Cargo.toml": {
+      "bytes": 4166,
+      "sha256": "044d54ced3386325c65055e06637cc74315f1877146a7448f153b6615166b323",
+      "mode": 436
+    },
+    "LICENSE-APACHE": {
+      "bytes": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+      "mode": 436
+    },
+    "LICENSE-MIT": {
+      "bytes": 1109,
+      "sha256": "e7bdbd66dea5820c4960db754d7d00c54ff95396b9527b29ac21b8cb0adf7e90",
+      "mode": 436
+    },
+    "NOTICE": {
+      "bytes": 16761,
+      "sha256": "0ec5c33331521486333f6370a78b90681209584e9f63167157cacb11483a85ad",
+      "mode": 436
+    },
+    "README.md": {
+      "bytes": 29424,
+      "sha256": "8a86adf8152cae9787cc60a4e9826a766199ad96a142c77a6b4831fabed963ba",
+      "mode": 436
+    },
+    "apps/artcraft-launcher-web/Cargo.toml": {
+      "bytes": 1148,
+      "sha256": "badb24fa62b4ddd9f11e4ee92d31bae015c271b3372c3532cda65368599d6e69",
+      "mode": 436
+    },
+    "apps/artcraft-launcher-web/Trunk.toml": {
+      "bytes": 236,
+      "sha256": "b7fe459a1676658984cbf3f44aa8b946810f6cae337392a39eb3c9c983bc3ca7",
+      "mode": 436
+    },
+    "apps/artcraft-launcher-web/index.html": {
+      "bytes": 1226,
+      "sha256": "d25637a59730339a7c9fed1f5217b2f1e7de0a502dfcfe5c0bb7e3e71d44019f",
+      "mode": 436
+    },
+    "apps/artcraft-launcher-web/src/hosted_catalog.rs": {
+      "bytes": 4984,
+      "sha256": "cb2b73d144face60fe1637a1431bdfa044cc8aeb9a34a795756154e1482828ea",
+      "mode": 436
+    },
+    "apps/artcraft-launcher-web/src/main.rs": {
+      "bytes": 1741,
+      "sha256": "c46035109c20d280b913da1f2ebf77c648f25427fb775b3dc4ddbc16fe80d022",
+      "mode": 436
+    },
+    "apps/artcraft-launcher-web/src/web.rs": {
+      "bytes": 13576,
+      "sha256": "dafec96b221ac4b44d4922d25b4fba7d46ae56eb0a998be072113f08fd9c34fe",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/Cargo.toml": {
+      "bytes": 3246,
+      "sha256": "27daf7ce4cdd90b76b84831c0913153ca00a29199f70dc26347faed48150a461",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/build.rs": {
+      "bytes": 1491,
+      "sha256": "ca8ab79b344c13d251aa8fd6dcb7588fefb0fa43dd385b4f167c72acb80650f4",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/src/hiding.rs": {
+      "bytes": 1084,
+      "sha256": "f1d2b83293ade4f00afefaa09cd265fc5a3cf6853001415d36462f8edbdd7456",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/src/logging.rs": {
+      "bytes": 20008,
+      "sha256": "ded3ae42d03d7e7be0e8ba14a1256fcdc2bacb39525644c1d7484fbb7edad0bf",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/src/main.rs": {
+      "bytes": 72678,
+      "sha256": "17cbf775fb511aa40bcdda61cac554f8be8f650625103b6cab92d889942b2637",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/src/motion.rs": {
+      "bytes": 4898,
+      "sha256": "1dbfdc32ca4e57ef84897c29f254d31ce6f5944ef9a57a7ce4dafbe7edc52b59",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/src/settings_file.rs": {
+      "bytes": 6286,
+      "sha256": "06953299a4c56528b69e1bf507d0676840b07f1486915a35f9a480d32a05e06a",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/src/spaces.rs": {
+      "bytes": 1188,
+      "sha256": "a04ee941af0b58e1af09a0522254b3ce05f6df97bc60b7bfcb1657b40d2097b9",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/src/system_theme.rs": {
+      "bytes": 5692,
+      "sha256": "2c975d55998db52aa898d0067a91119d6da84d6d3f18419b5ae59f389e500e15",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/src/tray.rs": {
+      "bytes": 7209,
+      "sha256": "68746098a9bac01735c309094af3d3fd3043cc7bfdcf0850a65b6dfc7cc2f930",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/tests/arguments.rs": {
+      "bytes": 2428,
+      "sha256": "79f18d3d4527f9c8da47c6b5f4d40115487b9f2b78bfefa278d4db813553e03a",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/tests/update_helper.rs": {
+      "bytes": 1034,
+      "sha256": "f02653d0cea0cfe7d6be6e6384a745cc0ff0d2783e792c7c91e0ab779a91099a",
+      "mode": 436
+    },
+    "apps/artcraft-launcher/tests/version_info.rs": {
+      "bytes": 561,
+      "sha256": "d2cfb0976d98da89afe3151d12b5c1ef7ad608fcb7f1145220c8f8ee86dc8476",
+      "mode": 436
+    },
+    "apps/craft-ai-mcp/Cargo.toml": {
+      "bytes": 703,
+      "sha256": "8a16ac9793192edd60cd0077ee30636d428d1a474e137e12ed7495073168d039",
+      "mode": 436
+    },
+    "apps/craft-ai-mcp/src/main.rs": {
+      "bytes": 742,
+      "sha256": "7fb2d45c0cd947da83043a3348a66724ad3b503aca167661504f5467fb3e6331",
+      "mode": 436
+    },
+    "assets/app-icon/LICENSE.txt": {
+      "bytes": 508,
+      "sha256": "b386df1f201699fdf980d8cf4b4e4e704a56fe59967337205fb72d617055a6dd",
+      "mode": 436
+    },
+    "assets/app-icon/README.md": {
+      "bytes": 1646,
+      "sha256": "79a2b3c7a2324aba189ddc81d497e25bcf4a6d9cde6079d98cfafd914c392302",
+      "mode": 436
+    },
+    "assets/app-icon/artcraft-launcher-1024.png": {
+      "bytes": 23152,
+      "sha256": "4c6e156d7a80383c8a066b6fc8611c97669bf9408997376a6bff9aee399e0278",
+      "mode": 436
+    },
+    "assets/app-icon/artcraft-launcher.icns": {
+      "bytes": 54933,
+      "sha256": "8f4ca1d99d0a42dec280632db0f5805dac74d3944f54d51c6b63af134bfc657c",
+      "mode": 436
+    },
+    "assets/app-icon/artcraft-launcher.ico": {
+      "bytes": 11615,
+      "sha256": "5cfb23780d306e7abe92e4dccb10b9bb5f638625c5de719b2c977ab0b5821ea8",
+      "mode": 436
+    },
+    "assets/app-icon/artcraft-launcher.svg": {
+      "bytes": 341,
+      "sha256": "f87af81b6fa411da8820eed2bfdcc54c0ee9cd453b4e868c64f56c69db142d0e",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/128x128/apps/ai.storyteller.artcraft-launcher.png": {
+      "bytes": 2220,
+      "sha256": "96e6975b0d109f791003fc02bf80a26e63ca04f0ece9cbf72b565c93a6346c21",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/16x16/apps/ai.storyteller.artcraft-launcher.png": {
+      "bytes": 369,
+      "sha256": "04caa1861193cf2d9b0ed8e0c10dc76b4842769864cb4fc2dc8a37a78a04af6a",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/24x24/apps/ai.storyteller.artcraft-launcher.png": {
+      "bytes": 537,
+      "sha256": "f2d8e232b8231cf1e3ec8a975eed09c16e4141c138fbf043e548959316ae8111",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/256x256/apps/ai.storyteller.artcraft-launcher.png": {
+      "bytes": 4321,
+      "sha256": "2f148a0eeeda241b13d9de0e24dd926515f0d481a90c3f80d85afdeaa38a3593",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/32x32/apps/ai.storyteller.artcraft-launcher.png": {
+      "bytes": 665,
+      "sha256": "897ecc6951ed077446653f83a24b7312f7f92e92c7ce166cf643b65313e6de0c",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/48x48/apps/ai.storyteller.artcraft-launcher.png": {
+      "bytes": 950,
+      "sha256": "856eb15e6e02a00f3d3a275193ea2c83d069873c891e69b3fbe9a7f2d0f773f8",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/512x512/apps/ai.storyteller.artcraft-launcher.png": {
+      "bytes": 9556,
+      "sha256": "1462e5d268d7dac172cd6145a603d31522e7b77f5985c5de1ef0f210250208ae",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/64x64/apps/ai.storyteller.artcraft-launcher.png": {
+      "bytes": 1167,
+      "sha256": "027e5b8726578b247df9e6123aea8eb82912fad57fc706968bc86d439f6e5c21",
+      "mode": 436
+    },
+    "assets/app-icon/hicolor/scalable/apps/ai.storyteller.artcraft-launcher.svg": {
+      "bytes": 341,
+      "sha256": "f87af81b6fa411da8820eed2bfdcc54c0ee9cd453b4e868c64f56c69db142d0e",
+      "mode": 436
+    },
+    "assets/app-icons/LICENSE-APACHE-MailCraft.txt": {
+      "bytes": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+      "mode": 436
+    },
+    "assets/app-icons/LICENSE-APACHE-SolidCraft.txt": {
+      "bytes": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+      "mode": 436
+    },
+    "assets/app-icons/LICENSE-MIT-MailCraft.txt": {
+      "bytes": 1083,
+      "sha256": "9c7e8b3316a8abbe63353308206dfb3b4c354ec191c1f3068a0549fc61fc3a5e",
+      "mode": 436
+    },
+    "assets/app-icons/LICENSE-MIT-SolidCraft.txt": {
+      "bytes": 1080,
+      "sha256": "1a26c1e94401d5d221896c74dd1c58d227edc64516da95aaac6f675567c8af63",
+      "mode": 436
+    },
+    "assets/app-icons/anicraft.png": {
+      "bytes": 19756,
+      "sha256": "e6754980d8a2a4acd429f6e3e3ba5569c4a761a45102a81d7edc0ef35210ce47",
+      "mode": 436
+    },
+    "assets/app-icons/artcraft.png": {
+      "bytes": 6171,
+      "sha256": "505f446e358ee82c73844e6054e54a7ea4734912da5f3a6109bac7442cbaa551",
+      "mode": 436
+    },
+    "assets/app-icons/cadcraft.png": {
+      "bytes": 8068,
+      "sha256": "c126ff5030d0a0f3e63f039bae81ca63ba71230da2e6fca54e08df1119ea3443",
+      "mode": 436
+    },
+    "assets/app-icons/craft-anything.png": {
+      "bytes": 15744,
+      "sha256": "ddab399079b3a0a28a6584fb2ffd209bb0407896f20a8084551b5feb3060deb1",
+      "mode": 436
+    },
+    "assets/app-icons/deckcraft.png": {
+      "bytes": 4791,
+      "sha256": "1bf98b43bb0b21cb038ce063e71b9922e7f48c10d5b99afd046aa6c30642ca69",
+      "mode": 436
+    },
+    "assets/app-icons/designcraft.png": {
+      "bytes": 16195,
+      "sha256": "0895763da92947cb6b1d38a018a6c7ffcda1cbb714a58f2e9bc08e0e2a2b94b4",
+      "mode": 436
+    },
+    "assets/app-icons/effectcraft.png": {
+      "bytes": 17306,
+      "sha256": "4ad7caa4f43b4cbf3bcddda0ed23e471d392efbe8d0b4ce18107b5849f20dd2d",
+      "mode": 436
+    },
+    "assets/app-icons/figcraft.png": {
+      "bytes": 19691,
+      "sha256": "13d5236adb30c2bd4ff3eb7bcb7bb5a70d8de2ef36a81a5ffaf43ea171c7f51b",
+      "mode": 436
+    },
+    "assets/app-icons/filmcraft.png": {
+      "bytes": 17152,
+      "sha256": "7ca8adb57a34d1f4bff8c7e976ac5fe73e69a89b4268d15b3b861c7e51c45a74",
+      "mode": 436
+    },
+    "assets/app-icons/gridcraft.png": {
+      "bytes": 4785,
+      "sha256": "01ef35442b8d466b52068fda67ab740309321c8bc813b62b9207dfc4116208e7",
+      "mode": 436
+    },
+    "assets/app-icons/lightcraft.png": {
+      "bytes": 16635,
+      "sha256": "a1fc54a714b769fa627eb44b0dcc1230e5fc3643890fd3504811b4c05c4a913a",
+      "mode": 436
+    },
+    "assets/app-icons/mailcraft.png": {
+      "bytes": 19768,
+      "sha256": "dd0e62a27b0066ae5f461d5f829cfa143b49ca6a1b9dc9b47686818edd664bf7",
+      "mode": 436
+    },
+    "assets/app-icons/materialcraft.png": {
+      "bytes": 15069,
+      "sha256": "2844f2a4cf2b1d06c7eeaec8bddf13c69a0a1c3356e6767e8e97eb6b540a2c7c",
+      "mode": 436
+    },
+    "assets/app-icons/pdfcraft.png": {
+      "bytes": 17292,
+      "sha256": "1933bbeaea290497facd328e917dafcc433d0c0caa9f1e207aa45ac1e430898c",
+      "mode": 436
+    },
+    "assets/app-icons/photocraft.png": {
+      "bytes": 19873,
+      "sha256": "f1afe9ccdb125a34089babecb6c1533f3fbf41ddffe81e0856f158c5b5fb9389",
+      "mode": 436
+    },
+    "assets/app-icons/solidcraft.png": {
+      "bytes": 9607,
+      "sha256": "46e019499579b2f477228021dd91b187303921da5d4cd14f1002a10976cf0475",
+      "mode": 436
+    },
+    "assets/app-icons/soundcraft.png": {
+      "bytes": 7896,
+      "sha256": "0e7f4f83d82f5539530f62f85ccf8717dcc00c6d25a3dba57e2a65111e3b248b",
+      "mode": 436
+    },
+    "assets/app-icons/texturecraft.png": {
+      "bytes": 14913,
+      "sha256": "ac629a038a215a13d86172286142502b6efd17618869652050f291d9745346d2",
+      "mode": 436
+    },
+    "assets/app-icons/vectorcraft.png": {
+      "bytes": 18450,
+      "sha256": "47f2061e3683ba8e7241c4783ca02207d29dfef0a7c94cd0eb8ea0a88dfc0b1e",
+      "mode": 436
+    },
+    "assets/app-icons/wordcraft.png": {
+      "bytes": 3350,
+      "sha256": "96505c7153c1b8a7e0cf0f90353fae669f4ed9de5524ba50ba99af79003cff43",
+      "mode": 436
+    },
+    "assets/fonts/Archivo-Variable.ttf": {
+      "bytes": 658596,
+      "sha256": "0e094a7d3c7c4c25cf1310c4b30014f1dae9332220b1c2c88f4fa996f0b05053",
+      "mode": 436
+    },
+    "assets/fonts/GeistMono-Variable.ttf": {
+      "bytes": 171948,
+      "sha256": "d00e590b8eb3a59acc329b2d044fd143ae935090b7da33199ebee27cc7de8196",
+      "mode": 436
+    },
+    "assets/fonts/Inter-Variable.ttf": {
+      "bytes": 876576,
+      "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "mode": 436
+    },
+    "assets/fonts/OFL-Archivo.txt": {
+      "bytes": 4388,
+      "sha256": "108b4e57c9c796d3d38d0428ca7ee39de47ad93187302718d9b2d8864b9b716b",
+      "mode": 436
+    },
+    "assets/fonts/OFL-GeistMono.txt": {
+      "bytes": 4387,
+      "sha256": "1781d2806a07d91c4edf4740b88449fab7d0eadad53f7c351b94cd4d4eb8c00f",
+      "mode": 436
+    },
+    "assets/fonts/OFL-Inter.txt": {
+      "bytes": 4380,
+      "sha256": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+      "mode": 436
+    },
+    "assets/social/README.md": {
+      "bytes": 1580,
+      "sha256": "3c25fd99f75c465ee5929f593815773195efa48ae441d6255aef8de4075c2930",
+      "mode": 436
+    },
+    "assets/social/discord.svg": {
+      "bytes": 1389,
+      "sha256": "26a0d3c82ce8353033264fc73e7e541658847bd92523a9ede5b273d2e11588a9",
+      "mode": 436
+    },
+    "assets/social/github.svg": {
+      "bytes": 837,
+      "sha256": "f035b42bf4fbe50c20a65d3d38b1b52e7d2877067e79d4d4921d775db8602743",
+      "mode": 436
+    },
+    "assets/social/globe.svg": {
+      "bytes": 373,
+      "sha256": "ffc58edb290bb6a54ecace652315d1a97e985619ff2b03dbfc2a79dd9c02d3a2",
+      "mode": 436
+    },
+    "assets/social/instagram.svg": {
+      "bytes": 2116,
+      "sha256": "2d6255bfe1d8fde65ca5e7e5d048e226d93b76271126c5ddba2d33ac0e448993",
+      "mode": 436
+    },
+    "assets/social/linkedin.svg": {
+      "bytes": 732,
+      "sha256": "af336e80a7ced0015d590758a9bbbdebfcf16aec1e7c57ef244f686b5eea3196",
+      "mode": 436
+    },
+    "assets/social/tiktok.svg": {
+      "bytes": 722,
+      "sha256": "a57b78b16ff6957c8b657e676d00ee1d57216ada20ac20bf4b5f6e29cfaffaf0",
+      "mode": 436
+    },
+    "assets/social/x.svg": {
+      "bytes": 314,
+      "sha256": "1f23a26a21139274a77941648ad6108d0c8e9c262ae19c6182aad60cbe3e3185",
+      "mode": 436
+    },
+    "assets/social/youtube.svg": {
+      "bytes": 474,
+      "sha256": "f84272a28eeff795fd70ae4b78132786532293db49f58831a7d8858f9417127f",
+      "mode": 436
+    },
+    "clippy.toml": {
+      "bytes": 314,
+      "sha256": "ffe881b7f6f2472c117c4a2bb4351512f9394b6e12f3e5f4fabe24d774ff0da8",
+      "mode": 436
+    },
+    "crates/core/Cargo.toml": {
+      "bytes": 986,
+      "sha256": "1459bbe5f0a89493edfccc4ce6879dbf1a18314c01b3089297a1ecfb654d87f3",
+      "mode": 436
+    },
+    "crates/core/assets/launcher-catalog-public-key.pem": {
+      "bytes": 113,
+      "sha256": "278f766c784d4110c01b8adee23e57d1a22e8e1a5b3a3ccf28f4255907890dc5",
+      "mode": 436
+    },
+    "crates/core/build.rs": {
+      "bytes": 3686,
+      "sha256": "eb218dffeaf9faced7e2e28c9031c0dafb48676db5f3fd4668a527b8587a48ce",
+      "mode": 436
+    },
+    "crates/core/catalog.toml": {
+      "bytes": 45608,
+      "sha256": "ac4e8466d426649e07ad7589746414a76c4dd1b98b5b050a913362ef0df099f9",
+      "mode": 436
+    },
+    "crates/core/src/args.rs": {
+      "bytes": 2486,
+      "sha256": "09f1e2b28c087ccbde089f695ff877abf86c0cb4628f5eaa0ae46a61a67fd196",
+      "mode": 436
+    },
+    "crates/core/src/catalog.rs": {
+      "bytes": 16283,
+      "sha256": "23e3b2e882b7a2ebc7993c985dacc8aded14119548f223e422e347fdc824276c",
+      "mode": 436
+    },
+    "crates/core/src/details.rs": {
+      "bytes": 11492,
+      "sha256": "f986dea2e1e31aee46ab564ad638dd1efeb923b98e7c4df5a6a352907618a61f",
+      "mode": 436
+    },
+    "crates/core/src/distro.rs": {
+      "bytes": 4202,
+      "sha256": "ca5b64b68354e90daa4cee6a1af09980441a711146240ad7520336cc0b6ded1b",
+      "mode": 436
+    },
+    "crates/core/src/feed.rs": {
+      "bytes": 32361,
+      "sha256": "62025dc26ab6b5e09c3953f01109a6163571e522d0de30e824a976e5b3b3a64f",
+      "mode": 436
+    },
+    "crates/core/src/hosted_catalog.rs": {
+      "bytes": 20161,
+      "sha256": "58fdba98190150a505abc1c3496c8fe2f177031d8120c42424aa82856a187046",
+      "mode": 436
+    },
+    "crates/core/src/lib.rs": {
+      "bytes": 893,
+      "sha256": "3fc622f69df7dcd2a54cfb048efc90c1e533d65fab0d41f13994db8369271123",
+      "mode": 436
+    },
+    "crates/core/src/mcp_config.rs": {
+      "bytes": 3221,
+      "sha256": "b4d86852c6bd4b1308ad79cce23602a3e18c920f9f800ef96e41497d4874cd7c",
+      "mode": 436
+    },
+    "crates/core/src/platform.rs": {
+      "bytes": 25108,
+      "sha256": "2718613b0c083d99c3669401b08a980f5ef5a277b8e5e2dc959d45e9cbc08ec1",
+      "mode": 436
+    },
+    "crates/core/src/protocol.rs": {
+      "bytes": 15398,
+      "sha256": "364ac01c18830a1ce54e9d84a99b2aefc6ab47355a3b567e9007d64d931d075c",
+      "mode": 436
+    },
+    "crates/core/src/release.rs": {
+      "bytes": 27910,
+      "sha256": "e6434cef7cf9906508a234c2e51141e241c26f90a9b9d214b15933129f738aa6",
+      "mode": 436
+    },
+    "crates/core/src/status.rs": {
+      "bytes": 7590,
+      "sha256": "9cc3550a7be9157a54087b85d4cb03c903f0319d1088651f26cbdbbad73b883f",
+      "mode": 436
+    },
+    "crates/core/src/time.rs": {
+      "bytes": 11056,
+      "sha256": "119364e9a337a39a07665a032de36ce9a5dc4efbcd3d6d2df88036433aed6d25",
+      "mode": 436
+    },
+    "crates/core/src/version.rs": {
+      "bytes": 7574,
+      "sha256": "09f96cc7e6be48538139453f420970e89b692ac4e7a4baff3c07fa36bafdc6bc",
+      "mode": 436
+    },
+    "crates/core/tests/fixtures/artcraft-release.json": {
+      "bytes": 3735,
+      "sha256": "d80bce6b4362192490fd394304d9c107d0edab1cf9542299fcf38cc9f05e52e8",
+      "mode": 436
+    },
+    "crates/core/tests/fixtures/hosted-catalog.toml": {
+      "bytes": 45608,
+      "sha256": "7fc62b6543dee9492057308dfcb74f3d671ee17ca3f868b53fd8d97ac1f3248f",
+      "mode": 436
+    },
+    "crates/core/tests/fixtures/hosted-catalog.toml.sig": {
+      "bytes": 89,
+      "sha256": "649a89f36e51baaeae6ae82e70236902364c76d61afcd1df0fe2074d29fd53f8",
+      "mode": 436
+    },
+    "crates/core/tests/fixtures/photocraft-release.json": {
+      "bytes": 552,
+      "sha256": "945ca777cd869e451d587565e098f88616fc0702c2d4ac7c41529ee96647aacf",
+      "mode": 436
+    },
+    "crates/core/tests/fixtures/soundcraft-release.json": {
+      "bytes": 887,
+      "sha256": "5639dee92c0b5d1abd6ba9a05d5a5a16d07d7b65dfae891b05aa0e40135878b6",
+      "mode": 436
+    },
+    "crates/core/tests/fixtures/texturecraft-release.json": {
+      "bytes": 1470,
+      "sha256": "8be5ba9ce10d9ef321bcf98ff5323652310bba7039bfeaad397532e91870eae0",
+      "mode": 436
+    },
+    "crates/native/Cargo.toml": {
+      "bytes": 2150,
+      "sha256": "683c131a584fd9df312ecd3bea270eed9b2e0d5081cfd8304bbfa8003bc7f583",
+      "mode": 436
+    },
+    "crates/native/src/agents.rs": {
+      "bytes": 20109,
+      "sha256": "761cd5bc6c144e5eb04bbd129a3e9bc08b73bf33a35c9e32e640a6243c3dcd34",
+      "mode": 436
+    },
+    "crates/native/src/agents_tests.rs": {
+      "bytes": 12252,
+      "sha256": "0d56298a83d839ba2f9a5ef361ab4e981c3de469cd54411c002f8dca6127ccb3",
+      "mode": 436
+    },
+    "crates/native/src/backend.rs": {
+      "bytes": 155290,
+      "sha256": "a9dc8865bcb1c0254e9787bf059a991bc9c024376fd97b245e4ae5b30dc94ce7",
+      "mode": 436
+    },
+    "crates/native/src/desktop_entry.rs": {
+      "bytes": 8970,
+      "sha256": "70395d0fc8d01d4e5f1c5327e4130a6b19b5b43ef185acb7699f7c8754c80476",
+      "mode": 436
+    },
+    "crates/native/src/detect.rs": {
+      "bytes": 61787,
+      "sha256": "b3d918cdeb3c0bf8d2edc97855551748145b45d7732c5e4be04fc30c440c1cc5",
+      "mode": 436
+    },
+    "crates/native/src/downloads.rs": {
+      "bytes": 17614,
+      "sha256": "1f57c9d0168887b2678d12ff9c0b81aea81d2b79c30fc528a47df02d72fb8346",
+      "mode": 436
+    },
+    "crates/native/src/feed_throttle.rs": {
+      "bytes": 18932,
+      "sha256": "835fcba1fd5bc0c2649853c82afd010c7dcb5ff802f8a8916d329ab7a11142bc",
+      "mode": 436
+    },
+    "crates/native/src/hosted_catalog.rs": {
+      "bytes": 6457,
+      "sha256": "d9a00c8add48e9977e59c0f1fe249adac652da525dd12e5d343472a551d63d13",
+      "mode": 436
+    },
+    "crates/native/src/http.rs": {
+      "bytes": 55297,
+      "sha256": "7e1dce585b89ebceb88e2285ff0f935eca5a4420d22acde4848de8f2f65b1bfa",
+      "mode": 436
+    },
+    "crates/native/src/install.rs": {
+      "bytes": 210885,
+      "sha256": "f9616f68604fd21ed2c5b4a264152dc43f4c6834ddb18a4f5932cf1240722bd6",
+      "mode": 436
+    },
+    "crates/native/src/install/macos_verify.rs": {
+      "bytes": 23609,
+      "sha256": "362a46b406e60c0574fa57b182c0aa9abe2f0ec9ac7c0c87172489761b7c5b0f",
+      "mode": 436
+    },
+    "crates/native/src/install/msi_batch.rs": {
+      "bytes": 6884,
+      "sha256": "3527087631b7db1e070043a208283908dbd3d4e30a399a03bb72728c3442ea55",
+      "mode": 436
+    },
+    "crates/native/src/install/msi_batch/tests.rs": {
+      "bytes": 7212,
+      "sha256": "4d13f1f1c21930d3bdc0d4cb03e1cea17f468359f93ce224616c9295b8c89e8d",
+      "mode": 436
+    },
+    "crates/native/src/install/msi_downgrade.rs": {
+      "bytes": 12560,
+      "sha256": "5a0581a72a5d87a0e30fde9ccaf6675cbc1cb645ea0f35029e79bd8f9237a898",
+      "mode": 436
+    },
+    "crates/native/src/install/msi_downgrade_tests.rs": {
+      "bytes": 11749,
+      "sha256": "603cd2659e379dfb69541588b66bdde092bb73e2c0731dc82ee53cf316894cf5",
+      "mode": 436
+    },
+    "crates/native/src/install/msi_session.rs": {
+      "bytes": 36751,
+      "sha256": "dac78868da529241d847aafa97861770d8c7f77818802716cb8dc26e91ee3bb8",
+      "mode": 436
+    },
+    "crates/native/src/lib.rs": {
+      "bytes": 1163,
+      "sha256": "993bc1a80571788189e3c8c72a8c8ea81295c520cc027adf5ccba09e6c2c4e7a",
+      "mode": 436
+    },
+    "crates/native/src/login.rs": {
+      "bytes": 20119,
+      "sha256": "f69ebc07d92f0dca0e6d7fad2c7fe181627b5101da7d25cae888e53cce9e40da",
+      "mode": 436
+    },
+    "crates/native/src/manifest.rs": {
+      "bytes": 2012,
+      "sha256": "67408079eba6052b93e5683c32265e7b15ade4d3dbc56dbd151c9140c31bcdbb",
+      "mode": 436
+    },
+    "crates/native/src/msi_context.rs": {
+      "bytes": 13525,
+      "sha256": "3ae34df9931b7296a52f542cd8d14ce5fd9e2f1af98bc0fe166333504df43f45",
+      "mode": 436
+    },
+    "crates/native/src/packages.rs": {
+      "bytes": 20138,
+      "sha256": "4fc1aacadabe0f241a8482ee2257dd35059d7736d848f8b12c5d5cfeb2c8f949",
+      "mode": 436
+    },
+    "crates/native/src/paths.rs": {
+      "bytes": 5927,
+      "sha256": "8799ae4f61ca4e15419307bd2b9b58f74a480a9ed1f0fb77aa8b56cdbc9ad8ee",
+      "mode": 436
+    },
+    "crates/native/src/pins.rs": {
+      "bytes": 5309,
+      "sha256": "0e9097d9627a0e0943adf490b643521fc2f8f170293abb42207d36de44cd9083",
+      "mode": 436
+    },
+    "crates/native/src/portable.rs": {
+      "bytes": 42167,
+      "sha256": "472138d8862678c6e1265c3f261acbc1ad04d7c800b65d827723e0ef66948da4",
+      "mode": 436
+    },
+    "crates/native/src/process.rs": {
+      "bytes": 41865,
+      "sha256": "6847e95362412e2d2d4cc04095b38cdd59a2872d192c7a16b99fb528566f4e39",
+      "mode": 436
+    },
+    "crates/native/src/proxy.rs": {
+      "bytes": 11360,
+      "sha256": "c659833523adc426277f7ecb55c64c770cd3cef74654a42c3c7bbca3f7332bd4",
+      "mode": 436
+    },
+    "crates/native/src/queue.rs": {
+      "bytes": 33980,
+      "sha256": "f960fba5d05521677e5db2fe33c44662d0ef83e231ea97c578473d1eaab3b0f2",
+      "mode": 436
+    },
+    "crates/native/src/screenshots.rs": {
+      "bytes": 8709,
+      "sha256": "6865a1f9e025f868cc8cef1ce6f4f4c09a54b2e85f1bfa290230387906ad7832",
+      "mode": 436
+    },
+    "crates/native/src/self_update.rs": {
+      "bytes": 13550,
+      "sha256": "348b9cf93aacec341147b469e2bae893f9622961372626d1144c66d1ae420b41",
+      "mode": 436
+    },
+    "crates/native/src/single_instance.rs": {
+      "bytes": 35116,
+      "sha256": "4385b6c3ce50369bc0e6666bcb19a9e361458e850d43c7be1a38e0791fcd0e02",
+      "mode": 436
+    },
+    "crates/native/src/source.rs": {
+      "bytes": 22371,
+      "sha256": "2750199fc91a9ba00a5a09905829905fec9f02e8d83691f1febbe25558f010da",
+      "mode": 436
+    },
+    "crates/native/tests/windows_msi_context.rs": {
+      "bytes": 2547,
+      "sha256": "42e7a806cbf24b260ed8a209a549c76aa9842c133ee63375fbd99dedaa0c9274",
+      "mode": 436
+    },
+    "crates/ui-egui/Cargo.toml": {
+      "bytes": 1659,
+      "sha256": "f6ccbceb4159fc79e3bac7d48d0d6ecfb5789ad5ee8839d516afe4f7e3e1878f",
+      "mode": 436
+    },
+    "crates/ui-egui/src/app.rs": {
+      "bytes": 73916,
+      "sha256": "f1c4f958955cfdd108a87b0b99f816a68c510e77efda2d704fdc4175310e04c2",
+      "mode": 436
+    },
+    "crates/ui-egui/src/bar.rs": {
+      "bytes": 4010,
+      "sha256": "698b54b0c3371b81ed0d7953aeb1a76cac8278911dfc2504dec4b0cadd9ef873",
+      "mode": 436
+    },
+    "crates/ui-egui/src/card_parts.rs": {
+      "bytes": 3945,
+      "sha256": "1613df129f08db4f34f1836503830ce7035665742fb6c0fde3728a01bdeaac2e",
+      "mode": 436
+    },
+    "crates/ui-egui/src/cjk_font.rs": {
+      "bytes": 30979,
+      "sha256": "06e0a5b8e45f5fe9862dececa61b3b1e4eb1930b6750e5f98dac2515f5f88343",
+      "mode": 436
+    },
+    "crates/ui-egui/src/details.rs": {
+      "bytes": 32776,
+      "sha256": "35a8570161db64081d5fc8776d7312ee7cfb84961e317043a7c484c6b31938cb",
+      "mode": 436
+    },
+    "crates/ui-egui/src/dialogs.rs": {
+      "bytes": 19434,
+      "sha256": "d77476329c26a3e7676217561a770918aa89b7d334ac761c6728776bbd111145",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/catalog.rs": {
+      "bytes": 8540,
+      "sha256": "ea8dcd646d6b4d645b2b9a0a387b230bd7faccbfaaa7ac4003053b11b5224db3",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/cs.tsv": {
+      "bytes": 26538,
+      "sha256": "76f014a17168695dca340cf6616d5ae00f8463d931f98f9558d32466e7f63cda",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/de.tsv": {
+      "bytes": 27383,
+      "sha256": "937398a7d9dc6fe2fadb991aedae9ac122ab2efa7589dd5dfee52bdae800d82e",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/detect.rs": {
+      "bytes": 2889,
+      "sha256": "e4e8bfaf2e0b99b5e2061756e0ec74f78c9a5f9a46c8110f6ef5c5146d48c095",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/es.tsv": {
+      "bytes": 26924,
+      "sha256": "bc10b74c6ad3e4d9d523fac71326e1fbf4442c0e183d7587a6ec4024bd8f1c71",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/fr.tsv": {
+      "bytes": 28197,
+      "sha256": "c3d1c8214e24e082cee459c1306d1c0146623940a9ea242524b0235b133bb7ff",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/hu.tsv": {
+      "bytes": 28629,
+      "sha256": "6ca307b3247d1c21629f4c98a0e9dd62d4fe353587dbe0b182aa70e1808c0746",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/ja.tsv": {
+      "bytes": 31517,
+      "sha256": "979a72b4c6fd1b46b42119ddaa197ffb55e7212cb5224ad1be28f2bd267fa158",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/ka.tsv": {
+      "bytes": 45581,
+      "sha256": "33566d59e095e1efa0b02ee9e1935012fe5ef9d6123926c380f511abcbcd241c",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/lang.rs": {
+      "bytes": 14430,
+      "sha256": "03c843e88e675003ab2d3e1aed4d33edeb59ebbdba25155258017e3263bea020",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/mod.rs": {
+      "bytes": 2229,
+      "sha256": "d5f85add8223fedadccaf3787f6527d7cd267bbbfdf076c1835ffa8e0950b47c",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/pl.tsv": {
+      "bytes": 27670,
+      "sha256": "d080c762484d220f50790b5616fb24750c1ff2a9ad2bfcb7a507c1a055670272",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/pt-BR.tsv": {
+      "bytes": 26376,
+      "sha256": "f353506c9c0444c96958a8b2c1e3c331dce2ea95815dcb36a86f9366d8c89ba9",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/ru.tsv": {
+      "bytes": 35684,
+      "sha256": "3a6943ada160fb76f387c8a042415726f168197d964f0df0caaa997600637f27",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/tests.rs": {
+      "bytes": 31302,
+      "sha256": "14f11fecc3a8123bcfafe2ac334f7fd1f63308b384c27b536ccd55ad1996f57e",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/translate.rs": {
+      "bytes": 6564,
+      "sha256": "f7d437aa222d951865642e87da8cda42e578de93b513e662df408a39b173b4ab",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/uk.tsv": {
+      "bytes": 33813,
+      "sha256": "191c093e87342308d53a50e2f32b01a622699e6b815ca7c491c40847fbf77345",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/zh-CN.tsv": {
+      "bytes": 23674,
+      "sha256": "ed80a97296753d79697b40bf9a86f081190310045a185006a6befe7d449fd05d",
+      "mode": 436
+    },
+    "crates/ui-egui/src/i18n/zh-TW.tsv": {
+      "bytes": 23436,
+      "sha256": "31dd5c85ab175b4eb1dae429c632d108010b77688e598d7940838ce218416850",
+      "mode": 436
+    },
+    "crates/ui-egui/src/icons.rs": {
+      "bytes": 4587,
+      "sha256": "5026caeca598205bafcd1cdad76bce4b7e90aa074b570302bbddaaf7ecdeda2c",
+      "mode": 436
+    },
+    "crates/ui-egui/src/install_target.rs": {
+      "bytes": 8998,
+      "sha256": "d2639379706c7c491cc7e5f9b3068e85881aa0f9693b1385f65c2b9ace4fbb94",
+      "mode": 436
+    },
+    "crates/ui-egui/src/lib.rs": {
+      "bytes": 1350,
+      "sha256": "c0e1ae607a6612a4c6ce07924b89352cbe9cf6f58d09d70ab30942155ca23ede",
+      "mode": 436
+    },
+    "crates/ui-egui/src/local_time.rs": {
+      "bytes": 3600,
+      "sha256": "4e272930bb40c947e5fccb0016fb6bf7dc48c831c03c8a3067c17d4c9677f91c",
+      "mode": 436
+    },
+    "crates/ui-egui/src/model.rs": {
+      "bytes": 6567,
+      "sha256": "211eb01c7495a4fcfa6497c516ef3fe2652c4042724a2b93ffebe93ed96746cc",
+      "mode": 436
+    },
+    "crates/ui-egui/src/motion.rs": {
+      "bytes": 8278,
+      "sha256": "5a19e2ba790552ddd45f2840f83c3d0490c4c339d4937f98f79fc00d4ac8e0d6",
+      "mode": 436
+    },
+    "crates/ui-egui/src/notes.rs": {
+      "bytes": 5906,
+      "sha256": "6606f0ce30223caee6c5e969cca50b22bf4eaaa5a6ba578f6d404550544fb3bf",
+      "mode": 436
+    },
+    "crates/ui-egui/src/settings.rs": {
+      "bytes": 12989,
+      "sha256": "434093a3a2cd736f50d43a8acce350c3803891a310dfb4a365d8c290ecd90f3e",
+      "mode": 436
+    },
+    "crates/ui-egui/src/settings_dialog.rs": {
+      "bytes": 25545,
+      "sha256": "c2e13b3e76d648ae553e0ce277e024e2e1c069331bf4ac6ee442f02240203748",
+      "mode": 436
+    },
+    "crates/ui-egui/src/sheet.rs": {
+      "bytes": 5194,
+      "sha256": "6daa069e0f10d784d1df5af7becb127b2f9eaf9e02ea2d12a566119c4371d730",
+      "mode": 436
+    },
+    "crates/ui-egui/src/theme.rs": {
+      "bytes": 20544,
+      "sha256": "831c848e2be740f29a003943ea55bf5d1cf4cb24552de7f29442057b0bc52aa5",
+      "mode": 436
+    },
+    "crates/ui-egui/src/versions.rs": {
+      "bytes": 22499,
+      "sha256": "6bf52c9f6c4c60bb0b5c649cd4a2e726ae6cf02ba3d5a6c84f4ca9b9bad2bfaf",
+      "mode": 436
+    },
+    "crates/ui-egui/src/views.rs": {
+      "bytes": 81837,
+      "sha256": "6ebcc567c9abce7a8257273c248ac49cb3a39f768862252ffd4260a4a6500fd0",
+      "mode": 436
+    },
+    "crates/ui-egui/src/widgets.rs": {
+      "bytes": 67669,
+      "sha256": "42cc3475e8e6da7ee04bdb188590428933ab2a80b720975a0c498b16bac5d1e6",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/chinese.rs": {
+      "bytes": 10623,
+      "sha256": "2a8cd125e950dc916b43fe5f257c40ebed9169df22ed05842e8451e2bb64423d",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/french.rs": {
+      "bytes": 5274,
+      "sha256": "19cd4cb64e4dd31d9accf117485df727fea46d27fdb530d901ecc10561aad65b",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/georgian.rs": {
+      "bytes": 9404,
+      "sha256": "974099bf64d7e1be4a891c741a341a083554d491baa592c36c421719bb498b2d",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/german.rs": {
+      "bytes": 14732,
+      "sha256": "ba65c06d5edd895c6b006cbad8cd0d4628912bd2511d43d2c4618165e8bc9851",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/hungarian.rs": {
+      "bytes": 8907,
+      "sha256": "99a08efaf5f61eab7f17871c8887f0853839ea5162f0e999b44b5547338c271d",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/japanese.rs": {
+      "bytes": 8923,
+      "sha256": "6888459aae76f2972c4b60cd1212c9c71b55a9d2f68cd76606d4052d40d6d1d7",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/polish.rs": {
+      "bytes": 5286,
+      "sha256": "187ce0243c1191d7e5cb90aee31c3da634be11d041707ef239dbd4d5e3156c6f",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/portuguese.rs": {
+      "bytes": 5355,
+      "sha256": "bbd7660c3322bc8636c23ca1a2a64ec602b8fe73861a866abc6c38dfe3e66e80",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/russian.rs": {
+      "bytes": 5388,
+      "sha256": "eb0e63ea5a14a10dd9bcb7b033833df979cd6006a5dd3d5f7cc6f6c526d23925",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/spanish.rs": {
+      "bytes": 5268,
+      "sha256": "201d037e987309247c48372158e7904fcab3e705ee7fd93130d6b52e27cc94b9",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/traditional_chinese.rs": {
+      "bytes": 9231,
+      "sha256": "75aa72824e93ffe0c9f190363eab70d0d4f2136456fc5d5d1cae7428eb7dd6f1",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/ui.rs": {
+      "bytes": 213730,
+      "sha256": "c2de19c1add2b4aa504a2b6d4d7f32c1be1888bbbfc2349e12b76e972a807c83",
+      "mode": 436
+    },
+    "crates/ui-egui/tests/ukrainian.rs": {
+      "bytes": 5913,
+      "sha256": "f898165d0f40d97add1fbb4445094940c25aef79dc70fde116891e8ba8dee025",
+      "mode": 436
+    },
+    "docs/brand/LICENSE-brand.txt": {
+      "bytes": 2319,
+      "sha256": "f30eefd1d7c2c950c89b8e426febd33b5b08908dc5090fd75e45ad993977a691",
+      "mode": 436
+    },
+    "docs/brand/artcraft-logo-white.png": {
+      "bytes": 32161,
+      "sha256": "8b86aeb06a12a90ba77a60e0d90329272310e244ee5c1f9b161b391280ca79d8",
+      "mode": 436
+    },
+    "docs/brand/artcraft-logo-white.svg": {
+      "bytes": 5394,
+      "sha256": "a3e03dc49f9ad4225b8517d5424309c8d1c864d3996d862190d9cc797d5af427",
+      "mode": 436
+    },
+    "docs/brand/artcraft-logo.png": {
+      "bytes": 31302,
+      "sha256": "08fc6d9d3717e8f13417bac6f9025b50e11d1e0b32e9e000883d2fe0c4a0c67b",
+      "mode": 436
+    },
+    "docs/brand/artcraft-logo.svg": {
+      "bytes": 5394,
+      "sha256": "3188971e1affdf4f6be4fa65f715376a7a305e6aa741ec78b0296c8f934eff08",
+      "mode": 436
+    },
+    "docs/brand/artcraft-mark-64.png": {
+      "bytes": 1167,
+      "sha256": "027e5b8726578b247df9e6123aea8eb82912fad57fc706968bc86d439f6e5c21",
+      "mode": 436
+    },
+    "docs/brand/artcraft-mark-black-44.png": {
+      "bytes": 979,
+      "sha256": "d54c20cac603b550f7a861ddf8c7d7bbcc15434365e38a2c4078c228a1f4a586",
+      "mode": 436
+    },
+    "docs/brand/artcraft-mark-black.png": {
+      "bytes": 26793,
+      "sha256": "5954cc0306e1b9d7beb47097e2e842157113a39d9aba078b57304902687936a9",
+      "mode": 436
+    },
+    "docs/brand/artcraft-mark-black.svg": {
+      "bytes": 341,
+      "sha256": "570adcb4f7ba8ca0647f97074476bab81d3272988f1cdee52efa21bf026036a4",
+      "mode": 436
+    },
+    "docs/brand/artcraft-mark.png": {
+      "bytes": 24715,
+      "sha256": "9d372157a949c147318561e629b11561c28b7cbc14c84b516a3fe6e84d8fbbad",
+      "mode": 436
+    },
+    "docs/brand/artcraft-mark.svg": {
+      "bytes": 341,
+      "sha256": "f87af81b6fa411da8820eed2bfdcc54c0ee9cd453b4e868c64f56c69db142d0e",
+      "mode": 436
+    },
+    "docs/egui-037-migration-plan.md": {
+      "bytes": 109595,
+      "sha256": "88a05fa7c71469b3a2cf070c23057acf89419d2c6c52a8c5d3dc5eabf710eb99",
+      "mode": 436
+    },
+    "docs/hosted-catalog.md": {
+      "bytes": 4493,
+      "sha256": "267ebab925be06049d9fead7427b2f1451c59523d41036d16649e506031f94ea",
+      "mode": 436
+    },
+    "docs/incident-2026-10-windows-antivirus.md": {
+      "bytes": 5905,
+      "sha256": "4eb84a16239f1c70b20562679c5c3dd58f21fd6645cbec43327050a607da6b3f",
+      "mode": 436
+    },
+    "docs/localization-zh-hant.md": {
+      "bytes": 5322,
+      "sha256": "848b6b1fc63677745a85f508e6d70f4483decebf72ef6844e1f20e0d2b3ae0ac",
+      "mode": 436
+    },
+    "docs/screenshots/artcraft-launcher-grid.png": {
+      "bytes": 250914,
+      "sha256": "6d4294f6c07996cf4b5b908e7af7ea2e25c5725fa6d41770f5fb24cc16b1ed7e",
+      "mode": 436
+    },
+    "docs/screenshots/artcraft-launcher-table.png": {
+      "bytes": 246325,
+      "sha256": "636ee618452b22e4ec32f86ee070d427121151242b36811f025b40b978b9cf71",
+      "mode": 436
+    },
+    "flake.lock": {
+      "bytes": 2459,
+      "sha256": "60a36f16bfde3aa5162765fb1dce63f1bb36b8e88bb27969dac84436784f6c29",
+      "mode": 436
+    },
+    "flake.nix": {
+      "bytes": 2529,
+      "sha256": "81479fab404197f05e0f4ebb32e6120d91c7b1d2521390495a2d18b59825e957",
+      "mode": 436
+    },
+    "packaging/.shellcheckrc": {
+      "bytes": 134,
+      "sha256": "323ba610a82be091a8e811681fc6d6eaf28189b7a1b7cf7ec31a185a69811f43",
+      "mode": 436
+    },
+    "packaging/env.sh": {
+      "bytes": 2372,
+      "sha256": "07f0d187bb0c37c2c23bff66a2d5aaa0e0a32a5fdfe0a3d622362ceb93d9a891",
+      "mode": 436
+    },
+    "packaging/freebsd/package.sh": {
+      "bytes": 4741,
+      "sha256": "ef2602c3750fb4543fdd8d775fa96a7571f41e882031e6fb3919692e24e52ecf",
+      "mode": 509
+    },
+    "packaging/icons.sh": {
+      "bytes": 2787,
+      "sha256": "98afec2f70c0ed44431cb55c869514518894c39d55a76d66c1766f5b9a52d620",
+      "mode": 509
+    },
+    "packaging/linux/AppRun": {
+      "bytes": 6221,
+      "sha256": "1eea1eb54b02f4675258457aa7a85551668477d9f34d970efef08024a5fa4638",
+      "mode": 509
+    },
+    "packaging/linux/ai.storyteller.artcraft-launcher.desktop": {
+      "bytes": 418,
+      "sha256": "91349fbe7d932bf04c98783daf6c2ce7680c2eee1b5e35760dfe8c8ded38ff5d",
+      "mode": 436
+    },
+    "packaging/linux/ai.storyteller.artcraft-launcher.metainfo.xml.in": {
+      "bytes": 2395,
+      "sha256": "25caef585d2b8dab0812799bc12b7a00c5437fb9fbaa4f1c37c7ccf9508b7ac7",
+      "mode": 436
+    },
+    "packaging/linux/apprun-test.sh": {
+      "bytes": 13131,
+      "sha256": "df976c47b49586507e0f379e8b75f94c88c42ff2232bba94c19e3dae78345fb7",
+      "mode": 509
+    },
+    "packaging/linux/flatpak-bundle.sh": {
+      "bytes": 3361,
+      "sha256": "2dd172ee2ab519fbca694de482a5c086b6e777669fcf05efb640a58604d7ea2a",
+      "mode": 509
+    },
+    "packaging/linux/flatpak-oci.sh": {
+      "bytes": 2082,
+      "sha256": "323409ca1e1bf3a1c69fe8abfbb208b79478ba1de52882ef404b4a9ae405ac85",
+      "mode": 509
+    },
+    "packaging/linux/flatpak/ai.storyteller.artcraft-launcher.bundle.yml": {
+      "bytes": 4703,
+      "sha256": "8dd76afa3d30ec1658c4676c8ae0a41e9010067cf2bff98d065feb44c459dbc4",
+      "mode": 436
+    },
+    "packaging/linux/flatpak/ai.storyteller.artcraft-launcher.yml": {
+      "bytes": 5235,
+      "sha256": "ddb7ba430452db06855badc7e03f12084e67d0f93a2bfdb7158c45a18955028c",
+      "mode": 436
+    },
+    "packaging/linux/nfpm.yaml": {
+      "bytes": 3168,
+      "sha256": "0c2148ab43ab91985866b99ebe3ab5826e8b26976f4e4f969cd1e04104c85923",
+      "mode": 436
+    },
+    "packaging/linux/package.sh": {
+      "bytes": 10153,
+      "sha256": "a0191a3c04173db4fd5d8c97fe2b9db239a2f565b5ae347dbae20f5b36877d73",
+      "mode": 509
+    },
+    "packaging/linux/postinst.sh": {
+      "bytes": 397,
+      "sha256": "38aff7c63c94d37e9374390b6a2dbb67da9bcddc666dbd8c635f5b06d1f2a399",
+      "mode": 509
+    },
+    "packaging/linux/test-package-metadata.sh": {
+      "bytes": 2879,
+      "sha256": "8947ad5c7597563541ea1a75009c5f4e3ebfeb3d8abc011aa770749e2655eaf7",
+      "mode": 509
+    },
+    "packaging/macos/Info.plist.in": {
+      "bytes": 1898,
+      "sha256": "3902602c6de7e2f550b512bac09dbc41a21c1ed9929938e4bc6dd90cfe970b37",
+      "mode": 436
+    },
+    "packaging/macos/dmg/README.md": {
+      "bytes": 3208,
+      "sha256": "b28359dd705ffb6be2f9686b1e8ae4ef263abd1fb69df411ec571fda53f195f7",
+      "mode": 436
+    },
+    "packaging/macos/dmg/background.svg": {
+      "bytes": 53500,
+      "sha256": "923ceeffb513b542d3c962ab13d37bcaf1c1d2c48884b82a76c64e5b3dedb6f2",
+      "mode": 436
+    },
+    "packaging/macos/dmg/background.tiff": {
+      "bytes": 23696,
+      "sha256": "adb81af80dab3e50d1f3dcf17789fe3383288338c7d1bb292639b90fd03738f0",
+      "mode": 436
+    },
+    "packaging/macos/dmg/dmg-layout.DS_Store": {
+      "bytes": 16388,
+      "sha256": "300e3e1ff7921eb8061675ca0a21b7569ae294c1f045d62a6abe152ac50a5706",
+      "mode": 436
+    },
+    "packaging/macos/dmg/generate.py": {
+      "bytes": 6172,
+      "sha256": "47435c1364e6333752bd6f8287c9742b3dbdfcf7f7ae51dc685a8be9c9499f76",
+      "mode": 436
+    },
+    "packaging/macos/entitlements.plist": {
+      "bytes": 505,
+      "sha256": "82ced41aa184180562309bd13dc4bbfa2cab4906367326ac218d4736821ed3b6",
+      "mode": 436
+    },
+    "packaging/macos/import-cert.sh": {
+      "bytes": 2877,
+      "sha256": "a28a89a5968c38655de6759e11b2eb69f7b61c483cefa2dec31a781bd33ff167",
+      "mode": 509
+    },
+    "packaging/macos/package.sh": {
+      "bytes": 9122,
+      "sha256": "b89baf7f4ef68185742294417bcc4b388be2b99378368ca193cfcfe291f2c52d",
+      "mode": 509
+    },
+    "packaging/macos/verify.sh": {
+      "bytes": 6339,
+      "sha256": "df6ae42b71113fb9a4b2133509c819b6d60573a455ebaef0f5ef9edde4415c3f",
+      "mode": 509
+    },
+    "packaging/web/.htaccess": {
+      "bytes": 495,
+      "sha256": "c92d61b428bff284fce08dc57f0255261476397f2cba5836c833974eded5c725",
+      "mode": 436
+    },
+    "packaging/web/README.md": {
+      "bytes": 3512,
+      "sha256": "4a1bfa8cc206aaa976f5f8692992004c40f88e932c8a91bb271cc121c8e5681b",
+      "mode": 436
+    },
+    "packaging/web/_headers": {
+      "bytes": 326,
+      "sha256": "e3e253de74fb99a761fc91d4dec4b81ad6a1022b29c98761b5ac1e8ba5aff05a",
+      "mode": 436
+    },
+    "packaging/web/package.sh": {
+      "bytes": 2544,
+      "sha256": "fc205205ef287d5a1a3f04bcbe3ab1661461bb9a442d35c625982894c04a4f59",
+      "mode": 509
+    },
+    "packaging/windows/INSTALLATION.md": {
+      "bytes": 1584,
+      "sha256": "532c91b8d1012e1ff34187a0a1ce399a7a7be0e4a387d1812060630281f33f86",
+      "mode": 436
+    },
+    "packaging/windows/artcraft-launcher.en-us.wxl": {
+      "bytes": 1719,
+      "sha256": "3e66c6880624b4afeb5684a7dfaebbf3dd7b28ab8676ccba0db525fdc55c962c",
+      "mode": 436
+    },
+    "packaging/windows/artcraft-launcher.wxs": {
+      "bytes": 13981,
+      "sha256": "fd12872529851629b8d12882cf72d7f471c2e4507c38e04e05d07ce6a8dbe243",
+      "mode": 436
+    },
+    "packaging/windows/check-icons.ps1": {
+      "bytes": 2129,
+      "sha256": "1dbd2418314ad16998fe6c248016b0a5918eb1c1232f26007da2370bd34b1e42",
+      "mode": 436
+    },
+    "packaging/windows/check-install-policy.ps1": {
+      "bytes": 12972,
+      "sha256": "82b5fd911dd50966cc61f42f7b0ce5cd353acc4486c07368156d8f1e45bc8f8e",
+      "mode": 436
+    },
+    "packaging/windows/install-policy.json": {
+      "bytes": 1120,
+      "sha256": "afdc89e88c006c0e588489bffcb79bae637a756f7cd69c5ad3243c2402c43543",
+      "mode": 436
+    },
+    "packaging/windows/package.ps1": {
+      "bytes": 12661,
+      "sha256": "7da087490ec0d5e5d835ec707958f040269814ee0552696429c3167c23e69974",
+      "mode": 436
+    },
+    "packaging/windows/portable.txt": {
+      "bytes": 570,
+      "sha256": "62caf345bf48e2c712f380f4fb10553d9a8f4c2ae62ccd198c3769ae2f126359",
+      "mode": 436
+    },
+    "packaging/windows/sign.ps1": {
+      "bytes": 5321,
+      "sha256": "97ce3df33c6361b2c979b4fee133c943f12d741570ec341f6074167713b65c28",
+      "mode": 436
+    },
+    "packaging/windows/test-install-policy.ps1": {
+      "bytes": 3387,
+      "sha256": "41a79be43d220cf2359368ae783fe862df7ce693a95fec288f846ae1fdc81f14",
+      "mode": 436
+    },
+    "rustfmt.toml": {
+      "bytes": 45,
+      "sha256": "1b51e53edb3571229e84540b9b08514fb23d8c8d3225e8b984773f5c36eaa906",
+      "mode": 436
+    },
+    "sonar-project.properties": {
+      "bytes": 71,
+      "sha256": "a46efbcddc5528377f0333868526182d202cc20b2c6a50e210731dee3f0ed564",
+      "mode": 436
+    },
+    "xtask/Cargo.toml": {
+      "bytes": 251,
+      "sha256": "f9e7f6dafe353c9f368ad79e128f7a23096e7f4b53c614746138c2175a8d37cb",
+      "mode": 436
+    },
+    "xtask/src/icns.rs": {
+      "bytes": 4280,
+      "sha256": "046a41e74b78e7215d1e401316df755e68935e17a3d3fcf78d2333dfe0f760f9",
+      "mode": 436
+    },
+    "xtask/src/ico.rs": {
+      "bytes": 4543,
+      "sha256": "ae0f9d521b9b682a13f7c82348576697d439a547a686b5f0bfc7553550045ae1",
+      "mode": 436
+    },
+    "xtask/src/local.rs": {
+      "bytes": 40255,
+      "sha256": "99463ae1ac6f0374d88d936bdceda8db08170bad6a804a151619ab66c9166731",
+      "mode": 436
+    },
+    "xtask/src/main.rs": {
+      "bytes": 4575,
+      "sha256": "b0b155c445090570d53aa9aefe414ee957b0f9af8cb78f157f3961c2d87732c1",
+      "mode": 436
+    },
+    "xtask/src/version.rs": {
+      "bytes": 5893,
+      "sha256": "b2dafc89b4705a2f7d5e20084999fe2fc734ec5d2daa8981c3369c2c3d25dd86",
+      "mode": 436
+    }
+  },
+  "symlinks": [],
+  "lfsPointers": [],
+  "largeFiles": [],
+  "licenses": [
+    "ATTRIBUTION.md",
+    "LICENSE-APACHE",
+    "LICENSE-MIT",
+    "NOTICE",
+    "assets/app-icon/LICENSE.txt",
+    "assets/app-icons/LICENSE-APACHE-MailCraft.txt",
+    "assets/app-icons/LICENSE-APACHE-SolidCraft.txt",
+    "assets/app-icons/LICENSE-MIT-MailCraft.txt",
+    "assets/app-icons/LICENSE-MIT-SolidCraft.txt",
+    "docs/brand/LICENSE-brand.txt"
+  ],
+  "exportAttributes": [],
+  "submodules": [],
+  "archiveSha256": "6c56b57749280ba356526b0f538cd4a8ce6d5d666eb24c06c37e0bb34fc6e5ad",
+  "archiveBytes": 2550829,
+  "extractedBytes": 6072807,
+  "fileCount": 275,
+  "status": "source-archive-extracted"
+}

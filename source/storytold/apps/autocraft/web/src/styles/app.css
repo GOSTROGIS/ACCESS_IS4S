@@ -1,0 +1,258 @@
+@import "@fontsource-variable/inter/index.css";
+@import "@fontsource-variable/geist-mono/index.css";
+@import "./tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--st-scroll-thumb) var(--st-scroll-track);
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    font-family: theme("fontFamily.sans");
+    font-size: 13px;
+    line-height: 20px;
+    font-feature-settings: "cv11", "ss01";
+    color: rgb(var(--st-fg-rgb));
+    background-color: var(--st-bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+  ::selection {
+    background: rgb(var(--st-accent-rgb) / 0.35);
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--st-accent-ink-rgb));
+    outline-offset: 1px;
+  }
+  /* ArtCraft: pressable controls get a 3px corner. */
+  button,
+  select,
+  textarea,
+  input:not([type="radio"]):not([type="range"]),
+  [role="button"] {
+    border-radius: 3px;
+  }
+  svg[viewBox="0 0 256 256"] {
+    display: inline-block;
+    width: 1.15em;
+    height: 1.15em;
+    vertical-align: -0.2em;
+    flex-shrink: 0;
+  }
+}
+
+@layer components {
+  /* Code-ish values: refs, paths, diff stats, SHAs. */
+  .code {
+    font-family: theme("fontFamily.mono");
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  .chip {
+    @apply inline-flex h-7 items-center gap-1.5 whitespace-nowrap rounded border border-line bg-transparent px-2.5 text-[12px] font-medium text-ink/75 transition-colors duration-fast hover:border-line-strong hover:bg-ink/[0.04] hover:text-ink;
+  }
+  .chip[data-active="true"] {
+    @apply border-accent/50 bg-accent/10 text-accent-ink hover:bg-accent/15 hover:text-accent-ink;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+[data-panel-resize-handle-id] {
+  position: relative;
+  flex: 0 0 1px;
+  background: var(--st-line);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+[data-panel-group-direction="horizontal"] > [data-panel-resize-handle-id] {
+  cursor: ew-resize;
+}
+[data-panel-group-direction="vertical"] > [data-panel-resize-handle-id] {
+  cursor: ns-resize;
+}
+[data-panel-resize-handle-id]::after {
+  content: "";
+  position: absolute;
+  inset: 0 -4px;
+}
+[data-panel-resize-handle-id][data-resize-handle-state="hover"],
+[data-panel-resize-handle-id][data-resize-handle-state="drag"] {
+  background: rgb(var(--st-accent-rgb));
+}
+
+/* Rendered issue and PR bodies, GitHub-like. */
+.md {
+  font-size: 13px;
+  line-height: 20px;
+  color: rgb(var(--st-fg-rgb) / 0.88);
+  overflow-wrap: anywhere;
+}
+.md > * + * {
+  margin-top: 8px;
+}
+.md h1,
+.md h2,
+.md h3,
+.md h4 {
+  font-weight: 600;
+  color: rgb(var(--st-fg-rgb));
+  margin-top: 14px;
+}
+.md h1,
+.md h2 {
+  font-size: 15px;
+}
+.md h3,
+.md h4 {
+  font-size: 13px;
+}
+.md a {
+  color: rgb(var(--st-accent-ink-rgb));
+}
+.md a:hover {
+  text-decoration: underline;
+}
+.md ul,
+.md ol {
+  padding-left: 20px;
+}
+.md ul {
+  list-style: disc;
+}
+.md ol {
+  list-style: decimal;
+}
+.md li + li {
+  margin-top: 2px;
+}
+.md li.task-list-item {
+  list-style: none;
+  margin-left: -18px;
+}
+.md input[type="checkbox"] {
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+.md code {
+  font-family: theme("fontFamily.mono");
+  font-size: 12px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgb(var(--st-fg-rgb) / 0.07);
+}
+.md pre {
+  font-family: theme("fontFamily.mono");
+  font-size: 12px;
+  line-height: 18px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--st-sunken);
+  border: 1px solid var(--st-line);
+  overflow-x: auto;
+}
+.md pre code {
+  padding: 0;
+  background: none;
+}
+.md blockquote {
+  padding-left: 10px;
+  border-left: 2px solid var(--st-line-strong);
+  color: rgb(var(--st-fg-rgb) / 0.65);
+}
+.md table {
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.md th,
+.md td {
+  border: 1px solid var(--st-line);
+  padding: 3px 8px;
+}
+.md th {
+  font-weight: 600;
+  background: rgb(var(--st-fg-rgb) / 0.03);
+}
+.md strong {
+  font-weight: 600;
+  color: rgb(var(--st-fg-rgb));
+}
+.md .md-image {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--st-line-strong);
+  border-radius: 4px;
+  color: rgb(var(--st-fg-rgb) / 0.75);
+  font-size: 12px;
+}
+.md .md-inline-image {
+  display: inline-block;
+  max-width: 100%;
+}
+.md .md-inline-image img {
+  display: block;
+  max-width: 100%;
+  max-height: 480px;
+  height: auto;
+  border: 1px solid var(--st-line);
+  border-radius: 4px;
+}
+.md .md-image:hover {
+  text-decoration: none;
+  border-color: rgb(var(--st-accent-ink-rgb) / 0.6);
+}
+
+/* Diagram frames: natural size, scrolling sideways on narrow screens. */
+.md-diagram {
+  overflow-x: auto;
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--st-sunken);
+  border: 1px solid var(--st-line);
+}
+.md-diagram svg {
+  display: block;
+  max-width: none;
+  margin: 0 auto;
+}
+
+/* Swimlane diagram (Swimlane.tsx): lane colours follow the actor kinds. */
+.sw-container { container-type: inline-size; }
+/* Wider than the text column: up to 1240px, centred on the column, shrinking to 1100px before it scrolls. */
+.sw-frame { width: min(1240px, 100cqw - 32px); margin-left: calc(50% - min(1240px, 100cqw - 32px) / 2); }
+.sw { display: block; max-width: none; margin: 0 auto; font-size: 12px; width: 100%; min-width: 1100px; height: auto; }
+.sw-band { fill: transparent; stroke: none; }
+.sw-band.alt { fill: rgb(var(--st-fg-rgb) / 0.035); }
+.sw-head { font-size: 14px; font-weight: 700; fill: rgb(var(--st-fg-rgb)); }
+.sw-card rect { fill: var(--st-raised); stroke: rgb(var(--st-fg-rgb) / 0.35); stroke-width: 1.5; }
+.sw-card.sw-lane-models rect { fill: rgb(var(--st-accent-rgb) / 0.2); stroke: rgb(var(--st-accent-rgb)); }
+.sw-card.sw-lane-sandbox rect { fill: rgb(var(--st-ok-rgb) / 0.2); stroke: rgb(var(--st-ok-rgb)); }
+.sw-card.sw-lane-operator rect { fill: rgb(var(--st-warn-rgb) / 0.2); stroke: rgb(var(--st-warn-rgb)); }
+.sw-card.sw-lane-writes rect { fill: rgb(var(--st-bad-rgb) / 0.2); stroke: rgb(var(--st-bad-rgb)); }
+.sw-title { font-size: 13px; font-weight: 700; fill: rgb(var(--st-fg-rgb)); }
+.sw-detail { font-size: 12px; fill: rgb(var(--st-fg-rgb) / 0.85); }
+.sw-appr { font-size: 11px; font-style: italic; fill: rgb(var(--st-fg-rgb) / 0.75); }
+.sw-edge { fill: none; stroke: rgb(var(--st-fg-rgb) / 0.6); stroke-width: 1.4; }
+.sw-edge.dashed { stroke-dasharray: 5 4; stroke-width: 1.2; }
+.sw-edge.main { stroke: rgb(var(--st-fg-rgb) / 0.9); stroke-width: 2.6; }
+.sw-arrowhead { fill: rgb(var(--st-fg-rgb) / 0.75); }
+.sw-label rect { fill: var(--st-sunken); stroke: var(--st-line-strong); stroke-width: 1; }
+.sw-label text { font-size: 11px; fill: rgb(var(--st-fg-rgb)); }

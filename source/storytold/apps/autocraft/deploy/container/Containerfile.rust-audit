@@ -1,0 +1,10 @@
+# Toolchain image "rust-audit" for the nightly dependency audit. The advisory database is fetched by the audit's
+# first step (network "fetch") into CARGO_HOME; the second step runs `cargo audit --no-fetch` offline.
+#
+#   podman build -f deploy/container/Containerfile.rust-audit -t rust-audit deploy/container
+FROM docker.io/library/rust:1-bookworm
+
+RUN set -eux; \
+    cargo install cargo-audit --locked; \
+    rm -rf "$CARGO_HOME/registry" "$CARGO_HOME/git"; \
+    chmod -R a+rX /usr/local/rustup /usr/local/cargo

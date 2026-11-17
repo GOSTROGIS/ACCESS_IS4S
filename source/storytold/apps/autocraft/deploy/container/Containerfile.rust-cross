@@ -1,0 +1,12 @@
+# Toolchain image "rust-cross" for nightly cross-target checks (wasm32-unknown-unknown, x86_64-pc-windows-gnu).
+# `cargo check` does not link, but C build scripts still need the mingw compiler.
+#
+#   podman build -f deploy/container/Containerfile.rust-cross -t rust-cross deploy/container
+FROM docker.io/library/rust:1-bookworm
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64; \
+    rm -rf /var/lib/apt/lists/*; \
+    rustup target add wasm32-unknown-unknown x86_64-pc-windows-gnu; \
+    chmod -R a+rX /usr/local/rustup /usr/local/cargo

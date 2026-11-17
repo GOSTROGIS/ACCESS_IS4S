@@ -1,0 +1,43 @@
+{
+  "product": "ACCESS IS4S",
+  "application": "artcraft",
+  "displayName": "ACCESS IS4S AI Studio",
+  "changes": [
+    {
+      "path": "frontend/apps/artcraft/app/public/artcraft-icon.svg",
+      "upstreamSha256": "e7cef38bae3a2d04afee6440d5580436813074f54a8dc17afcebd5d091d94a8d",
+      "replacementSha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/gifs/artcraft-logo-load.gif",
+      "upstreamSha256": "48a47db49246569c9c6ec2370a94402cc9ad1748e118eedf49faf9668b9889be",
+      "replacementSha256": "ccdf44394abaeec164e96e4ecc13ed75140f0dc23452da700fa6f76e7d67f5cc"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/logo/artcraft-icon.png",
+      "upstreamSha256": "6fce704ff37edea498cb9fc8986f2ab440bf241671ebe4f6147431e270984b0a",
+      "replacementSha256": "620452e89b904f6e049aecbcf0dbad68bfd6ca85fe848ca918ad871ccddf1b0a"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/logo/artcraft-logo-color-black.svg",
+      "upstreamSha256": "aedd9cd1df2fda8eb496d9889e387b352fab551ff0da55ee7cc5cefa387ebbfd",
+      "replacementSha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/logo/artcraft-logo-color-white.svg",
+      "upstreamSha256": "0bb99aedbc5468eae4b045bed18c53657caff7046c3c36bc2264becbf665ed7f",
+      "replacementSha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/public/resources/images/services/artcraft.svg",
+      "upstreamSha256": "bfcebc664072969a92650c79e53dda5820b85cbec91be4090409d1fca0b7a387",
+      "replacementSha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9"
+    },
+    {
+      "path": "frontend/apps/artcraft/app/index.html",
+      "upstreamSha256": "9831daffe8e7e1ba3cb549a3ab189623ad39565a8f484d9bef6f29695ea50c19",
+      "replacementSha256": "e59ef2d81c9e0d5e512f6648b5362701dd87711eefddcd3819e375b103b48558"
+    }
+  ],
+  "compiledStatus": "Source identity overlay; source-specific native rebuild and workflow verification remain pending"
+}

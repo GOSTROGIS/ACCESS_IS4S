@@ -1,0 +1,35 @@
+#!/bin/bash
+# Bootstrap hook for the bare repo of a production install. Install it once as
+# <bare repo>/hooks/post-receive (mode 0755). It never needs to change: the real
+# deploy is deploy/hook.sh in the pushed commit, so a change to the deploy rides
+# the same push as the code it deploys.
+#
+# Runs as the app user with cwd = the bare repo and GIT_DIR pointing at it.
+# AUTOCRAFT_BRANCH (default main) is the branch that deploys.
+set -euo pipefail
+
+branch="${AUTOCRAFT_BRANCH:-main}"
+sha=""
+while read -r _old new ref; do
+	if [ "$ref" = "refs/heads/$branch" ]; then sha="$new"; fi
+done
+if [ -z "$sha" ]; then
+	echo "-- no $branch update; nothing to deploy --"
+	exit 0
+fi
+# The pushed commit, resolved once: the hook and the release both come from it, whatever the branch does meanwhile.
+if ! printf '%s\n' "$sha" | grep -Eqx '[0-9a-f]{40}|[0-9a-f]{64}' || ! git cat-file -e "$sha^{commit}" 2>/dev/null; then
+	echo "!! $branch was deleted or does not name a commit; nothing was deployed" >&2
+	exit 1
+fi
+
+if ! git cat-file -e "$sha:deploy/hook.sh" 2>/dev/null; then
+	echo "!! the pushed commit has no deploy/hook.sh; nothing was deployed" >&2
+	exit 1
+fi
+
+# Run the hook from a copy: the checkout it updates may replace deploy/hook.sh mid-run.
+hook="$(mktemp "$(cd "$GIT_DIR/.." && pwd)/.post-receive-hook.XXXXXX")"
+trap 'rm -f "$hook"' EXIT
+git cat-file blob "$sha:deploy/hook.sh" >"$hook"
+AUTOCRAFT_BRANCH="$branch" AUTOCRAFT_DEPLOY_SHA="$sha" bash "$hook"

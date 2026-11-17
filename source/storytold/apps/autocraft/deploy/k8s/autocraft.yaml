@@ -1,0 +1,142 @@
+# AutoCraft on Kubernetes: one StatefulSet pod with three containers that share the data volume.
+# Replace the image and AUTOCRAFT_BASE_URL, then `kubectl apply -f autocraft.yaml`.
+# docs/operations.md, "Running in a container", explains each choice.
+#
+# Why one pod: the database is SQLite on a ReadWriteOnce volume, so everything that opens it runs on
+# one node. Sync and backup run as the `periodic` container of this pod instead of CronJobs because a
+# CronJob pod can be scheduled on another node, where the volume cannot attach.
+apiVersion: v1
+kind: Service
+metadata:
+  name: autocraft-dashboard
+  labels: { app.kubernetes.io/name: autocraft }
+spec:
+  selector: { app.kubernetes.io/name: autocraft }
+  ports:
+    - { name: http, port: 3005, targetPort: dashboard }
+---
+# Reached by sandbox workers from inside the cluster only; do not expose it through an ingress.
+apiVersion: v1
+kind: Service
+metadata:
+  name: autocraft-worker-api
+  labels: { app.kubernetes.io/name: autocraft }
+spec:
+  selector: { app.kubernetes.io/name: autocraft }
+  ports:
+    - { name: http, port: 8981, targetPort: worker-api }
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: autocraft
+  labels: { app.kubernetes.io/name: autocraft }
+spec:
+  serviceName: autocraft-dashboard
+  replicas: 1 # never more: the runner and sync locks cannot exclude a second pod
+  selector:
+    matchLabels: { app.kubernetes.io/name: autocraft }
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: autocraft }
+    spec:
+      hostUsers: false # needed for the runner's procMount: Unmasked
+      terminationGracePeriodSeconds: 30 # above AUTOCRAFT_STOP_TIMEOUT (25)
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      containers:
+        - name: dashboard
+          image: autocraft:latest # replace with your registry image
+          args: ["dashboard"]
+          env:
+            - { name: AUTOCRAFT_BASE_URL, value: "https://autocraft.example.com" }
+            - { name: AUTOCRAFT_TRUST_PROXY, value: "1" }
+            - name: GH_TOKEN # the image proxy and repository adds call gh
+              valueFrom:
+                secretKeyRef: { name: autocraft-github, key: token, optional: true }
+          ports:
+            - { name: dashboard, containerPort: 3005 }
+          livenessProbe:
+            httpGet: { path: /healthz, port: dashboard }
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet: { path: /readyz, port: dashboard }
+            periodSeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - { name: data, mountPath: /data }
+            - { name: config, mountPath: /config }
+        - name: runner
+          image: autocraft:latest
+          args: ["runner"]
+          env:
+            - { name: AUTOCRAFT_BASE_URL, value: "https://autocraft.example.com" }
+            - name: GH_TOKEN # created by the operator; see docs/operations.md
+              valueFrom:
+                secretKeyRef: { name: autocraft-github, key: token, optional: true }
+          ports:
+            - { name: worker-api, containerPort: 8981 }
+          livenessProbe:
+            httpGet: { path: /healthz, port: worker-api }
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet: { path: /readyz, port: worker-api }
+            periodSeconds: 5
+          # bubblewrap (the sandbox of tool-using Claude calls) needs both settings below.
+          securityContext:
+            procMount: Unmasked
+            seccompProfile: { type: Unconfined }
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - { name: data, mountPath: /data }
+            - { name: config, mountPath: /config }
+        # Runs the work of the systemd sync timer (every minute after the previous run ends) and the
+        # daily backup timer (keeping 7), as one-shot commands of the same image.
+        - name: periodic
+          image: autocraft:latest
+          command:
+            - /usr/bin/tini
+            - --
+            - /bin/bash
+            - -c
+            - |
+              trap 'exit 0' TERM INT
+              # Time of the newest daily snapshot (0 when there is none), so a restart does not reset the schedule.
+              last_backup() {
+                f=$(ls -1t /data/backups/daily-*.db.* 2>/dev/null | head -n 1)
+                if [ -n "$f" ]; then stat -c %Y "$f"; else echo 0; fi
+              }
+              while true; do
+                /app/deploy/entrypoint.sh sync || echo "sync exited $?" >&2
+                if [ $(( $(date +%s) - $(last_backup) )) -ge 86400 ]; then
+                  /app/deploy/entrypoint.sh backup daily 7 || echo "backup exited $?" >&2
+                fi
+                sleep 60 & wait $!
+              done
+          env:
+            - name: GH_TOKEN
+              valueFrom:
+                secretKeyRef: { name: autocraft-github, key: token, optional: true }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - { name: data, mountPath: /data }
+            - { name: config, mountPath: /config }
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources: { requests: { storage: 20Gi } }
+    # Writable: the app writes account files, Claude logins and usage readings here.
+    - metadata: { name: config }
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources: { requests: { storage: 1Gi } }

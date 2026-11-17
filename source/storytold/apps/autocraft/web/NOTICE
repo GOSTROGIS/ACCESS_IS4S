@@ -1,0 +1,8 @@
+Parts of src/ui/ (Button, Badge, Kbd variants), the ArtCraft logo mark in
+src/ui/atoms/Logo.tsx, the surface and accent tokens in src/styles/tokens.css and the
+control-corner and icon-sizing rules in src/styles/app.css are adapted from
+ArtCraft (https://github.com/storytold/artcraft, frontend/), licensed under
+MIT OR Apache-2.0. Copyright the ArtCraft authors.
+
+Fonts: Inter and Geist Mono via @fontsource, under the SIL Open Font License
+1.1 (see each package's LICENSE).

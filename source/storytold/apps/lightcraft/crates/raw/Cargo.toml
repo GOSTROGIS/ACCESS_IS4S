@@ -1,0 +1,34 @@
+[package]
+name = "lightcraft-raw"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "LightCraft RAW decoding, demosaicing and DNG colour model (L1)"
+
+[lints]
+workspace = true
+
+[dependencies]
+craft-tiff = { workspace = true }
+craft-raw = { workspace = true }
+lightcraft-meta = { workspace = true }
+lightcraft-raster = { workspace = true }
+lightcraft-color = { workspace = true }
+lightcraft-geom = { workspace = true }
+serde = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+rayon = { workspace = true }
+miniz_oxide = { workspace = true }
+craft-image-codecs = { workspace = true }
+
+[dev-dependencies]
+# tests record why they skip (`cargo xtask ci` lists the skips)
+lightcraft-testkit = { workspace = true }
+proptest = { workspace = true }
+craft-jxl = { workspace = true }
+jixel = { workspace = true }
+# Pinned CC0 corpus identities; not a product dependency.
+sha2 = { version = "0.10", default-features = false, features = ["std"] }
+# Peak-heap regression tests (tests/sr2_heap.rs); not a product dependency.
+dhat = { workspace = true }

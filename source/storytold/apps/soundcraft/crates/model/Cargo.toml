@@ -1,0 +1,14 @@
+[package]
+name = "soundcraft-model"
+description = "Compatibility facade for SoundCraft's shared native session format"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+craft-scraft-format.workspace = true
+
+[lints]
+workspace = true

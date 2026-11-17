@@ -1,0 +1,95 @@
+# AutoCraft on one host with Docker Compose: dashboard, runner and a periodic container (sync and backup)
+# that share the data and config volumes. docs/operations.md, "Running in a container", explains each choice;
+# docs/migration.md, "VPS with Docker Compose", moves an existing install onto it.
+#
+# Setup: copy container.env.example to container.env (mode 0600) and fill it in, set AUTOCRAFT_IMAGE if the
+# image is not the local `autocraft`, then `docker compose up -d`. Run exactly one copy of this stack per database.
+name: autocraft
+
+x-common: &common
+  image: ${AUTOCRAFT_IMAGE:-autocraft:latest}
+  env_file: container.env
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options: { max-size: 10m, max-file: "5" }
+  volumes:
+    - data:/data
+    - config:/config
+
+services:
+  dashboard:
+    <<: *common
+    command: ["dashboard"]
+    # The reverse proxy on this host terminates TLS and forwards to this port. Nothing else may reach it.
+    ports:
+      - "127.0.0.1:3005:3005"
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3005/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  runner:
+    <<: *common
+    command: ["runner"]
+    # The worker API (8981) is not published. A build worker on another machine reaches it through a TLS
+    # proxy on its own hostname that accepts only the worker's address (docs/migration.md, "VPS with Docker
+    # Compose"). For that proxy, uncomment the loopback line. Never bind it to 0.0.0.0, and never route it
+    # through the dashboard's proxy site.
+    expose:
+      - "8981"
+    #ports:
+    #  - "127.0.0.1:8981:8981"
+    # Must exceed AUTOCRAFT_STOP_TIMEOUT (default 25 s), so the runner stops its jobs before Docker kills it.
+    stop_grace_period: 30s
+    # bubblewrap (the sandbox of tool-using Claude calls) needs the two unconfined settings; see operations.md, "Sandbox (bubblewrap)".
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=unconfined
+      - systempaths=unconfined
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8981/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # The work of the systemd sync timer (every minute after the previous run ends) and backup timer (daily, keeping 7),
+  # as one-shot commands of the same image. Same loop as the `periodic` container of deploy/k8s/autocraft.yaml.
+  # `$$` is Compose's escape for a literal `$`.
+  periodic:
+    <<: *common
+    entrypoint:
+      - /usr/bin/tini
+      - --
+      - /bin/bash
+      - -c
+      - |
+        trap 'exit 0' TERM INT
+        # Time of the newest daily snapshot (0 when there is none), so a restart does not reset the schedule.
+        last_backup() {
+          f=$$(ls -1t /data/backups/daily-*.db.* 2>/dev/null | head -n 1)
+          if [ -n "$$f" ]; then stat -c %Y "$$f"; else echo 0; fi
+        }
+        while true; do
+          /app/deploy/entrypoint.sh sync || echo "sync exited $$?" >&2
+          if [ $$(( $$(date +%s) - $$(last_backup) )) -ge 86400 ]; then
+            /app/deploy/entrypoint.sh backup daily 7 || echo "backup exited $$?" >&2
+          fi
+          sleep 60 & wait $$!
+        done
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  data:
+    name: autocraft-data
+  config:
+    name: autocraft-config
