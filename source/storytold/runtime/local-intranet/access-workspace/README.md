@@ -54,3 +54,24 @@ node --test source/storytold/runtime/local-intranet/access-workspace/browser-sto
 actual IndexedDB persistence, browser profile separation and rejection of
 changed document bytes. It does not substitute a fake editor for an application
 workflow. Deployed editor workflows must be tested against the installed URLs.
+
+The deployed regression scripts use Playwright and JSZip as development tools,
+an isolated browser context, and synthetic documents. They require the actual
+folder services on ports 4180 and 4190–4206:
+
+```sh
+node source/storytold/runtime/local-intranet/access-workspace/verify-documents.mjs
+APP=cadcraft node source/storytold/runtime/local-intranet/access-workspace/verify-designs.mjs
+APP=deckcraft node source/storytold/runtime/local-intranet/access-workspace/verify-designs.mjs
+APP=figcraft node source/storytold/runtime/local-intranet/access-workspace/verify-designs.mjs
+APP=pdfcraft node source/storytold/runtime/local-intranet/access-workspace/verify-designs.mjs
+```
+
+Use PowerShell's `$env:APP = 'pdfcraft'` syntax on Windows. `ACCESS_EVIDENCE_DIR`
+selects the evidence folder; it defaults to `work/access-parent-evidence` under
+the current working directory. Tests use real editor commands and the parent
+toolbar, read saved bytes from IndexedDB, download the files, inspect XLSX,
+DOCX, PPTX and design ZIP contents, inspect DXF entities, and reopen the files.
+The PDF check verifies the saved rotated page renders in landscape after
+reopening from a same-name unsaved blank. Independently parse that downloaded
+PDF with a PDF library to confirm its page count and `/Rotate` value as well.

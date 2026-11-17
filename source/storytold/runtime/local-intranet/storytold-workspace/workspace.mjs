@@ -8,6 +8,7 @@ const formats = { cadcraft: 'dxf', deckcraft: 'pptx', figcraft: 'figcraft', grid
 let app;
 let ready = false;
 let name;
+let pendingPdf;
 function tell(type, extra = {}, transfer = []) {
   window.parent.postMessage({ type: `slipcurve-editor:${type}`, application: app.id, ...extra }, parentOrigin, transfer);
 }
@@ -22,7 +23,19 @@ async function action(message) {
     if (!hosted.has(app.id)) throw Error('Use this application’s File Open command to select the project download.');
     if (!(message.bytes instanceof ArrayBuffer) || !message.bytes.byteLength || message.bytes.byteLength > maximumBytes) throw Error('Invalid project file.');
     name = message.name;
-    frame.contentWindow.postMessage({ type: `${app.id}:open`, name, bytes: message.bytes }, location.origin, [message.bytes]);
+    if (app.id === 'pdfcraft') {
+      // A host-open can otherwise leave an unsaved same-name PDF tab in front.
+      // Both parent applications confirm replacement before asking us to open.
+      // Restart only the inner PDF runtime, then deliver the verified bytes once
+      // its fresh host bridge is ready. Never recursively re-enter action().
+      pendingPdf = { name, bytes: message.bytes };
+      ready = false;
+      status.textContent = 'Opening the saved PDF…';
+      status.hidden = false;
+      frame.src = `pdfcraft.html?control&open=${crypto.randomUUID()}`;
+    } else {
+      frame.contentWindow.postMessage({ type: `${app.id}:open`, name, bytes: message.bytes }, location.origin, [message.bytes]);
+    }
   } else if (message.type === 'slipcurve-editor:new') {
     if (!hosted.has(app.id)) throw Error('Use the application’s New command.');
     const command = app.id === 'cadcraft' ? 'new' : app.id === 'pdfcraft' ? 'create.blank' : 'file.new';
@@ -66,6 +79,11 @@ async function start() {
     if (message.type === `${app.id}:ready`) {
       ready = true;
       status.hidden = true;
+      if (pendingPdf) {
+        const pending = pendingPdf;
+        pendingPdf = null;
+        frame.contentWindow.postMessage({ type: 'pdfcraft:open', name: pending.name, bytes: pending.bytes }, location.origin, [pending.bytes]);
+      }
       tell('ready');
     } else if (message.type === `${app.id}:dirty`) {
       tell('dirty', { dirty: message.dirty === true });

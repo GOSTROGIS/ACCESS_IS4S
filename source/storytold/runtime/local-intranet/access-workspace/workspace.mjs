@@ -118,11 +118,8 @@ function showEditor(id, opening) {
   }
   buttons();
 }
-async function openRecord(record, freshEditor = false) {
-  // The PDF app can keep an unsaved same-name tab in front of a host-opened
-  // file. A confirmed reopen starts a fresh instance so the verified project
-  // copy is the active document rather than an unnoticed background tab.
-  if (application?.id !== record.application || !ready || (record.application === 'pdfcraft' && !freshEditor)) {
+async function openRecord(record) {
+  if (application?.id !== record.application || !ready) {
     showEditor(record.application, record);
     return;
   }
@@ -130,6 +127,7 @@ async function openRecord(record, freshEditor = false) {
   if (application.extension) {
     const bytes = record.bytes.slice(0);
     send('open', { name: record.name, bytes }, [bytes]);
+    if (application.id === 'pdfcraft') { ready = false; buttons(); }
     status(`Opening ${record.name}. Its saved size and SHA-256 match.`);
   } else {
     download(record);
@@ -150,7 +148,7 @@ window.addEventListener('message', event => {
     if (pendingDocument) {
       const record = pendingDocument;
       pendingDocument = null;
-      void run(() => openRecord(record, true));
+      void run(() => openRecord(record));
     }
   } else if (message.type === 'slipcurve-editor:dirty') {
     dirty = message.dirty === true;

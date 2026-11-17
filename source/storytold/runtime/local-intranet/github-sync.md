@@ -1,5 +1,7 @@
 # Owned GitHub repository synchronization
 
+GitHub supplies committed default-branch changes to the intranet copies every 15 minutes.
+
 `github-sync.mjs --root <directory> --git <git.exe> --owner <account>` uses the existing Windows Git credential helper to authenticate to GitHub. It checks the authenticated account and pages all repositories owned by that account, including accessible private repositories. The temporary Git helper contains no credential value. The token stays in process memory during GitHub API calls and Git transfers.
 
 The first run creates a shallow default-branch working copy with its Git history and origin metadata. Later runs fetch and fast-forward clean copies. Repositories with local edits, another checked-out branch, conflicting origin, linked paths, filter configuration or divergent commits get a status for review. Git hooks and global filters are disabled for these transfers. Empty repositories remain usable Git working copies and acquire their initial contents on a later run. The last result for each repository is recorded in `sync-status.json`.
