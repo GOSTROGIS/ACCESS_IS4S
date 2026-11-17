@@ -1,0 +1,301 @@
+"""Export complete immutable owned AutoCraft source for the authenticated Linux installer."""
+import argparse
+import base64
+from contextlib import contextmanager
+from hashlib import sha256
+import io
+import json
+import os
+from pathlib import Path, PurePosixPath
+import re
+import subprocess
+import tarfile
+import tempfile
+import urllib.request
+
+PRODUCTS = {
+    'access': ('https://github.com/GOSTROGIS/ACCESS_IS4S.git', 'source/storytold/apps/autocraft'),
+    'slipcurve': ('https://github.com/GOSTROGIS/SLIPCURVE.git', 'vendor/storytold/apps/autocraft'),
+}
+SHA = re.compile(r'[a-f0-9]{40}')
+
+
+def environment():
+    allowed = {'PATH', 'PATHEXT', 'SYSTEMROOT', 'SYSTEMDRIVE', 'WINDIR', 'COMSPEC', 'TEMP', 'TMP'}
+    result = {key: value for key, value in os.environ.items() if key.upper() in allowed}
+    result.update(GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_SYSTEM=os.devnull,
+                  GIT_TERMINAL_PROMPT='0', GIT_ATTR_NOSYSTEM='1', GIT_NO_LAZY_FETCH='1',
+                  GIT_NO_REPLACE_OBJECTS='1')
+    return result
+
+
+def git_command(git, repo, *args):
+    return [str(git), '-C', str(repo), '-c', 'core.longpaths=true', '-c', 'core.fsmonitor=false',
+            '-c', 'core.hooksPath=' + os.devnull, '-c', 'credential.helper=', '-c', 'gc.auto=0',
+            '-c', 'maintenance.auto=false', '-c', 'protocol.allow=never',
+            '-c', 'protocol.https.allow=always', '-c', 'http.sslVerify=true',
+            '-c', 'http.followRedirects=false', '-c', 'http.proxy=', *map(str, args)]
+
+
+def run(git, repo, *args, network_env=None, input=None):
+    result = subprocess.run(git_command(git, repo, *args), env=network_env or environment(), input=input,
+                            capture_output=True, timeout=900)
+    if result.returncode:
+        raise ValueError('The approved Git source operation failed')
+    return result.stdout
+
+
+def safe_name(name):
+    path = PurePosixPath(name)
+    return (bool(name) and not path.is_absolute() and all(part not in ('', '.', '..') for part in name.split('/'))
+            and not re.search(r'[\\:\x00-\x1f\x7f]', name))
+
+
+def cache_objects(repo):
+    """Borrow only content-addressed object bytes; never read the cache's Git configuration."""
+    repo = Path(repo).resolve(strict=True)
+    for candidate in (repo / '.git' / 'objects', repo / 'objects'):
+        if candidate.is_dir():
+            return candidate.resolve(strict=True)
+    return None
+
+
+def acquire_source(git, cache, product, network, network_env=None):
+    """All network operations happen in a new template-free, configuration-free bare repository."""
+    origin, _ = PRODUCTS[product]
+    network = Path(network).absolute()
+    if network.exists() or network.is_symlink() or network.parent.resolve(strict=True) != network.parent:
+        raise ValueError('The source transport requires a new canonical temporary repository')
+    run(git, network.parent, 'init', '--bare', '--template=', network)
+    objects = cache_objects(cache)
+    if objects:
+        # An alternate does not import config, hooks, refs, replace refs, or working files.
+        # Git reads this machine format literally; Windows text-mode CRLF would become part of the path.
+        (network / 'objects' / 'info' / 'alternates').write_bytes((objects.as_posix() + '\n').encode('utf-8'))
+    run(git, network, 'remote', 'add', 'origin', origin)
+    observed = run(git, network, 'ls-remote', '--exit-code', origin, 'refs/heads/main', network_env=network_env).decode().split()
+    if len(observed) != 2 or observed[1] != 'refs/heads/main' or not SHA.fullmatch(observed[0]):
+        raise ValueError('The owned GitHub main branch could not be verified')
+    revision = observed[0]
+    if not complete_application(git, network, revision, product):
+        # A broken cached graph can otherwise convince fetch that a missing blob is already present.
+        # Only the new transport's alternate pointer is removed; the user's cache remains untouched.
+        (network / 'objects' / 'info' / 'alternates').unlink(missing_ok=True)
+        run(git, network, 'fetch', '--depth=1', '--no-tags', '--no-recurse-submodules', origin, revision, network_env=network_env)
+    return revision
+
+
+def complete_application(git, repo, revision, product):
+    """A cache is optional; an incomplete target requires a real fixed-origin fetch."""
+    try:
+        run(git, repo, 'cat-file', '-e', revision + '^{commit}')
+        tree = run(git, repo, 'rev-parse', revision + ':' + PRODUCTS[product][1]).decode().strip()
+        if not SHA.fullmatch(tree):
+            return False
+        ids = []
+        for item in run(git, repo, 'ls-tree', '-rz', tree).split(b'\0'):
+            if item:
+                header, _ = item.split(b'\t', 1)
+                _, kind, oid = header.split()
+                if kind != b'blob' or not SHA.fullmatch(oid.decode('ascii')):
+                    return False
+                ids.append(oid)
+        if not ids:
+            return False
+        checks = run(git, repo, 'cat-file', '--batch-check', input=b'\n'.join(ids) + b'\n').splitlines()
+        return len(checks) == len(ids) and all(len(row.split()) == 3 and row.split()[1] == b'blob' for row in checks)
+    except (ValueError, UnicodeError):
+        return False
+
+
+@contextmanager
+def network_credentials(git, product):
+    """Existing native GitHub identity, confined to fixed-origin HTTPS child memory."""
+    if os.name != 'nt':
+        yield None
+        return
+    git = Path(git).resolve(strict=True)
+    manager = next((git.parent.parent / architecture / 'bin/git-credential-manager.exe'
+        for architecture in ('ucrt64', 'mingw64')
+        if (git.parent.parent / architecture / 'bin/git-credential-manager.exe').is_file()), None)
+    if manager is None:
+        raise ValueError('The approved native Git Credential Manager is unavailable')
+    keys = {'PATH', 'PATHEXT', 'SYSTEMROOT', 'SYSTEMDRIVE', 'WINDIR', 'COMSPEC', 'TEMP', 'TMP',
+            'USERPROFILE', 'LOCALAPPDATA', 'APPDATA', 'USERNAME', 'USERDOMAIN'}
+    env = {key: value for key, value in os.environ.items() if key.upper() in keys}
+    env.update(GCM_INTERACTIVE='false', GCM_TRACE='false', GCM_TRACE_SECRETS='false',
+               GCM_TRACE_MSAUTH='false', GCM_DEBUG='false', GIT_TERMINAL_PROMPT='0')
+    path_key = next((key for key in env if key.upper() == 'PATH'), 'PATH')
+    env[path_key] = str(git.parent) + os.pathsep + str(manager.parent) + os.pathsep + env.get(path_key, '')
+    access = ''
+    try:
+        with tempfile.TemporaryDirectory(prefix='autocraft-native-source-auth-') as cwd:
+            result = subprocess.run([str(manager), 'get'], input=b'protocol=https\nhost=github.com\n\n',
+                cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=30)
+        if result.returncode or len(result.stdout) > 32768:
+            raise ValueError('The existing native GitHub sign-in is unavailable')
+        values = dict(line.split('=', 1) for line in result.stdout.decode('utf-8').splitlines() if '=' in line)
+        access = values.pop('password', '')
+        result = None
+        values.clear()
+        if not re.fullmatch(r'[\x21-\x7e]{20,4096}', access):
+            raise ValueError('The existing native GitHub sign-in is unavailable')
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, *args, **kwargs):
+                return None
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect)
+        def api(path):
+            request = urllib.request.Request('https://api.github.com' + path,
+                headers={'Authorization': 'Bearer ' + access, 'Accept': 'application/vnd.github+json',
+                    'User-Agent': 'ACCESS-AutoCraft-Source-Publisher', 'X-GitHub-Api-Version': '2022-11-28'})
+            with opener.open(request, timeout=15) as response:
+                return json.loads(response.read(1024 * 1024))
+        owner = api('/user')
+        repository = PRODUCTS[product][0].removeprefix('https://github.com/').removesuffix('.git')
+        project = api('/repos/' + repository)
+        if str(owner.get('login', '')).lower() != 'gostrogis' or not isinstance(owner.get('id'), int) or owner['id'] <= 0 or \
+            project.get('owner', {}).get('id') != owner['id'] or project.get('permissions', {}).get('admin') is not True:
+            raise ValueError('The existing native identity does not administer the approved owned source')
+        child = environment()
+        child.update(GIT_CONFIG_COUNT='1', GIT_CONFIG_KEY_0='http.https://github.com/.extraheader',
+            GIT_CONFIG_VALUE_0='Authorization: Basic ' + base64.b64encode(('x-access-token:' + access).encode()).decode())
+        try:
+            yield child
+        finally:
+            child.clear()
+    finally:
+        access = ''
+
+
+def build_candidate(git, repo, product, revision, destination):
+    if product not in PRODUCTS or not SHA.fullmatch(revision):
+        raise ValueError('Invalid product or published source pin')
+    repo = Path(repo).resolve(strict=True)
+    origin, prefix = PRODUCTS[product]
+    if run(git, repo, 'remote', 'get-url', 'origin').decode().strip() != origin:
+        raise ValueError('The source cache is not the approved owned repository')
+    if run(git, repo, 'rev-parse', '--verify', revision + '^{commit}').decode().strip() != revision:
+        raise ValueError('The published source commit is missing')
+    commit = run(git, repo, 'cat-file', 'commit', revision)
+    verify_object('commit', revision, commit)
+    root_tree = commit.split(b'\n', 1)[0].removeprefix(b'tree ').decode('ascii')
+    tree = root_tree
+    for part in prefix.split('/'):
+        entries = read_tree(git, repo, tree)
+        match = next((oid for mode, oid, name in entries if mode == '40000' and name == part), None)
+        if match is None:
+            raise ValueError('The published application tree is missing')
+        tree = match
+    if not SHA.fullmatch(tree):
+        raise ValueError('Invalid owned application tree')
+    rows = []
+    def walk(oid, parent=''):
+        for mode, object_id, child in read_tree(git, repo, oid):
+            name = parent + child
+            if not safe_name(name):
+                raise ValueError('Unsupported or unsafe application source entry')
+            if mode == '40000':
+                walk(object_id, name + '/')
+            elif mode in ('100644', '100755'):
+                rows.append((mode, object_id, name))
+            else:
+                raise ValueError('Unsupported or unsafe application source entry')
+    walk(tree)
+    if not rows:
+        raise ValueError('The application source is empty')
+    destination = Path(destination).absolute()
+    parent = destination.parent.resolve(strict=True)
+    if parent != destination.parent or destination.exists() or destination.is_symlink():
+        raise ValueError('Use a new candidate directory beneath a canonical existing parent')
+    destination.mkdir()
+    source = destination / 'source'
+    source.mkdir()
+    stamp = int(run(git, repo, 'show', '-s', '--format=%ct', revision).strip())
+    files, locks = {}, {}
+    archive = destination / 'source.tar'
+    proc = subprocess.Popen(git_command(git, repo, 'cat-file', '--batch'), env=environment(),
+                            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        with tarfile.open(archive, 'w', format=tarfile.PAX_FORMAT) as output:
+            for mode, object_id, name in rows:
+                proc.stdin.write((object_id + '\n').encode('ascii'))
+                proc.stdin.flush()
+                answer = proc.stdout.readline().decode('ascii').strip().split()
+                if len(answer) != 3 or answer[:2] != [object_id, 'blob']:
+                    raise ValueError('Git did not return the pinned source object')
+                size = int(answer[2])
+                data = proc.stdout.read(size)
+                if len(data) != size or proc.stdout.read(1) != b'\n':
+                    raise ValueError('Incomplete source object')
+                verify_object('blob', object_id, data)
+                path = source.joinpath(*name.split('/'))
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(data)
+                pin = {'bytes': size, 'sha256': sha256(data).hexdigest(), 'mode': mode}
+                files[name] = pin
+                if name in ('package.json', 'pnpm-lock.yaml'):
+                    locks[name] = pin['sha256']
+                info = tarfile.TarInfo(name)
+                info.size, info.mtime, info.mode = size, stamp, int(mode[-3:], 8)
+                output.addfile(info, io.BytesIO(data))
+        proc.stdin.close()
+        if proc.wait(timeout=30) != 0:
+            raise ValueError('Source object export failed')
+    finally:
+        if proc.poll() is None:
+            proc.kill()
+            proc.wait()
+        for stream in (proc.stdin, proc.stdout, proc.stderr):
+            stream.close()
+    if set(locks) != {'package.json', 'pnpm-lock.yaml'}:
+        raise ValueError('The full application package and frozen dependency lock are required')
+    with archive.open('rb') as stream:
+        import hashlib
+        archive_hash = hashlib.file_digest(stream, 'sha256').hexdigest()
+    receipt = {'schema': 1, 'product': product, 'application': 'autocraft',
+               'source': {'repository': origin, 'commit': revision, 'prefix': prefix, 'tree': tree},
+               'archiveSha256': archive_hash, 'locks': locks, 'files': files,
+               'qualification': 'Source bytes verified; Linux dependency, application and authentication gates are still required.'}
+    (destination / 'source-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
+    return receipt
+
+
+def verify_object(kind, object_id, data):
+    import hashlib
+    actual = hashlib.sha1(kind.encode('ascii') + b' ' + str(len(data)).encode('ascii') + b'\0' + data).hexdigest()
+    if actual != object_id:
+        raise ValueError('Pinned Git object content is corrupt')
+
+
+def read_tree(git, repo, object_id):
+    data = run(git, repo, 'cat-file', 'tree', object_id)
+    verify_object('tree', object_id, data)
+    entries, cursor = [], 0
+    while cursor < len(data):
+        zero = data.index(b'\0', cursor)
+        mode, name = data[cursor:zero].split(b' ', 1)
+        cursor = zero + 21
+        raw_id = data[zero + 1:cursor]
+        if len(raw_id) != 20:
+            raise ValueError('Incomplete pinned Git tree')
+        entries.append((mode.decode('ascii'), raw_id.hex(), name.decode('utf-8')))
+    return entries
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--product', choices=PRODUCTS, required=True)
+    parser.add_argument('--git', type=Path, required=True)
+    parser.add_argument('--source-cache', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    with tempfile.TemporaryDirectory(prefix='autocraft-owned-source-') as temporary:
+        network = Path(temporary) / 'network.git'
+        with network_credentials(args.git, args.product) as credentials:
+            revision = acquire_source(args.git, args.source_cache, args.product, network, credentials)
+        receipt = build_candidate(args.git, network, args.product, revision, args.output)
+    print(json.dumps({key: receipt[key] for key in ('product', 'source', 'archiveSha256')}))
+
+
+if __name__ == '__main__':
+    main()
