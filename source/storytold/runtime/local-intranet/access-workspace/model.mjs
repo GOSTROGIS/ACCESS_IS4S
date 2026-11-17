@@ -53,12 +53,32 @@ export function title(value, fallback = 'My project') {
 }
 
 export function editorUrl(app, installed) {
-  if (!app || !app.port || installed?.id !== app.id || installed.port !== app.port) throw Error('The installed browser editor does not match its approved route.');
+  if (!app || !app.port || installed?.port !== app.port) throw Error('The installed browser editor does not match its approved route.');
+  if (installed?.product === 'access') {
+    if (installed.kind !== 'web' || installed.id !== `access-${app.id}` || installed.sourceApplication !== app.id || app.port !== ownedWebPort(app.id)) throw Error('The owned browser editor does not match its approved route.');
+  } else if (installed?.id !== app.id || byId.get(app.id)?.port !== app.port) throw Error('The installed browser editor does not match its approved route.');
   return `http://127.0.0.1:${app.port}/slipcurve-workspace/?parent=access`;
 }
 
-export function nativeUrl(id) {
+export function ownedWebPort(id) {
+  const index = APPLICATIONS.filter(app => app.port).findIndex(app => app.id === id);
+  if (index < 0) throw Error('No owned browser route for this application.');
+  return 4300 + index;
+}
+
+export function browserApplication(app, installed) {
+  const resolved = installed?.product === 'access' ? { ...app, port: ownedWebPort(app.id) } : app;
+  editorUrl(resolved, installed);
+  return resolved;
+}
+
+export function nativeUrl(id, installed) {
   if (!byId.has(id)) throw Error('Unknown application.');
+  if (id === 'autocraft') return 'slipcurve-app://open/access-autocraft';
+  if (installed?.product === 'access') {
+    if (installed.id !== `access-${id}` || installed.sourceApplication !== id || installed.kind !== 'native') throw Error('The native product runtime does not match this application.');
+    return `slipcurve-app://open/${installed.id}`;
+  }
   return `slipcurve-app://open/${id}`;
 }
 

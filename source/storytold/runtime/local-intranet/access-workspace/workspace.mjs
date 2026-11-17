@@ -1,4 +1,4 @@
-import { APPLICATIONS, SKILLS, acceptedMessage, byId, checkBytes, editorUrl, nativeUrl, safeName } from './model.mjs';
+import { APPLICATIONS, SKILLS, acceptedMessage, browserApplication, byId, checkBytes, editorUrl, nativeUrl, safeName } from './model.mjs';
 import { openProjects } from './store.mjs';
 
 const $ = id => document.getElementById(id);
@@ -78,7 +78,8 @@ function describe(record) {
   $('document-info').textContent = `${record.name} · ${record.size.toLocaleString()} bytes · saved ${new Date(record.updated).toLocaleString()}`;
 }
 function showEditor(id, opening) {
-  const next = byId.get(id);
+  const base = byId.get(id);
+  const next = browserApps.has(id) ? browserApplication(base, browserApps.get(id)) : base;
   if (!next) throw Error('Choose an available application.');
   application = next;
   installed = browserApps.get(id);
@@ -90,7 +91,7 @@ function showEditor(id, opening) {
   $('editor-title').textContent = next.label;
   $('description').textContent = next.description;
   $('native').hidden = !nativeApps.has(id);
-  $('native').href = nativeUrl(id);
+  $('native').href = nativeUrl(id, nativeApps.get(id));
   $('native-note').textContent = nativeApps.has(id) ? 'Add desktop files to your project with the file chooser.' : '';
   $('workflow').textContent = next.extension ? 'Use the application’s full controls. The toolbar can open files and save the editable document into your ACCESS project.' : 'Use the application’s own New, Open, Save and Export controls. Browser downloads are also copied into your ACCESS project. To reopen a project copy, download it and select it with the application’s Open command.';
   // Keep the adapter's startup and error text visible while its application
@@ -250,6 +251,22 @@ async function start() {
     browserApps.set(row.id, row);
   }
   for (const row of manifest.native) { if (byId.has(row.id)) nativeApps.set(row.id, row); }
+  if (manifest.products !== undefined && !Array.isArray(manifest.products)) throw Error('The installed product inventory is invalid.');
+  for (const row of manifest.products || []) {
+    if (row.product !== 'access') continue;
+    const app = byId.get(row.sourceApplication);
+    if (!app) throw Error('Unknown owned product application.');
+    if (row.kind === 'web') { browserApplication(app, row); browserApps.set(app.id, row); }
+    else if (row.kind === 'native') { nativeUrl(app.id, row); nativeApps.set(app.id, row); }
+    else throw Error('Unknown owned runtime type.');
+  }
+  if (manifest.automations !== undefined && !Array.isArray(manifest.automations)) throw Error('The installed automation inventory is invalid.');
+  for (const row of manifest.automations || []) {
+    if (row.product !== 'access') continue;
+    if (nativeApps.has('autocraft') || row.id !== 'access-autocraft' || row.sourceApplication !== 'autocraft' ||
+        row.kind !== 'service' || row.origin !== 'http://127.0.0.2:8993') throw Error('Unexpected installed automation.');
+    nativeApps.set('autocraft', row);
+  }
   const preferred = APPLICATIONS.filter(app => context.apps.includes(app.id));
   const other = APPLICATIONS.filter(app => !context.apps.includes(app.id));
   for (const [label, apps] of [['For this skill', preferred], ['Other ACCESS applications', other]]) {

@@ -5,7 +5,8 @@ import { basename, dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import test from 'node:test';
 import { runtimeTree } from './runtime-state.mjs';
-import { installedProductRuntimes, productPort, rollbackProductRuntime, resumeProductRuntime, selectProductRuntime, validateProductRuntime, verifyProductRuntime } from './product-runtimes.mjs';
+import { activeProductRuntime, installedAutomations, installedProductRuntimes, productPort, rollbackProductRuntime, resumeProductRuntime, selectProductRuntime, validateProductRuntime, verifyProductRuntime } from './product-runtimes.mjs';
+import { runtimeServer } from './intranet.mjs';
 
 const hash = value => createHash('sha256').update(value).digest('hex');
 async function fixture(t) {
@@ -100,4 +101,48 @@ test('a concurrent selection cannot be overwritten by an older completed gate', 
     await selectProductRuntime(root, concurrent, async () => {});
   }), /selection changed/u);
   assert.equal((await installedProductRuntimes(root)).at(0).version, concurrent.version);
+});
+
+test('rechecking an unchanged edition preserves its verified rollback target', async t => {
+  const root = await fixture(t), first = await packageAt(root), next = await packageAt(root, 'access', 'b');
+  await selectProductRuntime(root, first, async () => {});
+  await selectProductRuntime(root, next, async () => {});
+  await selectProductRuntime(root, next, async () => { assert.fail('Already selected editions do not rerun a mutation gate'); });
+  const active = await activeProductRuntime(root, 'web', next.id);
+  assert.deepEqual(active.record, next);
+  assert.deepEqual(active.retained, [first.version]);
+  await assert.rejects(selectProductRuntime(root, { ...next, label: 'different receipt' }, async () => {}), /different receipt/u);
+});
+
+test('owned browser hosting resolves its own payload and original bridge identity after update and rollback', async t => {
+  const root = await fixture(t), first = await packageAt(root), next = await packageAt(root, 'access', 'b');
+  await selectProductRuntime(root, first, async () => {});
+  const app = runtimeServer(root, { ...first, port: 0, sourceApplication: 'wordcraft' });
+  await new Promise(resolve => app.listen(0, '127.0.0.1', resolve));
+  const origin = `http://127.0.0.1:${app.address().port}`;
+  t.after(() => new Promise(resolve => app.close(resolve)));
+  assert.match(await (await fetch(origin + '/')).text(), /fixture a/u);
+  const editor = await (await fetch(origin + '/slipcurve-workspace/editor.json')).json();
+  assert.equal(editor.id, 'wordcraft');
+  assert.equal(editor.entry, `/_edition/${first.version}/`);
+  await selectProductRuntime(root, next, async () => {});
+  assert.match(await (await fetch(origin + '/')).text(), /fixture b/u);
+  assert.match(await (await fetch(origin + `/_edition/${first.version}/`)).text(), /fixture a/u);
+  await rollbackProductRuntime(root, 'web', first.id);
+  assert.match(await (await fetch(origin + '/')).text(), /fixture a/u);
+  assert.equal((await fetch(origin + '/_edition/v0.0.0-access-ccccccc/')).status, 404);
+});
+
+test('automation inventory publishes only approved product launch identities and public pins', async t => {
+  const root = await fixture(t);
+  assert.deepEqual(await installedAutomations(root), []);
+  const path = join(root, 'installed-product-services.json');
+  const row = { product: 'access', application: 'autocraft', kind: 'service', id: 'access-autocraft', version: 'v0.1.0-access-aaaaaaa', origin: 'http://127.0.0.2:8993',
+    source: { repository: 'https://github.com/GOSTROGIS/ACCESS_IS4S.git', commit: 'a'.repeat(40), tree: 'b'.repeat(40), prefix: 'source/storytold/apps/autocraft' } };
+  await writeFile(path, JSON.stringify({ schema: 1, services: [{ ...row, privateExtra: 'must never be published' }] }));
+  assert.deepEqual(await installedAutomations(root), [{ id: row.id, product: 'access', kind: 'service', version: row.version, origin: row.origin, sourceApplication: 'autocraft' }]);
+  for (const patch of [{ origin: 'https://attacker.invalid' }, { id: 'slipcurve-autocraft' }, { source: { ...row.source, commit: 'unknown' } }]) {
+    await writeFile(path, JSON.stringify({ schema: 1, services: [{ ...row, ...patch }] }));
+    await assert.rejects(installedAutomations(root), /Invalid installed automation/u);
+  }
 });

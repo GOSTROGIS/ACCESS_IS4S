@@ -129,11 +129,52 @@ export async function installedProductRuntimes(root, { verify = true } = {}) {
   return rows.map(({ current, hold }) => ({ ...current, ...(current.kind === 'web' ? { port: productPort(current.product, current.application) } : {}), held: !!hold }));
 }
 
+export async function activeProductRuntime(root, kind, id) {
+  const row = (await readRegistry(root)).runtimes[`${kind}/${id}`];
+  if (!row) throw Error('Product runtime is not installed');
+  return { record: row.current, version: row.current.version, retained: row.previous ? [row.previous.version] : [], held: !!row.hold };
+}
+
+export function productIdentity(value) {
+  if (typeof value !== 'string') return null;
+  for (const product of Object.keys(products)) {
+    const application = value.startsWith(product + '-') ? value.slice(product.length + 1) : '';
+    if (productApplications.includes(application)) return { product, application };
+  }
+  return null;
+}
+
+export async function installedAutomations(root) {
+  const path = join(root, 'installed-product-services.json');
+  const body = await readFile(path, 'utf8').catch(error => { if (error.code === 'ENOENT') return '{"schema":1,"services":[]}'; throw error; });
+  if (await lstat(path).catch(() => null)) await canonical(path);
+  const state = JSON.parse(body), seen = new Set();
+  if (state.schema !== 1 || !Array.isArray(state.services)) throw Error('Invalid installed product services');
+  for (const row of state.services) {
+    const product = row?.product;
+    if (!Object.hasOwn(products, product) || row.application !== 'autocraft' || row.kind !== 'service' ||
+        row.id !== `${product}-autocraft` || seen.has(product) ||
+        row.origin !== (product === 'access' ? 'http://127.0.0.2:8993' : 'http://127.0.0.3:8994') ||
+        typeof row.version !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/u.test(row.version) ||
+        row.source?.repository !== products[product].repository || !commit.test(row.source.commit) || !commit.test(row.source.tree) ||
+        row.source.prefix !== `${products[product].sourcePrefix}/autocraft`) throw Error('Invalid installed automation service');
+    seen.add(product);
+  }
+  // Publish only the fixed launch identity and its public version pin.
+  return state.services.map(({ id, product, kind, version, origin }) =>
+    ({ id, product, kind, version, origin, sourceApplication: 'autocraft' }));
+}
+
 export async function selectProductRuntime(root, record, gate) {
   await canonical(root);
   const key = `${record.kind}/${record.id}`;
   const observed = (await readRegistry(root)).runtimes[key];
   if (observed?.hold) throw Error('Product update is held after rollback');
+  if (observed?.current.version === record.version) {
+    if (JSON.stringify(observed.current) !== JSON.stringify(record)) throw Error('Product version already has a different receipt');
+    await verifyProductRuntime(root, observed.current);
+    return observed.current;
+  }
   const { tree } = await verifyProductRuntime(root, record);
   if (observed) await verifyProductRuntime(root, observed.current);
   await gate(tree, record);

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
-import { APPLICATIONS, SKILLS, acceptedMessage, byId, documentRecord, editorUrl, nativeUrl, safeName, verifyDocument } from './model.mjs';
+import { APPLICATIONS, SKILLS, acceptedMessage, browserApplication, byId, documentRecord, editorUrl, nativeUrl, safeName, verifyDocument } from './model.mjs';
 
 test('all21 applications and17 browser routes use fixed approved identifiers and ports', () => {
   assert.equal(APPLICATIONS.length, 21);
@@ -9,7 +9,7 @@ test('all21 applications and17 browser routes use fixed approved identifiers and
   assert.equal(APPLICATIONS.filter(app => app.extension).length, 6);
   assert.equal(APPLICATIONS.filter(app => app.port).length, 17);
   for (const app of APPLICATIONS) {
-    assert.equal(nativeUrl(app.id), `slipcurve-app://open/${app.id}`);
+    assert.equal(nativeUrl(app.id), `slipcurve-app://open/${app.id === 'autocraft' ? 'access-autocraft' : app.id}`);
     assert.match(app.label, /^ACCESS /);
     if (!app.port) continue;
     assert.equal(editorUrl(app, { id: app.id, port: app.port }), `http://127.0.0.1:${app.port}/slipcurve-workspace/?parent=access`);
@@ -18,6 +18,19 @@ test('all21 applications and17 browser routes use fixed approved identifiers and
   }
   assert.throws(() => nativeUrl('../private'));
   for (const context of Object.values(SKILLS)) for (const id of context.apps) assert.ok(byId.has(id));
+});
+
+test('owned runtimes retain canonical editor identities and fixed product routes', () => {
+  const original = byId.get('wordcraft');
+  const own = { product: 'access', kind: 'web', id: 'access-wordcraft', sourceApplication: 'wordcraft', port: 4307 };
+  const app = browserApplication(original, own);
+  assert.equal(app.id, 'wordcraft');
+  assert.equal(editorUrl(app, own), 'http://127.0.0.1:4307/slipcurve-workspace/?parent=access');
+  assert.equal(original.port, 4197);
+  for (const patch of [{ port: 4327 }, { id: 'slipcurve-wordcraft' }, { sourceApplication: 'gridcraft' }]) assert.throws(() => browserApplication(original, { ...own, ...patch }));
+  assert.equal(nativeUrl('wordcraft', { ...own, kind: 'native' }), 'slipcurve-app://open/access-wordcraft');
+  assert.throws(() => nativeUrl('wordcraft', { ...own, kind: 'native', sourceApplication: 'gridcraft' }));
+  assert.equal(acceptedMessage({ source: app, origin: 'http://127.0.0.1:4307', data: { application: 'wordcraft', type: 'slipcurve-editor:ready' } }, app, app), true);
 });
 
 test('only the active iframe, exact loopback origin, application and bridge message are accepted', () => {

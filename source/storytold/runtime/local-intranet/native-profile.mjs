@@ -114,3 +114,15 @@ export async function nativeEnvironment(root, app, version, options = {}) {
   if (app.id === 'artcraftx') env.ARTCRAFTX_DATA_DIR = join(root, 'Storytold/native/Projects/ArtCraft-X');
   return env;
 }
+
+export async function productNativeEnvironment(root, product, application, options = {}) {
+  if (!['access', 'slipcurve'].includes(product)) throw Error('Unknown product profile');
+  const settings = application === 'wordcraft' ? ['WORDCRAFT_PROFILE_DIR'] : configuration[application];
+  if (!settings?.[0]) throw Error('Product profile isolation has not been configured for this application');
+  const localAppData = options.localAppData ?? process.env.LOCALAPPDATA;
+  if (!localAppData) throw Error('Windows local application data directory is unavailable');
+  const base = join(await privateRoot(root, localAppData, options.localAppData === undefined), 'products', product, application);
+  await mkdir(base, { recursive: true });
+  if (relative(base, await realpath(base))) throw Error('Product application profile is redirected');
+  return { ...process.env, [settings[0]]: base };
+}

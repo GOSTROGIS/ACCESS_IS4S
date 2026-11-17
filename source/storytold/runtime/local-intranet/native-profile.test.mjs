@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promi
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { nativeEnvironment } from './native-profile.mjs';
+import { nativeEnvironment, productNativeEnvironment } from './native-profile.mjs';
 import { runtimeDigest } from './runtime-state.mjs';
 
 test('native updates share the exact preserved portable PDF profile without changing the signed core', async t => {
@@ -28,4 +28,20 @@ test('native updates share the exact preserved portable PDF profile without chan
   assert.equal(await runtimeDigest(old, app), original);
   await writeFile(join(old, 'pdfcraft.exe'), 'altered core');
   assert.notEqual(await runtimeDigest(old, app), original);
+});
+
+test('owned document runtimes retain separate persistent product profiles', async t => {
+  const root = await mkdtemp(join(await realpath(tmpdir()), 'native-profile-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const options = { localAppData: join(root, 'private') };
+  const access = await productNativeEnvironment(root, 'access', 'wordcraft', options);
+  const slip = await productNativeEnvironment(root, 'slipcurve', 'wordcraft', options);
+  assert.notEqual(access.WORDCRAFT_PROFILE_DIR, slip.WORDCRAFT_PROFILE_DIR);
+  await writeFile(join(access.WORDCRAFT_PROFILE_DIR, 'ui.json'), 'access preferences');
+  await writeFile(join(slip.WORDCRAFT_PROFILE_DIR, 'ui.json'), 'slipcurve preferences');
+  const reopened = await productNativeEnvironment(root, 'access', 'wordcraft', options);
+  assert.equal(await readFile(join(reopened.WORDCRAFT_PROFILE_DIR, 'ui.json'), 'utf8'), 'access preferences');
+  assert.equal(await readFile(join(slip.WORDCRAFT_PROFILE_DIR, 'ui.json'), 'utf8'), 'slipcurve preferences');
+  await assert.rejects(productNativeEnvironment(root, '../other', 'wordcraft', options));
+  await assert.rejects(productNativeEnvironment(root, 'access', '../wordcraft', options));
 });

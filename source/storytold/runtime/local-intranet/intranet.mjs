@@ -7,6 +7,7 @@ import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { consultingPaths } from './consulting-edition.mjs';
 import { activeRuntime, runtimeTree, versionedWebApps } from './runtime-state.mjs';
+import { activeProductRuntime, installedAutomations, installedProductRuntimes } from './product-runtimes.mjs';
 
 const home = dirname(fileURLToPath(import.meta.url));
 const address = '127.0.0.1';
@@ -216,20 +217,22 @@ export async function serveCandidate(root, app) {
 
 export function runtimeServer(home, app) {
   const target = { ...app, kind: 'web' };
-  const active = app.sourceApplication ? () => ({ version: app.version, retained: [] }) : () => activeRuntime(home, target);
+  const active = app.product ? () => activeProductRuntime(home, 'web', app.id)
+    : app.sourceApplication ? () => ({ version: app.version, retained: [] }) : () => activeRuntime(home, target);
   return editionServer(home, app, active, version => runtimeTree(home, target, version), true);
 }
 
 function editionServer(home, app, readActive, resolveTree, projectWorkspace = false) {
+  const sourceApplication = app.sourceApplication || app.id;
   return server(app.port, async (req, res, path) => {
     const active = await readActive();
     if (projectWorkspace && path.segments[0] === 'slipcurve-workspace') {
       res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-src 'self'; connect-src 'self' blob:; img-src 'self' blob: data:; worker-src 'self' blob:; frame-ancestors 'self' http://127.0.0.1:4184 http://127.0.0.1:4180; base-uri 'none'");
       const parts = path.segments.slice(1);
       if (parts.join('/') === 'editor.json') {
-        const entry = versionedWebApps.has(app.id) ? `/_edition/${active.version}/` : '/';
+        const entry = versionedWebApps.has(sourceApplication) ? `/_edition/${active.version}/` : '/';
         let pdf = {};
-        if (app.id === 'pdfcraft') {
+        if (sourceApplication === 'pdfcraft') {
           const names = await readdir(resolveTree(active.version));
           const loader = names.find(name => /^pdfcraft-web-[a-f0-9]+\.js$/.test(name));
           const wasm = names.find(name => /^pdfcraft-web-[a-f0-9]+_bg\.wasm$/.test(name));
@@ -239,7 +242,7 @@ function editionServer(home, app, readActive, resolveTree, projectWorkspace = fa
         }
         return json(req, res, { id: app.sourceApplication || app.id, label: app.label, entry, ...pdf });
       }
-      if (app.id === 'pdfcraft' && parts.length === 2 && parts[0] === 'models' && ['text-detection.onnx', 'text-recognition.onnx'].includes(parts[1])) {
+      if (sourceApplication === 'pdfcraft' && parts.length === 2 && parts[0] === 'models' && ['text-detection.onnx', 'text-recognition.onnx'].includes(parts[1])) {
         return fileResponse(req, res, resolveTree(active.version), ['models', parts[1]], path, false, home);
       }
       if (parts.length > 1 || (parts.length && !['index.html', 'workspace.mjs', 'pdfcraft.html', 'pdfcraft-page.mjs'].includes(parts[0]))) return response(res, 404, 'Workspace file not found');
@@ -248,7 +251,7 @@ function editionServer(home, app, readActive, resolveTree, projectWorkspace = fa
     let { version } = active;
     let { segments } = path;
     let edition = false;
-    if (versionedWebApps.has(app.id)) {
+    if (versionedWebApps.has(sourceApplication)) {
       if (segments[0] === '_edition') {
         edition = true;
         version = segments[1];
@@ -316,14 +319,16 @@ async function startSlipcurve() {
 
 async function main() {
   const apps = await installedApps();
-  const variants = await installedVariants(home);
+  const productRuntimes = await installedProductRuntimes(home);
+  const productWeb = productRuntimes.filter(runtime => runtime.kind === 'web').map(runtime => ({ ...runtime, sourceApplication: runtime.application }));
+  const variants = (await installedVariants(home)).filter(variant => !productWeb.some(runtime => runtime.id === variant.id));
   if (variants.some(variant => apps.some(app => app.port === variant.port || app.id === variant.id))) throw Error('Variant conflicts with a base application');
   const consulting = await consultingPaths(join(home, 'CONSULTING')).catch(error => {
     if (error.code !== 'ENOENT') console.error(`CONSULTING release unavailable (${error.code || error.name})`);
     return null;
   });
   const url = `http://${address}:${portalPort}/`;
-  const installation = createHash('sha256').update(home).update(JSON.stringify(apps)).update(JSON.stringify(variants)).digest('hex');
+  const installation = createHash('sha256').update(home).update(JSON.stringify(apps)).update(JSON.stringify(variants)).update(JSON.stringify(productRuntimes)).digest('hex');
   if (await existingPortal(url, installation)) {
     console.log(`Intranet is already running at ${url}`);
     openBrowser(url);
@@ -344,14 +349,17 @@ async function main() {
       const active = await Promise.all(apps.map(async app => ({
         ...app, version: (await activeRuntime(home, { ...app, kind: 'web' })).version,
       })));
-      return json(req, res, { apps: active, native, variants });
+      const products = (await installedProductRuntimes(home, { verify: false })).map(({ id, product, application, kind, version, label, port }) =>
+        ({ id, product, sourceApplication: application, kind, version, label, ...(port ? { port } : {}) }));
+      return json(req, res, { apps: active, native, variants, products, automations: await installedAutomations(home) });
     }
     if (first === 'health.json' && !remaining.length) {
       return json(req, res, { service: 'access-is4s-folder-intranet', installation, apps: apps.length, variants: variants.length,
         consultingRevision: consulting?.revision ?? null });
     }
     if (first === 'workspace') {
-      res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; frame-src http://127.0.0.1:4190 http://127.0.0.1:4191 http://127.0.0.1:4192 http://127.0.0.1:4193 http://127.0.0.1:4194 http://127.0.0.1:4195 http://127.0.0.1:4196 http://127.0.0.1:4197 http://127.0.0.1:4198 http://127.0.0.1:4199 http://127.0.0.1:4200 http://127.0.0.1:4201 http://127.0.0.1:4202 http://127.0.0.1:4203 http://127.0.0.1:4204 http://127.0.0.1:4205 http://127.0.0.1:4206; img-src 'self' data: blob:; base-uri 'none'; frame-ancestors 'self'; form-action 'none'");
+      const frames = [...apps, ...productWeb.filter(app => app.product === 'access')].map(app => `http://127.0.0.1:${app.port}`).join(' ');
+      res.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self'; style-src 'self'; frame-src ${frames}; img-src 'self' data: blob:; base-uri 'none'; frame-ancestors 'self'; form-action 'none'`);
       return fileResponse(req, res, join(home, 'tools/access-workspace'), remaining, path, true);
     }
     if (first === 'ACCESS_IS4S') return fileResponse(req, res, join(home, 'ACCESS_IS4S'), remaining, path, true);
@@ -365,6 +373,10 @@ async function main() {
   })]]);
   for (const app of apps) services.set(app.port, runtimeServer(home, app));
   for (const app of variants) services.set(app.port, runtimeServer(home, app));
+  for (const app of productWeb) {
+    if (services.has(app.port)) throw Error('Product runtime port conflicts with an installed application');
+    services.set(app.port, runtimeServer(home, app));
+  }
   try {
     for (const [port, endpoint] of services) await listen(port, endpoint);
   } catch (error) {

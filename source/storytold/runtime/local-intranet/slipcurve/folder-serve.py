@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 import threading
 import webbrowser
+from urllib.request import HTTPRedirectHandler, ProxyHandler, build_opener
 
 
 ROOT = Path(__file__).resolve().parent
@@ -14,6 +15,24 @@ HOST = "127.0.0.1"
 DEFAULT_PORT = 4184
 TENANT = "local"
 WORKSPACE = "local-workspace"
+
+
+class NoInventoryRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def read_inventory():
+    # This local metadata route never uses proxy configuration or follows a
+    # redirect to a different host. No browser credentials are forwarded.
+    opener = build_opener(ProxyHandler({}), NoInventoryRedirect())
+    with opener.open('http://127.0.0.1:4180/applications.json', timeout=3) as response:
+        if response.headers.get_content_type() != 'application/json':
+            raise ValueError('Invalid local application inventory type')
+        body = response.read(262145)
+    if len(body) > 262144 or not isinstance(json.loads(body), dict):
+        raise ValueError('Invalid local application inventory')
+    return body
 
 
 def parse_port(value):
@@ -60,12 +79,24 @@ def loopback_only(app, origin, port):
         if host != f"{HOST}:{port}" or (request_origin and request_origin != origin):
             start_response("403 Forbidden", [("Content-Length", "0"), ("Cache-Control", "no-store")])
             return []
+        if environ.get('PATH_INFO') == '/intranet/applications.json':
+            if environ.get('REQUEST_METHOD', 'GET') not in ('GET', 'HEAD'):
+                start_response('405 Method Not Allowed', [('Content-Length', '0'), ('Allow', 'GET, HEAD')])
+                return []
+            try:
+                body = read_inventory()
+                status = '200 OK'
+            except Exception:
+                body = b'{"products":[],"automations":[],"available":false}'
+                status = '503 Service Unavailable'
+            start_response(status, [('Content-Type', 'application/json'), ('Content-Length', str(len(body))), ('Cache-Control', 'no-store')])
+            return [] if environ.get('REQUEST_METHOD') == 'HEAD' else [body]
         entry = {"/": "/index.html", "/app/": "/app/index.html"}.get(environ.get("PATH_INFO"))
         if entry:
             environ = dict(environ, PATH_INFO=entry)
         def local_headers(status, headers, exc_info=None):
             # Only this owner-operated loopback host embeds the installed tools.
-            frames = "frame-src 'self' " + " ".join(f"http://127.0.0.1:{tool}" for tool in [*range(4190, 4207), 4211])
+            frames = "frame-src 'self' " + " ".join(f"http://127.0.0.1:{tool}" for tool in [*range(4190, 4207), 4211, *range(4320, 4337)])
             headers = [(key, value + "; " + frames if key.lower() == "content-security-policy" else value)
                        for key, value in headers]
             return start_response(status, headers, exc_info)

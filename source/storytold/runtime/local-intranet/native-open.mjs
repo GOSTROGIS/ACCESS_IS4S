@@ -3,7 +3,8 @@ import { readFile, realpath } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { activeRuntime, runtimeTree } from './runtime-state.mjs';
-import { nativeEnvironment } from './native-profile.mjs';
+import { nativeEnvironment, productNativeEnvironment } from './native-profile.mjs';
+import { activeProductRuntime, productIdentity, verifyProductRuntime } from './product-runtimes.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 try {
@@ -11,7 +12,21 @@ try {
   const id = uri.pathname.slice(1);
   if (uri.protocol !== 'slipcurve-app:' || uri.hostname !== 'open' || uri.username || uri.password || uri.port ||
       uri.search || uri.hash || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) || process.argv.length !== 3) throw Error('Invalid application link');
-  if (id === 'autocraft') {
+  const product = productIdentity(id);
+  if (product?.application === 'autocraft') {
+    const controller = join(root, 'tools/autocraft-linux/controller.mjs');
+    if (relative(controller, await realpath(controller))) throw Error('Automation controller is redirected');
+    const child = spawn(process.execPath, [controller, 'login', '--product', product.product], { detached: true, stdio: 'ignore', windowsHide: true });
+    await new Promise((accept, reject) => { child.once('spawn', accept); child.once('error', reject); });
+    child.unref();
+  } else if (product) {
+    const { record: selected } = await activeProductRuntime(root, 'native', id);
+    const { tree } = await verifyProductRuntime(root, selected);
+    const env = await productNativeEnvironment(root, product.product, product.application);
+    const child = spawn(join(tree, selected.entry), [], { cwd: tree, env, detached: true, stdio: 'ignore', windowsHide: true });
+    await new Promise((accept, reject) => { child.once('spawn', accept); child.once('error', reject); });
+    child.unref();
+  } else if (id === 'autocraft') {
     const program = join(process.env.SystemRoot, 'System32', 'rundll32.exe');
     const child = spawn(program, ['url.dll,FileProtocolHandler', 'http://127.0.0.1:8993/'], { detached: true, stdio: 'ignore', windowsHide: true });
     child.unref();
