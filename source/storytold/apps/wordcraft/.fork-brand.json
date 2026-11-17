@@ -52,7 +52,7 @@
     },
     "apps/wordcraft-web/index.html": {
       "upstreamSha256": "7d8a341aa8e480065bbb68c8e81bc0c7a6cd872fb9cb4b1127eec33f28ae22a6",
-      "sha256": "770395e19ee2cc0386f68c813368b0ab6a0ddbf73c9435bcdb846bd013b9d842",
+      "sha256": "a9f8b431fc4f9d54788caad66c5509f63502be81d17e02a9633dff825e1bb216",
       "purpose": "Owner window or page display label; no protocol or format changes"
     },
     "apps/wordcraft/src/main.rs": {
@@ -62,7 +62,22 @@
     },
     "crates/ui-egui/src/windows.rs": {
       "upstreamSha256": "2bdb39dd8484fb4c2565af0057df7e7fe6e49f5b590e5257d81b07c8fc7f380b",
-      "sha256": "9594703b7b83c4e04179a7c3c0304e1cbbc8002458aeb1286fe65bd187b11859",
+      "sha256": "697f49ddc6600cef15090e4e8cc92e260195f3aa43a2f7542539688b3a709f95",
+      "purpose": "Owner window or page display label; no protocol or format changes"
+    },
+    "apps/wordcraft/build.rs": {
+      "upstreamSha256": "fc4a6595b28e606b90a1327be38020b3415791714e9460956190c74a94835bb4",
+      "sha256": "6db8fc14f5a1fbf5489a7b8473853b3a33d80d9da6ea297a19cf20b6e890da23",
+      "purpose": "Owner window or page display label; no protocol or format changes"
+    },
+    "crates/ui-egui/src/chrome.rs": {
+      "upstreamSha256": "b9b046ee01718ecda31fa7cf9ed8874c0e5ebd8ff3ca0415c75a1e55ecd63b6c",
+      "sha256": "56b52a33b34ccec168335b4aa1a0152b12e1af5954593c3874ac9042a0306874",
+      "purpose": "Owner window or page display label; no protocol or format changes"
+    },
+    "crates/ui-egui/src/tests.rs": {
+      "upstreamSha256": "ed24a08e444f6bbf22822e74f925662375052f4810a71b69c84eee69ea100c1b",
+      "sha256": "c8243c588401c7fa1ec681d36cc6338eb96fa9ed59b5efbd66db23cbd89d478e",
       "purpose": "Owner window or page display label; no protocol or format changes"
     }
   }

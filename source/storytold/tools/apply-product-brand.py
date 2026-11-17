@@ -72,6 +72,18 @@ def apply(apps, assets, product):
                 # Only display calls. Serialized names, command IDs, crate names,
                 # configuration keys and native document formats remain unchanged.
                 changed = re.sub(r'(\b(?:with_title|run_native)\(\s*)"' + re.escape(upstream) + r'"', lambda match: match[1] + json.dumps(label), text)
+            if identifier == 'wordcraft':
+                if relative == 'apps/wordcraft-web/index.html':
+                    changed = changed.replace('Loading WordCraft&hellip;', f'Loading {label}&hellip;')
+                elif relative in ('crates/ui-egui/src/windows.rs', 'crates/ui-egui/src/chrome.rs'):
+                    changed = changed.replace('"{name}{} - WordCraft"', f'"{{name}}{{}} - {label}"')
+                    changed = changed.replace('"WordCraft".to_string()', json.dumps(label) + '.to_string()')
+                elif relative == 'crates/ui-egui/src/tests.rs':
+                    changed = changed.replace('assert_eq!(a.sent_title, "WordCraft",', f'assert_eq!(a.sent_title, {json.dumps(label)},')
+                elif relative == 'apps/wordcraft/build.rs':
+                    changed = changed.replace('.set("ProductName", "WordCraft")', f'.set("ProductName", {json.dumps(label)})')
+                    changed = changed.replace('.set("FileDescription", "WordCraft word processor")', f'.set("FileDescription", {json.dumps(label + " word processor")})')
+                    changed = changed.replace('.set("CompanyName", "Learning Machines LLC")', f'.set("CompanyName", {json.dumps(owner)})')
             return (relative, changed.encode()) if changed != text else None
 
         with ThreadPoolExecutor(max_workers=8) as workers:
@@ -81,7 +93,7 @@ def apply(apps, assets, product):
         record = {'schema': 1, 'product': product, 'label': label, 'sourceCommit': origin['commit'],
                   'status': 'Source branding applied; this does not establish that a rebuilt application passed its workflows.',
                   'files': changes}
-        receipt_path.write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8')
+        receipt_path.write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8', newline='\n')
         print(f'{identifier}: {len(changes)} branded source files', flush=True)
 
 if __name__ == '__main__':
