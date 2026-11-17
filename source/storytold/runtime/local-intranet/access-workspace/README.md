@@ -1,11 +1,15 @@
 # ACCESS project workspace
 
 The folder intranet serves this parent at `http://127.0.0.1:4180/workspace/`.
-Skill and learner pages link to `?skill=writing&app=wordcraft` and equivalent
-contexts. The parent uses `/applications.json` to locate the installed browser
-and desktop applications. Functional ACCESS labels are used in controls;
-upstream names, versions, sources and licence attribution remain in the credits
-and original application files.
+The ACCESS landing and skill pages provide compact Skills/Learn and Tools tabs.
+`brand/access-project.js` enables Tools after the approved loopback host returns
+the expected health response. Other hosts and offline copies keep their learning
+content. The site builder and intranet preparer use the same navigation helper.
+Tools opens the full workspace with `?skill=writing&app=wordcraft` and equivalent
+contexts. Its application selector and document controls appear at the top.
+The parent uses `/applications.json` to locate the installed browser
+and desktop applications. Functional ACCESS labels are used in controls.
+Original notices remain with the application source packages.
 
 The embedded applications are the complete installed upstream browser builds,
 served through `http://127.0.0.1:<application-port>/slipcurve-workspace/?parent=access`.

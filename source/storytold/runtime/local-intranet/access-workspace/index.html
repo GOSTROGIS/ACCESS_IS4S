@@ -12,23 +12,26 @@
 <header>
   <a class="brand" href="/ACCESS_IS4S/"><img src="/ACCESS_IS4S/brand/is4s-badge.svg" width="56" height="54" alt="ACCESS Indigenous Skills4Success"></a>
   <div><p class="eyebrow">ACCESS Indigenous Skills4Success</p><h1>Create and edit</h1><p id="context">Make something for your learning or work.</p></div>
-  <nav aria-label="Learning"><a id="lesson" href="/ACCESS_IS4S/skills/digital/">Return to the skill</a><a href="/">Intranet home</a></nav>
+  <nav class="workspace-nav" aria-label="Learning and tools"><a href="/ACCESS_IS4S/">Skills</a><a id="lesson" href="/ACCESS_IS4S/skills/digital/">Digital lessons</a><a id="tools-tab" href="/workspace/" aria-current="page">Tools</a></nav>
 </header>
+<section class="workspace-tools" aria-label="Application and document controls">
+  <div class="application-picker"><label for="application">Application</label><select id="application" disabled></select></div>
+  <h2 id="editor-title" class="sr-only">Choose an application</h2>
+  <div class="actions"><button id="new" disabled>New document</button><button id="open" disabled>Open file in editor</button><button id="save" disabled>Save to project</button></div>
+  <input id="open-file" type="file" hidden>
+</section>
 <main>
 <aside aria-label="Projects and applications">
   <section><h2>Your project</h2><label for="project">Saved projects</label><select id="project" disabled></select>
   <form id="project-form"><label for="project-name">New project name</label><input id="project-name" maxlength="120" placeholder="My learning project" required><button id="create-project" disabled>Create project</button></form>
   <p class="small">Documents stay in this browser profile on this computer. Download copies for a backup or another device. Clearing browser data removes these copies.</p></section>
-  <section><h2>Choose an application</h2><label for="application">Create or edit</label><select id="application" disabled></select><p id="description"></p>
-  <a id="native" class="button" hidden>Open installed desktop application</a><p id="native-note" class="small"></p></section>
   <section><h2>Project documents</h2><label for="documents">Saved files</label><select id="documents" size="5" aria-describedby="document-info"></select><p id="document-info" class="small">No document selected.</p>
   <div class="actions"><button id="reopen" disabled>Reopen</button><button id="download" disabled>Download</button><button id="remove" disabled>Remove copy</button></div>
   <label class="button" for="import">Add a file to this project</label><input id="import" type="file" disabled>
   <p class="small">Files exported by the embedded editor are attached to the selected project. A PDF, image or video export can be different from the editor’s editable project format. Keep both when needed.</p></section>
-  <details><summary>Application credits and requirements</summary><p>ACCESS integrates the installed Storytold applications with their original editing controls. Upstream attribution and licence notices remain in each application.</p><ul id="credits"></ul><p>Desktop launch requires the registered application handler. Generative tools need configured providers. Audio, microphone, GPU and device support depend on the application and computer. Browser and native feature parity has not been verified for every tool; native DWG and native services require the desktop runtime.</p></details>
 </aside>
 <section class="editor-area" aria-label="Application editor">
-  <div class="toolbar"><h2 id="editor-title">Choose an application</h2><div class="actions"><button id="new" disabled>New document</button><button id="open" disabled>Open file in editor</button><button id="save" disabled>Save to project</button></div><input id="open-file" type="file" hidden></div>
+  <div class="application-info"><p id="description"></p><a id="native" class="button" hidden>Open desktop application</a><p id="native-note" class="small"></p></div>
   <p id="status" role="status" aria-live="polite">Opening project storage…</p><p id="workflow" class="small"></p>
   <iframe id="editor" title="ACCESS application" hidden allow="fullscreen; clipboard-read; clipboard-write; microphone" allowfullscreen></iframe>
   <div id="empty"><h3>Your full application opens here</h3><p>Choose a tool and use its editing controls. Save your work to the project, then download a backup.</p></div>

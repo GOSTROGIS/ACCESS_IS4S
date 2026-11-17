@@ -1,0 +1,2 @@
+# Retain the application sources' original bytes across platforms.
+source/storytold/apps/** -text

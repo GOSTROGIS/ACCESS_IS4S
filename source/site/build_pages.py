@@ -4,7 +4,7 @@ Titles and introductions come from the textbook chapters in skills/<skill>/.
 File lists come from the folders themselves. Re-run after source/textbook/sync.py
 or after adding decks:  python3 source/site/build_pages.py
 """
-import html, json, os, re
+import html, importlib.util, json, os, re
 
 import markdown
 from pathlib import Path
@@ -638,6 +638,15 @@ def apply_gates():
     return n
 
 
+def add_project_workspaces():
+    """Keep Tools navigation on regenerated learning entry pages."""
+    source = REPO / 'source/storytold/runtime/local-intranet/prepare.py'
+    spec = importlib.util.spec_from_file_location('access_intranet_prepare', source)
+    prepare = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(prepare)
+    prepare.browser_links(REPO, [{'id': name} for name in prepare.LABELS], include_learners=False)
+
+
 def main():
     (REPO / 'brand/site.css').write_text(CSS, encoding='utf-8')
     # card styles for the Numeracy page, which keeps its own page styles
@@ -651,6 +660,7 @@ def main():
             build_skill(slug, name, i)
     n = build_carpentry()
     g = apply_gates()
+    add_project_workspaces()
     from build_downloads import main as build_downloads
     build_downloads()
     print(f'built hub, 8 skill pages, Numeracy chapters, Carpentry page, {n} carpentry intake(s), {g} page(s) newly locked')

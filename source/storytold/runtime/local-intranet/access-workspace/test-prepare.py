@@ -35,12 +35,17 @@ class ContextLinks(unittest.TestCase):
                 else:
                     self.assertEqual(text.count('<!-- access-create:start -->'), 1)
                     self.assertNotIn('http://127.0.0.1:419', text)
-                    self.assertIn('/workspace/?skill=', text)
+                    self.assertIn('id="access-studio"', text)
+                    self.assertIn('access-project.js', text)
+                    self.assertLess(text.index('id="access-studio"'), text.index('<h1>Lesson remains</h1>'))
             writing = first['skills/writing/index.html']
-            self.assertIn('skill=writing&amp;app=wordcraft', writing)
-            self.assertIn('Create / edit with ACCESS Documents', writing)
+            self.assertIn('data-skill="writing" data-application="wordcraft"', writing)
+            self.assertIn('>Learn</a>', writing)
+            self.assertIn('>Tools</a>', writing)
+            self.assertNotIn('<iframe', writing)
             digital = first['skills/digital/index.html']
-            self.assertEqual(digital.count('Create / edit with ACCESS '), 21)
+            self.assertIn('data-skill="digital"', digital)
+            self.assertTrue((site / 'brand/access-project.js').is_file())
 
     def test_legacy_catalogue_is_removed_without_touching_original_lesson(self):
         with tempfile.TemporaryDirectory() as directory:

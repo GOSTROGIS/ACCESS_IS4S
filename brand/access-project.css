@@ -1,0 +1,32 @@
+.access-learning-tabs[hidden] {
+  display: none;
+}
+
+.access-learning-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 46px;
+  border-bottom: 1px solid var(--line-strong, #cfc8c0);
+}
+
+.access-learning-tabs a {
+  padding: 10px 22px;
+  border-bottom: 4px solid transparent;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.access-learning-tabs a[aria-current="page"] {
+  color: var(--ink, #1a1512);
+  border-bottom-color: var(--red, #d2181f);
+}
+
+.access-learning-tabs a:hover {
+  background: var(--gold-tint, #fff8e6);
+}
+
+.access-tools-active main.wrap {
+  padding-top: 16px;
+  gap: 28px;
+}

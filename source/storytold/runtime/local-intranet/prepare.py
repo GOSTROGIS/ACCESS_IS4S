@@ -89,42 +89,51 @@ def install_tree(source, destination, workspace=None):
         candidate.rename(destination)
 
 
-def browser_links(site, apps):
-    """Add context entry points to the real parent/editor workspace, retaining lessons."""
+def browser_links(site, apps, include_learners=True):
+    """Connect learning entry pages to the installed project tools with compact tabs."""
     available = {app['id'] for app in apps}
     if available != set(LABELS):
         raise ValueError('ACCESS workspace requires all 17 installed browser applications')
-    pages = {'index.html': ('digital', []),
+    pages = {'index.html': ('digital', ['wordcraft']),
              'skills/digital/visual-studio/index.html': ('digital', list(ACCESS_TOOLS))}
     for skill, tools in SKILL_TOOLS.items():
         root = site / 'skills' / skill
         pages[f'skills/{skill}/index.html'] = (skill, tools)
         # Put the work next to the learning task as well as its skill overview.
         # Instructor and answer pages keep their original content and gates.
-        for learner in root.rglob('learner.html'):
-            pages[learner.relative_to(site).as_posix()] = (skill, tools[:4])
+        if include_learners:
+            for learner in root.rglob('learner.html'):
+                pages[learner.relative_to(site).as_posix()] = (skill, tools[:4])
+    assets = Path('brand')
+    for filename in ['access-project.js', 'access-project.css']:
+        destination = site / assets / filename
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        original = SOURCE.parents[3] / assets / filename
+        if original.resolve() != destination.resolve():
+            shutil.copyfile(original, destination)
     begin, end = '<!-- access-create:start -->', '<!-- access-create:end -->'
     for page, (skill, tools) in pages.items():
         path = site / page
         html = path.read_text(encoding='utf-8')
         html = re.sub(r'\s*<!-- access-create:start -->.*?<!-- access-create:end -->\s*', '', html, flags=re.S)
         html = re.sub(r'\s*<section aria-label="Installed applications"><h2>Installed Storytold applications</h2>.*?</section>\s*', '', html, flags=re.S)
-        links = []
-        for identifier in tools:
-            url = f'/workspace/?skill={skill}&app={identifier}'
-            links.append(f'<li><a href="{escape(url, quote=True)}">Create / edit with {escape(ACCESS_TOOLS[identifier])}</a></li>')
-        if page.endswith('visual-studio/index.html'):
-            links.append('<li><a href="storytold-labs.md">Image and technical drawing practice</a></li>')
-        section = (f'\n{begin}\n<section aria-label="Create and edit"><h2>Create / edit</h2>'
-                   f'<p><a href="/workspace/?skill={skill}">Open your ACCESS project workspace</a> to make and edit files for this skill. '
-                   'Use the full application controls, save your work with a project, and download a backup.</p>'
-                   + (f'<ul>{"".join(links)}</ul>' if links else '') + f'</section>\n{end}\n')
-        closing = html.rfind('</main>')
-        if closing < 0:
-            closing = html.rfind('</body>')
-        if closing < 0:
-            raise ValueError(f'Missing HTML closing tag in {page}')
-        path.write_text(html[:closing] + section + html[closing:], encoding='utf-8')
+        prefix = '../' * (len(Path(page).parts) - 1)
+        label = 'Skills' if page == 'index.html' else 'Learn'
+        application = tools[0] if tools else 'wordcraft'
+        practice = '<a href="storytold-labs.md">Practice guide</a>' if page.endswith('visual-studio/index.html') else ''
+        section = (f'\n{begin}\n<nav id="access-studio" class="access-learning-tabs" aria-label="Learning and tools" '
+                   f'data-skill="{escape(skill, quote=True)}" data-application="{application}" hidden>'
+                   f'<a href="{escape(Path(page).name, quote=True)}" aria-current="page">{label}</a>'
+                   f'<a data-tools-link href="/workspace/?skill={skill}&amp;app={application}">Tools</a>'
+                   f'{practice}'
+                   '</nav>'
+                   f'\n<link rel="stylesheet" href="{prefix}{assets.as_posix()}/access-project.css">'
+                   f'\n<script defer src="{prefix}{assets.as_posix()}/access-project.js"></script>\n{end}\n')
+        opening = re.search(r'<main\b[^>]*>', html)
+        if not opening:
+            raise ValueError(f'Missing main element in {page}')
+        point = opening.end()
+        path.write_text(html[:point] + section + html[point:], encoding='utf-8')
     shutil.copyfile(SOURCE.parent / 'lessons.md', site / 'skills/digital/visual-studio/storytold-labs.md')
 
 

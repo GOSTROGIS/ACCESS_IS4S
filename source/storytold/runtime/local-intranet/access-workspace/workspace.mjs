@@ -75,7 +75,7 @@ async function selectedDocument() {
   return record;
 }
 function describe(record) {
-  $('document-info').textContent = `${record.name} · ${record.size.toLocaleString()} bytes · SHA-256 ${record.sha256} · saved ${new Date(record.updated).toLocaleString()}`;
+  $('document-info').textContent = `${record.name} · ${record.size.toLocaleString()} bytes · saved ${new Date(record.updated).toLocaleString()}`;
 }
 function showEditor(id, opening) {
   const next = byId.get(id);
@@ -91,7 +91,7 @@ function showEditor(id, opening) {
   $('description').textContent = next.description;
   $('native').hidden = !nativeApps.has(id);
   $('native').href = nativeUrl(id);
-  $('native-note').textContent = nativeApps.has(id) ? 'The desktop version opens in its own window. Save files there, then use “Add a file to this project” to keep a browser copy.' : 'The desktop runtime is not listed as installed.';
+  $('native-note').textContent = nativeApps.has(id) ? 'Add desktop files to your project with the file chooser.' : '';
   $('workflow').textContent = next.extension ? 'Use the application’s full controls. The toolbar can open files and save the editable document into your ACCESS project.' : 'Use the application’s own New, Open, Save and Export controls. Browser downloads are also copied into your ACCESS project. To reopen a project copy, download it and select it with the application’s Open command.';
   // Keep the adapter's startup and error text visible while its application
   // initializes. Readiness still controls all document toolbar operations.
@@ -113,7 +113,7 @@ function showEditor(id, opening) {
     if (opening) {
       currentDocument = opening;
       download(opening);
-      status('The verified project file was downloaded. Open it in the installed desktop application.');
+      status(`Downloaded ${opening.name}. Open it in the desktop application.`);
     }
   }
   buttons();
@@ -128,7 +128,7 @@ async function openRecord(record) {
     const bytes = record.bytes.slice(0);
     send('open', { name: record.name, bytes }, [bytes]);
     if (application.id === 'pdfcraft') { ready = false; buttons(); }
-    status(`Opening ${record.name}. Its saved size and SHA-256 match.`);
+    status(`Opening ${record.name}…`);
   } else {
     download(record);
     status(`Downloaded ${record.name}. Use the application’s Open command to select this file.`);
@@ -168,7 +168,7 @@ window.addEventListener('message', event => {
       send('saved', { name: saved.name });
       await documents(saved.id);
       describe(saved);
-      status(`Saved ${saved.name} to ${project.name}. ${saved.size.toLocaleString()} bytes verified with SHA-256. Download a backup when you finish.`);
+      status(`Saved ${saved.name} to ${project.name}. Download a backup when you finish.`);
     });
   }
 });
@@ -195,7 +195,7 @@ $('project-form').addEventListener('submit', event => {
   });
 });
 $('documents').addEventListener('change', () => { buttons(); void run(async () => describe(await selectedDocument())); });
-$('download').addEventListener('click', () => void run(async () => { const record = await selectedDocument(); download(record); status(`Downloaded verified copy of ${record.name}.`); }));
+$('download').addEventListener('click', () => void run(async () => { const record = await selectedDocument(); download(record); status(`Downloaded ${record.name}.`); }));
 $('remove').addEventListener('click', () => void run(async () => {
   const record = await selectedDocument();
   if (!window.confirm(`Remove the browser project copy of ${record.name}? Download a backup first if you need it.`)) return;
@@ -236,6 +236,8 @@ $('save').addEventListener('click', () => void run(async () => { send('save'); s
 async function start() {
   $('context').textContent = `${context.label}: create a file, practise the skill, and keep your work.`;
   $('lesson').href = `/ACCESS_IS4S/skills/${skill}/`;
+  $('lesson').textContent = `${context.label} lessons`;
+  $('tools-tab').href = location.pathname + location.search;
   const response = await fetch('/applications.json', { cache: 'no-store' });
   if (!response.ok) throw Error('The installed application inventory is unavailable. Start the folder intranet.');
   const manifest = await response.json();
@@ -255,18 +257,6 @@ async function start() {
     group.label = label;
     group.append(...apps.map(app => option(app.id, app.label)));
     $('application').append(group);
-  }
-  for (const app of APPLICATIONS) {
-    const upstream = browserApps.get(app.id) || nativeApps.get(app.id);
-    const item = document.createElement('li');
-    item.textContent = `${app.label}: ${upstream?.label || app.id}, ${upstream?.version || 'runtime not listed'}. `;
-    const link = document.createElement('a');
-    link.textContent = 'Upstream source and licence';
-    link.href = `https://github.com/storytold/${app.id}`;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    item.append(link);
-    $('credits').append(item);
   }
   store = await openProjects();
   await projects();
