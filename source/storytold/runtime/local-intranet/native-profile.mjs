@@ -1,4 +1,5 @@
-import { cp, lstat, mkdir, readFile, readdir, realpath, rename, symlink, writeFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { cp, lstat, mkdir, readFile, readdir, realpath, rename, rm, symlink, writeFile } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 
 const configuration = {
@@ -119,10 +120,33 @@ export async function productNativeEnvironment(root, product, application, optio
   if (!['access', 'slipcurve'].includes(product)) throw Error('Unknown product profile');
   const settings = application === 'wordcraft' ? ['WORDCRAFT_PROFILE_DIR'] : configuration[application];
   if (!settings?.[0]) throw Error('Product profile isolation has not been configured for this application');
+  const ownedVersion = value => typeof value === 'string' && /^v?\d{1,6}\.\d{1,6}\.\d{1,6}-(?:access|slipcurve)-[a-f0-9]{7,40}$/u.test(value) && value.includes(`-${product}-`);
+  if (application === 'wordcraft' && !ownedVersion(options.version)) throw Error('A managed product version is required');
   const localAppData = options.localAppData ?? process.env.LOCALAPPDATA;
   if (!localAppData) throw Error('Windows local application data directory is unavailable');
   const base = join(await privateRoot(root, localAppData, options.localAppData === undefined), 'products', product, application);
   await mkdir(base, { recursive: true });
   if (relative(base, await realpath(base))) throw Error('Product application profile is redirected');
-  return { ...process.env, [settings[0]]: base };
+  const env = { ...process.env, [settings[0]]: base };
+  if (application === 'wordcraft') {
+    const pin = join(base, 'managed-versions.json');
+    const existing = await present(pin);
+    if (existing) {
+      if (!existing.isFile() || relative(pin, await realpath(pin))) throw Error('The managed version pin is redirected');
+      const value = JSON.parse(await readFile(pin, 'utf8'));
+      if (Object.keys(value).join(',') !== 'apps' || !value.apps || Object.keys(value.apps).join(',') !== application ||
+          !value.apps[application] || Object.keys(value.apps[application]).join(',') !== 'Pinned' ||
+          !ownedVersion(value.apps[application].Pinned)) throw Error('The managed version pin changed; its contents were preserved');
+    }
+    const body = JSON.stringify({ apps: { [application]: { Pinned: options.version } } }) + '\n';
+    if (!existing || await readFile(pin, 'utf8') !== body) {
+      const pending = join(base, `.managed-version-${randomUUID()}.tmp`);
+      try {
+        await writeFile(pending, body, { flag: 'wx', mode: 0o600 });
+        await rename(pending, pin);
+      } finally { await rm(pending, { force: true }); }
+    }
+    env.CRAFT_VERSIONS_FILE = pin;
+  }
+  return env;
 }

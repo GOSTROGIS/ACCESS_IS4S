@@ -22,7 +22,7 @@ try {
   } else if (product) {
     const { record: selected } = await activeProductRuntime(root, 'native', id);
     const { tree } = await verifyProductRuntime(root, selected);
-    const env = await productNativeEnvironment(root, product.product, product.application);
+    const env = await productNativeEnvironment(root, product.product, product.application, { version: selected.version });
     const child = spawn(join(tree, selected.entry), [], { cwd: tree, env, detached: true, stdio: 'ignore', windowsHide: true });
     await new Promise((accept, reject) => { child.once('spawn', accept); child.once('error', reject); });
     child.unref();

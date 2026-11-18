@@ -33,15 +33,23 @@ test('native updates share the exact preserved portable PDF profile without chan
 test('owned document runtimes retain separate persistent product profiles', async t => {
   const root = await mkdtemp(join(await realpath(tmpdir()), 'native-profile-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const options = { localAppData: join(root, 'private') };
+  const options = { localAppData: join(root, 'private'), version: 'v0.18.1-access-aaaaaaaa' };
   const access = await productNativeEnvironment(root, 'access', 'wordcraft', options);
-  const slip = await productNativeEnvironment(root, 'slipcurve', 'wordcraft', options);
+  const slip = await productNativeEnvironment(root, 'slipcurve', 'wordcraft', { ...options, version: 'v0.18.1-slipcurve-bbbbbbbb' });
   assert.notEqual(access.WORDCRAFT_PROFILE_DIR, slip.WORDCRAFT_PROFILE_DIR);
   await writeFile(join(access.WORDCRAFT_PROFILE_DIR, 'ui.json'), 'access preferences');
   await writeFile(join(slip.WORDCRAFT_PROFILE_DIR, 'ui.json'), 'slipcurve preferences');
   const reopened = await productNativeEnvironment(root, 'access', 'wordcraft', options);
   assert.equal(await readFile(join(reopened.WORDCRAFT_PROFILE_DIR, 'ui.json'), 'utf8'), 'access preferences');
   assert.equal(await readFile(join(slip.WORDCRAFT_PROFILE_DIR, 'ui.json'), 'utf8'), 'slipcurve preferences');
+  assert.notEqual(access.CRAFT_VERSIONS_FILE, slip.CRAFT_VERSIONS_FILE);
+  assert.deepEqual(JSON.parse(await readFile(access.CRAFT_VERSIONS_FILE, 'utf8')), { apps: { wordcraft: { Pinned: options.version } } });
+  const updated = await productNativeEnvironment(root, 'access', 'wordcraft', { ...options, version: 'v0.18.2-access-cccccccc' });
+  assert.equal(updated.CRAFT_VERSIONS_FILE, access.CRAFT_VERSIONS_FILE);
+  assert.equal(JSON.parse(await readFile(access.CRAFT_VERSIONS_FILE, 'utf8')).apps.wordcraft.Pinned, 'v0.18.2-access-cccccccc');
+  await writeFile(access.CRAFT_VERSIONS_FILE, '{"apps":{"wordcraft":"Latest"}}');
+  await assert.rejects(productNativeEnvironment(root, 'access', 'wordcraft', options), /contents were preserved/u);
+  assert.equal(await readFile(access.CRAFT_VERSIONS_FILE, 'utf8'), '{"apps":{"wordcraft":"Latest"}}');
   await assert.rejects(productNativeEnvironment(root, '../other', 'wordcraft', options));
   await assert.rejects(productNativeEnvironment(root, 'access', '../wordcraft', options));
 });
@@ -57,11 +65,11 @@ test('private profile pointers reject every installed child including names begi
   try {
     for (const directory of [root, join(root, 'private'), join(root, '..private')]) {
       await writeFile(pointer, JSON.stringify({ schema: 1, directory }));
-      await assert.rejects(productNativeEnvironment(root, 'access', 'wordcraft'), /outside the synced installation/u);
+      await assert.rejects(productNativeEnvironment(root, 'access', 'wordcraft', { version: 'v0.18.1-access-aaaaaaaa' }), /outside the synced installation/u);
     }
     const directory = join(scratch, 'private');
     await writeFile(pointer, JSON.stringify({ schema: 1, directory }));
-    const env = await productNativeEnvironment(root, 'access', 'wordcraft');
+    const env = await productNativeEnvironment(root, 'access', 'wordcraft', { version: 'v0.18.1-access-aaaaaaaa' });
     assert.equal(env.WORDCRAFT_PROFILE_DIR, join(directory, 'products/access/wordcraft'));
   } finally {
     if (previous === undefined) delete process.env.LOCALAPPDATA;
