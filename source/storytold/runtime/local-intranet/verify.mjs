@@ -47,8 +47,8 @@ for (const app of [...apps, ...variants]) {
 
 const hub = await read(4180, '/ACCESS_IS4S/skills/numeracy/');
 assert.equal(hub.code, 200);
-assert.match(hub.body.toString(), /aria-label="Create and edit"/);
-assert.match(hub.body.toString(), /\/workspace\/\?skill=numeracy&amp;app=cadcraft/);
+assert.match(hub.body.toString(), /id="access-studio"/);
+assert.match(hub.body.toString(), /processing-tools\/\?skill=numeracy&amp;app=gridcraft/);
 assert.doesNotMatch(hub.body.toString(), /Installed Storytold applications/);
 const projectWorkspace = await read(4180, '/workspace/?skill=numeracy&app=cadcraft');
 assert.equal(projectWorkspace.code, 200, 'ACCESS contextual project workspace');

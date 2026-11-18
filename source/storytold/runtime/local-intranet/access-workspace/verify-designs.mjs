@@ -139,7 +139,7 @@ try {
   await page.locator('#documents').selectOption(saved.id);
   await page.locator('#reopen').click();
   await page.waitForFunction(() => !document.getElementById('new').disabled);
-  const reopenedPdf = page.frames().find(frame => frame.url().includes(':4198/') && frame.url().includes('pdfcraft.html'));
+  const reopenedPdf = await activeEditor();
   await until(reopenedPdf, async () => Boolean((await window.pdfcraft.docInspect()).active));
   const reopened = await reopenedPdf.evaluate(() => window.pdfcraft.docInspect());
   assert.equal(reopened.documents.length, 1);

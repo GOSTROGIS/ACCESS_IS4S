@@ -1,10 +1,12 @@
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
 import { readFile, readdir, realpath, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { promisify } from 'node:util';
 import { consultingPaths } from './consulting-edition.mjs';
 import { activeRuntime, runtimeTree, versionedWebApps } from './runtime-state.mjs';
 import { activeProductRuntime, installedAutomations, installedProductRuntimes } from './product-runtimes.mjs';
@@ -52,6 +54,30 @@ function byteRange(header, size) {
   return { start, end };
 }
 
+function fileHeaders(req, res, name, size) {
+  const headers = {
+    'Content-Type': types[extname(name).toLowerCase()] ?? 'application/octet-stream',
+    'Content-Length': size,
+    'Accept-Ranges': 'bytes',
+  };
+  let range;
+  if (req.headers.range) {
+    range = byteRange(req.headers.range, size);
+    if (!range) {
+      res.writeHead(416, { 'Content-Range': `bytes */${size}` }).end();
+      return null;
+    }
+    headers['Content-Range'] = `bytes ${range.start}-${range.end}/${size}`;
+    headers['Content-Length'] = range.end - range.start + 1;
+  }
+  res.writeHead(range ? 206 : 200, headers);
+  if (req.method === 'HEAD') {
+    res.end();
+    return null;
+  }
+  return range ?? {start: 0, end: size - 1};
+}
+
 async function fileResponse(req, res, root, segments, path, directoryRoot = false, boundary = home) {
   let target;
   let info;
@@ -78,24 +104,109 @@ async function fileResponse(req, res, root, segments, path, directoryRoot = fals
   }
   if (!info.isFile()) return response(res, 404, 'File not found');
 
-  const headers = {
-    'Content-Type': types[extname(target).toLowerCase()] ?? 'application/octet-stream',
-    'Content-Length': info.size,
-    'Accept-Ranges': 'bytes',
-  };
-  let range;
-  if (req.headers.range) {
-    range = byteRange(req.headers.range, info.size);
-    if (!range) return res.writeHead(416, { 'Content-Range': `bytes */${info.size}` }).end();
-    headers['Content-Range'] = `bytes ${range.start}-${range.end}/${info.size}`;
-    headers['Content-Length'] = range.end - range.start + 1;
-  }
-  res.writeHead(range ? 206 : 200, headers);
-  if (req.method === 'HEAD') return res.end();
+  const range = fileHeaders(req, res, target, info.size);
+  if (!range) return;
+  if (!info.size) return res.end();
   const body = createReadStream(target, range);
   body.on('error', () => res.destroy());
   res.on('close', () => body.destroy());
   body.pipe(res);
+}
+
+const publicCoursePaths = ['index.html', '404.html', 'brand', 'downloads', 'processing-tools', 'programs', 'skills', 'textbook', 'tools', 'assistant/public'];
+const courseAssets = new Set([...Object.keys(types), '.docx', '.dxf', '.gguf', '.jsx', '.nc', '.pptx', '.srt', '.stl', '.vtt', '.xlsx']);
+const gitOutput = promisify(execFile);
+
+function publicCourseFile(name) {
+  return name.startsWith('processing-tools/') || courseAssets.has(extname(name)) || name === 'skills/digital/lessons/21-run-and-change-a-python-script/grade_check.py';
+}
+
+// The two-hour synchronizer owns the adjacent default-branch mirror. Read its
+// committed blobs, so draft files and local edits never become course content.
+function mirroredCourse(installation) {
+  const mirror = join(dirname(installation), 'GitHub repositories', 'ACCESS_IS4S');
+  const gitDirectory = join(mirror, '.git');
+  const options = {windowsHide: true, timeout: 15000, maxBuffer: 4 * 1024 * 1024,
+    env: {...Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^GIT_/i.test(key))),
+      GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null', GIT_NO_REPLACE_OBJECTS: '1', GIT_NO_LAZY_FETCH: '1', GIT_TERMINAL_PROMPT: '0'}};
+  const args = ['--no-optional-locks', '--literal-pathspecs', `--git-dir=${gitDirectory}`];
+  let snapshot, nextCheck = 0, pending, unavailable;
+  async function refresh() {
+    let settings;
+    try {
+      if (relative(gitDirectory, await realpath(gitDirectory)) !== '') throw Error('Redirected course mirror');
+      settings = await readJson(join(installation, 'tools/runtime-update/settings.json'));
+    } catch (error) {
+      if (error.code === 'ENOENT') return undefined;
+      throw error;
+    }
+    if (!settings.git) return undefined;
+    if (!isAbsolute(settings.git)) throw Error('Expected an absolute installed Git path');
+    const git = async (...command) => (await gitOutput(settings.git, [...args, ...command], options)).stdout;
+    const origin = (await git('config', '--local', '--no-includes', '--get', 'remote.origin.url')).trim();
+    if (origin !== 'https://github.com/GOSTROGIS/ACCESS_IS4S.git') throw Error('Unexpected course mirror origin');
+    const revision = (await git('rev-parse', '--verify', 'refs/remotes/origin/main^{commit}')).trim();
+    if (!/^[0-9a-f]{40}$/.test(revision)) throw Error('Invalid course revision');
+    if (snapshot?.revision === revision) return snapshot;
+    const tree = await git('ls-tree', '-rlz', revision, '--', ...publicCoursePaths);
+    const files = new Map();
+    for (const line of tree.split('\0')) {
+      const entry = /^100(?:644|755) blob ([a-f0-9]{40})\s+(\d+)\t(.+)$/u.exec(line);
+      if (!entry) continue;
+      const [, id, size, name] = entry;
+      if (publicCourseFile(name)) files.set(name, {id, size: Number(size)});
+    }
+    if (!files.has('index.html')) throw Error('Course mirror has no hub');
+    return {revision, files, git: settings.git};
+  }
+  return async (req, res, path, segments) => {
+    let name = segments.join('/');
+    if (name && !publicCoursePaths.some(p => name === p || name.startsWith(p + '/'))) return response(res, 404, 'File not found');
+    if (extname(name) && !publicCourseFile(name)) return response(res, 404, 'File not found');
+    if (!pending && Date.now() >= nextCheck) {
+      pending = refresh().then(result => { snapshot = result; unavailable = false; }, () => {
+        unavailable = true;
+      }).finally(() => {
+        nextCheck = Date.now() + 1000;
+        pending = undefined;
+      });
+    }
+    await pending;
+    if (unavailable) return response(res, 503, 'Course mirror unavailable');
+    if (!snapshot) return fileResponse(req, res, join(installation, 'ACCESS_IS4S'), segments, path, true, installation);
+    if (!snapshot.files.has(name)) {
+      name = name ? `${name}/index.html` : 'index.html';
+      if (!snapshot.files.has(name)) return response(res, 404, 'File not found');
+      if (!path.trailing) return res.writeHead(308, {Location: `${path.raw}/${req.url.slice(path.raw.length)}`}).end();
+    } else if (path.trailing) return response(res, 404, 'File not found');
+    const {id, size} = snapshot.files.get(name);
+    const range = fileHeaders(req, res, name, size);
+    if (!range) return;
+    if (!size) return res.end();
+    const child = spawn(snapshot.git, [...args, 'cat-file', 'blob', id], {
+      env: options.env, windowsHide: true, stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    child.on('error', () => res.destroy());
+    // Large model and ZIP responses stream with backpressure, including ranges.
+    async function* chunks() {
+      let offset = 0;
+      for await (const data of child.stdout) {
+        const begin = Math.max(range.start - offset, 0), end = Math.min(range.end - offset + 1, data.length);
+        offset += data.length;
+        if (begin < end) yield data.subarray(begin, end);
+        if (offset > range.end) return;
+      }
+      if (offset <= range.end) throw Error('Incomplete course object');
+    }
+    const stream = Readable.from(chunks()).on('error', () => res.destroy());
+    res.once('close', () => { stream.destroy(); child.kill(); });
+    stream.pipe(res);
+  };
+}
+
+export function courseServer(installation, port = 0) {
+  const course = mirroredCourse(installation);
+  return server(port, (req, res, path) => course(req, res, path, path.segments));
 }
 
 async function readJson(file) {
@@ -335,6 +446,7 @@ async function main() {
   });
   const url = `http://${address}:${portalPort}/`;
   const installation = portalInstallation(home, apps, variants, productRuntimes);
+  const course = mirroredCourse(home);
   if (await existingPortal(url, installation)) {
     console.log(`Intranet is already running at ${url}`);
     openBrowser(url);
@@ -368,7 +480,7 @@ async function main() {
       res.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self'; style-src 'self'; frame-src ${frames}; img-src 'self' data: blob:; base-uri 'none'; frame-ancestors 'self'; form-action 'none'`);
       return fileResponse(req, res, join(home, 'tools/access-workspace'), remaining, path, true);
     }
-    if (first === 'ACCESS_IS4S') return fileResponse(req, res, join(home, 'ACCESS_IS4S'), remaining, path, true);
+    if (first === 'ACCESS_IS4S') return course(req, res, path, remaining);
     if (first === 'CONSULTING' && consulting) return fileResponse(req, res, consulting.site, remaining, path, true);
     if (first === 'CONSULTING') return response(res, 503, 'CONSULTING release unavailable');
     if (!first || (!remaining.length && portalFiles.has(first))) {
