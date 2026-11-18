@@ -29,7 +29,7 @@ jobs:
           node-version: '22'
       - run: python3 source/site/build_public_lessons.py --check
       - run: node --check assistant/public/worker.mjs
-      - run: node --test source/site/test-student-percent.mjs
+      - run: node --test source/site/test-student-*.mjs
       - run: npm install --prefix "$RUNNER_TEMP/student-browser" playwright@1.56.1
       - run: '"$RUNNER_TEMP/student-browser/node_modules/.bin/playwright" install --with-deps ${{ matrix.browser }}'
       - name: Answer questions in a browser with only this site reachable

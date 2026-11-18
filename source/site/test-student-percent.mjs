@@ -20,6 +20,27 @@ test('gives the method without revealing the value when the learner asks for a h
   assert.doesNotMatch(hint, /20/);
 });
 
+test('recalculates a reported equation from the fraction, including a quoted wrong result', () => {
+  const correct = '1/5 is 20%.';
+  for (const question of [
+    'it said 1/5 as a percentage is 1/5\\*100% = 100%',
+    '1/5 × 100% = 100%. Is that right?',
+    'Is 1/5 as a percentage 100%?',
+    'What percentage is one fifth?',
+    'Can you convert one fifth into a percentage?',
+  ]) {
+    const answer = fractionAnswer(question);
+    assert.equal(answer?.split('\n')[0], correct, question);
+    assert.match(answer, /1 ÷ 5 = 0\.2/);
+    assert.match(answer, /0\.2 × 100 = 20/);
+  }
+  assert.match(fractionAnswer('The tutor said 100%. Is that right?', correct), /^1\/5 is 20%\./);
+  assert.match(fractionAnswer('Why multiply by 100?', correct), /out of 100/i);
+  assert.match(fractionAnswer('it said 3/8 as a percentage is 3/8*100% = 100%'), /^3\/8 is 37\.5%\./);
+  assert.equal(fractionAnswer('1/5 + 3/8 as a percentage is 100%'), null);
+  assert.equal(fractionAnswer('1/5 as a percentage is 3/8*100% = 100%'), null);
+});
+
 test('leaves unrelated or ambiguous problems to the model', () => {
   for (const question of ['What is 20% of 1/5?',
     '1/5 of 50 as a percentage', '1/3 as a percent rounded to one decimal place',

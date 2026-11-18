@@ -106,7 +106,7 @@ form.addEventListener('submit', async event => {
   active = {id, question, body, sources: []};
   input.value = '';
   const answer = fractionAnswer(question, lastConversion);
-  lastConversion = answer !== null;
+  lastConversion = answer;
   if (answer) {
     body.textContent = answer;
     remember(question, answer);

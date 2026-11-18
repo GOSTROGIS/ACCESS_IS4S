@@ -39,7 +39,9 @@ async function run() {
     };
     const first = await submit('can you help me find the percentage of 1/5? im really confused. :(');
     assert.equal(first.split('\n')[0], '1/5 is 20%.');
-    assert.match(first, /1 ÷ 5\) × 100 = 20/);
+    assert.match(first, /1 ÷ 5 = 0\.2, then 0\.2 × 100 = 20/);
+    assert.match(await submit('it said 1/5 as a percentage is 1/5\\*100% = 100%'), /^1\/5 is 20%\./);
+    assert.match(await submit('The tutor said 100%. Is that right?'), /^1\/5 is 20%\./);
     assert.match(await submit('What about 3/8?'), /^3\/8 is 37\.5%\./);
     assert.equal(requests.some(path => path.endsWith('.gguf')), false);
     console.log('PASS exact learner question and follow-up, before downloading a language model');

@@ -21,7 +21,8 @@ export function definedTerms(question, sources) {
 function terms(text) {
   return new Set((text.toLowerCase().match(/[a-z0-9]+/g) || [])
     .filter(word => word.length > 1 && !ignored.has(word))
-    .map(word => word.length > 4 ? word.replace(/(?:es|s)$/, '') : word));
+    .map(word => word.startsWith('clarif') ? 'clarify' :
+      word === 'asking' || word === 'asked' ? 'ask' : word.length > 4 ? word.replace(/s$/, '') : word));
 }
 
 // The model's context is small. Rank individual passages so it sees the matching
@@ -33,20 +34,33 @@ export function findPassages(rows, question, lessonPath) {
     const documents = rows.filter(row => row.text.toLowerCase().includes(word)).length;
     weights.set(word, Math.log(1 + rows.length / (1 + documents)));
   }
-  const score = text => [...terms(text)].reduce((sum, word) => sum + (weights.get(word) || 0), 0);
+  const score = words => [...words].reduce((sum, word) => sum + (weights.get(word) || 0), 0);
   const candidates = [];
   for (const row of rows) {
     const current = row.url === lessonPath;
     const lines = row.text.split('\n').filter(line => line.length > 12);
     let best = 0, match = 0;
     for (let i = 0; i < lines.length; i++) {
-      const n = score(lines[i]);
+      const n = score(terms(lines[i]));
       if (n > match) { match = n; best = i; }
     }
-    const titleMatch = score(row.title + ' ' + row.skill);
+    const titleWords = terms(row.title + ' ' + row.skill);
+    const titleMatch = score(titleWords);
     if (!current && !titleMatch && !match) continue;
+    // Preserve the preceding instruction when a learner's matched line refers
+    // back to it. Keep complete sentences in the limited model context.
+    const linesBefore = lines.slice(Math.max(0, best - 2), best);
+    while (linesBefore.join(' ').length > 230) linesBefore.shift();
+    const window = [...linesBefore, ...lines.slice(best, best + 4)].join(' ');
+    const clipped = window.slice(0, 780);
+    const end = [...clipped.matchAll(/[.!?]["”]?(?=\s)/g)].at(-1);
+    const text = clipped.length === window.length ? window :
+      end ? clipped.slice(0, end.index + end[0].length) : clipped.replace(/\s+\S*$/, '') + '…';
+    const seen = new Set([...titleWords, ...terms(text)]);
+    const shared = [...query].filter(word => seen.has(word)).length;
+    if (!current && shared < Math.min(2, query.size)) continue;
     candidates.push({title: row.title, url: row.url,
-      text: lines.slice(best, best + 4).join(' ').slice(0, 550),
+      text,
       rank: titleMatch * 2 + match + (current ? 2 : 0)});
   }
   return candidates.sort((a, b) => b.rank - a.rank).slice(0, 1);

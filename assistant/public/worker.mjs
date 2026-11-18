@@ -69,8 +69,11 @@ function wantsHint(question) {
     !/\b(?:do not|don't|don’t|no longer)\s+(?:want|need|give me)\s+(?:a\s+)?(?:hints?|clue)\b/i.test(question);
 }
 
-function learnerPrompt(question, sources, history, requestedHint, comparison) {
+function learnerPrompt(question, sources, history, requestedHint, comparison, wording) {
   const rows = (Array.isArray(sources) ? sources.slice(0,2) : []).filter(Boolean);
+  const turns = (Array.isArray(history) ? history.slice(-2) : []).filter(turn =>
+    turn && ['user','assistant'].includes(turn.role) && plain(turn.content,400));
+  const conversation = turns.map(turn => '<|im_start|>'+turn.role+'\n'+plain(turn.content,400)+'<|im_end|>\n').join('');
   if (requestedHint) {
     // The tiny model will often repeat a solution that appears in its context.
     // Give it the topic and the learner's question so it can suggest a method.
@@ -94,9 +97,24 @@ function learnerPrompt(question, sources, history, requestedHint, comparison) {
     return '<|im_start|>system\nAnswer questions using only the given passage. For a comparison, explain each term in one sentence. Copy the definitions exactly. Do not write a formula.<|im_end|>\n' +
       '<|im_start|>user\nText:\n'+passage+'\n\nQuestion: '+question+'<|im_end|>\n<|im_start|>assistant\n';
   }
+  if (wording) {
+    // A sample dialogue in a lesson can describe a different person or task.
+    // Draft the learner's own words using the situation in their question.
+    return '<|im_start|>system\nWrite the exact words a person could say in a workplace conversation. One or two sentences, in quotation marks.<|im_end|>\n' +conversation+
+      '<|im_start|>user\n'+question+'<|im_end|>\n<|im_start|>assistant\n"';
+  }
   const system = 'Answer the question directly in plain English. Use only the facts given in the passage. Copy names and numbers exactly. Keep your answer short. Do not guess.';
-  const turns = (Array.isArray(history) ? history.slice(-2) : []).filter(turn =>
-    turn && ['user','assistant'].includes(turn.role) && plain(turn.content,400));
+  const supplied = /^([\s\S]+?[.!?])\s+((?:what|which|who|when|where|how many|how much)\b[^?]*\?)$/i.exec(question);
+  if (supplied) {
+    rows.unshift({text:supplied[1]});
+    question = supplied[2];
+  }
+  if (!rows.length) {
+    const instruction = /^(?:what|which|who|where|when)\s+(?:is|are|was|were)\b/i.test(question) ?
+      'Answer the question in one short sentence.' : 'You are a helpful AI assistant. Answer the question directly.';
+    return '<|im_start|>system\n'+instruction+'<|im_end|>\n'+conversation+
+      '<|im_start|>user\n'+question+'<|im_end|>\n<|im_start|>assistant\n';
+  }
   const passages = rows
     .map(source => [plain(source.title,100), plain(source.text,850)].filter(Boolean).join('\n')).filter(Boolean);
   const messages = [
@@ -123,25 +141,32 @@ self.onmessage = async ({data}) => {
     const definition = !hint && definedTerms(question, sources);
     if (definition) return send({type:'done',text:definition});
     const comparison = !hint && /\b(?:compar(?:e|ing)|contrast|versus|vs|differences? between)\b/i.test(question) && !/\d/.test(question);
+    const wording = !hint && !comparison && /\b(?:how (?:should|can|could|do) (?:I|we)|what (?:should|can|could) (?:I|we) (?:say|write)|help me)\b/i.test(question) &&
+      /\b(?:ask|say|tell|respond|reply|word|phrase|request)\b/i.test(question);
     if (comparison && !sources.length) {
       return send({type:'done',text:'I could not find a supporting passage. Which lesson or passage are you comparing?'});
     }
     const engine = await getModel(send);
-    let prompt = learnerPrompt(question, sources, data.history, hint, comparison);
+    let prompt = learnerPrompt(question, sources, data.history, hint, comparison, wording);
     if ((await engine.tokenize(prompt)).length + maxAnswerTokens + 2 > contextSize) {
-      prompt = learnerPrompt(question, [], [], hint, false);
+      prompt = learnerPrompt(question, [], [], hint, false, wording);
       if ((await engine.tokenize(prompt)).length + maxAnswerTokens + 2 > contextSize) {
         throw Error('Please shorten your question so it fits the learning model.');
       }
     }
     const decoder = new TextDecoder();
     const stop = new AbortController();
+    const limit = hint ? 64 : maxAnswerTokens;
+    let generated = 0;
+    if (wording) send({type:'token',text:'"'});
     const answer = await engine.createCompletion(prompt, {
-      nPredict:hint ? 64 : maxAnswerTokens, sampling:{temp:0, penalty_repeat:1}, abortSignal:stop.signal,
+      nPredict:limit, sampling:{temp:0, penalty_repeat:1}, abortSignal:stop.signal,
       onNewToken(_token, bytes, currentText) {
+        generated++;
         const text = decoder.decode(bytes, {stream:true});
         if (text && !comparison) send({type:'token',text});
         if (hint && /[.!?]\s*$/.test(currentText)) stop.abort();
+        if (wording && /["”]/.test(currentText)) stop.abort();
       }
     });
     const remainder = decoder.decode();
@@ -159,8 +184,15 @@ self.onmessage = async ({data}) => {
       const text = 'I couldn’t verify a direct comparison in this lesson.' + (quote ? '\n\nFrom the lesson: “'+quote+'”' : '');
       return send({type:'done',text});
     }
-    if (!answer.trim()) throw Error('The model returned an empty answer. Please rephrase the question.');
-    send({type:'done',text:answer.trim()});
+    let result = answer.trim();
+    if (!result) throw Error('The model returned an empty answer. Please rephrase the question.');
+    if (generated === limit && !/[.!?]["”']?$/.test(result) && !result.includes('```')) {
+      // When the small model reaches its output limit, end on a complete sentence.
+      const end = [...result.matchAll(/[.!?]["”']?(?=\s)/g)].at(-1);
+      if (end) result = result.slice(0,end.index + end[0].length);
+    }
+    if (wording) result = '"'+result.replace(/["”].*$/s,'')+'"';
+    send({type:'done',text:result});
   } catch (error) {
     send({type:'error',message:error instanceof Error ? error.message : 'The learning model could not run in this browser.'});
   } finally { busy = false; }
