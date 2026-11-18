@@ -324,15 +324,22 @@ class LeaseHandler(BaseHTTPRequestHandler):
         deadline=self.deadline
         cancelled=threading.Event()
         operation=None
+        owns_authorization=False
         try:
             product,request=self._parse(deadline)
             deadline=min(deadline,time.monotonic()+(request['expiresAt']-time.time()*1000)/1000)
             if not self._alive(deadline) or not self._peer(product):
                 raise Refused()
             self.server.claim(request['requestId'],request['expiresAt'])
-            if not self.server._authorization.acquire(blocking=False):
-                self._reply(503)
-                return
+            # Two valid product workers may request a lease at the same time.
+            # Keep one credential operation, but let admitted clients wait on
+            # their original finite deadline rather than fail normal overlap.
+            while self._alive(deadline):
+                if self.server._authorization.acquire(timeout=min(.02,max(0,deadline-time.monotonic()))):
+                    owns_authorization=True
+                    break
+            if not owns_authorization or not self._alive(deadline) or not self._peer(product):
+                raise Refused()
             operation=queue.Queue(maxsize=1)
             def authorize():
                 lease=None
@@ -354,6 +361,7 @@ class LeaseHandler(BaseHTTPRequestHandler):
                         lease.clear()
                     self.server._authorization.release()
             threading.Thread(target=authorize,daemon=True).start()
+            owns_authorization=False  # The started worker now owns release.
             while self._alive(deadline):
                 try:
                     value=operation.get(timeout=min(.02,max(.001,deadline-time.monotonic())))
@@ -379,6 +387,8 @@ class LeaseHandler(BaseHTTPRequestHandler):
                 except OSError:
                     pass
         finally:
+            if owns_authorization:
+                self.server._authorization.release()
             cancelled.set()
             self.close_connection=True
             if operation is not None:

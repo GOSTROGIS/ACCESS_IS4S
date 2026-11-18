@@ -134,7 +134,9 @@ class Boundaries(unittest.TestCase):
                 self.assertEqual(lease['chatgptAccountId'],ACCOUNTS[product])
                 self.assertEqual(lease['accessToken'],SENTINEL)
         self.assertEqual(len(self.sessions.calls),4)
-        self.assertEqual(len(self.peers.calls),4)
+        self.assertGreaterEqual(len(self.peers.calls),4)
+        for product in ACCOUNTS:
+            self.assertGreaterEqual(sum(call[0]==product for call in self.peers.calls),2)
 
     def test_unregistered_or_cross_product_peers_never_reach_auth(self):
         self.peers.allowed=False
@@ -257,15 +259,51 @@ class Boundaries(unittest.TestCase):
             self.assertEqual(first.result(timeout=1)[0],200)
         self.assertEqual(len(self.auth.calls),1)
 
-    def test_different_nonce_concurrency_has_one_bounded_authorization_slot(self):
+    def test_different_nonce_clients_wait_for_the_one_bounded_authorization_slot(self):
         self.auth.release.clear()
         with ThreadPoolExecutor(max_workers=2) as pool:
             first=pool.submit(self.request,self.body())
             self.assertTrue(self.auth.started.wait(.5))
-            second=pool.submit(self.request,self.body())
-            self.refused(second.result(timeout=1),503)
+            second=pool.submit(self.request,self.body('slipcurve'),path='/v1/lease/slipcurve')
+            end=time.monotonic()+.4
+            while len(self.peers.calls)<2 and time.monotonic()<end:time.sleep(.005)
+            self.assertEqual(len(self.auth.calls),1)
+            self.assertFalse(second.done(),'The other product must wait rather than fail a normal concurrent lease')
             self.auth.release.set()
             self.assertEqual(first.result(timeout=1)[0],200)
+            self.assertEqual(second.result(timeout=1)[0],200)
+        self.assertEqual(len(self.auth.calls),2)
+        self.assertEqual({call[0] for call in self.auth.calls},set(self.server.account_pins.values()))
+
+    def test_queued_client_deadline_does_not_start_auth_or_leak_the_slot(self):
+        self.auth.release.clear()
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            first=pool.submit(self.request,self.body())
+            self.assertTrue(self.auth.started.wait(.5))
+            self.server.budget_seconds=.08
+            started=time.monotonic()
+            second=self.request(self.body('slipcurve'),path='/v1/lease/slipcurve')
+            self.assertEqual(second[0],0)
+            self.assertLess(time.monotonic()-started,.4)
+            self.assertEqual(len(self.auth.calls),1)
+            self.auth.release.set()
+            self.assertEqual(first.result(timeout=1)[0],200)
+        self.server.budget_seconds=.7
+        self.assertEqual(self.request()[0],200)
+        self.assertEqual(len(self.auth.calls),2)
+
+    def test_peer_revoked_while_queued_cannot_start_auth(self):
+        self.auth.release.clear()
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            first=pool.submit(self.request,self.body())
+            self.assertTrue(self.auth.started.wait(.5))
+            second=pool.submit(self.request,self.body('slipcurve'),path='/v1/lease/slipcurve')
+            end=time.monotonic()+.4
+            while len(self.peers.calls)<2 and time.monotonic()<end:time.sleep(.005)
+            self.peers.products.remove('slipcurve')
+            self.auth.release.set()
+            self.assertEqual(first.result(timeout=1)[0],200)
+            self.refused(second.result(timeout=1))
         self.assertEqual(len(self.auth.calls),1)
 
     def test_session_revocation_during_auth_refuses_lease(self):
