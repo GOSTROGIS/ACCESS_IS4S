@@ -54,6 +54,12 @@ $localFiles = @(
 foreach ($name in $localFiles) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $local
 }
+$automationTools = Join-Path $installationPath 'tools\autocraft-linux'
+New-Item -ItemType Directory -Path $automationTools -Force | Out-Null
+foreach ($name in @('controller.mjs', 'native-login.mjs', 'update.mjs')) {
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('autocraft-linux\' + $name)) -Destination $automationTools
+}
+Copy-Item -LiteralPath (Join-Path $runtimeSource 'native-host\publish-autocraft-source.py') -Destination $automationTools
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'workspace') -Destination $local -Recurse -Force
 $gitPath = if ($Git) { (Get-Item -LiteralPath $Git).FullName }
 $settingsFile = Join-Path $runner 'settings.json'

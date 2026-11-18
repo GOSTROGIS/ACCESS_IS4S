@@ -2,12 +2,13 @@ import { execFile, spawn } from 'node:child_process';
 import { appendFile, lstat, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, relative, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs, promisify } from 'node:util';
 import { download, signedChecksum, verifyArchive } from '../acquire-web-releases.mjs';
 import { serveCandidate } from './intranet.mjs';
 import { activeRuntime, newerVersion, promoteRuntime, resumeRuntime, rollbackRuntime, runtimeTree } from './runtime-state.mjs';
 import { nativeEnvironment } from './native-profile.mjs';
+import { installedAutomations } from './product-runtimes.mjs';
 
 const run = promisify(execFile);
 const source = dirname(fileURLToPath(import.meta.url));
@@ -169,6 +170,24 @@ async function consultingRuntime(root, mode, report) {
   await projectRuntime('CONSULTING', mode, process.execPath, [script, mode, '--root', root], report);
 }
 
+async function automationRuntime(root, mode, report, only) {
+  const script = join(root, 'tools/autocraft-linux/update.mjs');
+  if (!(await lstat(script)).isFile() || relative(script, await realpath(script)) !== '') throw Error('The installed automation updater may not be redirected');
+  try {
+    const { updateAutomations } = await import(pathToFileURL(script));
+    for (const result of await updateAutomations(root, { mode, only })) {
+      const outcome = `${result.product}-autocraft ${result.current} ${result.status}`;
+      console.log(outcome);
+      await updateLog(report, outcome);
+    }
+  } catch (error) {
+    const outcome = `${only} ${mode} failed: ${error.message}`;
+    console.error(outcome);
+    await updateLog(report, outcome);
+    process.exitCode = 1;
+  }
+}
+
 async function installed(file) {
   return lstat(file).then(item => item.isFile()).catch(error => {
     if (error.code !== 'ENOENT') throw error;
@@ -193,6 +212,10 @@ async function main() {
   if (values.only === 'consulting') {
     if (values.tag || mode === 'launch') throw Error('CONSULTING updates use owned main and the installed launcher');
     return consultingRuntime(root, mode, report);
+  }
+  if (['access-autocraft', 'slipcurve-autocraft'].includes(values.only)) {
+    if (values.tag || mode === 'launch') throw Error('Automation updates use owned main and the installed native sign-in launcher');
+    return automationRuntime(root, mode, report, values.only);
   }
   const selected = values.only ? managed.filter(app => app.key === values.only) : managed;
   if (!selected.length) throw Error('No functional update gate for that application');
@@ -237,6 +260,9 @@ async function main() {
   if (!values.only && mode === 'update') {
     if (await installed(join(root, 'SLIPCURVE', 'slipcurve-release.py'))) await slipcurveRuntime(root, mode, report);
     if (await installed(join(root, 'CONSULTING', 'site', 'index.html'))) await consultingRuntime(root, mode, report);
+  }
+  if (!values.only && ['update', 'verify'].includes(mode)) {
+    for (const row of await installedAutomations(root)) await automationRuntime(root, mode, report, row.id);
   }
 }
 
