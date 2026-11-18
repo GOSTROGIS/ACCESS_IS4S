@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "product": "access",
-  "label": "ACCESS IS4S Automation",
+  "label": "ACCESS Automation",
   "sourceCommit": "0bcc1f8d681609233d2f6f0d1f4e359e994079e0",
   "status": "Source branding applied; this does not establish that a rebuilt application passed its workflows.",
   "files": {
@@ -14,6 +14,21 @@
       "upstreamSha256": "f87af81b6fa411da8820eed2bfdcc54c0ee9cd453b4e868c64f56c69db142d0e",
       "sha256": "9f22ae6a3a38311a3d4a484b3882d8dfb57c786a9f4a4e6bc2c70ad0f8cea7f9",
       "purpose": "Replace excluded ArtCraft marks with supplied owner artwork"
+    },
+    "web/index.html": {
+      "upstreamSha256": "851913d792c2c944332c3002e416d6380bffec86b7899b89802a0bd5476efe0c",
+      "sha256": "0a8cc1ec632e77488842768c3955a59306d8f04aae18090185ee55b0447920f4",
+      "purpose": "Use the product name in navigation and help"
+    },
+    "web/src/shell/AppShell.tsx": {
+      "upstreamSha256": "67a76b8e5ab3e79e47af9ee3d98830b7fe09912b9d17098e1bf5e3a6be7469c4",
+      "sha256": "0450017d2904ccd0d525ad7eaeed5c6a81f9993c42e4998bf106afdde1f7363b",
+      "purpose": "Use the product name in navigation and help"
+    },
+    "web/src/modules/about/views.tsx": {
+      "upstreamSha256": "290cb295bc673f3e57387bc951654b6fe74015493ae73379431e53bf6f3611b8",
+      "sha256": "f4d142b9020f5f064a24d1eca1f375e64f410c84676ed95f7c8cffafcc9a7231",
+      "purpose": "Use the product name in navigation and help"
     }
   }
 }

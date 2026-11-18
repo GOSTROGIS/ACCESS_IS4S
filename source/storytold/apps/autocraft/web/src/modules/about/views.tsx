@@ -77,7 +77,7 @@ function Overview() {
   return (
     <div className="mx-auto flex max-w-5xl gap-10 px-4 py-6 md:px-6">
       <div className="min-w-0 flex-1">
-        <h1 className="text-2xl font-semibold">How AutoCraft works</h1>
+        <h1 className="text-2xl font-semibold">How ACCESS Automation works</h1>
         <Markdown source={OVERVIEW_INTRO} className={cn(PROSE, "mt-2 text-md")} />
         <StagePath />
         <div className="mt-2 divide-y divide-line">
@@ -107,7 +107,7 @@ function StagePage({ st }: { st: Stage }) {
   return (
     <div className="mx-auto max-w-[78ch] px-4 py-6 md:px-6">
       <Link to="/about" className="inline-flex items-center gap-1.5 text-sm text-accent-ink hover:underline max-md:py-2">
-        <ArrowLeftIcon /> How AutoCraft works
+        <ArrowLeftIcon /> How ACCESS Automation works
       </Link>
       <div className="mt-3">
         <StageHeading st={st} as="h1" />

@@ -93,7 +93,7 @@ export function AppShell() {
           <button id="nav-toggle" aria-label="Open navigation" onClick={() => setNavOpen(true)} className="flex size-11 shrink-0 items-center justify-center text-ink/70">
             <ListIcon className="text-[20px]" />
           </button>
-          <NavLink to="/" aria-label="AutoCraft home" className="flex size-11 shrink-0 items-center justify-center"><Logo size={20} /></NavLink>
+          <NavLink to="/" aria-label="ACCESS Automation home" className="flex size-11 shrink-0 items-center justify-center"><Logo size={20} /></NavLink>
           <div className="flex-1" />
           <MainCiDots />
           <LiveDot />
@@ -179,9 +179,9 @@ function ProjectList({ children }: { children: ReactNode }) {
 
 function Wordmark() {
   return (
-    <NavLink to="/" className="flex items-center gap-2" aria-label="AutoCraft home">
+    <NavLink to="/" className="flex items-center gap-2" aria-label="ACCESS Automation home">
       <Logo size={20} />
-      <span className="text-sm font-semibold">AutoCraft</span>
+      <span className="text-sm font-semibold">ACCESS Automation</span>
     </NavLink>
   );
 }
