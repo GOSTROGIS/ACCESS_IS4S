@@ -77,6 +77,21 @@ export async function ownedRepositories(owner, token) {
   throw Error('Repository pagination exceeded its bounded limit.');
 }
 
+async function hasLocalEdits(command, target) {
+  const {stdout} = await command(['status','--porcelain=v2','-z','--untracked-files=normal'], target);
+  for (const entry of stdout.split('\0').filter(Boolean)) {
+    // A historical CRLF blob marked text can report .M after checkout even
+    // when its bytes are identical. Only accept that exact case for regular
+    // files with the same mode in HEAD, the index and the worktree.
+    const match = /^1 \.M N\.\.\. (100644|100755) \1 \1 [0-9a-f]{40,64} ([0-9a-f]{40,64}) (.+)$/s.exec(entry);
+    if (!match) return true;
+    const [, , indexed, filename] = match;
+    const raw = await command(['hash-object','--no-filters','--',filename], target);
+    if (raw.stdout.trim() !== indexed) return true;
+  }
+  return false;
+}
+
 export async function synchronizeRepository({git,python,root,repo,environment,hooks,seed,placement}) {
   if(!validName(repo.name) || !validBranch(repo.branch)) throw Error('Invalid repository name or default branch.');
   if(placement && !validPlacement(placement)) throw Error('Invalid repository placement.');
@@ -171,7 +186,7 @@ export async function synchronizeRepository({git,python,root,repo,environment,ho
   if(origin !== repo.url) return {name:repo.name,status:'origin-conflict'};
   const branch=(await command(['symbolic-ref','--quiet','--short','HEAD'],target).catch(()=>({stdout:''}))).stdout.trim();
   if(branch !== repo.branch) return {name:repo.name,status:'different-branch',branch};
-  if((await command(['status','--porcelain=v1','--untracked-files=normal'],target)).stdout) return {name:repo.name,status:'local-edits',branch};
+  if(await hasLocalEdits(command,target)) return {name:repo.name,status:'local-edits',branch};
   if(!(await command(['ls-remote','origin',`refs/heads/${repo.branch}`],target)).stdout.trim()) return {name:repo.name,status:'empty',branch};
   await command(['fetch','--progress','--no-tags','--no-recurse-submodules','origin',`+refs/heads/${repo.branch}:refs/remotes/origin/${repo.branch}`],target).catch(error => {
     if(error.code===128) throw Error('Git fetch could not verify the owned default branch.'); throw error;

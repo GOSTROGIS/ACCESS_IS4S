@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {execFile} from 'node:child_process';
-import {mkdtemp,mkdir,readFile,realpath,rm,writeFile} from 'node:fs/promises';
+import {mkdtemp,mkdir,readFile,realpath,rm,utimes,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
@@ -24,6 +24,12 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
     await run(['init','--initial-branch=main',writer]);
     await run(['config','user.name','Sync Test'],writer); await run(['config','user.email','sync@example.invalid'],writer);
     const commit=async(text)=>{await writeFile(join(writer,'sample.txt'),text);await run(['add','--','sample.txt'],writer);await run(['commit','-m','fixture'],writer);};
+    const legacy='Open example.cmd', script='@echo off\r\necho test\r\n';
+    await writeFile(join(writer,legacy),script);
+    await writeFile(join(writer,'.gitattributes'),'*.cmd text eol=crlf\n');
+    await run(['add','--','.gitattributes'],writer);
+    const raw=await run(['hash-object','-w','--no-filters','--',legacy],writer);
+    await run(['update-index','--add','--cacheinfo',`100644,${raw},${legacy}`],writer);
     await commit('one');await run(['clone','--bare',writer,origin]);
     const repo={name:'example',branch:'main',url:origin};
     const sync=()=>synchronizeRepository({git,root,repo,environment,hooks});
@@ -34,9 +40,15 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
       assert.ok(args.includes('http.lowSpeedTime=120'),'real sync Git commands retain the proven 120-second HTTP window');
     }
     const local=join(root,'example');assert.equal(await readFile(join(local,'sample.txt'),'utf8'),'one');
+    await utimes(join(local,legacy),new Date(0),new Date(0));
+    assert.match(await run(['status','--porcelain=v2','--',legacy],local),/^1 \.M /);
     await commit('two');await run(['push',origin,'main'],writer);
     const advanced=await sync();
     assert.equal(advanced.status,'current',JSON.stringify(advanced));assert.equal(await readFile(join(local,'sample.txt'),'utf8'),'two');
+    await writeFile(join(local,legacy),script+'echo changed\r\n');
+    assert.equal((await sync()).status,'local-edits');
+    assert.equal(await readFile(join(local,legacy),'utf8'),script+'echo changed\r\n');
+    await writeFile(join(local,legacy),script);
     await run(['config','lfs.repositoryformatversion','0'],local);
     assert.equal((await sync()).status,'current');
     await run(['config','lfs.repositoryformatversion','1'],local);
