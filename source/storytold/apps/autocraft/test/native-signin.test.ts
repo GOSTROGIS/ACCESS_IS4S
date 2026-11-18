@@ -150,6 +150,8 @@ test("production HTTP handoff preserves host/origin, cookies, identity, permissi
     assert.match(page.headers.get("content-security-policy")!, /script-src 'nonce-/);
     assert.match(page.headers.get("content-security-policy")!, /connect-src 'self'/);
     const client = await page.text();
+    assert.match(client, /<title>ACCESS Automation sign-in<\/title>/);
+    assert.match(client, /Completing ACCESS Automation sign-in/);
     assert.match(client, /history.replaceState/);
     assert.match(client, /mode:'cors'/); assert.match(client, /redirect:'error'/);
     assert.equal(page.headers.get("set-cookie"), null);

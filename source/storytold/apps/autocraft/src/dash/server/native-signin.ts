@@ -85,10 +85,12 @@ export function consumeNativeHandoff(config: Config, db: DatabaseSync, code: str
   }
 }
 
-export function nativeHandoffPage(nonce: string): string {
-  return `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="referrer" content="no-referrer"><title>Native sign-in</title><body><p id="status">Completing native sign-in…</p><script nonce="${nonce}">
+export function nativeHandoffPage(nonce: string, product: NativeOwner["product"]): string {
+  const name = product === "access" ? "ACCESS Automation" : product === "slipcurve" ? "Slipcurve Automation" : null;
+  if (!name) throw new Error("Unknown native product.");
+  return `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="referrer" content="no-referrer"><title>${name} sign-in</title><body><p id="status">Completing ${name} sign-in…</p><script nonce="${nonce}">
   const code=location.hash.slice(1);history.replaceState(null,'','/auth/native');
-  if(!/^[A-Za-z0-9_-]{43}$/.test(code)){document.getElementById('status').textContent='Use the installed native sign-in launcher.';}
-  else{fetch('/auth/native/finish',{method:'POST',mode:'cors',credentials:'same-origin',redirect:'error',referrerPolicy:'no-referrer',headers:{accept:'application/json'},body:new URLSearchParams({code})}).then(async response=>{if(!response.ok||(await response.json()).ok!==true)throw Error();location.replace('/')}).catch(()=>{document.getElementById('status').textContent='Sign-in expired or was refused. Use the installed native sign-in launcher again.';});}
+  if(!/^[A-Za-z0-9_-]{43}$/.test(code)){document.getElementById('status').textContent='Use the installed ${name} sign-in launcher.';}
+  else{fetch('/auth/native/finish',{method:'POST',mode:'cors',credentials:'same-origin',redirect:'error',referrerPolicy:'no-referrer',headers:{accept:'application/json'},body:new URLSearchParams({code})}).then(async response=>{if(!response.ok||(await response.json()).ok!==true)throw Error();location.replace('/')}).catch(()=>{document.getElementById('status').textContent='${name} sign-in expired or was refused. Use its installed launcher again.';});}
   </script></body></html>`;
 }

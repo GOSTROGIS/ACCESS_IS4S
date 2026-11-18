@@ -354,7 +354,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       if (!localOwner) return { r: errorPage(nonce, 404, "Not found", "No such sign-in method.") };
       if (!signinLimit.allow(clientIp(req))) return { r: errorPage(nonce, 429, "Too many attempts", "Wait a few minutes and try again.") };
       if (req.method === "GET" && url.pathname === "/auth/native") {
-        return { r: { html: nativeHandoffPage(nonce), headers: {
+        return { r: { html: nativeHandoffPage(nonce, localOwner.product), headers: {
           "referrer-policy": "no-referrer",
           "content-security-policy": `default-src 'none'; script-src 'nonce-${nonce}'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`,
         } } };
@@ -382,7 +382,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       if (loadSession(db, cookies.get(sessionCookie))) return { r: { redirect: returnTo } };
       if (signInBlocked()) return { r: noAppPage(nonce) };
       if (localOwner && (!config.secrets.githubClientId || !config.secrets.githubClientSecret)) {
-        return { r: { html: plainPage(nonce, "Native sign-in", `<p>Use the installed native launcher to verify your existing GitHub sign-in.</p><p><a href="slipcurve-app://open/${localOwner.product}-autocraft">Sign in with the installed application</a></p>`) } };
+        return { r: { html: plainPage(nonce, `${localOwner.product === "access" ? "ACCESS" : "Slipcurve"} Automation sign-in`, `<p>Use the installed ${localOwner.product === "access" ? "ACCESS" : "Slipcurve"} Automation launcher to verify your existing GitHub sign-in.</p><p><a href="slipcurve-app://open/${localOwner.product}-autocraft">Sign in to ${localOwner.product === "access" ? "ACCESS" : "Slipcurve"} Automation</a></p>`) } };
       }
       return startOAuth(returnTo, url.searchParams.get("select") === "1");
     }
