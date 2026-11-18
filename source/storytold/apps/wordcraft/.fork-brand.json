@@ -132,7 +132,7 @@
     },
     "crates/pdf/src/tests.rs": {
       "upstreamSha256": "72ae8bf140092d32997c863a1d7771d4c41fadd96e4d19ae8cf953cd13273034",
-      "sha256": "db7fdd41e5ab1c61f8b17614c31d3d818786f69f792efba2666eb0d5f6d34f71",
+      "sha256": "7238ceff8125956948a5b1a2751f1561c32de5d8d4d38a1466d7d7af4c6b0eb5",
       "purpose": "Product PDF generator label; preserve creator, export author and privacy options"
     },
     "crates/ui-egui/src/app/commands.rs": {

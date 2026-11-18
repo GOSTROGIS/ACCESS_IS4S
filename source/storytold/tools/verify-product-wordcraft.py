@@ -40,6 +40,31 @@ def odf_metadata(xml, label, creator, custom):
     assert all(properties.get(name) == value for name, value in custom.items()), properties
 
 
+def additional_format_metadata(path, label, creator, custom):
+    """Check actual serialized output, including ODF text independently of metadata."""
+    extension = path.suffix.lower()
+    if extension == '.rtf':
+        assert ('{\\*\\generator '+label+';}').encode() in path.read_bytes()
+    elif extension == '.tex':
+        text = path.read_text(encoding='utf-8')
+        assert text.startswith('% Written by '+label+'.\n')
+        assert 'pdfauthor={'+creator+'}' in text
+    else:
+        if extension == '.fodt':
+            content = path.read_bytes()
+            odf_metadata(content, label, creator, custom)
+        else:
+            assert extension in {'.odt', '.ott'}
+            with zipfile.ZipFile(path) as package:
+                assert package.testzip() is None
+                mime = 'application/vnd.oasis.opendocument.text'+('-template' if extension == '.ott' else '')
+                assert package.read('mimetype').decode() == mime
+                odf_metadata(package.read('meta.xml'), label, creator, custom)
+                content = package.read('content.xml')
+        body = ET.fromstring(content).find('.//{urn:oasis:names:tc:opendocument:xmlns:office:1.0}body')
+        assert body is not None and label in ''.join(body.itertext()), 'ODF document text must survive export'
+
+
 def native(args):
     from PIL import Image, ImageStat
     from pypdf import PdfReader
@@ -120,16 +145,7 @@ def native(args):
         exported = output/('native-explicit-author.'+extension)
         command('convert', authored, exported)
         assert label in command('text', exported).decode(), extension
-        if extension == 'rtf':
-            assert ('{\\*\\generator '+label+';}').encode() in exported.read_bytes()
-        elif extension == 'tex':
-            assert exported.read_text(encoding='utf-8').startswith('% Written by '+label+'.\n')
-        elif extension == 'fodt':
-            odf_metadata(exported.read_bytes(), label, 'Existing creator', custom)
-        else:
-            with zipfile.ZipFile(exported) as container:
-                assert container.testzip() is None
-                odf_metadata(container.read('meta.xml'), label, 'Existing creator', custom)
+        additional_format_metadata(exported, label, 'Existing creator', custom)
     with Image.open(png) as image:
         image.load()
         assert image.width > 100 and image.height > 100
@@ -326,8 +342,10 @@ def web(args):
                     image.load()
                     assert image.width>100 and max(ImageStat.Stat(image.convert('RGB')).stddev)>2
                 editor=open_editor()
+                editor.evaluate('async()=>await wordcraft.execute("file.new")')
+                assert not editor.evaluate('async label=>{const r=await wordcraft.docInspect();return (r.result??r).blocks.some(b=>b.type==="paragraph"&&b.text?.includes(label))}',label)
                 page.evaluate('bytes=>editor.contentWindow.postMessage({type:"wordcraft:open",name:"browser-created.docx",bytes:new Uint8Array(bytes)},location.origin)',list(docx.read_bytes()))
-                editor.wait_for_function('async label=>{try{return JSON.stringify(await wordcraft.docInspect()).includes(label)}catch{return false}}',arg=label,timeout=30000)
+                editor.wait_for_function('async label=>{try{const r=await wordcraft.docInspect();return (r.result??r).blocks.some(b=>b.type==="paragraph"&&b.text?.includes(label))}catch{return false}}',arg=label,timeout=30000)
                 editor.evaluate('''async()=>{
                   await wordcraft.execute('file.options',{author:'Ana Lee',initials:'AL'});
                   await wordcraft.execute('file.properties',{author:'Existing creator',custom:{'Project author':'Existing <author> & team'}});
@@ -336,6 +354,24 @@ def web(args):
                 document_metadata(authored,label,'Ana Lee','Existing creator',{'Project author':'Existing <author> & team'})
                 authored_pdf=save('file.exportPdf','browser-explicit-author.pdf')
                 pdf_metadata(PdfReader(authored_pdf),label,'Existing creator')
+                additional=[]
+                for extension in ['rtf','tex','odt','ott','fodt']:
+                    exported=save('file.saveAs','browser-explicit-author.'+extension)
+                    additional_format_metadata(exported,label,'Existing creator',{'Project author':'Existing <author> & team'})
+                    additional.append(exported)
+                reopened=[]
+                for exported in additional:
+                    editor=open_editor()
+                    editor.evaluate('async()=>await wordcraft.execute("file.new")')
+                    assert not editor.evaluate('async label=>{const r=await wordcraft.docInspect();return (r.result??r).blocks.some(b=>b.type==="paragraph"&&b.text?.includes(label))}',label)
+                    page.evaluate('({bytes,name})=>editor.contentWindow.postMessage({type:"wordcraft:open",name,bytes:new Uint8Array(bytes)},location.origin)',
+                                  {'bytes':list(exported.read_bytes()),'name':exported.name})
+                    editor.wait_for_function('async label=>{try{const r=await wordcraft.docInspect();return (r.result??r).blocks.some(b=>b.type==="paragraph"&&b.text?.includes(label))}catch{return false}}',arg=label,timeout=30000)
+                    if exported.suffix in {'.odt','.ott','.fodt'}:
+                        editor.evaluate('async()=>await wordcraft.execute("file.options",{author:"Ana Lee",initials:"AL"})')
+                        imported=save('file.saveAs','browser-reopened-'+exported.suffix[1:]+'.docx')
+                        document_metadata(imported,label,'Ana Lee','Existing creator',{'Project author':'Existing <author> & team'})
+                        reopened.append(imported)
                 title=editor.evaluate('document.title')
                 assert label in title,title
                 page.screenshot(path=str(output/'browser-window.png'))
@@ -346,11 +382,14 @@ def web(args):
                 for name,meta in manifest['files'].items():
                     payload=(package/name).read_bytes()
                     assert len(payload)==meta['bytes'] and sha256(payload).hexdigest()==meta['sha256'],name
-                files={p.name:{'bytes':p.stat().st_size,'sha256':sha256(p.read_bytes()).hexdigest()} for p in [docx,pdf,png,output/'browser-window.png']}
+                files={p.name:{'bytes':p.stat().st_size,'sha256':sha256(p.read_bytes()).hexdigest()} for p in [docx,pdf,png,authored,authored_pdf,*additional,*reopened,output/'browser-window.png']}
                 result={'ok':True,'product':product,'source':manifest['source'],'applicationMode':'Original same-origin craft-web-host contract; full genuine WASM editor',
                   'preservedBaselineCommands':len(baseline),'candidateCommands':len(actual),'actualCreateEditUndoRedoExportDownloadReloadReopen':True,
                   'downloadedBytesExactlyMatchGenuineHostSaveBytes':True,'independentDocxXmlPdfTextPngDecode':True,'actualTitle':title,
                   'productGeneratorMetadata':True,'neutralNewSessionAuthor':True,'explicitAuthorAndCustomPropertiesPreserved':True,
+                  'genuineAdditionalFormatExportReopen':['rtf','tex','odt','ott','fodt'],'independentOdfMetadataAndText':True,
+                  'odfReopenAndResavePreservesCreatorCustomMetadata':True,
+                  'latexAuthorImport':'Original reader does not reconstruct pdfauthor; serialized author and actual body reopen checked',
                   'packageUnchanged':True,'pageErrors':errors,'httpFailures':failures,'standaloneNativeBrowserSavePicker':'Outside this host-mode regression gate',
                   'files':files}
                 (output/'result.json').write_text(json.dumps(result,indent=2)+'\n')

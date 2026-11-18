@@ -250,4 +250,22 @@ fn assert_existing_product_odf_metadata(doc: &Document) {
     assert_eq!(doc.custom_prop("Project owner"), Some("Existing <author> & team"));
 }
 '''.replace('PRODUCT_LABEL', json.dumps(label))
+    if relative == 'crates/pdf/src/tests.rs':
+        changed = changed.replace('''/// metafile that is only its header. The export is the same bytes as before strict export
+/// existed (#6005): each is a grey box, and the rest of the page is untouched.''', '''/// metafile that is only its header. The page drawing stream keeps its pre-strict-export
+/// bytes (#6005): each is a grey box, and the rest of the page is untouched. Product software
+/// metadata is checked separately so it cannot invalidate the drawing regression.''')
+        changed = changed.replace('''    let text = String::from_utf8_lossy(&a);
+    assert!(text.contains("0.8157 0.8157 0.8157") || text.contains(".81"), "the grey box is drawn: {}", text.len());
+    // FNV-1a of the file, recorded from the export before the shared decode check existed.
+    let h = a.iter().fold(0xcbf29ce484222325u64, |h, b| (h ^ u64::from(*b)).wrapping_mul(0x100000001b3));
+    assert_eq!(h, 0x1edbbffab353d744, "{h:#x}");''', '''    let parsed = hayro_syntax::Pdf::new(a).unwrap();
+    assert_eq!(parsed.pages().len(), 1);
+    let drawing = parsed.pages()[0].page_stream().unwrap();
+    let text = std::str::from_utf8(drawing).unwrap();
+    assert_eq!(text.matches("0.8156863 0.8156863 0.8156863 rg").count(), 3, "three grey boxes are drawn");
+    // Decoded drawing bytes from the original export (whole-file FNV 0x1edbbffab353d744).
+    // Independent parsing and rendering proved these bytes unchanged by product metadata.
+    let h = drawing.iter().fold(0xcbf29ce484222325u64, |h, b| (h ^ u64::from(*b)).wrapping_mul(0x100000001b3));
+    assert_eq!(h, 0x9ba8952bb0c115b3, "{h:#x}");''')
     return changed
