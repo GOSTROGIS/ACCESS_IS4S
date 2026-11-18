@@ -27,7 +27,8 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
     const legacy='Open example.cmd', script='@echo off\r\necho test\r\n';
     await writeFile(join(writer,legacy),script);
     await writeFile(join(writer,'.gitattributes'),'*.cmd text eol=crlf\n');
-    await run(['add','--','.gitattributes'],writer);
+    await writeFile(join(writer,'notes.txt'),'original\n');
+    await run(['add','--','.gitattributes','notes.txt'],writer);
     const raw=await run(['hash-object','-w','--no-filters','--',legacy],writer);
     await run(['update-index','--add','--cacheinfo',`100644,${raw},${legacy}`],writer);
     await commit('one');await run(['clone','--bare',writer,origin]);
@@ -42,9 +43,17 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
     const local=join(root,'example');assert.equal(await readFile(join(local,'sample.txt'),'utf8'),'one');
     await utimes(join(local,legacy),new Date(0),new Date(0));
     assert.match(await run(['status','--porcelain=v2','--',legacy],local),/^1 \.M /);
+    // Materialize the historical Windows checkout, including the index stat
+    // recorded by Git. A manually rewritten worktree need not be clean.
+    await rm(join(local,'notes.txt'));
+    await run(['-c','core.autocrlf=true','checkout-index','-u','-f','--','notes.txt'],local);
+    assert.equal(await readFile(join(local,'notes.txt'),'utf8'),'original\r\n');
+    await writeFile(join(writer,'notes.txt'),'updated\n');
+    await run(['add','--','notes.txt'],writer);
     await commit('two');await run(['push',origin,'main'],writer);
     const advanced=await sync();
     assert.equal(advanced.status,'current',JSON.stringify(advanced));assert.equal(await readFile(join(local,'sample.txt'),'utf8'),'two');
+    assert.equal(await readFile(join(local,'notes.txt'),'utf8'),'updated\r\n');
     await writeFile(join(local,legacy),script+'echo changed\r\n');
     assert.equal((await sync()).status,'local-edits');
     assert.equal(await readFile(join(local,legacy),'utf8'),script+'echo changed\r\n');
