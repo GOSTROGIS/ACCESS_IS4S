@@ -1,6 +1,7 @@
 """Synthetic RPC deadline cases. These tests never read the real credential store."""
 from hashlib import sha256
 import importlib.util
+import io
 from pathlib import Path
 import queue
 import threading
@@ -21,6 +22,8 @@ class DeadlineTests(unittest.TestCase):
         value.overflow=threading.Event()
         value.process=SimpleNamespace(poll=lambda:None)
         value.counter=0
+        value.captured=0
+        value.capture_lock=threading.Lock()
         value.replies=queue.Queue()
         value.sent=[]
         value._send=lambda message:value.sent.append(message)
@@ -79,6 +82,37 @@ class DeadlineTests(unittest.TestCase):
         source._lease=validate
         with self.assertRaises(module.ManagedAuthError):
             source.credential(expected,deadline=time.monotonic()+.015)
+
+    def test_valid_separate_transactions_do_not_exhaust_a_lifetime_output_counter(self):
+        source=self.source()
+        # Each completed transaction is below the same four-MiB output limit.
+        # A persistent manager must continue working after aggregate traffic
+        # exceeds that limit, without increasing its per-transaction allowance.
+        chunk=(b'ordinary synthetic provider diagnostic ' + b'x'*1000 + b'\n')*1800
+        self.assertLess(len(chunk),4*1024*1024)
+        for unused in range(3):
+            with source._guard(time.monotonic()+1):
+                source._read(io.BytesIO(chunk),False)
+                self.assertFalse(source.overflow.is_set())
+        self.assertGreater(len(chunk)*3,4*1024*1024)
+
+    def test_one_oversized_transaction_remains_terminal_across_later_calls(self):
+        source=self.source()
+        chunk=(b'x'*1023+b'\n')*4097
+        with source._guard(time.monotonic()+1):
+            source._read(io.BytesIO(chunk),False)
+        self.assertTrue(source.overflow.is_set())
+        with self.assertRaises(module.ManagedAuthError):
+            with source._guard(time.monotonic()+1):
+                source._request('getAuthStatus',{},deadline=time.monotonic()+.02)
+        self.assertTrue(source.overflow.is_set())
+
+    def test_an_oversized_single_protocol_line_is_still_refused(self):
+        source=self.source()
+        with source._guard(time.monotonic()+1):
+            source._read(io.BytesIO(b'x'*(1024*1024+1)),True)
+        self.assertTrue(source.overflow.is_set())
+        self.assertTrue(source.replies.empty())
 
 
 if __name__=='__main__':

@@ -107,6 +107,15 @@ class ManagedAuthManager:
                 break
         try:
             self._check_budget(deadline,cancelled_event)
+            with self.capture_lock:
+                if self.closed or self.overflow.is_set() or self.process.poll() is not None:
+                    raise ManagedAuthError('The managed provider transport closed')
+                # The manager serves many leases over its lifetime. Bound all
+                # output for this whole serialized transaction (including its
+                # refresh RPCs), rather than exhausting the allowance across
+                # unrelated, already completed requests. An earlier overflow
+                # stays terminal; neither admission nor a new call clears it.
+                self.captured=0
             yield deadline
         finally:
             self.lock.release()
