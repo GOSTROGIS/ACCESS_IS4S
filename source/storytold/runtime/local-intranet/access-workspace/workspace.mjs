@@ -91,9 +91,10 @@ function showEditor(id, opening) {
   $('application').value = id;
   $('editor-title').textContent = next.label;
   $('description').textContent = next.description;
-  $('native').hidden = !nativeApps.has(id);
+  const desktopLink = nativeApps.has(id) || Boolean(publicBase && !base.port);
+  $('native').hidden = !desktopLink;
   $('native').href = nativeUrl(id, nativeApps.get(id));
-  $('native-note').textContent = nativeApps.has(id) ? 'Add desktop files to your project with the file chooser.' : '';
+  $('native-note').textContent = desktopLink ? 'Requires the ACCESS desktop installation on this computer. Add saved files to your project with the file chooser.' : '';
   $('workflow').textContent = next.extension ? 'Use the application’s full controls. The toolbar can open files and save the editable document into your ACCESS project.' : 'Use the application’s own New, Open, Save and Export controls. Browser downloads are also copied into your ACCESS project. To reopen a project copy, download it and select it with the application’s Open command.';
   // Keep the adapter's startup and error text visible while its application
   // initializes. Readiness still controls all document toolbar operations.
@@ -109,10 +110,11 @@ function showEditor(id, opening) {
     const heading = document.createElement('h3');
     heading.textContent = next.label;
     const text = document.createElement('p');
-    text.textContent = publicBase ? 'This application requires the installed desktop runtime or an authenticated application server.' :
-      'Use the installed desktop application for this tool. Its native editing controls and services run outside the browser. Import saved project files here to keep them with your learning project.';
+    text.textContent = desktopLink
+      ? 'Choose “Open desktop application” to start this tool. Use the file chooser to bring the result back into your project.'
+      : 'The application inventory has no runtime available for this tool.';
     $('empty').append(heading, text);
-    status(nativeApps.has(id) ? 'This application uses the installed desktop runtime.' : 'No runtime is listed for this application.');
+    status(desktopLink ? 'This application runs on your computer through ACCESS.' : 'No runtime is listed for this application.');
     if (opening) {
       currentDocument = opening;
       download(opening);
