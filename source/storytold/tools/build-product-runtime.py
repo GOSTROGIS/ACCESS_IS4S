@@ -310,6 +310,28 @@ def verify_brand(source, product):
     return info['label']
 
 
+def diagnostic_exclusions(name, entry, tools):
+    """One known browser output is not a code input; no filename globs are accepted."""
+    declared = entry.get('nonInputDiagnostics', {})
+    require(isinstance(declared, dict), 'Invalid SDK diagnostic declaration')
+    if not declared:
+        return set()
+    require(name == 'qa-browser-runtime'
+            and declared == {'debug.log': {'type': 'chromium-diagnostic-log'}},
+            'Unsupported SDK diagnostic exclusion')
+    browser = tools.get('chromium', {})
+    require(isinstance(browser.get('path'), str), 'Browser diagnostic has no pinned browser tool')
+    executable = io_path(browser['path'])
+    base = io_path(entry.get('path', ''))
+    require(executable.name.lower() == 'chrome-headless-shell.exe' and executable.parent.resolve() == base.resolve(),
+            'Browser diagnostic is outside the pinned browser tool root')
+    require('debug.log' not in entry.get('files', {}), 'Browser diagnostic cannot also be a pinned input')
+    diagnostic = base / 'debug.log'
+    require(not diagnostic.is_symlink() and (not diagnostic.exists() or diagnostic.is_file()),
+            'Browser diagnostic must be an ordinary file')
+    return {'debug.log'}
+
+
 def private_settings(path, repo, recipe, kind):
     require(not within(repo, path), 'Private SDK settings must stay outside the public repository')
     config = json.loads(path.read_text())
@@ -335,8 +357,10 @@ def private_settings(path, repo, recipe, kind):
         entry = config.get('roots', {}).get(name, {})
         base = io_path(entry.get('path', ''))
         expected = entry.get('files', {})
+        diagnostics = diagnostic_exclusions(name, entry, tools)
         require(base.is_absolute() and expected and not within(repo, base), 'Missing private toolchain input root: ' + name)
         actual = {p.relative_to(base).as_posix() for p in base.rglob('*') if p.is_file() or p.is_symlink()}
+        actual -= diagnostics
         require(actual == set(expected), 'Toolchain input root changed: ' + name)
         for relative, checksum in expected.items():
             safe_relative(relative)
@@ -377,17 +401,20 @@ def capture_settings(definition, destination, repo):
         require(path.is_absolute() and path.is_file() and not path.is_symlink() and not within(repo, path), 'Invalid private tool path')
         require('sha256' not in entry, 'Definition already contains a pin; refreshing pins requires a fresh explicit definition')
         entry['sha256'] = digest(path)
-    for entry in config['roots'].values():
+    for name, entry in config['roots'].items():
         path = io_path(entry['path'])
         require(path.is_absolute() and path.is_dir() and len(path.resolve().parts) > 2 and not path.is_symlink()
                 and not within(repo, path), 'Invalid private toolchain root')
         require('files' not in entry, 'Definition already contains root pins')
+        diagnostics = diagnostic_exclusions(name, entry, config['tools'])
         entries = {}
         for candidate in sorted(path.rglob('*')):
             require(not candidate.is_symlink(), 'Toolchain roots must not contain redirected entries')
             if candidate.is_file():
                 name = candidate.relative_to(path).as_posix()
                 safe_relative(name)
+                if name in diagnostics:
+                    continue
                 entries[name] = digest(candidate)
         require(entries, 'Toolchain root is empty')
         entry['files'] = entries
@@ -399,8 +426,9 @@ def capture_settings(definition, destination, repo):
 
 
 def run_step(command, cwd, env, log, capture=False, timeout=21600):
+    errors = log.with_name(log.name + '.stderr.log') if capture else None
     try:
-        code = run_process(command, cwd, env, log, timeout)
+        code = run_process(command, cwd, env, log, timeout, stderr_log=errors)
     except subprocess.TimeoutExpired as error:
         raise BuildError('Required command exceeded its deadline; its owned process tree was closed: ' + log.name) from error
     require(code == 0, 'Required command failed; see private log ' + log.name)

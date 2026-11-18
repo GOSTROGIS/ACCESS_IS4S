@@ -7,20 +7,23 @@ https://learn.microsoft.com/windows/win32/api/processthreadsapi/nf-processthread
 https://learn.microsoft.com/windows/win32/procthread/job-objects
 """
 
+from contextlib import ExitStack
 import os
 from pathlib import Path
 import signal
 import subprocess
 
 
-def run_process(command, cwd, env, log, timeout=21600):
+def run_process(command, cwd, env, log, timeout=21600, stderr_log=None):
     command = list(map(str, command))
     if os.name != 'nt':
         # Production recipe support is explicitly Windows-only. Keep local fixture processes
         # scoped on POSIX too; native Linux recipes need their own qualified containment gate.
-        with Path(log).open('wb') as output:
+        with ExitStack() as streams:
+            output = streams.enter_context(Path(log).open('wb'))
+            errors = streams.enter_context(Path(stderr_log).open('wb')) if stderr_log is not None else subprocess.STDOUT
             child = subprocess.Popen(command, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
-                                     stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
+                                     stdout=output, stderr=errors, start_new_session=True)
             try:
                 return child.wait(timeout=timeout)
             finally:
@@ -29,10 +32,10 @@ def run_process(command, cwd, env, log, timeout=21600):
                 except ProcessLookupError:
                     pass
                 child.wait()
-    return _windows(command, cwd, env, log, timeout)
+    return _windows(command, cwd, env, log, timeout, stderr_log)
 
 
-def _windows(command, cwd, env, log, timeout):
+def _windows(command, cwd, env, log, timeout, stderr_log):
     import ctypes as c
     from ctypes import wintypes as w
     import msvcrt
@@ -107,8 +110,14 @@ def _windows(command, cwd, env, log, timeout):
         attribute_initialized = True
         jobs = (w.HANDLE * 1)(job)
         check(kernel.UpdateProcThreadAttribute(attributes, 0, 0x0002000D, jobs, c.sizeof(jobs), None, None))
-        with Path(log).open('wb') as output, open(os.devnull, 'rb') as null:
+        with ExitStack() as streams:
+            output = streams.enter_context(Path(log).open('wb'))
+            null = streams.enter_context(open(os.devnull, 'rb'))
+            errors = streams.enter_context(Path(stderr_log).open('wb')) if stderr_log is not None else output
             handles = [msvcrt.get_osfhandle(null.fileno()), msvcrt.get_osfhandle(output.fileno())]
+            error_handle = msvcrt.get_osfhandle(errors.fileno())
+            if error_handle not in handles:
+                handles.append(error_handle)
             prior = [os.get_handle_inheritable(handle) for handle in handles]
             try:
                 for handle in handles:
@@ -118,7 +127,7 @@ def _windows(command, cwd, env, log, timeout):
                 startup = StartupEx()
                 startup.startup.cb = c.sizeof(startup)
                 startup.startup.flags = 0x00000100  # STARTF_USESTDHANDLES.
-                startup.startup.stdin, startup.startup.stdout, startup.startup.stderr = handles[0], handles[1], handles[1]
+                startup.startup.stdin, startup.startup.stdout, startup.startup.stderr = handles[0], handles[1], error_handle
                 startup.attributes = c.cast(attributes, c.c_void_p)
                 block = c.create_unicode_buffer('\0'.join(key + '=' + value for key, value in sorted(env.items(), key=lambda item: item[0].casefold())) + '\0\0')
                 text = c.create_unicode_buffer(subprocess.list2cmdline(command))

@@ -180,6 +180,24 @@ class BuildFixtures(unittest.TestCase):
         self.assertEqual(build.digest(folder/'index.html'), before)
         self.assertFalse((self.root/'build-receipt.json').exists())
 
+    def test_capture_keeps_machine_stdout_separate_from_stderr_diagnostics(self):
+        log = self.root/'metadata.json'
+        command = [sys.executable, '-I', '-B', '-c',
+                   'import sys; print("warning: genuine diagnostic",file=sys.stderr); print(\'{"packages":[]}\')']
+        captured = build.run_step(command, self.root, build.basic_environment(), log, capture=True)
+        self.assertEqual(json.loads(captured), {'packages':[]})
+        self.assertEqual(captured, log.read_bytes())
+        self.assertEqual(log.with_name(log.name+'.stderr.log').read_bytes(), b'warning: genuine diagnostic\r\n' if os.name == 'nt' else b'warning: genuine diagnostic\n')
+
+    def test_failed_capture_preserves_both_streams_and_refuses_output(self):
+        log = self.root/'failed-metadata.json'
+        command = [sys.executable, '-I', '-B', '-c',
+                   'import sys; print("partial output"); print("actual failure",file=sys.stderr); raise SystemExit(9)']
+        with self.assertRaises(build.BuildError):
+            build.run_step(command, self.root, build.basic_environment(), log, capture=True)
+        self.assertIn(b'partial output', log.read_bytes())
+        self.assertIn(b'actual failure', log.with_name(log.name+'.stderr.log').read_bytes())
+
     def test_verify_receipt_keeps_actual_binary_commit_when_parent_main_advances(self):
         repo, app = self.repository()
         (app/'Cargo.toml').write_text('[workspace.package]\nversion="0.18.1"\n')
@@ -338,6 +356,82 @@ class BuildFixtures(unittest.TestCase):
         with self.assertRaisesRegex(build.BuildError, 'Existing pinned SDK receipt'):
             build.capture_settings(definition, pinned, repo)
         self.assertEqual(pinned.read_bytes(), original)
+
+    def browser_sdk_fixture(self):
+        repo, _ = self.repository()
+        browser = self.root/'browser-sdk'
+        browser.mkdir()
+        (browser/'chrome-headless-shell.exe').write_bytes(b'Pinned fixture browser; never executed')
+        (browser/'resources.pak').write_bytes(b'Pinned browser resources')
+        (browser/'debug.log').write_bytes(b'Original diagnostic output\n')
+        config = {'schema':1,'environment':{},'versions':{'fixture':'1'},
+                  'tools':{name:{'path':sys.executable} for name in ['cargo','rustc','clang-cl','lld-link','llvm-rc']},
+                  'roots':{'qa-browser-runtime':{'path':str(browser),'nonInputDiagnostics':{'debug.log':{'type':'chromium-diagnostic-log'}}}}}
+        config['tools']['chromium'] = {'path':str(browser/'chrome-headless-shell.exe')}
+        definition, pinned = self.root/'browser-definition.json', self.root/'browser-pins.json'
+        definition.write_bytes(build.encode(config))
+        recipe = {'native':{'requiredInputRoots':['qa-browser-runtime'],'rustFlags':'-C target-feature=+crt-static'},
+                  'nativeToolVersions':{'fixture':'1'}}
+        return repo, browser, definition, pinned, recipe
+
+    def test_known_browser_log_changes_do_not_change_pinned_code_inputs(self):
+        repo, browser, definition, pinned, recipe = self.browser_sdk_fixture()
+        build.capture_settings(definition,pinned,repo)
+        original = pinned.read_bytes()
+        self.assertNotIn('debug.log',json.loads(original)['roots']['qa-browser-runtime']['files'])
+        (browser/'debug.log').write_bytes(b'Later runtime diagnostic output\n')
+        build.private_settings(pinned,repo,recipe,'native')
+        (browser/'debug.log').unlink()
+        build.private_settings(pinned,repo,recipe,'native')
+        self.assertEqual(pinned.read_bytes(),original,'Validation never refreshes a receipt')
+
+    def test_browser_diagnostic_exception_never_allows_code_or_unknown_files(self):
+        repo, browser, definition, pinned, recipe = self.browser_sdk_fixture()
+        build.capture_settings(definition,pinned,repo)
+        (browser/'resources.pak').write_bytes(b'Tampered code/resource bytes')
+        with self.assertRaisesRegex(build.BuildError,'checksum mismatch'):
+            build.private_settings(pinned,repo,recipe,'native')
+        (browser/'resources.pak').write_bytes(b'Pinned browser resources')
+        (browser/'chrome-headless-shell.exe').write_bytes(b'Tampered executable')
+        with self.assertRaisesRegex(build.BuildError,'checksum mismatch'):
+            build.private_settings(pinned,repo,recipe,'native')
+        (browser/'chrome-headless-shell.exe').write_bytes(b'Pinned fixture browser; never executed')
+        for name in ['extra.dll','new.cpython-312.pyc','another.log']:
+            path = browser/name
+            path.write_bytes(b'Undeclared extra file')
+            with self.assertRaisesRegex(build.BuildError,'root changed'):
+                build.private_settings(pinned,repo,recipe,'native')
+            path.unlink()
+
+    def test_diagnostic_declarations_are_exact_typed_and_cannot_hide_tools(self):
+        repo, browser, definition, pinned, recipe = self.browser_sdk_fixture()
+        build.capture_settings(definition,pinned,repo)
+        original = json.loads(pinned.read_bytes())
+        for declaration in [{'resources.pak':{'type':'chromium-diagnostic-log'}},
+                            {'debug.*':{'type':'chromium-diagnostic-log'}},
+                            {'debug.log':{'type':'arbitrary-cache'}},
+                            ['debug.log']]:
+            changed = json.loads(build.encode(original))
+            changed['roots']['qa-browser-runtime']['nonInputDiagnostics'] = declaration
+            pinned.write_bytes(build.encode(changed))
+            with self.assertRaisesRegex(build.BuildError,'diagnostic'):
+                build.private_settings(pinned,repo,recipe,'native')
+        changed = json.loads(build.encode(original))
+        changed['roots']['qa-browser-runtime']['files']['debug.log'] = build.digest(browser/'debug.log')
+        pinned.write_bytes(build.encode(changed))
+        with self.assertRaisesRegex(build.BuildError,'diagnostic'):
+            build.private_settings(pinned,repo,recipe,'native')
+        changed = json.loads(build.encode(original))
+        changed['roots']['other-root'] = changed['roots'].pop('qa-browser-runtime')
+        pinned.write_bytes(build.encode(changed))
+        changed_recipe = {**recipe,'native':{'requiredInputRoots':['other-root'],'rustFlags':'-C target-feature=+crt-static'}}
+        with self.assertRaisesRegex(build.BuildError,'diagnostic'):
+            build.private_settings(pinned,repo,changed_recipe,'native')
+        changed = json.loads(build.encode(original))
+        changed['tools']['chromium'] = {'path':sys.executable,'sha256':build.digest(sys.executable)}
+        pinned.write_bytes(build.encode(changed))
+        with self.assertRaisesRegex(build.BuildError,'diagnostic'):
+            build.private_settings(pinned,repo,recipe,'native')
 
     def test_credentials_and_undeclared_path_dependencies_are_refused(self):
         repo, _ = self.repository()
