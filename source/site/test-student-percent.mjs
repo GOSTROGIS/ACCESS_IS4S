@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { fractionAnswer } from '../../assistant/public/percent.mjs';
+
+test('answers the question first, with the learner’s own quantities', () => {
+  for (const [question, first] of [
+    ['can you help me find the percentage of 1/5? im really confused. :(', '1/5 is 20%.'],
+    ['Convert 3/8 to a percentage.', '3/8 is 37.5%.'],
+    ['what percent is 11 out of 8?', '11/8 is 137.5%.'],
+    ['How do I convert 0/7 into a percent?', '0/7 is 0%.'],
+    ['-1/3 as a percentage', '-1/3 is approximately -33.3333%.'],
+    ['1/0 as a percent', '1/0 has no percentage because division by zero is undefined.'],
+  ]) assert.equal(fractionAnswer(question)?.split('\n')[0], first, question);
+  assert.match(fractionAnswer('and 3/4?', true), /^3\/4 is 75%\./);
+});
+
+test('leaves hints and unrelated or ambiguous problems to the model', () => {
+  for (const question of ['What is 20% of 1/5?', 'Give me only a hint for 1/5 as a percentage',
+    '1/5 of 50 as a percentage', '1/3 as a percent rounded to one decimal place',
+    'What percentage of 1/5 is 1/10?', 'what about 3/4?', 'The shift starts on 1/5.']) {
+    assert.equal(fractionAnswer(question), null, question);
+  }
+});

@@ -1,0 +1,18 @@
+.tutor { display: block; max-width: 56rem; }
+.tutor form, .turn { padding: clamp(1rem, 3vw, 1.6rem); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.turn { margin-bottom: 1rem; overflow-wrap: anywhere; }
+.turn h2 { color: var(--muted); font-size: 1rem; margin: 0 0 .5rem; }
+.turn .message { white-space: pre-wrap; }
+.turn.assistant { border-inline-start: 4px solid var(--gold); }
+.turn details { margin-top: .8rem; font-size: .9rem; }
+.turn summary { cursor: pointer; }
+.turn ul { margin-block: .25rem; padding-inline-start: 1.3rem; }
+.tutor label { display: block; margin-bottom: .4rem; font-weight: 650; }
+.tutor textarea { display: block; width: 100%; resize: vertical; min-height: 5rem; color: var(--ink); background: var(--surface); border-radius: var(--radius); border: 1px solid var(--muted); padding: .75rem; font: inherit; }
+.actions { display: flex; gap: .65rem; margin-top: .65rem; }
+.actions button { padding: .55rem 1.35rem; min-height: 44px; color: white; background: var(--red-deep); border: 1px solid var(--red-deep); border-radius: var(--radius); font: inherit; font-weight: 650; cursor: pointer; }
+.actions #stop { color: var(--ink); background: var(--surface); border-color: var(--muted); }
+.actions button:disabled { opacity: .6; cursor: default; }
+.tutor :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+#status:empty { display: none; }
+.device-note { color: var(--muted); font-size: .9rem; margin-bottom: 0; }

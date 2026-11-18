@@ -127,11 +127,10 @@ def browser_links(site, apps, include_learners=True):
                        '<a href="index.html" aria-current="page">Skills</a>'
                        '<a data-tools-link href="http://127.0.0.1:4180/workspace/?skill=digital&amp;app=wordcraft" '
                        'rel="noreferrer">Storytold apps</a>'
-                       '<a data-assistant-link href="http://127.0.0.1:11436/student/" '
-                       'rel="noreferrer">AI assistant</a></nav>\n'
-                       '<details id="hub-tools-help"><summary>Using these tools on the intranet computer</summary>'
-                       '<p>In the Applications folder, run <strong>Start Intranet.cmd</strong> for Storytold '
-                       'or <strong>Open ACCESS student guide.cmd</strong> for the AI assistant.</p></details>')
+                       '<a data-assistant-link href="assistant/public/">AI assistant</a></nav>\n'
+                       '<details id="hub-tools-help"><summary>Opening Storytold on the intranet computer</summary>'
+                       '<p>In the Applications folder, run <strong>Start Intranet.cmd</strong>, '
+                       'then select Storytold apps.</p></details>')
         else:
             practice = '<a href="storytold-labs.md">Practice guide</a>' if page.endswith('visual-studio/index.html') else ''
             navigation = ('<nav id="access-studio" class="access-learning-tabs" aria-label="Learning and tools" '

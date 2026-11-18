@@ -65,7 +65,8 @@
   }
   form.addEventListener('submit', event=>{event.preventDefault(); show(input.value.trim());});
   panel.addEventListener('toggle',()=>{if(panel.open && !result.childElementCount)show('');});
-  let chat;
+  let chat = current.protocol === 'file:' ? new URL('https://gostrogis.github.io/ACCESS_IS4S/assistant/public/') :
+    new URL('assistant/public/', base);
   if (['127.0.0.1','localhost','[::1]'].includes(location.hostname)) {
     chat = new URL('http://127.0.0.1:11436/student/');
   } else {
@@ -74,7 +75,7 @@
       try {
         const approved = new URL(configured);
         if (approved.protocol==='https:' && !approved.username && !approved.password) chat=approved;
-      } catch { /* The study guide works without a hosted chat endpoint. */ }
+      } catch { /* Keep the site's built-in assistant. */ }
     }
   }
   if (chat) {

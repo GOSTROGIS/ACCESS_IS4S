@@ -70,7 +70,7 @@ class ContextLinks(unittest.TestCase):
             self.assertEqual(hub.links, {
                 'index.html': 'Skills',
                 'http://127.0.0.1:4180/workspace/?skill=digital&app=wordcraft': 'Storytold apps',
-                'http://127.0.0.1:11436/student/': 'AI assistant',
+                'assistant/public/': 'AI assistant',
             })
             self.assertIn('data-skill="writing" data-application="wordcraft"', writing)
             self.assertIn('>Learn</a>', writing)

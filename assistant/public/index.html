@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>AI assistant · ACCESS Indigenous Skills4Success</title>
+  <link rel="icon" href="../../brand/is4s-badge.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../brand/site.css">
+  <link rel="stylesheet" href="tutor.css">
+</head>
+<body>
+  <header class="site-head">
+    <div class="wrap head-inner">
+      <a href="../../index.html"><img class="lockup" src="../../brand/is4s-badge.svg" alt="ACCESS Skills for Success home" width="92" height="84"></a>
+      <div class="head-text">
+        <a class="crumb" href="../../index.html">← Skills for Success</a>
+        <h1>AI assistant</h1>
+        <p class="lede">Ask a question about your work or an ACCESS lesson. You can ask for a hint, too.</p>
+      </div>
+    </div>
+  </header>
+  <main class="wrap tutor">
+    <noscript>Turn on JavaScript in your browser to use the AI assistant.</noscript>
+    <div id="conversation" aria-label="Conversation" role="region"></div>
+    <form id="ask">
+      <label for="question">Your question</label>
+      <textarea id="question" rows="3" maxlength="1600" placeholder="What would you like help with?" required></textarea>
+      <div class="actions">
+        <button type="submit" id="send" disabled>Ask</button>
+        <button type="button" id="stop" hidden>Stop</button>
+      </div>
+      <p id="status" role="status"></p>
+      <p class="device-note">Your questions stay in this browser. The first question that uses the language model downloads about 95 MB. Its speed depends on your device.</p>
+    </form>
+  </main>
+  <script type="module" src="tutor.mjs"></script>
+</body>
+</html>

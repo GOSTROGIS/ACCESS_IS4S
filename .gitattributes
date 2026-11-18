@@ -1,2 +1,5 @@
 # Retain the application sources' original bytes across platforms.
 source/storytold/apps/** -text
+assistant/public/lessons.json text eol=lf
+assistant/public/vendor/*.wasm binary
+assistant/public/vendor/*.gguf binary
