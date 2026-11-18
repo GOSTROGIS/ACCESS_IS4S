@@ -79,8 +79,17 @@ export function percentageHelp(question, previousConversion) {
   if (exact !== null) return exact;
   const lines = question.trim().split(/\s*(?:\r?\n|;)\s*/).filter(Boolean);
   if (lines.length > 1) {
-    const corrections = lines.map(line => fractionAnswer(line, previousConversion));
-    if (corrections.every(Boolean)) return corrections.join('\n\n');
+    const corrections = [];
+    for (const line of lines) {
+      const answer = fractionAnswer(line, previousConversion);
+      if (answer) corrections.push(answer);
+      else if (!/^(?:i(?:'m| am) (?:confused|having trouble|stuck)|is (?:this|that) (?:right|correct)|can you check (?:this|these))\b/i.test(line) ||
+               /[\d+/=?]/.test(line.replace(/\?\s*$/, ''))) {
+        corrections.length = 0;
+        break;
+      }
+    }
+    if (corrections.length) return corrections.join('\n\n');
   }
   const input = clean(question);
   const found = [...input.matchAll(/(?<![\w/.-])(-?\d{1,9})\s*(?:\/|out of|over)\s*(-?\d{1,9})(?![\w/]|\.\d)/g)];
@@ -106,7 +115,8 @@ export function percentageHelp(question, previousConversion) {
   }
   const rest = input.replace(/(?<![\w/.-])-?\d{1,9}\s*(?:\/|out of|over)\s*-?\d{1,9}(?![\w/]|\.\d)/g, 'F')
     .replace(precision?.[0] || /$^/, '');
-  const total = /\b(?:add|sum|total|combined|altogether)\b|F\s*\+\s*F/.test(rest);
+  const separate = /\b(?:separately|individually|without (?:adding|combining)|(?:dont|do not|never) (?:add|sum|combine)|not (?:the |their |a )?(?:total|sum))\b/.test(rest);
+  const total = !separate && /\b(?:add|sum|total|combined|altogether)\b|F\s*\+\s*F/.test(rest);
   const anotherOperation = /\b(?:minus|subtract|change|increase|decrease|difference|times|product|of which|discount|multiply|ratio)\b|[=*÷×]|F\s*(?:of|\/|-)\s*F|\d/.test(rest);
   if (total && !anotherOperation && found.length > 1) {
     let n=0n, d=1n;

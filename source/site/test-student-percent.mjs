@@ -60,5 +60,9 @@ test('separates multiple conversions, an explicitly requested sum, and a relativ
   assert.match(report, /^1\/5 is 20%/);
   assert.match(report, /1\/3 is approximately 33\.3333%/);
   assert.doesNotMatch(report, /50%/);
+  const copied = percentageHelp('1/5 as a percentage: 1/5 * 100% = 50%\n1/3 as a percentage: 1/3 * 100% = 33.33%\n\nI\'m having trouble with this one. I think I need to add a percentage to the first one to get the total.');
+  assert.equal(copied, report);
+  assert.equal(percentageHelp("Don't add 1/5 and 1/3. Give their percentages separately."), both);
+  assert.equal(percentageHelp('Convert 1/5 and 1/3 to percentages without adding them.'), both);
   assert.match(percentageHelp('What is 1/5 × 17 minus 6 as a percentage?'), /^Which calculation/);
 });
