@@ -97,6 +97,8 @@ def loopback_only(app, origin, port):
         def local_headers(status, headers, exc_info=None):
             # Only this owner-operated loopback host embeds the installed tools.
             frames = "frame-src 'self' " + " ".join(f"http://127.0.0.1:{tool}" for tool in [*range(4190, 4207), 4211, *range(4320, 4337)])
+            if environ.get('PATH_INFO') == '/slipcurve-shell.html' and status == '200 OK':
+                frames += ' http://127.0.0.1:11435/app/'
             headers = [(key, value + "; " + frames if key.lower() == "content-security-policy" else value)
                        for key, value in headers]
             return start_response(status, headers, exc_info)

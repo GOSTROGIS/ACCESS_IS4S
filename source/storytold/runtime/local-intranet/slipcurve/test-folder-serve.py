@@ -107,6 +107,34 @@ class ClientEntryTests(unittest.TestCase):
         self.assertEqual(responses, ['403 Forbidden'])
         self.assertEqual(len(observed), before)
 
+    def test_guide_frame_is_limited_to_the_successful_local_shell_response(self):
+        upstream_policy = "default-src 'self'; script-src 'self' 'unsafe-inline'"
+        guide = 'http://127.0.0.1:11435/app/'
+
+        def app(environ, respond):
+            respond(environ.get('mock_status', '200 OK'), [('Content-Security-Policy', upstream_policy)])
+            return [b'entry']
+
+        wrapped = folder_serve.loopback_only(app, 'http://127.0.0.1:4184', 4184)
+        for target, status, allowed in [('/slipcurve-shell.html', '200 OK', True),
+                                        ('/slipcurve-shell.html', '404 Not Found', False),
+                                        ('/', '200 OK', False), ('/app/', '200 OK', False),
+                                        ('/modules/module-17-save-data.html', '200 OK', False)]:
+            with self.subTest(target=target, status=status):
+                headers = {}
+                wrapped({'HTTP_HOST': '127.0.0.1:4184', 'PATH_INFO': target, 'mock_status': status},
+                        lambda _status, values, *_: headers.update(values))
+                directives = headers['Content-Security-Policy'].split('; ')
+                self.assertEqual(directives[:2], upstream_policy.split('; '))
+                self.assertEqual(guide in directives[-1].split(), allowed)
+                self.assertEqual(directives[-1].split()[0], 'frame-src')
+        for host, origin in [('somewhere.example', ''), ('127.0.0.1:4184', 'https://somewhere.example')]:
+            replies = []
+            wrapped({'HTTP_HOST': host, 'HTTP_ORIGIN': origin, 'PATH_INFO': '/slipcurve-shell.html'},
+                    lambda status, headers, *_: replies.append((status, dict(headers))))
+            self.assertEqual(replies[0][0], '403 Forbidden')
+            self.assertNotIn('Content-Security-Policy', replies[0][1])
+
 
 if __name__ == '__main__':
     unittest.main()
