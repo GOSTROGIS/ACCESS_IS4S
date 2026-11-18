@@ -65,7 +65,7 @@ function fail(message) {
 
 function modelWorker() {
   if (worker) return worker;
-  worker = new Worker(new URL('./worker.mjs', import.meta.url), {type: 'module'});
+  worker = new Worker(new URL('./worker.mjs?v=2', import.meta.url), {type: 'module'});
   worker.onerror = () => fail('The language model could not start in this browser. Try a current browser with WebAssembly enabled.');
   worker.onmessage = ({data}) => {
     if (!active || data.id !== active.id) return;

@@ -1,7 +1,8 @@
-import { Wllama } from './vendor/wllama.mjs';
+import { Wllama } from './vendor/wllama.mjs?v=2.3.7';
+import { definedTerms } from './retrieve.mjs';
 
 const modelFile = new URL('./vendor/SmolLM2-135M-Instruct-Q4_0.gguf', import.meta.url);
-const wasmFile = new URL('./vendor/wllama.wasm', import.meta.url);
+const wasmFile = new URL('./vendor/wllama.wasm?v=2.3.7', import.meta.url);
 const modelBytes = 91893088;
 const modelDigest = 'bcc3af2849ad6095af57e9b5cd43775256efdc66e306acb529172f92d0c04b03';
 const cacheName = 'access-learning-model-' + modelDigest;
@@ -63,22 +64,32 @@ function plain(value, limit) {
   return typeof value === 'string' ? value.replace(/<\|[^|]{0,48}\|>/g, '').trim().slice(0,limit) : '';
 }
 
-function learnerPrompt(question, sources, history) {
-  const requestedHint = /\b(?:hint(?:s)?\s+(?:only|please)|(?:a|one|some|another)\s+hint(?:s)?\b|(?:give|show|offer)\s+me\s+hints?\b|without\s+(?:giving|telling)\s+(?:me\s+)?the\s+answer)/i.test(question) &&
-    !/\b(?:do not|don't|don’t|no longer)\s+(?:want|need|give me)\s+(?:a\s+)?hints?\b/i.test(question);
+function wantsHint(question) {
+  return /\b(?:hints?\s+(?:only|please)|(?:a|one|some|another)\s+(?:hints?|clue)\b|(?:give|show|offer)\s+me\s+hints?\b|without\s+(?:giving|telling)\s+(?:me\s+)?the\s+answer)/i.test(question) &&
+    !/\b(?:do not|don't|don’t|no longer)\s+(?:want|need|give me)\s+(?:a\s+)?(?:hints?|clue)\b/i.test(question);
+}
+
+function learnerPrompt(question, sources, history, requestedHint, comparison) {
   const rows = (Array.isArray(sources) ? sources.slice(0,2) : []).filter(Boolean);
   if (requestedHint) {
     // The tiny model will often repeat a solution that appears in its context.
     // Give it the topic and the learner's question so it can suggest a method.
     const topics = rows.map(row => plain(row.title,100)).filter(Boolean).join('; ');
-    return '<|im_start|>system\nGive one short hint. Help the learner find the answer themselves. Suggest where to look or what to try. Never give the final answer.<|im_end|>\n' +
-      '<|im_start|>user\nTopic: Employment schedules\nGive me a hint to find my next shift.<|im_end|>\n' +
-      '<|im_start|>assistant\nFind your name on the schedule and trace that row to the date.<|im_end|>\n' +
-      '<|im_start|>user\nTopic: '+topics+'\n'+question+'<|im_end|>\n<|im_start|>assistant\n';
+    let skill = 'reading';
+    let method = 'Scan the headings or labels for a keyword from the question, then read the sentence around it.';
+    if (/\b(?:calculat\w*|fraction|percent|divide|multiply|formula)\b/i.test(question)) {
+      skill = 'numeracy';
+      method = 'List the given quantities with their units and identify the operation that connects them.';
+    } else if (/\b(?:write|draft|revise|writing|rewrite)\b/i.test(question)) {
+      skill = 'writing';
+      method = 'Identify who will read the document and the main point they need to understand.';
+    }
+    return '<|im_start|>system\nGive exactly one practical '+skill+' hint without revealing the answer.<|im_end|>\n' +
+      '<|im_start|>user\nSuggested '+skill+' method: '+method+'\nLesson: '+topics+'\nStudent: '+question+'<|im_end|>\n<|im_start|>assistant\n';
   }
   // For comparisons, ask the model to read the best-matching definition first.
   // A worked example of a different pair can distract this small model.
-  if (rows.length && /\b(?:compar(?:e|ing)|contrast|versus|vs|differences? between)\b/i.test(question) && !/\d/.test(question)) {
+  if (rows.length && comparison) {
     const passage = plain(rows[0].text,1000);
     return '<|im_start|>system\nAnswer questions using only the given passage. For a comparison, explain each term in one sentence. Copy the definitions exactly. Do not write a formula.<|im_end|>\n' +
       '<|im_start|>user\nText:\n'+passage+'\n\nQuestion: '+question+'<|im_end|>\n<|im_start|>assistant\n';
@@ -107,14 +118,50 @@ self.onmessage = async ({data}) => {
   if (!question) return send({type:'error',message:'Enter a learning question.'});
   busy = true;
   try {
+    const hint = wantsHint(question);
+    const sources = Array.isArray(data.sources) ? data.sources.filter(row => typeof row?.text === 'string') : [];
+    const definition = !hint && definedTerms(question, sources);
+    if (definition) return send({type:'done',text:definition});
+    const comparison = !hint && /\b(?:compar(?:e|ing)|contrast|versus|vs|differences? between)\b/i.test(question) && !/\d/.test(question);
+    if (comparison && !sources.length) {
+      return send({type:'done',text:'I could not find a supporting passage. Which lesson or passage are you comparing?'});
+    }
     const engine = await getModel(send);
-    let prompt = learnerPrompt(question, data.sources, data.history);
+    let prompt = learnerPrompt(question, sources, data.history, hint, comparison);
     if ((await engine.tokenize(prompt)).length + maxAnswerTokens + 2 > contextSize) {
-      prompt = learnerPrompt(question, [], []);
+      prompt = learnerPrompt(question, [], [], hint, false);
       if ((await engine.tokenize(prompt)).length + maxAnswerTokens + 2 > contextSize) {
         throw Error('Please shorten your question so it fits the learning model.');
       }
     }
     const decoder = new TextDecoder();
+    const stop = new AbortController();
     const answer = await engine.createCompletion(prompt, {
-      nP
+      nPredict:hint ? 64 : maxAnswerTokens, sampling:{temp:0, penalty_repeat:1}, abortSignal:stop.signal,
+      onNewToken(_token, bytes, currentText) {
+        const text = decoder.decode(bytes, {stream:true});
+        if (text && !comparison) send({type:'token',text});
+        if (hint && /[.!?]\s*$/.test(currentText)) stop.abort();
+      }
+    });
+    const remainder = decoder.decode();
+    if (remainder && !comparison) send({type:'token',text:remainder});
+    if (comparison) {
+      // Verify extracted comparison sentences before displaying them. A small
+      // model can reverse a relationship even with the correct lesson in view.
+      const sentences = text => text.match(/[^.!?]+[.!?](?=\s|$)/g)?.map(s=>s.trim()) || [];
+      const evidence = sentences(sources[0].text);
+      const response = sentences(answer);
+      if (response.length && response.join(' ') === answer.trim() && response.every(s=>evidence.includes(s))) {
+        return send({type:'done',text:answer.trim()});
+      }
+      const quote = evidence.slice(0,2).join(' ');
+      const text = 'I couldn’t verify a direct comparison in this lesson.' + (quote ? '\n\nFrom the lesson: “'+quote+'”' : '');
+      return send({type:'done',text});
+    }
+    if (!answer.trim()) throw Error('The model returned an empty answer. Please rephrase the question.');
+    send({type:'done',text:answer.trim()});
+  } catch (error) {
+    send({type:'error',message:error instanceof Error ? error.message : 'The learning model could not run in this browser.'});
+  } finally { busy = false; }
+};

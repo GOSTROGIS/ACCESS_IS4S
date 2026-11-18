@@ -18,16 +18,23 @@ jobs:
   student-workflows:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - run: python3 source/site/build_public_lessons.py --check
+      - run: node --check assistant/public/worker.mjs
       - run: node --test source/site/test-student-percent.mjs
       - run: npm install --prefix "$RUNNER_TEMP/student-browser" playwright@1.56.1
-      - run: '"$RUNNER_TEMP/student-browser/node_modules/.bin/playwright" install --with-deps chromium'
+      - run: '"$RUNNER_TEMP/student-browser/node_modules/.bin/playwright" install --with-deps ${{ matrix.browser }}'
       - name: Answer questions in a browser with only this site reachable
+        env:
+          STUDENT_BROWSER: ${{ matrix.browser }}
         run: |
           python3 -m http.server 8799 --bind 127.0.0.1 > "$RUNNER_TEMP/student-http.log" 2>&1 &
           export NODE_PATH="$RUNNER_TEMP/student-browser/node_modules"

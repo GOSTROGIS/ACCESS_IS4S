@@ -1,13 +1,15 @@
 'use strict';
 const assert = require('node:assert/strict');
-const {chromium} = require('playwright');
+const playwright = require('playwright');
 
 // Supply the same site entry point a learner uses, either an HTTP checkout or Pages.
 const site = new URL(process.argv[2]);
 const outside = [], errors = [], requests = [];
 async function run() {
-  const browser = await chromium.launch({headless:true, executablePath:process.env.CHROMIUM_PATH || undefined,
-    args:['--disable-gpu']});
+  const engine = process.env.STUDENT_BROWSER || 'chromium';
+  const options = engine === 'chromium' ?
+    {executablePath:process.env.CHROMIUM_PATH || undefined, args:['--disable-gpu']} : {};
+  const browser = await playwright[engine].launch({headless:true, ...options});
   try {
     const context = await browser.newContext({viewport:{width:390,height:844}});
     await context.route(/^https?:/, route => {

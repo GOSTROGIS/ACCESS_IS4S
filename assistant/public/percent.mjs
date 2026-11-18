@@ -32,12 +32,18 @@ function percentage(a, b) {
 }
 
 export function fractionAnswer(question, previousConversion = false) {
-  const input = clean(question);
+  let input = clean(question);
+  const withoutHint = input.replace(/^(?:give me |i(?:d like| want) )?(?:only |just )?(?:a |one )?hint (?:for|on) (?:converting )?/, '')
+    .replace(/[,.!? ]+(?:(?:please )?(?:just |only )?a hint|hint only)$/, '');
+  const hint = withoutHint !== input;
+  input = withoutHint;
   const candidates = previousConversion ? [...patterns, shortFollowup] : patterns;
   for (const pattern of candidates) {
     const match = pattern.exec(input);
     if (!match) continue;
     const [, a, b] = match;
+    if (hint) return BigInt(b) === 0n ? 'Look at the denominator. Can you divide by zero?' :
+      `Start by dividing ${a} by ${b}. To turn that decimal into a percentage, multiply it by 100.`;
     if (BigInt(b) === 0n) return `${a}/${b} has no percentage because division by zero is undefined.`;
     const {value, approximate} = percentage(a, b);
     return `${a}/${b} is ${approximate ? 'approximately ' : ''}${value}%.\n\nDivide ${a} by ${b}, then multiply by 100. (${a} ÷ ${b}) × 100 ${approximate ? '≈' : '='} ${value}.`;

@@ -14,8 +14,14 @@ test('answers the question first, with the learner’s own quantities', () => {
   assert.match(fractionAnswer('and 3/4?', true), /^3\/4 is 75%\./);
 });
 
-test('leaves hints and unrelated or ambiguous problems to the model', () => {
-  for (const question of ['What is 20% of 1/5?', 'Give me only a hint for 1/5 as a percentage',
+test('gives the method without revealing the value when the learner asks for a hint', () => {
+  const hint = fractionAnswer('Give me only a hint for 1/5 as a percentage');
+  assert.match(hint, /dividing 1 by 5/);
+  assert.doesNotMatch(hint, /20/);
+});
+
+test('leaves unrelated or ambiguous problems to the model', () => {
+  for (const question of ['What is 20% of 1/5?',
     '1/5 of 50 as a percentage', '1/3 as a percent rounded to one decimal place',
     'What percentage of 1/5 is 1/10?', 'what about 3/4?', 'The shift starts on 1/5.']) {
     assert.equal(fractionAnswer(question), null, question);
