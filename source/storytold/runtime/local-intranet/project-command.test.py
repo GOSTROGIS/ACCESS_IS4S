@@ -100,12 +100,30 @@ class ProcessContainment(unittest.TestCase):
         self.sentinel.wait(timeout=10)
         self.temporary.cleanup()
 
-    def start_tree(self, kind='sleep', timeout=2, max_output=1048576):
-        self.launcher = subprocess.Popen([sys.executable, str(LAUNCHER), '--timeout', str(timeout),
-            '--max-output', str(max_output), '--', sys.executable, str(self.fixture), str(self.folder), kind],
+    def start_tree(self, kind='sleep', timeout=2, max_output=1048576, relay=False):
+        command = [sys.executable, str(LAUNCHER), '--timeout', str(timeout),
+            '--max-output', str(max_output), '--', sys.executable, str(self.fixture), str(self.folder), kind]
+        if relay:
+            relay_file = self.folder / 'relay.py'
+            relay_file.write_text('''
+from pathlib import Path
+import ctypes as c
+from ctypes import wintypes as w
+import json,subprocess,sys,time
+process=subprocess.Popen(COMMAND,stdin=subprocess.DEVNULL,stdout=sys.stdout,stderr=sys.stderr,creationflags=0x08000000)
+k=c.WinDLL('kernel32',use_last_error=True)
+k.GetProcessTimes.argtypes=[w.HANDLE,*([c.POINTER(w.FILETIME)]*4)]
+times=[w.FILETIME() for _ in range(4)]
+assert k.GetProcessTimes(int(process._handle),*[c.byref(value) for value in times])
+created=(times[0].dwHighDateTime<<32)|times[0].dwLowDateTime
+Path(MARKER).write_text(json.dumps({'pid':process.pid,'created':created}))
+time.sleep(60)
+'''.replace('COMMAND', repr(command)).replace('MARKER', repr(str(self.folder / 'helper.json'))), encoding='utf-8')
+            command = [sys.executable, str(relay_file)]
+        self.launcher = subprocess.Popen(command,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=HIDDEN)
         deadline = time.monotonic() + 8
-        for name in (kind, 'leaf'):
+        for name in (('helper', kind, 'leaf') if relay else (kind, 'leaf')):
             marker = self.folder / (name + '.json')
             while not marker.exists():
                 if time.monotonic() > deadline or self.launcher.poll() is not None:
@@ -141,6 +159,12 @@ class ProcessContainment(unittest.TestCase):
     def test_abrupt_launcher_kill_closes_child_and_grandchild_only(self):
         self.start_tree(timeout=30)
         self.launcher.kill()  # Exact fresh Popen handle, not a PID search or process-name kill.
+        self.launcher.communicate(timeout=10)
+        self.assert_tree_stopped_and_sentinel_alive()
+
+    def test_action_parent_death_closes_surviving_helper_and_its_tree(self):
+        self.start_tree(timeout=30, relay=True)
+        self.launcher.kill()  # Models stopping the Node task action, above our helper.
         self.launcher.communicate(timeout=10)
         self.assert_tree_stopped_and_sentinel_alive()
 

@@ -35,6 +35,7 @@ class WindowsJob:
                 ('base', w.LONG), ('delta', w.LONG), ('flags', w.DWORD)]
 
         self.c, self.Thread = c, Thread
+        self.parent = None
         self.kernel = k = c.WinDLL('kernel32', use_last_error=True)
         for name, result, args in (
             ('CreateJobObjectW', w.HANDLE, [c.c_void_p, w.LPCWSTR]),
@@ -46,6 +47,10 @@ class WindowsJob:
             ('Thread32Next', w.BOOL, [w.HANDLE, c.POINTER(Thread)]),
             ('OpenThread', w.HANDLE, [w.DWORD, w.BOOL, w.DWORD]),
             ('ResumeThread', w.DWORD, [w.HANDLE]),
+            ('OpenProcess', w.HANDLE, [w.DWORD, w.BOOL, w.DWORD]),
+            ('GetCurrentProcess', w.HANDLE, []),
+            ('GetProcessTimes', w.BOOL, [w.HANDLE, *([c.POINTER(w.FILETIME)] * 4)]),
+            ('WaitForSingleObject', w.DWORD, [w.HANDLE, w.DWORD]),
         ):
             function = getattr(k, name)
             function.restype, function.argtypes = result, args
@@ -57,6 +62,26 @@ class WindowsJob:
         if not k.SetInformationJobObject(self.handle, 9, c.byref(limits), c.sizeof(limits)):
             self.close()
             raise RuntimeError('Project process containment could not be configured.')
+        # Task Scheduler may terminate the Node caller while this helper survives.
+        # Hold a read-only handle to that exact parent, rather than polling a PID.
+        self.parent = k.OpenProcess(0x100000 | 0x1000, False, os.getppid())
+        try:
+            if not self.parent:
+                raise RuntimeError('Project caller lifetime could not be verified.')
+            stamps = []
+            for handle in (self.parent, k.GetCurrentProcess()):
+                times = [w.FILETIME() for _ in range(4)]
+                if not k.GetProcessTimes(handle, *[c.byref(value) for value in times]):
+                    raise RuntimeError('Project caller lifetime could not be verified.')
+                stamps.append((times[0].dwHighDateTime << 32) | times[0].dwLowDateTime)
+            if stamps[0] > stamps[1] or self.parent_exited():
+                raise RuntimeError('Project caller exited before containment started.')
+        except BaseException:
+            self.close()
+            raise
+
+    def parent_exited(self):
+        return self.kernel.WaitForSingleObject(self.parent, 0) != 0x102  # WAIT_TIMEOUT
 
     def assign_and_resume(self, process):
         c, k = self.c, self.kernel
@@ -87,6 +112,9 @@ class WindowsJob:
         if self.handle:
             self.kernel.CloseHandle(self.handle)
             self.handle = None
+        if self.parent:
+            self.kernel.CloseHandle(self.parent)
+            self.parent = None
 
 
 def run_command(command, *, timeout, max_output=1024 * 1024, env=None, cwd=None):
@@ -130,6 +158,9 @@ def run_command(command, *, timeout, max_output=1024 * 1024, env=None, cwd=None)
             thread.start()
             readers.append(thread)
         while process.poll() is None:
+            if job.parent_exited():
+                reason = 'parent-exited'
+                break
             if overflow.is_set():
                 reason = 'output-limit'
                 break
@@ -179,15 +210,19 @@ def main():
         return 126
     output, errors = result.stdout, result.stderr
     if reason:
-        diagnostic = ('\nProject command exceeded its ' + reason + '.\n').encode()[:args.max_output]
+        message = 'Project caller exited; its process tree was closed.' if reason == 'parent-exited' else 'Project command exceeded its ' + reason + '.'
+        diagnostic = ('\n' + message + '\n').encode()[:args.max_output]
         budget = args.max_output - len(diagnostic)
         output = output[:budget]
         errors = errors[:max(0, budget - len(output))] + diagnostic
-    sys.stdout.buffer.write(output)
-    sys.stdout.buffer.flush()
-    sys.stderr.buffer.write(errors)
-    sys.stderr.buffer.flush()
-    return 124 if reason == 'timeout' else 125 if reason == 'output-limit' else result.returncode
+    try:
+        sys.stdout.buffer.write(output)
+        sys.stdout.buffer.flush()
+        sys.stderr.buffer.write(errors)
+        sys.stderr.buffer.flush()
+    except OSError:
+        return 127 if reason == 'parent-exited' else 126
+    return 124 if reason == 'timeout' else 125 if reason == 'output-limit' else 127 if reason == 'parent-exited' else result.returncode
 
 
 if __name__ == '__main__':
