@@ -69,6 +69,7 @@ DISPLAY = {
 
 # Original files outside the UI that have one deliberate product adapter/default change.
 EXTRA = {
+    'xtask/src/main.rs',
     'crates/docx/src/lib.rs', 'crates/pdf/src/metadata.rs', 'crates/pdf/src/tests.rs',
     'crates/engine/src/session/lifecycle.rs', 'crates/engine/src/tests.rs',
     'crates/docx/tests/it/roundtrip.rs',
@@ -76,8 +77,94 @@ EXTRA = {
     'crates/formats/src/rtf.rs', 'crates/formats/src/latex.rs', 'crates/formats/src/odt.rs', 'crates/formats/src/tests.rs',
 }
 
+WASM_OLD = '''fn wasm_set() -> Result<Vec<String>, String> {
+    let crates = layers::from_metadata(&metadata()?)?;
+    Ok(crates
+        .into_iter()
+        .filter(|c| match layers::classify(&c.name) {
+            Some(layers::Class::Layer(l)) => l <= 5 || layers::short_name(&c.name) == "ui-egui",
+            Some(layers::Class::Standalone) => true,
+            _ => false,
+        })
+        .map(|c| c.name)
+        .collect())
+}'''
+
+WASM_CURRENT = '''fn wasm_set() -> Result<Vec<String>, String> {
+    wasm_set_from_metadata(&metadata()?)
+}
+
+fn wasm_set_from_metadata(meta: &serde_json::Value) -> Result<Vec<String>, String> {
+    let packages = meta["packages"].as_array().ok_or("metadata: no packages array")?;
+    let members = meta["workspace_members"].as_array().ok_or("metadata: no workspace members array")?;
+    let mut selected = Vec::new();
+    for member in members {
+        let id = member.as_str().ok_or("workspace member without package ID")?;
+        let package = packages.iter().find(|p| p["id"].as_str() == Some(id)).ok_or("workspace member missing from packages")?;
+        let name = package["name"].as_str().ok_or("package without name")?;
+        let include = match layers::classify(name) {
+            Some(layers::Class::Layer(l)) => l <= 5 || layers::short_name(name) == "ui-egui",
+            Some(layers::Class::Standalone) => true,
+            _ => false,
+        };
+        if include {
+            // Cargo's exact package ID distinguishes the owned writer from a
+            // same-name/version Git dependency still required by spreadsheets.
+            selected.push((name, id));
+        }
+    }
+    selected.sort_unstable();
+    Ok(selected.into_iter().map(|(_, id)| id.to_owned()).collect())
+}'''
+
+WASM_TESTS = '''
+#[cfg(test)]
+mod wasm_tests {
+    use super::wasm_set_from_metadata;
+    use serde_json::json;
+
+    #[test]
+    fn exact_workspace_specs_keep_wasm_scope_despite_matching_git_package_names() {
+        let names = [
+            "craft-docx",
+            "craft-latex",
+            "craft-odf",
+            "craft-rtf",
+            "wordcraft-control-key",
+            "wordcraft-doc",
+            "wordcraft-ui-egui",
+            "wordcraft-cli",
+            "wordcraft-testkit",
+        ];
+        let members: Vec<String> = names.iter().map(|name| format!("path+file:///workspace/{name}#0.1.0")).collect();
+        let git_id = "git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c#craft-odf@0.1.0";
+        let mut packages = vec![json!({"name": "craft-odf", "id": git_id, "dependencies": []})];
+        packages.extend(names.iter().zip(&members).map(|(name, id)| json!({"name": name, "id": id, "dependencies": []})));
+        let metadata = json!({"workspace_members": members, "packages": packages});
+        let actual = wasm_set_from_metadata(&metadata).unwrap();
+        let expected: Vec<_> = names[..7].iter().map(|name| format!("path+file:///workspace/{name}#0.1.0")).collect();
+        assert_eq!(actual, expected);
+        assert!(!actual.iter().any(|id| id == git_id));
+    }
+
+    #[test]
+    fn malformed_or_missing_workspace_package_ids_cannot_silently_drop_checks() {
+        for metadata in [
+            json!({"packages": []}),
+            json!({"workspace_members": [17], "packages": []}),
+            json!({"workspace_members": ["missing"], "packages": []}),
+            json!({"workspace_members": ["without-name"], "packages": [{"id": "without-name"}]}),
+        ] {
+            assert!(wasm_set_from_metadata(&metadata).is_err(), "{metadata}");
+        }
+    }
+}
+'''
+
 
 def purpose(relative):
+    if relative == 'xtask/src/main.rs':
+        return 'Use exact Cargo workspace IDs for complete WASM checks; retain same-name Git dependencies'
     if relative.startswith('crates/engine/'):
         return 'Neutral new-session author only; retain explicit saved names and document history'
     if relative.startswith('crates/pdf/'):
@@ -96,7 +183,11 @@ def transform(relative, text, label, owner):
         if relative.endswith('dialogs/dispatch.rs') and old == 'getartcraft.com/apps/wordcraft':
             old, new = 'tl!("'+old+'")', 'tl!("'+new+'")'
         changed = changed.replace(old, new.format(label=label, owner=owner))
-    if relative == 'crates/engine/src/session/lifecycle.rs':
+    if relative == 'xtask/src/main.rs':
+        changed = changed.replace(WASM_OLD, WASM_CURRENT)
+        if 'fn exact_workspace_specs_keep_wasm_scope_despite_matching_git_package_names()' not in changed:
+            changed += WASM_TESTS
+    elif relative == 'crates/engine/src/session/lifecycle.rs':
         changed = changed.replace('author: "WordCraft User".into()', 'author: "User".into()')
     elif relative == 'crates/engine/src/tests.rs':
         changed = changed.replace('(RevisionKind::Format, "WordCraft User")', '(RevisionKind::Format, "User")')

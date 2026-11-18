@@ -87,7 +87,7 @@
     },
     ".gitattributes": {
       "upstreamSha256": "7df0a54dc17cff3e30cbda2fdf64f2330b931ce6243f53968b67a000a287cda1",
-      "sha256": "e6a1485134efe344b39c78bb7115ddd9a1f9975a9773b56db0740e1c01803e97",
+      "sha256": "742be1e0b19712350b68db12dba99a0b7ad5fc5d493919288771b29dae879924",
       "purpose": "Preserve exact branding receipt bytes; retain upstream attribute defaults"
     },
     "crates/ui-egui/src/i18n/audit.rs": {
@@ -234,6 +234,11 @@
       "upstreamSha256": "ba2e4e3afb614bc810616b7038dfe8bfd6f86adad41824f323e8e7d2f1cfded5",
       "sha256": "36823bdd4c3260becf16a21144b39f3b1ff43f289fc4acabd282e0519ec66ffb",
       "purpose": "Product software identity through writer options; preserve authors, history and custom properties"
+    },
+    "xtask/src/main.rs": {
+      "upstreamSha256": "66a7a2d5cee1ea6e1c418f019d79b3660a01bffb8a1942280bd6d661145c6835",
+      "sha256": "292d1900197f67d4af449153b559116488b01c9632c6e67f2af5bb8b2786cc32",
+      "purpose": "Use exact Cargo workspace IDs for complete WASM checks; retain same-name Git dependencies"
     }
   }
 }

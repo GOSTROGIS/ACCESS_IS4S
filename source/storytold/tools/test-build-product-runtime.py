@@ -31,6 +31,78 @@ class BuildFixtures(unittest.TestCase):
         self.assertTrue(build.within(self.base, self.root))
         self.temp.cleanup()
 
+    def test_compiled_cargo_cache_is_bound_to_product_and_canonical_source_root(self):
+        first = self.root / 'first'
+        second = self.root / 'second'
+        first.mkdir()
+        second.mkdir()
+        cache = self.root / 'compiled-cache'
+        original, receipt = build.cargo_target_binding(cache, 'access', 'wordcraft', first)
+        repeated, repeated_receipt = build.cargo_target_binding(cache, 'access', 'wordcraft', first / '.')
+        other_source, other_receipt = build.cargo_target_binding(cache, 'access', 'wordcraft', second)
+        other_product, product_receipt = build.cargo_target_binding(cache, 'slipcurve', 'wordcraft', first)
+        self.assertEqual((original, receipt), (repeated, repeated_receipt))
+        self.assertNotEqual(original, other_source)
+        self.assertNotEqual(original, other_product)
+        self.assertNotEqual(receipt['sourceRootSha256'], other_receipt['sourceRootSha256'])
+        self.assertEqual(receipt['sourceRootSha256'], product_receipt['sourceRootSha256'])
+        self.assertEqual(receipt['sourceRootSha256'], hashlib.sha256(receipt['canonicalSourceRoot'].encode()).hexdigest())
+        self.assertTrue(build.within(cache, original))
+        self.assertFalse(cache.exists(), 'identity selection does not alter or remove an existing cache')
+        with self.assertRaises(build.BuildError):
+            build.cargo_target_binding(cache, 'unknown', 'wordcraft', first)
+        with self.assertRaises(build.BuildError):
+            build.cargo_target_binding(cache, 'access', '../wordcraft', first)
+        with self.assertRaises(OSError):
+            build.cargo_target_binding(cache, 'access', 'wordcraft', self.root / 'missing')
+
+    def test_cargo_cache_rejects_real_redirected_namespace_components_without_writing_them(self):
+        source = self.root / 'actual-source'
+        source.mkdir()
+        redirected = self.root / 'unrelated-product-cache'
+        redirected.mkdir()
+        (redirected / 'preserve.bin').write_bytes(b'Unrelated cache bytes remain untouched')
+        before = {path.name: path.read_bytes() for path in redirected.iterdir()}
+        for index in range(4):
+            cache = self.root / ('cache-link-' + str(index))
+            target, _ = build.cargo_target_binding(cache, 'access', 'wordcraft', source)
+            part = cache.joinpath(*target.relative_to(cache).parts[:index + 1])
+            part.parent.mkdir(parents=True)
+            if os.name == 'nt':
+                result = subprocess.run(['cmd.exe', '/d', '/c', 'mklink', '/J', str(part), str(redirected)], capture_output=True)
+                self.assertEqual(result.returncode, 0, result.stderr.decode(errors='replace'))
+            else:
+                part.symlink_to(redirected, target_is_directory=True)
+            with self.assertRaisesRegex(build.BuildError, 'redirected component'):
+                build.cargo_target_binding(cache, 'access', 'wordcraft', source)
+            self.assertEqual({path.name: path.read_bytes() for path in redirected.iterdir()}, before)
+
+    def test_cargo_cache_rejects_files_and_accepts_an_explicit_root_alias(self):
+        source = self.root / 'actual-source'
+        source.mkdir()
+        for index in range(4):
+            cache = self.root / ('cache-file-' + str(index))
+            target, _ = build.cargo_target_binding(cache, 'access', 'wordcraft', source)
+            part = cache.joinpath(*target.relative_to(cache).parts[:index + 1])
+            part.parent.mkdir(parents=True)
+            part.write_bytes(b'Existing unrelated file')
+            with self.assertRaisesRegex(build.BuildError, 'non-directory component'):
+                build.cargo_target_binding(cache, 'access', 'wordcraft', source)
+            self.assertEqual(part.read_bytes(), b'Existing unrelated file')
+        real = self.root / 'approved-root'
+        real.mkdir()
+        alias = self.root / 'approved-alias'
+        if os.name == 'nt':
+            result = subprocess.run(['cmd.exe', '/d', '/c', 'mklink', '/J', str(alias), str(real)], capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr.decode(errors='replace'))
+        else:
+            alias.symlink_to(real, target_is_directory=True)
+        target, receipt = build.cargo_target_binding(alias, 'access', 'wordcraft', source)
+        self.assertTrue(build.within(real, target))
+        self.assertEqual(Path(receipt['canonicalCacheRoot']), real.resolve())
+        self.assertEqual(Path(receipt['canonicalTargetRoot']), target.resolve())
+        self.assertEqual(list(real.iterdir()), [], 'Selecting a namespace never writes into the approved alias target')
+
     def git(self, repo, *args, data=None):
         result = subprocess.run(['git', '-C', str(repo), *args], input=data, env=build.git_environment(), capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr.decode(errors='replace'))

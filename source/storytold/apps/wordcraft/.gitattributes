@@ -52,6 +52,7 @@ docs/brand/artcraft-mark-black.png -text
 docs/brand/artcraft-mark-black.svg -text
 docs/brand/artcraft-mark.png -text
 docs/brand/artcraft-mark.svg -text
+xtask/src/main.rs -text
 vendor/craft-docx/** -text
 vendor/craft-rtf/** -text
 vendor/craft-latex/** -text

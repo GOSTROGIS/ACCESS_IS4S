@@ -135,16 +135,30 @@ fn cmd_layers() -> Result<(), String> {
 /// Workspace packages that must build for wasm32: all L0–L5 crates plus
 /// the egui shell.
 fn wasm_set() -> Result<Vec<String>, String> {
-    let crates = layers::from_metadata(&metadata()?)?;
-    Ok(crates
-        .into_iter()
-        .filter(|c| match layers::classify(&c.name) {
-            Some(layers::Class::Layer(l)) => l <= 5 || layers::short_name(&c.name) == "ui-egui",
+    wasm_set_from_metadata(&metadata()?)
+}
+
+fn wasm_set_from_metadata(meta: &serde_json::Value) -> Result<Vec<String>, String> {
+    let packages = meta["packages"].as_array().ok_or("metadata: no packages array")?;
+    let members = meta["workspace_members"].as_array().ok_or("metadata: no workspace members array")?;
+    let mut selected = Vec::new();
+    for member in members {
+        let id = member.as_str().ok_or("workspace member without package ID")?;
+        let package = packages.iter().find(|p| p["id"].as_str() == Some(id)).ok_or("workspace member missing from packages")?;
+        let name = package["name"].as_str().ok_or("package without name")?;
+        let include = match layers::classify(name) {
+            Some(layers::Class::Layer(l)) => l <= 5 || layers::short_name(name) == "ui-egui",
             Some(layers::Class::Standalone) => true,
             _ => false,
-        })
-        .map(|c| c.name)
-        .collect())
+        };
+        if include {
+            // Cargo's exact package ID distinguishes the owned writer from a
+            // same-name/version Git dependency still required by spreadsheets.
+            selected.push((name, id));
+        }
+    }
+    selected.sort_unstable();
+    Ok(selected.into_iter().map(|(_, id)| id.to_owned()).collect())
 }
 
 /// One `cargo check` for the whole set: each crate is checked once, and
@@ -299,4 +313,46 @@ Tests that use a corpus skip cleanly when it is absent.
     let n = std::fs::read_dir(&dest).map(|d| d.flatten().filter(|e| e.path().extension().is_some_and(|x| x == "png")).count()).unwrap_or(0);
     println!("PngSuite: {n} PNG files in {}", dest.display());
     if n == 0 { Err("no PNG files extracted".into()) } else { Ok(()) }
+}
+
+#[cfg(test)]
+mod wasm_tests {
+    use super::wasm_set_from_metadata;
+    use serde_json::json;
+
+    #[test]
+    fn exact_workspace_specs_keep_wasm_scope_despite_matching_git_package_names() {
+        let names = [
+            "craft-docx",
+            "craft-latex",
+            "craft-odf",
+            "craft-rtf",
+            "wordcraft-control-key",
+            "wordcraft-doc",
+            "wordcraft-ui-egui",
+            "wordcraft-cli",
+            "wordcraft-testkit",
+        ];
+        let members: Vec<String> = names.iter().map(|name| format!("path+file:///workspace/{name}#0.1.0")).collect();
+        let git_id = "git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c#craft-odf@0.1.0";
+        let mut packages = vec![json!({"name": "craft-odf", "id": git_id, "dependencies": []})];
+        packages.extend(names.iter().zip(&members).map(|(name, id)| json!({"name": name, "id": id, "dependencies": []})));
+        let metadata = json!({"workspace_members": members, "packages": packages});
+        let actual = wasm_set_from_metadata(&metadata).unwrap();
+        let expected: Vec<_> = names[..7].iter().map(|name| format!("path+file:///workspace/{name}#0.1.0")).collect();
+        assert_eq!(actual, expected);
+        assert!(!actual.iter().any(|id| id == git_id));
+    }
+
+    #[test]
+    fn malformed_or_missing_workspace_package_ids_cannot_silently_drop_checks() {
+        for metadata in [
+            json!({"packages": []}),
+            json!({"workspace_members": [17], "packages": []}),
+            json!({"workspace_members": ["missing"], "packages": []}),
+            json!({"workspace_members": ["without-name"], "packages": [{"id": "without-name"}]}),
+        ] {
+            assert!(wasm_set_from_metadata(&metadata).is_err(), "{metadata}");
+        }
+    }
 }

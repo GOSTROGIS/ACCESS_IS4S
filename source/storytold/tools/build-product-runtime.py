@@ -435,6 +435,34 @@ def run_step(command, cwd, env, log, capture=False, timeout=21600):
     return log.read_bytes() if capture else {'exitCode': 0, 'logSha256': digest(log)}
 
 
+def cargo_target_binding(cache, product, application, source):
+    require(product in OWNERS and re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', application), 'Unknown Cargo cache identity')
+    # Local packages can embed CARGO_MANIFEST_DIR. Never reuse a driver or local
+    # crate compiled at another product/source root, even when its bytes match.
+    canonical = os.path.normcase(git_path(Path(source).resolve(strict=True)))
+    root_hash = hashlib.sha256(canonical.encode('utf-8')).hexdigest()
+    namespace = product + '/' + application + '/' + root_hash
+    cache = Path(cache).absolute()
+    resolved_cache = cache.resolve()
+    require(not cache.exists() or cache.is_dir(), 'Declared Cargo cache root is not a directory')
+    target = cache
+    for part in ['sources', product, application, root_hash]:
+        target /= part
+        try:
+            entry = target.lstat()
+        except FileNotFoundError:
+            continue
+        require(not target.is_symlink() and not getattr(entry, 'st_file_attributes', 0) & 0x400,
+                'Namespaced Cargo cache contains a redirected component')
+        require(target.is_dir(), 'Namespaced Cargo cache contains a non-directory component')
+    resolved_target = target.resolve()
+    require(resolved_target != resolved_cache and within(resolved_cache, resolved_target), 'Namespaced Cargo cache escapes the declared root')
+    return target, {
+        'namespace': namespace, 'sourceRootSha256': root_hash, 'canonicalSourceRoot': canonical,
+        'canonicalCacheRoot': str(resolved_cache), 'canonicalTargetRoot': str(resolved_target),
+    }
+
+
 def verify_input(repo, commit):
     require(HEX40.fullmatch(commit), 'Build input is not pinned to a complete Git commit')
     require(git(repo, 'rev-parse', 'HEAD').decode().strip() == commit, 'Build input is at a different commit')
@@ -649,8 +677,11 @@ def main():
     i18n_commit = (source / recipe['inputs']['i18n']['pinFile']).read_text().strip()
     verify_input(args.fonts, font_commit)
     verify_input(args.i18n, i18n_commit)
-    target_dir = args.target_dir or args.scratch / 'target'
-    require(not within(repo, target_dir), 'Cargo output must stay outside source control')
+    target_cache = args.target_dir or args.scratch / 'target'
+    require(not within(repo, target_cache), 'Cargo output must stay outside source control')
+    target_dir, cache_binding = cargo_target_binding(target_cache, args.product, args.application, source)
+    require(within(target_cache, target_dir) and not within(repo, target_dir) and not within(source, target_dir),
+            'Resolved Cargo target must stay inside the declared cache and outside repository/source trees')
     profile = args.scratch / 'profiles' / identity
     profile.mkdir(parents=True, exist_ok=True)
     env.update(CARGO_TARGET_DIR=str(target_dir), CARGO_BUILD_TARGET=recipe['native']['target'],
@@ -660,6 +691,7 @@ def main():
                XDG_CONFIG_HOME=str(profile), XDG_DATA_HOME=str(profile))
     logs = args.scratch / 'logs' / (identity + '-' + args.kind + '-' + uuid.uuid4().hex)
     logs.mkdir(parents=True)
+    (logs / 'cargo-cache-binding.json').write_bytes(encode(cache_binding))
     cargo = [config['tools']['cargo']['path'], '+' + recipe['toolchain']]
     for name in ['cargo', 'rustc']:
         tool = config['tools'][name]['path']
@@ -712,6 +744,8 @@ def main():
                                     'builderSha256': digest(__file__),
                                     'processContainmentSha256': digest(Path(__file__).with_name('product_build_process.py')),
                                     'functionalGateSha256': digest(Path(__file__).with_name(recipe['functionalGate'])),
+                                    'cargoCacheNamespace': cache_binding['namespace'],
+                                    'cargoSourceRootSha256': cache_binding['sourceRootSha256'],
                                     'commandBaselineSha256': digest(recipe_path.with_name('wordcraft-commands.json'))}}
         (stage / 'build-manifest.json').write_bytes(encode(manifest))
         reused = False
@@ -742,6 +776,7 @@ def main():
         temporary_zip.rename(archive)
     report = {'ok': True, 'id': identity, 'kind': args.kind, 'version': version, 'source': manifest['source'],
               'currentValidatedInput': source_info, 'reusedSealedVersion': reused,
+              'cargoCacheBinding': cache_binding,
               'artifactSha256': digest(archive), 'manifestSha256': digest(final / 'build-manifest.json'), 'gates': gates,
               'sourceFiles': len(record['files']), 'payloadFiles': len(manifest['files']), 'automaticDeploymentPerformed': False}
     (logs / 'build-receipt.json').write_bytes(encode(report))
