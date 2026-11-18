@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Linux-only transport boundary regressions; application gates run separately."""
 import importlib.util
+import hashlib
+import json
+import shutil
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import os
 from pathlib import Path
@@ -114,6 +118,216 @@ class Boundaries(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('Unapproved worker port', result.stderr)
             self.assertFalse(candidate.exists())
+
+
+    def source_fixture(self, base):
+        source = base / 'source'
+        source.mkdir()
+        files = {'src/cli.ts': 'export {};\n', 'web/src/app.ts': 'export const app = 1;\n',
+            'dir.file': 'sort before dir tree\n', 'dir/run.sh': '#!/bin/sh\nexit 0\n'}
+        for name, body in files.items():
+            path = source / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(body)
+            path.chmod(0o755 if name.endswith('.sh') else 0o644)
+        env = {'PATH': '/usr/bin:/bin', 'GIT_CONFIG_NOSYSTEM': '1', 'GIT_CONFIG_GLOBAL': '/dev/null', 'GIT_CONFIG_SYSTEM': '/dev/null'}
+        for args in (['init', '-q'], ['add', '--', '.']):
+            subprocess.run(['/usr/bin/git', '-C', str(source), '-c', 'core.autocrlf=false',
+                '-c', 'core.fsmonitor=false', '-c', 'core.hooksPath=/dev/null', *args], env=env, check=True, capture_output=True)
+        tree = subprocess.run(['/usr/bin/git', '-C', str(source), 'write-tree'], env=env, check=True, capture_output=True, text=True).stdout.strip()
+        shutil.rmtree(source / '.git')
+        receipt = {'schema': 1, 'product': 'access', 'application': 'autocraft', 'archiveSha256': 'f' * 64,
+            'source': {'repository': 'https://github.com/GOSTROGIS/ACCESS_IS4S.git', 'prefix': 'source/storytold/apps/autocraft',
+                'commit': 'b' * 40, 'tree': tree}, 'files': {name: {'bytes': len((source / name).read_bytes()),
+                    'sha256': hashlib.sha256((source / name).read_bytes()).hexdigest(),
+                    'mode': '100755' if name.endswith('.sh') else '100644'} for name in files}}
+        return source, receipt
+
+    def runtime_fixture(self, base):
+        gate = base / 'gate.mjs'
+        gate.write_text('')
+        return module.Runtime(SimpleNamespace(runtime_root=str(base / 'runtime'), data_root=str(base / 'data'),
+            node='/opt/node/bin/node', gate=str(gate), instance='access', worker_port=8981))
+
+    def test_source_inventory_reconstructs_actual_git_tree_and_rejects_omission_or_mode_change(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-source-proof-') as folder:
+            source, receipt = self.source_fixture(Path(folder))
+            self.assertEqual(module.verify_source(source, receipt), receipt['source']['tree'])
+            omitted = json.loads(json.dumps(receipt))
+            del omitted['files']['dir.file']
+            with self.assertRaisesRegex(ValueError, 'unlisted source'):
+                module.verify_source(source, omitted)
+            original_file = (source / 'dir.file').read_bytes()
+            (source / 'dir.file').unlink()
+            with self.assertRaisesRegex(ValueError, 'complete verified Git tree'):
+                module.verify_source(source, omitted)
+            (source / 'dir.file').write_bytes(original_file)
+            extra = source / 'web/src/extra.ts'
+            extra.write_text('unlisted source')
+            with self.assertRaisesRegex(ValueError, 'unlisted source'):
+                module.verify_source(source, receipt)
+            extra.unlink()
+            (source / 'node_modules').mkdir()
+            (source / 'node_modules/dependency.js').write_text('installed dependency')
+            (source / 'web/dist').mkdir()
+            (source / 'web/dist/app.js').write_text('compiled frontend')
+            self.assertEqual(module.verify_source(source, receipt), receipt['source']['tree'])
+            (source / 'dir/run.sh').chmod(0o644)
+            with self.assertRaisesRegex(ValueError, 'executable mode'):
+                module.verify_source(source, receipt)
+            (source / 'dir/run.sh').chmod(0o755)
+            (source / 'src/cli.ts').write_text('changed')
+            with self.assertRaisesRegex(ValueError, 'differs'):
+                module.verify_source(source, receipt)
+
+    def test_matching_source_keeps_original_pin_and_fails_closed_on_corrupt_core(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-match-proof-') as folder:
+            base = Path(folder)
+            source, fresh = self.source_fixture(base)
+            runtime = self.runtime_fixture(base)
+            name = 'retained-d'
+            shutil.copytree(source, runtime.edition(name))
+            original = {'edition': name, 'qualified': True, 'sourceRef': 'a' * 40,
+                'sourceTree': fresh['source']['tree'], 'sourceRepository': fresh['source']['repository'],
+                'sourcePrefix': fresh['source']['prefix'], 'archiveSha256': 'e' * 64,
+                'treeSha256': module.digest_tree(runtime.edition(name))}
+            module.atomic_json(runtime.receipt(name), original)
+            (runtime.root / 'current').symlink_to('editions/' + name)
+            module.atomic_json(runtime.root / 'selection.json', {'current': name, 'previous': None})
+            path = base / 'source-receipt.json'
+            path.write_text(json.dumps(fresh))
+            result = runtime.match_source(path)
+            self.assertEqual(result, {'matched': True, 'checkedSourceRef': 'b' * 40, 'qualified': original})
+            self.assertEqual(json.loads(runtime.receipt(name).read_text()), original)
+            invalid = json.loads(json.dumps(fresh))
+            invalid['source']['repository'] = 'https://github.com/foreign/unapproved.git'
+            path.write_text(json.dumps(invalid))
+            with self.assertRaisesRegex(ValueError, 'fixed product'):
+                runtime.match_source(path)
+            path.write_text(json.dumps(fresh))
+            (runtime.edition(name) / 'src/cli.ts').write_text('changed')
+            with self.assertRaisesRegex(ValueError, 'core digest mismatch'):
+                runtime.match_source(path)
+
+    def test_source_match_checks_previous_and_clean_no_match_does_not_switch(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-previous-proof-') as folder:
+            base = Path(folder)
+            source, fresh = self.source_fixture(base)
+            runtime = self.runtime_fixture(base)
+            for name, tree in [('current-c2', 'c' * 40), ('previous-d', fresh['source']['tree'])]:
+                shutil.copytree(source, runtime.edition(name))
+                module.atomic_json(runtime.receipt(name), {'edition': name, 'qualified': True, 'sourceRef': 'a' * 40,
+                    'sourceTree': tree, 'sourceRepository': fresh['source']['repository'], 'sourcePrefix': fresh['source']['prefix'],
+                    'archiveSha256': 'e' * 64, 'treeSha256': module.digest_tree(runtime.edition(name))})
+            (runtime.root / 'current').symlink_to('editions/current-c2')
+            module.atomic_json(runtime.root / 'selection.json', {'current': 'current-c2', 'previous': 'previous-d'})
+            path = base / 'fresh.json'
+            path.write_text(json.dumps(fresh))
+            self.assertEqual(runtime.match_source(path)['qualified']['edition'], 'previous-d')
+            self.assertEqual(runtime.current(), 'current-c2')
+            fresh['source']['tree'] = 'd' * 40
+            path.write_text(json.dumps(fresh))
+            self.assertEqual(runtime.match_source(path), {'matched': False, 'checkedSourceRef': 'b' * 40})
+            self.assertEqual(runtime.current(), 'current-c2')
+
+    def test_owned_phase_timeout_cleans_descendants_and_keeps_raw_output_private(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-process-proof-') as folder:
+            base = Path(folder)
+            runtime = self.runtime_fixture(base)
+            pidfile = base / 'child.pid'
+            child = 'import signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(60)'
+            parent = ('import subprocess,sys,time,signal;signal.signal(signal.SIGTERM,signal.SIG_IGN);'
+                'p=subprocess.Popen([sys.executable,"-c",' + repr(child) + ']);'
+                'open(' + repr(str(pidfile)) + ',"w").write(str(p.pid));'
+                'print("private-fixture-marker",file=sys.stderr,flush=True);time.sleep(60)')
+            with self.assertRaisesRegex(RuntimeError, 'time limit') as refused:
+                runtime.phase('fixture-timeout', [sys.executable, '-c', parent], env={'PATH': '/usr/bin:/bin'}, timeout=1)
+            self.assertNotIn('private-fixture-marker', str(refused.exception))
+            self.assertNotIn(str(base), str(refused.exception))
+            metadata = json.loads((runtime.data / 'build-diagnostics/last-result.json').read_text())
+            self.assertTrue(metadata['timedOut'])
+            self.assertTrue(metadata['processGroupContained'])
+            self.assertLess(metadata['elapsedSeconds'], 5)
+            pid = int(pidfile.read_text())
+            status = Path('/proc') / str(pid) / 'status'
+            for _ in range(40):
+                if not status.exists() or '\nState:\tZ' in '\n' + status.read_text():
+                    break
+                time.sleep(0.05)
+            else:
+                self.fail('Owned phase left its descendant running')
+            raw, = (runtime.data / 'build-diagnostics').glob('fixture-timeout-*/stderr.log')
+            self.assertIn('private-fixture-marker', raw.read_text())
+            self.assertEqual(raw.stat().st_mode & 0o777, 0o600)
+
+
+    def test_missing_active_target_fails_before_candidate_can_become_visible(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-selector-proof-') as folder:
+            runtime = self.runtime_fixture(Path(folder))
+            (runtime.root / 'current').symlink_to('editions/missing')
+            with self.assertRaisesRegex(ValueError, 'missing target'):
+                runtime.stage(SimpleNamespace(edition='missing', source_ref='a' * 40, replace_unqualified=True))
+            self.assertFalse(runtime.edition('missing').exists())
+
+    def test_owned_phase_success_retains_complete_output_and_private_status(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-phase-success-') as folder:
+            runtime = self.runtime_fixture(Path(folder))
+            result = runtime.phase('fixture-success', [sys.executable, '-c', 'print("complete")'],
+                env={'PATH': '/usr/bin:/bin'}, timeout=5)
+            self.assertEqual(result.stdout, 'complete\n')
+            self.assertEqual(result.returncode, 0)
+            metadata = json.loads((runtime.data / 'build-diagnostics/last-result.json').read_text())
+            self.assertFalse(metadata['timedOut'])
+            self.assertEqual(metadata['exitCode'], 0)
+
+
+    def test_sighup_cleans_owned_phase_and_records_interruption(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-interrupt-proof-') as folder:
+            base = Path(folder)
+            pidfile = base / 'owned.pid'
+            child = ('import os,signal,time;open(' + repr(str(pidfile)) + ',"w").write(str(os.getpid()));'
+                'signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(60)')
+            helper = ('import importlib.util;from types import SimpleNamespace;'
+                's=importlib.util.spec_from_file_location("runtime",' + repr(str(script)) + ');m=importlib.util.module_from_spec(s);s.loader.exec_module(m);'
+                'from pathlib import Path;b=Path(' + repr(str(base)) + ');g=b/"gate.mjs";g.write_text("");'
+                'r=m.Runtime(SimpleNamespace(runtime_root=str(b/"runtime"),data_root=str(b/"data"),node="/opt/node/bin/node",gate=str(g),instance="access",worker_port=8981));'
+                'r.phase("fixture-interrupt",[' + repr(sys.executable) + ',"-c",' + repr(child) + '],env={"PATH":"/usr/bin:/bin"},timeout=20)')
+            process = subprocess.Popen([sys.executable, '-c', helper], env={'PATH': '/usr/bin:/bin', 'PYTHONDONTWRITEBYTECODE': '1'}, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            try:
+                for _ in range(100):
+                    if pidfile.exists():
+                        break
+                    time.sleep(0.05)
+                self.assertTrue(pidfile.exists())
+                os.kill(process.pid, module.signal.SIGHUP)
+                self.assertEqual(process.wait(timeout=8), 128 + module.signal.SIGHUP)
+                metadata = json.loads((base / 'data/build-diagnostics/last-result.json').read_text())
+                self.assertEqual(metadata['interruptedSignal'], module.signal.SIGHUP)
+                pid = int(pidfile.read_text())
+                status = Path('/proc') / str(pid) / 'status'
+                self.assertTrue(not status.exists() or '\nState:\tZ' in '\n' + status.read_text())
+            finally:
+                if process.poll() is None:
+                    process.kill()
+                process.communicate(timeout=5)
+                if pidfile.exists():
+                    try:
+                        os.killpg(int(pidfile.read_text()), module.signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+
+    def test_selected_runtime_is_never_quarantined_even_with_missing_receipt(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-recovery-proof-') as folder:
+            runtime = self.runtime_fixture(Path(folder))
+            current = runtime.edition('selected')
+            current.mkdir()
+            sentinel = current / 'existing.txt'
+            sentinel.write_text('Existing installed runtime')
+            (runtime.root / 'current').symlink_to('editions/selected')
+            with self.assertRaisesRegex(ValueError, 'selected runtime'):
+                runtime.stage(SimpleNamespace(edition='selected', source_ref='a' * 40, replace_unqualified=True))
+            self.assertEqual(sentinel.read_text(), 'Existing installed runtime')
+            self.assertFalse((runtime.root / 'rejected').exists())
 
 
 if __name__ == '__main__':

@@ -10,6 +10,8 @@ const sources = Object.freeze({
   slipcurve: { repository: 'https://github.com/GOSTROGIS/SLIPCURVE.git', prefix: 'vendor/storytold/apps/autocraft' },
 });
 const sha = /^[a-f0-9]{40}$/, hash = /^[a-f0-9]{64}$/;
+const isSha = value => typeof value === 'string' && sha.test(value);
+const isHash = value => typeof value === 'string' && hash.test(value);
 const selections = Object.freeze({ 'access-autocraft': 'access', 'slipcurve-autocraft': 'slipcurve' });
 
 const contained = (parent, path) => {
@@ -41,18 +43,18 @@ export function validateSourceReceipt(product, receipt, archive) {
   const source = sources[product];
   if (!source || receipt?.schema !== 1 || receipt.application !== 'autocraft' || receipt.product !== product ||
       receipt.source?.repository !== source.repository || receipt.source?.prefix !== source.prefix ||
-      !sha.test(receipt.source?.commit || '') || !sha.test(receipt.source?.tree || '') ||
-      !hash.test(receipt.archiveSha256 || '') || createHash('sha256').update(archive).digest('hex') !== receipt.archiveSha256) {
+      !isSha(receipt.source?.commit) || !isSha(receipt.source?.tree) ||
+      !isHash(receipt.archiveSha256) || createHash('sha256').update(archive).digest('hex') !== receipt.archiveSha256) {
     throw Error('The owned automation source receipt or archive does not match the fixed product.');
   }
   for (const lock of ['package.json', 'pnpm-lock.yaml']) {
-    if (!hash.test(receipt.locks?.[lock] || '') || receipt.files?.[lock]?.sha256 !== receipt.locks[lock]) {
+    if (!isHash(receipt.locks?.[lock]) || receipt.files?.[lock]?.sha256 !== receipt.locks[lock]) {
       throw Error('The owned automation source is missing its frozen package manifest.');
     }
   }
   for (const [name, pin] of Object.entries(receipt.files || {})) {
     if (!name || name.startsWith('/') || /[\\:\x00-\x1f\x7f]/.test(name) || name.split('/').some(part => !part || part === '.' || part === '..') ||
-        !hash.test(pin.sha256 || '') || !Number.isSafeInteger(pin.bytes) || pin.bytes < 0 || !['100644', '100755'].includes(pin.mode)) {
+        !isHash(pin.sha256) || !Number.isSafeInteger(pin.bytes) || pin.bytes < 0 || !['100644', '100755'].includes(pin.mode)) {
       throw Error('The owned automation source manifest has an unsafe entry.');
     }
   }
@@ -63,7 +65,7 @@ export function validateSourceReceipt(product, receipt, archive) {
 }
 
 export function managerCommand(config, product, action, args = []) {
-  if (!PRODUCTS[product] || !['status', 'stage', 'qualify', 'activate', 'verify', 'check', 'rollback', 'resume-updates'].includes(action) ||
+  if (!PRODUCTS[product] || !['status', 'match-source', 'stage', 'qualify', 'activate', 'verify', 'check', 'rollback', 'resume-updates'].includes(action) ||
       !/^\/[a-zA-Z0-9._/-]+$/.test(config.root) || /\/\.\.?(\/|$)/.test(config.root)) throw Error('Invalid fixed automation manager action.');
   const r = config.root;
   return ['python3', `${r}.runtime/tools/linux-runtime.py`, '--runtime-root', `${r}.runtime/${product}`,
@@ -84,12 +86,20 @@ async function state(config, product, guest) {
   return value;
 }
 
-async function refreshService(root, config, product, guest) {
-  const active = await state(config, product, guest);
-  const pin = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', active.current]), undefined, 300_000));
-  if (pin.qualified !== true || pin.edition !== active.current || !sha.test(pin.sourceRef || '') ||
-      !sha.test(pin.sourceTree || '') || !hash.test(pin.archiveSha256 || '') || !hash.test(pin.treeSha256 || '')) {
+async function refreshService(root, config, product, guest, expectedPin) {
+  const before = await state(config, product, guest);
+  const pin = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', before.current]), undefined, 300_000));
+  if (pin.qualified !== true || pin.edition !== before.current || !isSha(pin.sourceRef) ||
+      !isSha(pin.sourceTree) || !isHash(pin.archiveSha256) || !isHash(pin.treeSha256)) {
     throw Error('The installed automation has no complete verified source and runtime receipt.');
+  }
+  const active = await state(config, product, guest);
+  if (active.current !== before.current || (active.previous ?? null) !== (before.previous ?? null) ||
+      (active.updatesHeld === true) !== (before.updatesHeld === true)) {
+    throw Error('The automation selection changed during final verification; its service ledger was preserved.');
+  }
+  if (expectedPin && (active.updatesHeld || active.current !== expectedPin.edition || !sameQualifiedPin(expectedPin, pin))) {
+    throw Error('The selected automation runtime does not match its checked immutable pin.');
   }
   const path = join(root, 'installed-product-services.json');
   const item = await lstat(path).catch(error => { if (error.code !== 'ENOENT') throw error; return null; });
@@ -104,7 +114,7 @@ async function refreshService(root, config, product, guest) {
     if (!fixed || seen.has(existing.product) || existing.application !== 'autocraft' || existing.kind !== 'service' ||
         existing.id !== existing.product + '-autocraft' || existing.origin !== `http://${target.host}:${target.port}` ||
         !/^[a-z0-9][a-z0-9._-]{0,95}$/.test(existing.version || '') || existing.source?.repository !== fixed.repository ||
-        existing.source?.prefix !== fixed.prefix || !sha.test(existing.source?.commit || '') || !sha.test(existing.source?.tree || '')) {
+        existing.source?.prefix !== fixed.prefix || !isSha(existing.source?.commit) || !isSha(existing.source?.tree)) {
       throw Error('The installed automation service registry is invalid.');
     }
     seen.add(existing.product);
@@ -123,6 +133,49 @@ async function refreshService(root, config, product, guest) {
     await rm(pending, { force: true });
   }
   return { active, pin };
+}
+
+function fixedQualifiedPin(product, pin) {
+  return pin?.qualified === true && isSha(pin.sourceRef) && isSha(pin.sourceTree) &&
+    pin.edition === 'owned-' + pin.sourceRef.slice(0, 12) && isHash(pin.archiveSha256) && isHash(pin.treeSha256) &&
+    pin.sourceRepository === sources[product].repository && pin.sourcePrefix === sources[product].prefix;
+}
+
+function sameQualifiedPin(first, second) {
+  return ['edition', 'sourceRef', 'sourceTree', 'archiveSha256', 'treeSha256', 'sourceRepository', 'sourcePrefix']
+    .every(name => first[name] === second[name]);
+}
+
+async function retainedSource(root, config, product, guest, current, receipt, remoteReceipt) {
+  // The guest reconstructs the source Git tree from every actual file byte/mode;
+  // archive metadata or the tree string alone can never authorize reuse.
+  const match = response(await guest(config, managerCommand(config, product, 'match-source', ['--source-receipt', remoteReceipt]), undefined, 600_000));
+  if (typeof match?.matched !== 'boolean' || match.checkedSourceRef !== receipt.source.commit ||
+      (!match.matched && match.qualified !== undefined)) throw Error('The retained automation source comparison returned an invalid receipt.');
+  if (!match.matched) return null;
+  const pin = match.qualified;
+  if (!fixedQualifiedPin(product, pin) || pin.sourceTree !== receipt.source.tree ||
+      ![current.current, current.previous].includes(pin.edition)) {
+    throw Error('The retained automation source pin does not match a qualified current or previous product runtime.');
+  }
+  const checked = response(await guest(config, managerCommand(config, product, 'check', ['--edition', pin.edition]), undefined, 600_000));
+  if (checked.edition !== pin.edition || checked.coreVerified !== true || checked.functionalGate !== 'passed') {
+    throw Error('The retained automation full functional gate did not pass.');
+  }
+  const afterCheck = await state(config, product, guest);
+  if (afterCheck.current !== current.current || (afterCheck.previous ?? null) !== (current.previous ?? null) || afterCheck.updatesHeld) {
+    throw Error('The automation selection changed while its retained runtime was being checked.');
+  }
+  if (pin.edition !== current.current) {
+    const activation = response(await guest(config, managerCommand(config, product, 'activate', ['--edition', pin.edition]), undefined, 300_000));
+    if (activation.current !== pin.edition) throw Error('The qualified retained automation runtime was not selected.');
+  }
+  const { active, pin: actual } = await refreshService(root, config, product, guest, pin);
+  if (active.current !== pin.edition || active.updatesHeld || !sameQualifiedPin(pin, actual)) {
+    throw Error('The selected retained automation runtime changed before registry publication.');
+  }
+  return { product, status: pin.edition === current.current ? 'current' : 'reused', current: pin.edition,
+    sourceRef: pin.sourceRef, checkedSourceRef: receipt.source.commit, artifact: pin.archiveSha256 };
 }
 
 async function updateOne(root, config, paths, product, mode, staging, services) {
@@ -153,23 +206,19 @@ async function updateOne(root, config, paths, product, mode, staging, services) 
   const archive = await readFile(join(candidate, 'source.tar'));
   validateSourceReceipt(product, receipt, archive);
   const edition = 'owned-' + receipt.source.commit.slice(0, 12);
-  if (current.current === edition) {
-    const deployed = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', edition]), undefined, 300_000));
-    if (deployed.qualified !== true || deployed.sourceRef !== receipt.source.commit || deployed.sourceTree !== receipt.source.tree || deployed.archiveSha256 !== receipt.archiveSha256) {
-      throw Error('The deployed automation edition does not match the full owned source pin.');
-    }
-    // Check the full pin, never just the display edition's abbreviated commit.
-    await refreshService(root, config, product, guest);
-    return { product, status: 'current', current: edition, sourceRef: receipt.source.commit };
-  }
   const incoming = `${config.root}.runtime/incoming`;
   const remote = `${incoming}/${product}-${edition}-${randomUUID()}.tar`;
   // Upload source bytes and receipt only through the already authenticated, host-key-pinned SSH stdin.
   await guest(config, `umask 077; mkdir -p ${posixQuote(incoming)}; cat > ${posixQuote(remote)}`, archive, 120_000);
   await guest(config, `umask 077; cat > ${posixQuote(remote + '.receipt.json')}`, JSON.stringify(receipt), 30_000);
-  let qualified;
+  const retained = await retainedSource(root, config, product, guest, current, receipt, remote + '.receipt.json');
+  if (retained) return retained;
+  if ([current.current, current.previous].includes(edition)) {
+    throw Error('The retained automation edition failed comparison with its exact owned source.');
+  }
+  let qualified, recoveredQualified = false;
   try {
-    qualified = response(await guest(config, managerCommand(config, product, 'stage', ['--edition', edition,
+    qualified = response(await guest(config, managerCommand(config, product, 'stage', ['--edition', edition, '--replace-unqualified',
       '--archive', remote, '--sha256', receipt.archiveSha256, '--source-ref', receipt.source.commit,
       '--source-receipt', remote + '.receipt.json']), undefined, 1_800_000));
   } catch {
@@ -177,21 +226,29 @@ async function updateOne(root, config, paths, product, mode, staging, services) 
     // Neither path skips a byte check or an unpassed functional gate.
     try {
       qualified = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', edition]), undefined, 300_000));
+      recoveredQualified = true;
     } catch {
       qualified = response(await guest(config, managerCommand(config, product, 'qualify', ['--edition', edition]), undefined, 600_000));
     }
   }
-  if (qualified.qualified !== true || qualified.edition !== edition || qualified.sourceRef !== receipt.source.commit ||
+  if (!fixedQualifiedPin(product, qualified) || qualified.edition !== edition || qualified.sourceRef !== receipt.source.commit ||
       qualified.sourceTree !== receipt.source.tree || qualified.archiveSha256 !== receipt.archiveSha256) throw Error('The Linux qualification receipt does not match the verified owned source.');
+  if (recoveredQualified) {
+    const checked = response(await guest(config, managerCommand(config, product, 'check', ['--edition', edition]), undefined, 600_000));
+    if (checked.edition !== edition || checked.coreVerified !== true || checked.functionalGate !== 'passed') {
+      throw Error('The recovered automation full functional gate did not pass.');
+    }
+  }
   const activation = response(await guest(config, managerCommand(config, product, 'activate', ['--edition', edition]), undefined, 300_000));
   if (activation.current !== edition) throw Error('The qualified automation runtime was not selected.');
   const after = await state(config, product, guest);
   if (after.current !== edition || after.updatesHeld) throw Error('The new automation runtime did not verify after activation.');
-  const { pin } = await refreshService(root, config, product, guest);
+  const { pin } = await refreshService(root, config, product, guest, qualified);
   if (pin.sourceRef !== receipt.source.commit || pin.sourceTree !== receipt.source.tree || pin.archiveSha256 !== receipt.archiveSha256) {
     throw Error('The selected automation source changed before registry publication.');
   }
-  return { product, status: 'updated', current: edition, sourceRef: receipt.source.commit, artifact: receipt.archiveSha256 };
+  return { product, status: 'updated', current: edition, sourceRef: receipt.source.commit,
+    checkedSourceRef: receipt.source.commit, artifact: receipt.archiveSha256 };
 }
 
 /** Installed daily updater entry: fixed products only, private staging, no GitHub writes or user-data copying. */

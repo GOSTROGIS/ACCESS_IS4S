@@ -19,10 +19,14 @@ The private connection settings reference the approved guest launcher, executabl
 `linux-runtime.py` accepts a host-verified source archive and receipt from the fixed owned repository. It verifies the commit, subtree, archive and every source file, installs frozen Linux dependencies, builds the complete production dashboard with `VITE_MOCK=0`, and runs the CLI, queue, HTTP frontend and authentication regression gates before qualification.
 
 - `stage` builds and qualifies an inactive edition. A completed build checkpoint permits `qualify` to retry the same unchanged candidate after a transient gate failure.
+- `match-source --source-receipt` compares the current and previous qualified editions with fresh owned source. It checks every source file and mode, reconstructs the complete Git tree, rejects extra source files, and verifies the whole runtime. A retained build keeps its original source pin; the host runs `check` before activating it. Installed dependencies and `web/dist` remain covered by the complete runtime digest.
+- `stage --replace-unqualified` preserves a failed inactive candidate in quarantine before rebuilding. It refuses a selected edition or an invalid active pointer.
 - `check` verifies an edition's complete core before and after its functional gates.
 - `activate` switches the selected edition and restarts its services. User data stays outside the editions.
 - `rollback` verifies the retained edition and holds subsequent updates. `resume-updates` explicitly releases that hold.
 - Changes to migration inputs require a private, pair-specific compatibility proof. The explicit `bootstrap` operation backs up the database and tests the real candidate and previous database runtimes on a disposable copy before activation.
+
+Build phases use owned process groups. Timeouts and handled SIGTERM/SIGHUP interruptions stop their descendants. Owner-only phase logs retain raw output; `diagnostics` returns only the phase, exit and timing status.
 
 Run the controller tests on Windows and the transport/migration tests in the guest:
 

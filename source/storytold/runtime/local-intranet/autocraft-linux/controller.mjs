@@ -72,7 +72,7 @@ export function privateConfigurationLocation(reference,installation){
 }
 
 export function sshArguments(config){
- return ['-F','NUL','-T','-p',String(config.port),'-i',config.key,'-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o',`UserKnownHostsFile=${config.knownHosts}`,'-o','ConnectTimeout=5','-o','IdentitiesOnly=yes','-o','IdentityAgent=none','-o','AddKeysToAgent=no'];
+ return ['-F','NUL','-T','-p',String(config.port),'-i',config.key,'-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o',`UserKnownHostsFile=${config.knownHosts}`,'-o','ConnectTimeout=20','-o','IdentitiesOnly=yes','-o','IdentityAgent=none','-o','AddKeysToAgent=no'];
 }
 
 export async function guestCommand(config,command,input,timeout=30000){

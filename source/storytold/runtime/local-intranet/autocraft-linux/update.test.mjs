@@ -32,7 +32,8 @@ async function fixture(t, overrides = {}) {
   const document = join(privateRoot, 'user-document.db');
   await writeFile(document, 'existing user data must survive');
   const calls = [], published = [], qualified = { edition, qualified: true, sourceRef: commit, sourceTree: 'b'.repeat(40),
-    treeSha256: 'f'.repeat(64), archiveSha256: digest(bytes) };
+    treeSha256: 'f'.repeat(64), archiveSha256: digest(bytes),
+    sourceRepository: manifest().source.repository, sourcePrefix: manifest().source.prefix };
   let current = overrides.current ?? 'existing-version', held = overrides.held === true;
   const services = {
     configuration: async () => config, ready: async () => {},
@@ -45,19 +46,20 @@ async function fixture(t, overrides = {}) {
       await writeFile(join(candidate, 'source.tar'), overrides.archive ?? bytes);
     },
     guest: async (_config, command, input) => {
-      const action = ['status', 'stage', 'qualify', 'activate', 'verify', 'check', 'rollback', 'resume-updates'].find(item => command.includes(`'${item}'`));
+      const action = ['status', 'match-source', 'stage', 'qualify', 'activate', 'verify', 'check', 'rollback', 'resume-updates'].find(item => command.includes(`'${item}'`));
       calls.push({ action, command, input });
       if (!action) return '';
-      const custom = await overrides.guest?.(action, { current, qualified, calls });
+      const custom = await overrides.guest?.(action, { current, qualified, calls, command });
       if (custom !== undefined) return JSON.stringify(custom);
-      if (action === 'status') return JSON.stringify({ current, verified: true, updatesHeld: held });
+      if (action === 'status') return JSON.stringify({ current, previous: overrides.previous ?? null, verified: true, updatesHeld: held });
+      if (action === 'match-source') return JSON.stringify({ matched: false, checkedSourceRef: commit });
       if (action === 'stage' || action === 'qualify') return JSON.stringify(qualified);
       if (action === 'verify') return JSON.stringify(command.includes(`'${edition}'`) ? qualified :
         { ...qualified, edition: current, sourceRef: 'd'.repeat(40), sourceTree: 'e'.repeat(40) });
-      if (action === 'activate') { current = edition; return JSON.stringify({ current }); }
+      if (action === 'activate') { current = command.match(/'--edition'\s+'([^']+)'/)?.[1] ?? edition; return JSON.stringify({ current }); }
       if (action === 'rollback') { current = 'prior-version'; held = true; return JSON.stringify({ current, updatesHeld: true }); }
       if (action === 'resume-updates') { held = false; return JSON.stringify({ current, updatesHeld: false }); }
-      if (action === 'check') return JSON.stringify({ passed: true });
+      if (action === 'check') return JSON.stringify({ edition: command.match(/'--edition'\s+'([^']+)'/)?.[1], coreVerified: true, functionalGate: 'passed' });
       throw Error('Unexpected manager action');
     },
   };
@@ -68,7 +70,7 @@ test('updater orchestration pins owned source, uploads only source stdin and act
   const f = await fixture(t);
   const [result] = await updateAutomations(f.root, { only: 'access-autocraft' }, f.services);
   assert.equal(result.status, 'updated'); assert.equal(result.sourceRef, commit);
-  assert.deepEqual(f.calls.filter(call => call.action).map(call => call.action), ['status', 'stage', 'activate', 'status', 'status', 'verify']);
+  assert.deepEqual(f.calls.filter(call => call.action).map(call => call.action), ['status', 'match-source', 'stage', 'activate', 'status', 'status', 'verify', 'status']);
   assert.equal(f.calls.find(call => Buffer.isBuffer(call.input)).input.equals(bytes), true);
   assert.ok(f.calls.every(call => !call.command.includes('existing user data')));
   assert.ok(f.published[0].includes('--product'));
@@ -102,7 +104,7 @@ test('interrupted frozen build retries exact checkpoint qualification before any
     if (action === 'stage' || action === 'verify' && !calls.some(call => call.action === 'qualify')) throw Error('not yet qualified');
   } });
   assert.equal((await updateAutomations(f.root, { only: 'access-autocraft' }, f.services))[0].status, 'updated');
-  assert.deepEqual(f.calls.filter(call => call.action).map(call => call.action), ['status', 'stage', 'verify', 'qualify', 'activate', 'status', 'status', 'verify']);
+  assert.deepEqual(f.calls.filter(call => call.action).map(call => call.action), ['status', 'match-source', 'stage', 'verify', 'qualify', 'activate', 'status', 'status', 'verify', 'status']);
 });
 
 test('forged qualification pin and modified source archive both fail before activation', async t => {
@@ -131,4 +133,118 @@ test('foreign products, unsafe source names, source-root private data and concur
   await assert.rejects(updateAutomations(f.root, { only: 'access-autocraft' }, f.services), /outside/);
   await assert.rejects(updateAutomations(f.root, { only: 'unknown' }, f.services), /Unknown/);
   await assert.rejects(updateAutomations(f.root, { only: 'access' }, f.services), /Unknown/);
+});
+
+const retained = { edition: 'owned-' + 'c'.repeat(12), qualified: true, sourceRef: 'c'.repeat(40), sourceTree: 'b'.repeat(40),
+  sourceRepository: manifest().source.repository, sourcePrefix: manifest().source.prefix,
+  treeSha256: 'f'.repeat(64), archiveSha256: digest('different archive metadata for identical source files') };
+function retainedGuest(action, { command }) {
+  if (action === 'match-source') return { matched: true, checkedSourceRef: commit, qualified: retained };
+  if (action === 'verify' && command.includes(`'${retained.edition}'`)) return retained;
+}
+
+test('matching retained current runtime delegates complete source comparison, regates and reports original pin separately from fresh main', async t => {
+  const f = await fixture(t, { current: retained.edition, guest: retainedGuest });
+  const [result] = await updateAutomations(f.root, { only: 'access-autocraft' }, f.services);
+  assert.equal(result.status, 'current'); assert.equal(result.sourceRef, retained.sourceRef); assert.equal(result.checkedSourceRef, commit);
+  assert.equal(result.artifact, retained.archiveSha256);
+  assert.equal(f.calls.some(call => ['stage', 'qualify', 'activate'].includes(call.action)), false);
+  assert.equal(f.calls.filter(call => call.action === 'check').length, 1);
+  assert.ok(f.calls.find(call => call.action === 'match-source').command.includes("'--source-receipt'"));
+  const registry = JSON.parse(await readFile(join(f.root, 'installed-product-services.json'), 'utf8'));
+  assert.equal(registry.services[0].source.commit, retained.sourceRef); assert.equal(registry.services[0].artifact, retained.archiveSha256);
+  assert.equal(await readFile(f.document, 'utf8'), 'existing user data must survive');
+});
+
+test('matching retained previous runtime must pass fresh full functional check before atomic reactivation without rebuild or relabel', async t => {
+  const f = await fixture(t, { previous: retained.edition, guest: retainedGuest });
+  const [result] = await updateAutomations(f.root, { only: 'access-autocraft' }, f.services);
+  assert.equal(result.status, 'reused'); assert.equal(result.current, retained.edition); assert.equal(result.sourceRef, retained.sourceRef);
+  assert.equal(result.checkedSourceRef, commit);
+  assert.equal(f.calls.some(call => ['stage', 'qualify'].includes(call.action)), false);
+  const check = f.calls.findIndex(call => call.action === 'check'), activate = f.calls.findIndex(call => call.action === 'activate');
+  assert(check >= 0 && activate > check); assert(f.calls[check].command.includes(`'${retained.edition}'`));
+  assert.equal(await readFile(f.document, 'utf8'), 'existing user data must survive');
+});
+
+test('a content match cannot hide a failed regression, incomplete gate acknowledgement or unrelated retained pin', async t => {
+  for (const scenario of ['gate-failed', 'gate-incomplete', 'foreign-repo', 'foreign-prefix', 'different-tree', 'not-retained', 'wrong-fresh-ref']) {
+    const f = await fixture(t, { previous: retained.edition, guest(action, context) {
+      if (action === 'match-source') {
+        const candidate = { ...retained };
+        if (scenario === 'foreign-repo') candidate.sourceRepository = manifest('slipcurve').source.repository;
+        if (scenario === 'foreign-prefix') candidate.sourcePrefix = manifest('slipcurve').source.prefix;
+        if (scenario === 'different-tree') candidate.sourceTree = 'd'.repeat(40);
+        if (scenario === 'not-retained') candidate.edition = 'unrelated-edition';
+        return { matched: true, checkedSourceRef: scenario === 'wrong-fresh-ref' ? 'd'.repeat(40) : commit, qualified: candidate };
+      }
+      if (action === 'check' && scenario === 'gate-failed') throw Error('actual retained regression refused');
+      if (action === 'check' && scenario === 'gate-incomplete') return { edition: retained.edition, coreVerified: true };
+      return retainedGuest(action, context);
+    } });
+    await assert.rejects(updateAutomations(f.root, { only: 'access-autocraft' }, f.services));
+    assert.equal(f.calls.some(call => ['stage', 'activate'].includes(call.action)), false);
+    assert.equal(await readFile(f.document, 'utf8'), 'existing user data must survive');
+  }
+});
+
+test('source comparison or checked-reference failures never fall through to a build; changed source quarantines only an unqualified candidate', async t => {
+  for (const invalid of [null, { matched: false, checkedSourceRef: 'd'.repeat(40) }, { matched: 'false', checkedSourceRef: commit }]) {
+    const f = await fixture(t, { guest(action) { if (action === 'match-source') { if (invalid === null) throw Error('source integrity refusal'); return invalid; } } });
+    await assert.rejects(updateAutomations(f.root, { only: 'access-autocraft' }, f.services));
+    assert.equal(f.calls.some(call => ['stage', 'activate'].includes(call.action)), false);
+  }
+  const f = await fixture(t);
+  assert.equal((await updateAutomations(f.root, { only: 'access-autocraft' }, f.services))[0].status, 'updated');
+  assert.ok(f.calls.find(call => call.action === 'stage').command.includes("'--replace-unqualified'"));
+});
+
+test('selection changes or a changed final qualified core cannot publish a stale service ledger', async t => {
+  for (const scenario of ['selection', 'core']) {
+    let statusCalls = 0;
+    const f = await fixture(t, { previous: retained.edition, guest(action, context) {
+      if (action === 'status' && ++statusCalls > 1 && scenario === 'selection') return { current: 'changed-externally', previous: retained.edition, verified: true, updatesHeld: false };
+      if (action === 'verify' && scenario === 'core') return { ...retained, treeSha256: 'd'.repeat(64) };
+      return retainedGuest(action, context);
+    } });
+    const ledger = JSON.stringify({ schema: 1, services: [], marker: 'existing ledger preserved' });
+    await writeFile(join(f.root, 'installed-product-services.json'), ledger);
+    await assert.rejects(updateAutomations(f.root, { only: 'access-autocraft' }, f.services), scenario === 'selection' ? /selection changed/ : /immutable pin/);
+    assert.equal(await readFile(join(f.root, 'installed-product-services.json'), 'utf8'), ledger);
+    if (scenario === 'selection') assert.equal(f.calls.some(call => call.action === 'activate'), false);
+    assert.equal(await readFile(f.document, 'utf8'), 'existing user data must survive');
+  }
+});
+
+test('failed source match for the exact retained edition and non-string pins cannot bypass full source comparison', async t => {
+  const f = await fixture(t, { current: edition });
+  await assert.rejects(updateAutomations(f.root, { only: 'access-autocraft' }, f.services), /failed comparison/);
+  assert.equal(f.calls.some(call => ['stage', 'activate'].includes(call.action)), false);
+  const bad = manifest(); bad.source.commit = [commit];
+  assert.throws(() => validateSourceReceipt('access', bad, bytes), /receipt or archive/);
+});
+
+test('a qualified candidate recovered from an interrupted attempt regates before activation', async t => {
+  const f = await fixture(t, { guest(action) { if (action === 'stage') throw Error('already qualified before interrupted activation'); } });
+  assert.equal((await updateAutomations(f.root, { only: 'access-autocraft' }, f.services))[0].status, 'updated');
+  const checked = f.calls.findIndex(call => call.action === 'check'), activated = f.calls.findIndex(call => call.action === 'activate');
+  assert(checked > 0 && activated > checked);
+  assert.equal(f.calls.some(call => call.action === 'qualify'), false);
+});
+
+test('final selection, hold or rollback-target changes during verification refuse stale ledger publication', async t => {
+  for (const scenario of ['current', 'held', 'previous']) {
+    let finalVerified = false;
+    const f = await fixture(t, { current: retained.edition, guest(action, context) {
+      if (action === 'status' && finalVerified) return { current: scenario === 'current' ? 'changed-after-final-verify' : retained.edition,
+        previous: scenario === 'previous' ? 'changed-rollback-target' : null, verified: true, updatesHeld: scenario === 'held' };
+      if (action === 'verify') { finalVerified = true; return retained; }
+      return retainedGuest(action, context);
+    } });
+    const ledger = JSON.stringify({ schema: 1, services: [], marker: 'existing ledger preserved' });
+    await writeFile(join(f.root, 'installed-product-services.json'), ledger);
+    await assert.rejects(updateAutomations(f.root, { only: 'access-autocraft' }, f.services), /selection changed during final/);
+    assert.equal(await readFile(join(f.root, 'installed-product-services.json'), 'utf8'), ledger);
+    assert.equal(await readFile(f.document, 'utf8'), 'existing user data must survive');
+  }
 });

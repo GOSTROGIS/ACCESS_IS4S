@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import re
+import signal
 import shutil
 import sqlite3
 import subprocess
@@ -85,7 +86,16 @@ def verify_source(root, receipt):
     expected = receipt.get('files')
     if not isinstance(expected, dict) or not expected:
         raise ValueError('Verified source inventory is required')
+    tree = {}
     for relative, entry in expected.items():
+        if (not isinstance(relative, str) or not relative or relative.startswith('/') or
+                re.search(r'[\\:\x00-\x1f\x7f]', relative) or
+                any(part in ('', '.', '..', '.git', '.private') for part in relative.split('/'))):
+            raise ValueError('Unsafe source inventory entry')
+        if (not isinstance(entry, dict) or entry.get('mode') not in ('100644', '100755', '120000') or
+                not isinstance(entry.get('bytes'), int) or isinstance(entry['bytes'], bool) or entry['bytes'] < 0 or
+                not re.fullmatch(r'[a-f0-9]{64}', entry.get('sha256', ''))):
+            raise ValueError('Invalid source inventory entry')
         path = root / relative
         if not path.resolve(strict=True).is_relative_to(root.resolve()):
             raise ValueError('Source entry escapes candidate')
@@ -96,6 +106,48 @@ def verify_source(root, receipt):
             raise ValueError('Source mode mismatch')
         if not path.is_symlink() and bool(path.stat().st_mode & 0o111) != (entry['mode'] == '100755'):
             raise ValueError('Source executable mode mismatch')
+        cursor = tree
+        parts = relative.split('/')
+        for part in parts[:-1]:
+            cursor = cursor.setdefault(part, {})
+            if not isinstance(cursor, dict):
+                raise ValueError('Source file and directory paths collide')
+        if parts[-1] in cursor:
+            raise ValueError('Source file and directory paths collide')
+        cursor[parts[-1]] = (entry['mode'], hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).digest())
+
+    def tree_hash(entries):
+        payload = bytearray()
+        for name, value in sorted(entries.items(), key=lambda item: item[0].encode() + (b'/' if isinstance(item[1], dict) else b'')):
+            mode, object_id = ('40000', tree_hash(value)) if isinstance(value, dict) else value
+            payload.extend(mode.encode() + b' ' + name.encode() + b'\0' + object_id)
+        return hashlib.sha1(b'tree ' + str(len(payload)).encode() + b'\0' + payload).digest()
+
+    # Installed dependencies and Vite's compiled output are separately frozen by
+    # the full runtime digest. Everything else must belong to the Git source tree.
+    generated = {'node_modules', 'web/node_modules', 'web/dist'}
+    actual = set()
+    for directory, dirs, files in os.walk(root, followlinks=False):
+        kept = []
+        for name in dirs:
+            path = Path(directory) / name
+            relative = path.relative_to(root).as_posix()
+            if relative in generated:
+                continue
+            if path.is_symlink():
+                actual.add(relative)
+            else:
+                kept.append(name)
+        dirs[:] = kept
+        actual.update((Path(directory) / name).relative_to(root).as_posix() for name in files)
+    unlisted = actual - set(expected)
+    if unlisted:
+        raise ValueError('Runtime contains unlisted source entries')
+
+    actual_tree = tree_hash(tree).hex()
+    if actual_tree != receipt.get('source', {}).get('tree'):
+        raise ValueError('Source inventory does not reconstruct the complete verified Git tree')
+    return actual_tree
 
 
 def database_state(path, equivalent_eol_metadata=False):
@@ -164,6 +216,8 @@ class Runtime:
     def current(self):
         path = self.root / 'current'
         if not path.exists():
+            if path.is_symlink():
+                raise ValueError('Active edition selector has a missing target')
             return None
         if not path.is_symlink() or path.resolve().parent != (self.root / 'editions'):
             raise ValueError('Invalid active edition selector')
@@ -184,14 +238,121 @@ class Runtime:
         self.verify(name)
         return {'edition': name, 'coreVerified': True, 'functionalGate': 'passed'}
 
+    def phase(self, label, args, *, env, cwd=None, timeout=600):
+        if not re.fullmatch(r'[a-z0-9-]{1,48}', label):
+            raise ValueError('Invalid build phase')
+        directory = self.data / 'build-diagnostics'
+        directory.mkdir(mode=0o700, exist_ok=True)
+        if directory.is_symlink() or directory.resolve() != directory:
+            raise ValueError('Private build diagnostics may not be redirected')
+        run = Path(tempfile.mkdtemp(prefix=label + '-', dir=directory))
+        started = time.monotonic()
+        result = {'phase': label, 'startedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'exitCode': None, 'timedOut': False, 'outputLimit': False, 'processGroupContained': True}
+        process = None
+        saved_signals = {sig: signal.getsignal(sig) for sig in (signal.SIGTERM, signal.SIGHUP)}
+
+        def interrupted(signum, _frame):
+            result['interruptedSignal'] = signum
+            raise SystemExit(128 + signum)
+
+        for sig in saved_signals:
+            signal.signal(sig, interrupted)
+        with (run / 'stdout.log').open('xb') as out, (run / 'stderr.log').open('xb') as err:
+            os.chmod(out.name, 0o600)
+            os.chmod(err.name, 0o600)
+            try:
+                process = subprocess.Popen(args, cwd=cwd, env=env, stdout=out, stderr=err, start_new_session=True)
+                while process.poll() is None:
+                    if time.monotonic() - started >= timeout:
+                        result['timedOut'] = True
+                        break
+                    if out.tell() > 16 * 1024 * 1024 or err.tell() > 16 * 1024 * 1024:
+                        result['outputLimit'] = True
+                        break
+                    time.sleep(0.1)
+            except OSError as error:
+                result['spawnError'] = error.errno
+            finally:
+                for sig in saved_signals:
+                    signal.signal(sig, signal.SIG_IGN)
+                if process is not None:
+                    # This new session owns only this build and its descendants, never app services.
+                    try:
+                        os.killpg(process.pid, signal.SIGTERM)
+                    except ProcessLookupError:
+                        pass
+                    try:
+                        process.wait(timeout=2)
+                    except subprocess.TimeoutExpired:
+                        pass
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    result['exitCode'] = process.wait()
+                result['elapsedSeconds'] = round(time.monotonic() - started, 3)
+                atomic_json(run / 'result.json', result)
+                atomic_json(directory / 'last-result.json', result)
+                for sig, handler in saved_signals.items():
+                    signal.signal(sig, handler)
+        if result.get('spawnError') is not None or result['timedOut'] or result['outputLimit'] or result['exitCode'] != 0:
+            kind = 'time limit' if result['timedOut'] else 'output limit' if result['outputLimit'] else 'exit ' + str(result['exitCode'])
+            raise RuntimeError('Linux build phase ' + label + ' failed: ' + kind + '; private diagnostics retained')
+        return subprocess.CompletedProcess(args, result['exitCode'],
+            (run / 'stdout.log').read_text(errors='replace'), (run / 'stderr.log').read_text(errors='replace'))
+
+    def source_receipt(self, path):
+        receipt = json.loads(Path(path).read_text())
+        source = receipt.get('source', {})
+        files = receipt.get('files')
+        if not isinstance(source, dict) or not isinstance(files, dict) or not files:
+            raise ValueError('Invalid fresh source receipt inventory')
+        for relative, entry in files.items():
+            if (not isinstance(relative, str) or not relative or relative.startswith('/') or
+                    re.search(r'[\\:\x00-\x1f\x7f]', relative) or
+                    any(part in ('', '.', '..', '.git', '.private') for part in relative.split('/')) or
+                    not isinstance(entry, dict) or entry.get('mode') not in ('100644', '100755', '120000') or
+                    not isinstance(entry.get('bytes'), int) or isinstance(entry['bytes'], bool) or entry['bytes'] < 0 or
+                    not re.fullmatch(r'[a-f0-9]{64}', entry.get('sha256', ''))):
+                raise ValueError('Invalid fresh source receipt entry')
+        repository = 'https://github.com/GOSTROGIS/' + ('ACCESS_IS4S' if self.instance == 'access' else 'SLIPCURVE') + '.git'
+        prefix = 'source/storytold/apps/autocraft' if self.instance == 'access' else 'vendor/storytold/apps/autocraft'
+        if (receipt.get('schema') != 1 or receipt.get('product') != self.instance or receipt.get('application') != 'autocraft' or
+                source.get('repository') != repository or source.get('prefix') != prefix or
+                not re.fullmatch(r'[a-f0-9]{40}', source.get('commit', '')) or
+                not re.fullmatch(r'[a-f0-9]{40}', source.get('tree', '')) or
+                not re.fullmatch(r'[a-f0-9]{64}', receipt.get('archiveSha256', '')) or
+                not receipt.get('files', {}).get('src/cli.ts') or
+                not any(name.startswith('web/src/') for name in receipt.get('files', {}))):
+            raise ValueError('Fresh source receipt does not match the fixed product')
+        return receipt
+
+    def match_source(self, path):
+        fresh = self.source_receipt(path)
+        checked = fresh['source']['commit']
+        state = json.loads((self.root / 'selection.json').read_text())
+        names = list(dict.fromkeys(name for name in (self.current(), state.get('previous')) if name))
+        for name in names:
+            receipt = json.loads(self.receipt(name).read_text())
+            if receipt.get('qualified') is not True or receipt.get('edition') != name:
+                raise ValueError('Source matching requires an existing qualified edition')
+            if (receipt.get('sourceRepository') != fresh['source']['repository'] or
+                    receipt.get('sourcePrefix') != fresh['source']['prefix'] or
+                    receipt.get('sourceTree') != fresh['source']['tree']):
+                continue
+            original = self.verify(name)
+            verify_source(self.edition(name), fresh)
+            return {'matched': True, 'checkedSourceRef': checked, 'qualified': original}
+        return {'matched': False, 'checkedSourceRef': checked}
+
     def regression(self, name):
         allowed = ('PATH', 'LANG', 'LC_ALL', 'TZ', 'USER', 'LOGNAME', 'XDG_RUNTIME_DIR', 'DBUS_SESSION_BUS_ADDRESS')
         env = {key: os.environ[key] for key in allowed if key in os.environ}
         env['PATH'] = str(Path(self.node).parent) + ':/usr/local/bin:/usr/bin:/bin'
         scratch = self.root / 'gate-work'
         scratch.mkdir(mode=0o700, exist_ok=True)
-        result = subprocess.run([self.node, str(self.gate), str(self.edition(name)), str(scratch), self.instance],
-            env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
+        result = self.phase('functional-gate', [self.node, str(self.gate), str(self.edition(name)), str(scratch), self.instance], env=env, timeout=120)
         if result.returncode:
             raise RuntimeError('Actual Linux rank/queue regression failed: ' + result.stderr[-1500:])
         print(result.stdout.strip(), flush=True)
@@ -216,8 +377,7 @@ class Runtime:
         env = {key: os.environ[key] for key in ('LANG', 'LC_ALL', 'TZ', 'USER', 'LOGNAME') if key in os.environ}
         env['PATH'] = str(Path(self.node).parent) + ':/usr/local/bin:/usr/bin:/bin'
         env['CI'] = '1'
-        result = subprocess.run([self.node, str(self.pnpm), 'install', '--prod', '--frozen-lockfile'],
-            cwd=final, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=600)
+        result = self.phase('production-dependencies', [self.node, str(self.pnpm), 'install', '--prod', '--frozen-lockfile'], cwd=final, env=env, timeout=600)
         if result.returncode:
             raise RuntimeError('Frozen Linux production dependency installation failed')
 
@@ -231,18 +391,17 @@ class Runtime:
         package = json.loads((final / 'web/package.json').read_text())
         if package.get('packageManager') != 'pnpm@11.28.10' or not (final / 'web/pnpm-lock.yaml').is_file():
             raise ValueError('The full pinned dashboard package and frozen lock are required')
-        version = subprocess.run([self.node, str(self.pnpm), '--version'], env=env, capture_output=True, text=True, check=True)
+        version = self.phase('package-manager-version', [self.node, str(self.pnpm), '--version'], env=env, timeout=30)
         if version.stdout.strip() != '11.28.10':
             raise ValueError('Pinned package manager mismatch')
         for directory in (final, final / 'web'):
-            result = subprocess.run([self.node, str(self.pnpm), 'install', '--frozen-lockfile', '--child-concurrency=1', '--network-concurrency=4'],
-                cwd=directory, env=env, capture_output=True, text=True, timeout=600)
+            label = 'root-build-dependencies' if directory == final else 'web-build-dependencies'
+            result = self.phase(label, [self.node, str(self.pnpm), 'install', '--frozen-lockfile', '--child-concurrency=1', '--network-concurrency=4'], cwd=directory, env=env, timeout=600)
             if result.returncode:
                 raise RuntimeError('Frozen dashboard build dependency installation failed: ' + result.stderr[-1200:])
         # Rebuild even when a source payload includes a prior output directory.
         shutil.rmtree(final / 'web/dist', ignore_errors=True)
-        result = subprocess.run([self.node, str(self.pnpm), 'run', 'build'], cwd=final / 'web', env=env,
-            capture_output=True, text=True, timeout=600)
+        result = self.phase('frontend-build', [self.node, str(self.pnpm), 'run', 'build'], cwd=final / 'web', env=env, timeout=600)
         if result.returncode:
             raise RuntimeError('Genuine production dashboard build failed: ' + (result.stdout + result.stderr)[-2000:])
         index = final / 'web/dist/index.html'
@@ -254,10 +413,13 @@ class Runtime:
     def stage(self, args):
         if not re.fullmatch(r'[a-f0-9]{40}', args.source_ref):
             raise ValueError('A full verified Git source commit is required')
+        self.current()  # A broken active pointer must never become a visible unqualified directory.
         final = self.edition(args.edition)
         if self.receipt(args.edition).exists():
             raise ValueError('Edition already exists')
         if final.exists():
+            if args.edition == self.current():
+                raise ValueError('Cannot replace the selected runtime edition')
             if not args.replace_unqualified or self.current() == args.edition or final.is_symlink() or final.resolve().parent != self.root / 'editions':
                 raise ValueError('An unqualified candidate already exists; preserve or explicitly replace it')
             quarantine = self.root / 'rejected'
@@ -575,6 +737,8 @@ def main():
     stage.add_argument('--replace-unqualified', action='store_true')
     for command in ('activate', 'verify', 'qualify', 'check', 'bootstrap'):
         commands.add_parser(command).add_argument('--edition', required=True)
+    commands.add_parser('match-source').add_argument('--source-receipt', required=True)
+    commands.add_parser('diagnostics')
     commands.add_parser('rollback')
     commands.add_parser('status')
     commands.add_parser('resume-updates')
@@ -588,6 +752,11 @@ def main():
             result = runtime.stage(args)
         elif args.command == 'activate':
             result = runtime.activate(args.edition)
+        elif args.command == 'match-source':
+            result = runtime.match_source(args.source_receipt)
+        elif args.command == 'diagnostics':
+            path = runtime.data / 'build-diagnostics/last-result.json'
+            result = json.loads(path.read_text()) if path.is_file() else {'phase': None}
         elif args.command == 'rollback':
             previous = json.loads((runtime.root / 'selection.json').read_text()).get('previous')
             if not previous:
