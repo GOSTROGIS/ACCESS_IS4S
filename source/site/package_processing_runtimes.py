@@ -32,6 +32,28 @@ BUILDS = {
 PHOTO_SNIPPET = "snippets/eframe-d31a8450ea12dfc1/inline0.js"
 
 
+def motion_worker(source):
+    # This PWA precaches its own WASM. A service worker's fetches do not go
+    # through its enclosing worker, so use the same compressed Pages delivery.
+    text = source.decode("utf-8")
+    replacements = {
+        'c.addAll(FILES.map((f) => new Request(f, { cache: "reload" })))': 'installMotionAssets(c, FILES)',
+        'const res = await fetch(req);': 'const res = await motionAsset(req);',
+        'if (url.pathname.endsWith("/effectcraft-config.json")) return;':
+            'if (!url.href.startsWith(self.registration.scope) || '
+            'url.href.startsWith(new URL("host/", self.registration.scope).href) || '
+            'url.pathname.endsWith("/effectcraft-config.json")) return;',
+        'const CACHE = `effectcraft-${VERSION}`;':
+            'const prefix = "access-motion:" + self.registration.scope;\nconst CACHE = prefix + VERSION;',
+        'k.startsWith("effectcraft-")': 'k.startsWith(prefix)',
+    }
+    for old, new in replacements.items():
+        if text.count(old) != 1:
+            raise ValueError("Review the motion worker integration for this upstream version")
+        text = text.replace(old, new)
+    return ('importScripts("../../effect-assets.js");\n' + text).encode("utf-8")
+
+
 def json_bytes(data):
     return (json.dumps(data, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
 
@@ -78,7 +100,9 @@ def copy_package(identifier, archive_path, checksum, staged):
             target = staged / destination
             target.parent.mkdir(parents=True, exist_ok=True)
             with archive.open(info) as source, target.open("xb") as output:
-                if name.endswith(".wasm"):
+                if identifier == "effectcraft" and name == "sw.js":
+                    output.write(motion_worker(source.read()))
+                elif name.endswith(".wasm"):
                     with gzip.GzipFile(filename="", fileobj=output, mode="wb", mtime=0, compresslevel=6) as compressed:
                         shutil.copyfileobj(source, compressed, length=1024 * 1024)
                 else:
