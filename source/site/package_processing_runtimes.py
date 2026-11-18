@@ -1,8 +1,10 @@
 """Publish the 17 verified browser distributions used by ACCESS Processing Tools.
 
 Pass a cache of pinned upstream ZIPs (<id>.zip or the original release filename)
-and the two approved ACCESS build ZIPs. --check reproduces and compares the
-shipped bytes. The launcher's separate host pages are outside this packager.
+and the two approved ACCESS build ZIPs. Cache the photo editor's release-pinned
+font archive as craft-fonts-b076417b.zip from
+https://codeload.github.com/storytold/craft-fonts/zip/b076417b5880bd4154bd22f00695b1d28c6bea83.
+--check reproduces and compares the shipped bytes.
 """
 
 import argparse
@@ -30,6 +32,32 @@ BUILDS = {
     "wordcraft": ("v0.18.1-access-870d2004", "7976b2b779a7da83aaa2391d8d2dddd50677e87ecbe163e9764474fc9de5b30a"),
 }
 PHOTO_SNIPPET = "snippets/eframe-d31a8450ea12dfc1/inline0.js"
+PHOTO_FONTS = "craft-fonts-b076417b.zip"
+PHOTO_FONTS_COMMIT = "b076417b5880bd4154bd22f00695b1d28c6bea83"
+PHOTO_FONTS_SHA256 = "f5b09678d7212ccdc47884d3ce50e66dcab0fa07c7603a32ac0b4a826a5d6415"
+
+
+def copy_photo_fonts(archive_path, destination):
+    """Install the font manifest and its referenced files as PhotoCraft's web packager does."""
+    if digest(archive_path) != PHOTO_FONTS_SHA256:
+        raise ValueError("Photo font archive does not match the pinned release dependency")
+    with ZipFile(archive_path) as archive:
+        prefix = "craft-fonts-" + PHOTO_FONTS_COMMIT + "/"
+        manifest = "fonts/manifest.txt"
+        rows = archive.read(prefix + manifest).decode("utf-8").splitlines()
+        selected = {manifest}
+        for row in rows:
+            if row.strip() and not row.lstrip().startswith("#"):
+                fields = [field.strip() for field in row.split("|")]
+                selected.update((fields[2], fields[5]))
+        for name in sorted(selected):
+            path = PurePosixPath(name)
+            if path.parts[:1] != ("fonts",) or ".." in path.parts or "\\" in name:
+                raise ValueError("Unexpected font archive path")
+            target = destination / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with archive.open(prefix + name) as source, target.open("xb") as output:
+                shutil.copyfileobj(source, output)
 
 
 def motion_worker(source):
@@ -136,6 +164,8 @@ def publish(args):
                 if identifier == "photocraft":
                     version += "-hosting-fix"
             copy_package(identifier, archive, checksum, staging / "apps" / identifier)
+            if identifier == "photocraft":
+                copy_photo_fonts(args.release_cache / PHOTO_FONTS, staging / "apps" / identifier)
             catalogue.append({"id": identifier, "port": port, "version": version, "distribution": "pages"})
             print(f"Verified {identifier} {version}", flush=True)
         (staging / "applications.json").write_bytes(json_bytes({"apps": catalogue, "native": []}))
