@@ -80,7 +80,9 @@ mod tests {
 
     #[test]
     fn settings_dir_is_the_apps_folder() {
-        if let Some(d) = settings_dir() {
+        if let Some(path) = std::env::var_os("WORDCRAFT_PROFILE_DIR").filter(|p| !p.is_empty()) {
+            assert_eq!(settings_dir(), Some(PathBuf::from(path)), "an explicit profile replaces the entire settings folder");
+        } else if let Some(d) = settings_dir() {
             let name = d.file_name().and_then(|n| n.to_str()).unwrap_or("");
             assert!(name == "wordcraft" || name == "WordCraft", "{}", d.display());
         }
