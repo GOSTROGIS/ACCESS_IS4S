@@ -3,7 +3,7 @@ import {test} from 'node:test';
 import {mkdtempSync,mkdirSync,readFileSync,realpathSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {basename,dirname,join} from 'node:path';
-import {execute,hostEnvironment,posixQuote,privateConfigurationLocation,PRODUCTS,sshArguments} from './controller.mjs';
+import {checkedTransportResult,execute,hostEnvironment,posixQuote,privateConfigurationLocation,PRODUCTS,sshArguments} from './controller.mjs';
 
 test('strict SSH ignores ambient configuration and agents while preserving explicit references',()=>{
  const args=sshArguments({port:4222,key:'C:\\fixture directory\\identity',knownHosts:'C:\\fixture directory\\known-hosts'});
@@ -24,6 +24,18 @@ test('a completed launcher does not wait indefinitely on a grandchild holding it
  const code="const {spawn}=require('node:child_process');process.stdout.write('started');spawn(process.execPath,['-e','setTimeout(()=>{},2000)'],{stdio:['ignore',process.stdout,process.stderr]});process.exit(0)";
  const begin=Date.now();const result=await execute(process.execPath,['-e',code],{timeout:1500});
  assert.equal(result.code,0);assert.equal(result.out,'started');assert.ok(Date.now()-begin<1400);
+ assert.equal(result.timedOut,false);
+});
+
+test('an actual transport deadline is distinguishable from a nonzero command without exposing captured data',async()=>{
+ const deadline=await execute(process.execPath,['-e','setTimeout(()=>{},10000)'],{timeout:40});
+ assert.equal(deadline.timedOut,true);
+ const refused=await execute(process.execPath,['-e',"process.stderr.write('private captured fixture');process.exit(7)"],{timeout:3000});
+ assert.equal(refused.code,7);assert.equal(refused.timedOut,false);
+ for(const [result,code] of [[deadline,'TIMEOUT'],[refused,'EXIT'],[{code:0,out:'private stdout',err:'private stderr',overflow:true,timedOut:false},'OUTPUT_LIMIT']]){
+  assert.throws(()=>checkedTransportResult(result),error=>error.code===`AUTOCRAFT_LINUX_${code}`&&!/private/.test(error.message)&&!('out'in error)&&!('err'in error));
+ }
+ assert.equal(checkedTransportResult({code:0,out:'verified receipt',overflow:false,timedOut:false}),'verified receipt');
 });
 
 test('transport children do not inherit Git, Node injection or provider credentials',()=>{

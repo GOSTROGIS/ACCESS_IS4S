@@ -19,18 +19,18 @@ export function hostEnvironment(){
 export function execute(exe,args,{input,timeout=30000}={}){
  return new Promise((accept,reject)=>{
   const child=spawn(exe,args,{windowsHide:true,stdio:['pipe','pipe','pipe'],env:hostEnvironment()});
-  let out='',err='';let overflow=false;
+  let out='',err='';let overflow=false,timedOut=false;
   child.stdout.on('data',part=>{out+=part;if(out.length>1024*1024){overflow=true;child.kill()}});
   child.stderr.on('data',part=>{err+=part;if(err.length>65536){overflow=true;child.kill()}});
   let finished=false;
-  const finish=code=>{if(finished)return;finished=true;clearTimeout(timer);child.stdout.destroy();child.stderr.destroy();accept({code,out,err,overflow})};
-  const timer=setTimeout(()=>{child.kill();setTimeout(()=>finish(null),1000).unref()},timeout);timer.unref();
+  const finish=code=>{if(finished)return;finished=true;clearTimeout(timer);child.stdout.destroy();child.stderr.destroy();accept({code,out,err,overflow,timedOut})};
+  const timer=setTimeout(()=>{timedOut=true;child.kill();setTimeout(()=>finish(null),1000).unref()},timeout);timer.unref();
   child.once('error',()=>{clearTimeout(timer);reject(new Error('Required local transport executable could not start'))});
   child.once('close',finish);
   // Start-Process can leave inherited pipe handles in the long-lived QEMU
   // descendant after its PowerShell launcher exits. Drain briefly, then use the
   // actual launcher's exit code instead of waiting for the guest to shut down.
-  child.once('exit',code=>setTimeout(()=>finish(code),200));
+  child.once('exit',code=>{clearTimeout(timer);setTimeout(()=>finish(code),200)});
   child.stdin.on('error',()=>{});child.stdin.end(input);
  });
 }
@@ -77,7 +77,16 @@ export function sshArguments(config){
 
 export async function guestCommand(config,command,input,timeout=30000){
  const result=await execute(ssh,[...sshArguments(config),`${config.user}@127.0.0.1`,command],{input,timeout});
- if(result.code!==0||result.overflow)throw new Error('Authenticated Linux runtime command failed');
+ return checkedTransportResult(result);
+}
+
+export function checkedTransportResult(result){
+ const kind=result.timedOut?'TIMEOUT':result.overflow?'OUTPUT_LIMIT':result.code!==0?'EXIT':null;
+ if(kind){
+  const message=kind==='TIMEOUT'?'Authenticated Linux runtime command exceeded its time limit':kind==='OUTPUT_LIMIT'?'Authenticated Linux runtime command exceeded its output limit':'Authenticated Linux runtime command failed';
+  // Transport stderr/stdout can contain private paths or credentials. Only classify the failure.
+  throw Object.assign(new Error(message),{code:`AUTOCRAFT_LINUX_${kind}`,exitCode:result.code});
+ }
  return result.out;
 }
 

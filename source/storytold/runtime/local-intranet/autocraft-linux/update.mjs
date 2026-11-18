@@ -77,7 +77,7 @@ function response(output) {
 }
 
 async function state(config, product, guest) {
-  const value = response(await guest(config, managerCommand(config, product, 'status'), undefined, 120_000));
+  const value = response(await guest(config, managerCommand(config, product, 'status'), undefined, 300_000));
   if (value.verified !== true || typeof value.current !== 'string' || !/^[a-z0-9][a-z0-9._-]{0,95}$/.test(value.current)) {
     throw Error('The active automation runtime has no verified version.');
   }
@@ -86,7 +86,7 @@ async function state(config, product, guest) {
 
 async function refreshService(root, config, product, guest) {
   const active = await state(config, product, guest);
-  const pin = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', active.current]), undefined, 120_000));
+  const pin = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', active.current]), undefined, 300_000));
   if (pin.qualified !== true || pin.edition !== active.current || !sha.test(pin.sourceRef || '') ||
       !sha.test(pin.sourceTree || '') || !hash.test(pin.archiveSha256 || '') || !hash.test(pin.treeSha256 || '')) {
     throw Error('The installed automation has no complete verified source and runtime receipt.');
@@ -129,14 +129,14 @@ async function updateOne(root, config, paths, product, mode, staging, services) 
   const guest = services.guest ?? guestCommand;
   const current = await state(config, product, guest);
   if (mode === 'rollback' || mode === 'resume') {
-    const result = response(await guest(config, managerCommand(config, product, mode === 'rollback' ? 'rollback' : 'resume-updates'), undefined, 180_000));
+    const result = response(await guest(config, managerCommand(config, product, mode === 'rollback' ? 'rollback' : 'resume-updates'), undefined, 300_000));
     const { active, pin } = await refreshService(root, config, product, guest);
     if (result.current !== active.current || (mode === 'rollback') !== active.updatesHeld) throw Error('The automation hold state did not match the verified activation.');
     return { product, status: mode === 'rollback' ? 'rolled-back' : 'resumed', current: active.current,
       sourceRef: pin.sourceRef, updatesHeld: active.updatesHeld === true };
   }
   if (mode === 'verify') {
-    await guest(config, managerCommand(config, product, 'check', ['--edition', current.current]), undefined, 240_000);
+    await guest(config, managerCommand(config, product, 'check', ['--edition', current.current]), undefined, 600_000);
     return { product, status: 'verified', current: current.current, updatesHeld: current.updatesHeld === true };
   }
   if (current.updatesHeld) {
@@ -154,7 +154,7 @@ async function updateOne(root, config, paths, product, mode, staging, services) 
   validateSourceReceipt(product, receipt, archive);
   const edition = 'owned-' + receipt.source.commit.slice(0, 12);
   if (current.current === edition) {
-    const deployed = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', edition]), undefined, 120_000));
+    const deployed = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', edition]), undefined, 300_000));
     if (deployed.qualified !== true || deployed.sourceRef !== receipt.source.commit || deployed.sourceTree !== receipt.source.tree || deployed.archiveSha256 !== receipt.archiveSha256) {
       throw Error('The deployed automation edition does not match the full owned source pin.');
     }
@@ -176,14 +176,14 @@ async function updateOne(root, config, paths, product, mode, staging, services) 
     // A prior interrupted attempt may have a qualified receipt or a frozen-build checkpoint.
     // Neither path skips a byte check or an unpassed functional gate.
     try {
-      qualified = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', edition]), undefined, 120_000));
+      qualified = response(await guest(config, managerCommand(config, product, 'verify', ['--edition', edition]), undefined, 300_000));
     } catch {
-      qualified = response(await guest(config, managerCommand(config, product, 'qualify', ['--edition', edition]), undefined, 300_000));
+      qualified = response(await guest(config, managerCommand(config, product, 'qualify', ['--edition', edition]), undefined, 600_000));
     }
   }
   if (qualified.qualified !== true || qualified.edition !== edition || qualified.sourceRef !== receipt.source.commit ||
       qualified.sourceTree !== receipt.source.tree || qualified.archiveSha256 !== receipt.archiveSha256) throw Error('The Linux qualification receipt does not match the verified owned source.');
-  const activation = response(await guest(config, managerCommand(config, product, 'activate', ['--edition', edition]), undefined, 180_000));
+  const activation = response(await guest(config, managerCommand(config, product, 'activate', ['--edition', edition]), undefined, 300_000));
   if (activation.current !== edition) throw Error('The qualified automation runtime was not selected.');
   const after = await state(config, product, guest);
   if (after.current !== edition || after.updatesHeld) throw Error('The new automation runtime did not verify after activation.');
