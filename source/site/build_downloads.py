@@ -6,7 +6,7 @@ so tool scripts, lesson navigation and shared images continue to work offline.
 Links to material outside the selected skill open the published website.
 """
 import html
-import os
+import posixpath
 from pathlib import Path
 import re
 from urllib.parse import quote, unquote, urlsplit
@@ -46,11 +46,11 @@ def selected_files(slug):
                 rel = candidate.relative_to(REPO)
             except ValueError:
                 continue
-            if (str(rel).startswith(('brand/', 'textbook/assets/'))
+            if (rel.as_posix().startswith(('brand/', 'textbook/assets/'))
                     and candidate.is_file() and candidate not in paths):
                 paths.add(candidate)
                 pending.append(candidate)
-    return sorted(paths)
+    return sorted(paths, key=lambda candidate: candidate.relative_to(REPO).as_posix())
 
 
 def offline_links(text, path, included):
@@ -59,9 +59,11 @@ def offline_links(text, path, included):
         attr, delim, value = match.groups()
         raw = html.unescape(value)
         u = urlsplit(raw)
+        if not u.scheme and not u.netloc and u.path == '/workspace/':
+            return f'{attr}={delim}http://127.0.0.1:4180{html.escape(raw, quote=True)}{delim}'
         if u.scheme or u.netloc or not u.path or raw.startswith('/'):
             return match.group(0)
-        target = os.path.normpath(os.path.join(str(path.parent), unquote(u.path)))
+        target = posixpath.normpath(posixpath.join(path.parent.as_posix(), unquote(u.path)))
         if target in included or target.rstrip('/') + '/index.html' in included:
             return match.group(0)
         if target.startswith('../'):

@@ -661,7 +661,6 @@ def main():
     n = build_carpentry()
     g = apply_gates()
     from build_downloads import main as build_downloads
-    build_downloads()
     add_project_workspaces()
     for page in sorted((REPO / 'skills').rglob('learner.html')):
         text = page.read_text(encoding='utf-8')
@@ -670,6 +669,7 @@ def main():
         prefix = '../' * (len(page.relative_to(REPO).parts) - 1)
         tag = f'<script defer src="{prefix}brand/student-guide.js"></script>'
         page.write_text(text.replace('</head>', tag + '\n</head>', 1), encoding='utf-8')
+    build_downloads()
     print(f'built hub, 8 skill pages, Numeracy chapters, Carpentry page, {n} carpentry intake(s), {g} page(s) newly locked')
 
 
