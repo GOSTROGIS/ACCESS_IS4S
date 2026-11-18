@@ -184,9 +184,11 @@ def checkout(git, target, scratch, source_cache=None):
         # Borrow existing objects only while cloning the owned origin. Git
         # dissociates the new repository; private working files/local commits
         # are never selected, and the source cache itself remains untouched.
+        # Acquire complete objects while authentication is available: later
+        # config-free checkout and full-source archiving must work offline.
         reference = ['--reference-if-able', str(cache), '--dissociate'] if cache else []
         run([git, '-c', 'core.longpaths=true', '-c', 'core.hooksPath=' + str(hooks), '-c', 'core.fsmonitor=false',
-             'clone', '--filter=blob:none', '--no-checkout', '--no-tags', '--single-branch', '--branch', 'main',
+             'clone', '--no-checkout', '--no-tags', '--single-branch', '--branch', 'main',
              *reference, ORIGIN, repo], env=env)
     run([git, '-C', repo, 'config', 'core.hooksPath', str(hooks)], env=safe_env)
     run([git, '-C', repo, 'fsck', '--strict', '--connectivity-only', target], env=safe_env)

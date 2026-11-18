@@ -52,6 +52,8 @@ class CacheTests(unittest.TestCase):
                 self.assertFalse((repo/'local-only.txt').exists())
                 self.assertFalse((repo/'unpublished.txt').exists())
                 self.assertFalse((repo/'.git/objects/info/alternates').exists())
+                self.assertNotEqual(subprocess.run([git,'-C',str(repo),'config','--get','remote.origin.promisor'],capture_output=True).returncode,0,
+                                    'A source archive must not require credential-free lazy network fetches later')
                 self.assertNotEqual(subprocess.run([git,'-C',str(repo),'cat-file','-e',previous],capture_output=True).returncode,0)
                 self.assertFalse((repo/'vendor/storytold/apps/example/Cargo.toml').exists())
                 self.assertEqual(command(repo,'show',published+':vendor/storytold/apps/example/Cargo.toml'),'original full application source')
