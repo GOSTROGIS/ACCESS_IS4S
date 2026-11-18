@@ -41,6 +41,41 @@ class SerializedOutputChecks(unittest.TestCase):
     def check(self, path):
         verify.additional_format_metadata(path,self.label,self.creator,self.custom)
 
+    def test_intermediate_undo_requires_real_body_text_and_bold_state(self):
+        path = self.root/'state.docx'
+        for marker, expected in [('',False),('<w:b/>',True),('<w:b w:val="0"/>',False)]:
+            with zipfile.ZipFile(path,'w') as package:
+                package.writestr('word/document.xml',
+                    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+                    '<w:body><w:p><w:r><w:rPr>'+marker+'</w:rPr><w:t>'+escape(self.label)+
+                    '</w:t></w:r></w:p></w:body></w:document>')
+            verify.document_body(path,self.label,bold=expected)
+            with self.assertRaises(AssertionError):
+                verify.document_body(path,self.label,bold=not expected)
+            with self.assertRaises(AssertionError):
+                verify.document_body(path,'Absent document text',bold=expected)
+
+    def test_empty_bold_runs_do_not_qualify_plain_text_and_mixed_text_does_not_qualify_whole_selection(self):
+        path = self.root/'mixed.docx'
+        for content, expected in [
+            ('<w:r><w:rPr><w:b/></w:rPr></w:r><w:r><w:t>'+escape(self.label)+'</w:t></w:r>',False),
+            ('<w:r/><w:r><w:rPr><w:b/></w:rPr><w:t>'+escape(self.label)+'</w:t></w:r>',True)]:
+            with zipfile.ZipFile(path,'w') as package:
+                package.writestr('word/document.xml',
+                    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+                    '<w:body><w:p>'+content+'</w:p></w:body></w:document>')
+            verify.document_body(path,self.label,bold=expected)
+            with self.assertRaises(AssertionError):
+                verify.document_body(path,self.label,bold=not expected)
+        with zipfile.ZipFile(path,'w') as package:
+            package.writestr('word/document.xml',
+                '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+                '<w:body><w:p><w:r><w:rPr><w:b/></w:rPr><w:t>'+escape(self.label[:3])+'</w:t>'
+                '</w:r><w:r><w:t>'+escape(self.label[3:])+'</w:t></w:r></w:p></w:body></w:document>')
+        for expected in [False,True]:
+            with self.assertRaises(AssertionError):
+                verify.document_body(path,self.label,bold=expected)
+
     def test_odf_preserves_generator_creator_custom_text_and_real_container_type(self):
         for extension in ['odt','ott','fodt']:
             with self.subTest(extension=extension):

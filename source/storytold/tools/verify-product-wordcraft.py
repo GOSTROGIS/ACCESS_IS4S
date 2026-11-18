@@ -25,6 +25,23 @@ def document_metadata(path, label, author='User', creator=None, custom=None):
             assert all(found.get(name) == value for name, value in custom.items()), found
 
 
+def document_body(path, label, *, bold):
+    """Inspect actual document text and direct bold state between undo and redo."""
+    with zipfile.ZipFile(path) as package:
+        assert package.testzip() is None
+        document = ET.fromstring(package.read('word/document.xml'))
+        word = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
+        body = document.find(word+'body')
+        assert body is not None and label in ''.join(node.text or '' for node in body.findall('.//'+word+'t'))
+        runs = [run for run in body.findall('.//'+word+'r')
+                if any(node.text for node in run.findall(word+'t'))]
+        assert runs, 'The selected document text must be present'
+        for run in runs:
+            applied = run.find(word+'rPr/'+word+'b')
+            actual = applied is not None and applied.attrib.get(word+'val', '1') not in {'0', 'false', 'off'}
+            assert actual == bold, 'Expected selected text bold after redo' if bold else 'Undo must remove selected text bold'
+
+
 def pdf_metadata(reader, label, creator=None):
     assert reader.metadata.get('/Creator') == label
     assert reader.metadata.get('/Producer') == label
@@ -112,12 +129,11 @@ def native(args):
     (output/'create.json').write_text(json.dumps(script)+'\n')
     command('run', '--script', output/'create.json')
     assert label in command('text', docx).decode()
-    namespace = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
-    with zipfile.ZipFile(docx) as container:
-        assert container.testzip() is None
-        xml = ET.fromstring(container.read('word/document.xml'))
-        assert label in ''.join(xml.itertext())
-        assert xml.findall('.//w:rPr/w:b', namespace), 'Bold formatting must survive DOCX export'
+    undone = output/'native-undone.docx'
+    (output/'undo.json').write_text(json.dumps({'commands': script['commands'][:-1], 'save':[str(undone)]})+'\n')
+    command('run', '--script', output/'undo.json')
+    document_body(undone, label, bold=False)
+    document_body(docx, label, bold=True)
     document_metadata(docx, label)
     pdf = output/'native-created.pdf'
     png = output/'native-created.png'
@@ -146,6 +162,15 @@ def native(args):
         command('convert', authored, exported)
         assert label in command('text', exported).decode(), extension
         additional_format_metadata(exported, label, 'Existing creator', custom)
+        if extension in {'odt', 'ott', 'fodt'}:
+            imported = output/('native-reopened-'+extension+'.docx')
+            imported_script = {'commands':[{'command':'file.open','params':{'path':str(exported)}},
+                {'command':'file.options','params':{'author':'Ana Lee','initials':'AL'}}], 'save':[str(imported)]}
+            imported_script_path = output/('reopen-'+extension+'.json')
+            imported_script_path.write_text(json.dumps(imported_script)+'\n')
+            command('run','--script',imported_script_path)
+            assert label in command('text', imported).decode()
+            document_metadata(imported,label,'Ana Lee','Existing creator',custom)
     with Image.open(png) as image:
         image.load()
         assert image.width > 100 and image.height > 100
@@ -234,7 +259,10 @@ def native(args):
             key_file.unlink()
     package_intact()
     files = {}
-    for path in [docx, pdf, png, output/'native-gui-edited.docx', output/'native-window.png']:
+    for path in [docx, undone, pdf, png, authored, authored_pdf,
+                 *[output/('native-explicit-author.'+extension) for extension in ['rtf','tex','odt','ott','fodt']],
+                 *[output/('native-reopened-'+extension+'.docx') for extension in ['odt','ott','fodt']],
+                 output/'native-gui-edited.docx', output/'native-window.png']:
         data = path.read_bytes()
         files[path.name] = {'bytes': len(data), 'sha256': sha256(data).hexdigest()}
     result = {'ok': True, 'product': product, 'source': manifest['source'], 'preservedBaselineCommands': len(baseline_ids),
@@ -242,6 +270,7 @@ def native(args):
               'actualGuiEditSaveReopen': True, 'actualGuiTitle': properties['title'], 'peProductName': properties['product'],
               'productGeneratorMetadata': True, 'neutralNewSessionAuthor': True, 'explicitAuthorAndCustomPropertiesPreserved': True,
               'genuineAdditionalFormatExportReopen': ['rtf', 'tex', 'odt', 'ott', 'fodt'], 'independentOdfMetadata':True,
+              'intermediateUndoAndRedoSerializedBold':True, 'odfImportResaveCreatorAndCustomPreserved':True,
               'texCompilation':'Not covered by this gate',
               'packageBytesUnchanged': True, 'files': files}
     (output/'result.json').write_text(json.dumps(result, indent=2)+'\n')
@@ -315,7 +344,7 @@ def web(args):
                 editor.evaluate(r'''async label=>{await wordcraft.execute('file.new');
                   await wordcraft.execute('text.insert',{text:label+'\nBrowser document round-trip.',paragraphs:true});
                   await wordcraft.execute('select.all');await wordcraft.execute('format.bold');
-                  await wordcraft.execute('edit.undo');await wordcraft.execute('edit.redo');}''',label)
+                  await wordcraft.execute('edit.undo');}''',label)
                 def save(command,name):
                     before=page.evaluate('saved.length')
                     editor.evaluate('async ({command,name})=>await wordcraft.execute(command,{path:name})',{'command':command,'name':name})
@@ -327,11 +356,11 @@ def web(args):
                     download.value.save_as(destination)
                     assert destination.read_bytes()==source,'Downloaded host document must match genuine editor bytes'
                     return destination
+                undone=save('file.saveAs','browser-undone.docx')
+                document_body(undone,label,bold=False)
+                editor.evaluate('async()=>await wordcraft.execute("edit.redo")')
                 docx=save('file.saveAs','browser-created.docx')
-                with ZipFile(docx) as package:
-                    assert package.testzip() is None
-                    document=ET.fromstring(package.read('word/document.xml'))
-                    assert label in ''.join(document.itertext()) and document.find('.//{*}rPr/{*}b') is not None
+                document_body(docx,label,bold=True)
                 document_metadata(docx, label)
                 pdf=save('file.exportPdf','browser-created.pdf')
                 png=save('file.exportPng','browser-created.png')
@@ -382,12 +411,13 @@ def web(args):
                 for name,meta in manifest['files'].items():
                     payload=(package/name).read_bytes()
                     assert len(payload)==meta['bytes'] and sha256(payload).hexdigest()==meta['sha256'],name
-                files={p.name:{'bytes':p.stat().st_size,'sha256':sha256(p.read_bytes()).hexdigest()} for p in [docx,pdf,png,authored,authored_pdf,*additional,*reopened,output/'browser-window.png']}
+                files={p.name:{'bytes':p.stat().st_size,'sha256':sha256(p.read_bytes()).hexdigest()} for p in [docx,undone,pdf,png,authored,authored_pdf,*additional,*reopened,output/'browser-window.png']}
                 result={'ok':True,'product':product,'source':manifest['source'],'applicationMode':'Original same-origin craft-web-host contract; full genuine WASM editor',
                   'preservedBaselineCommands':len(baseline),'candidateCommands':len(actual),'actualCreateEditUndoRedoExportDownloadReloadReopen':True,
                   'downloadedBytesExactlyMatchGenuineHostSaveBytes':True,'independentDocxXmlPdfTextPngDecode':True,'actualTitle':title,
                   'productGeneratorMetadata':True,'neutralNewSessionAuthor':True,'explicitAuthorAndCustomPropertiesPreserved':True,
                   'genuineAdditionalFormatExportReopen':['rtf','tex','odt','ott','fodt'],'independentOdfMetadataAndText':True,
+                  'intermediateUndoAndRedoSerializedBold':True,
                   'odfReopenAndResavePreservesCreatorCustomMetadata':True,
                   'latexAuthorImport':'Original reader does not reconstruct pdfauthor; serialized author and actual body reopen checked',
                   'packageUnchanged':True,'pageErrors':errors,'httpFailures':failures,'standaloneNativeBrowserSavePicker':'Outside this host-mode regression gate',
