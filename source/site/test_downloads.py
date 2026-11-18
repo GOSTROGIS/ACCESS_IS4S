@@ -3,7 +3,7 @@ from contextlib import contextmanager
 import html
 import json
 from html.parser import HTMLParser
-import os
+import posixpath
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -32,7 +32,7 @@ class Downloads(unittest.TestCase):
     @contextmanager
     def archive_fixture(self):
         # Never mutate repository sources or shipped ZIPs to test the guard.
-        with TemporaryDirectory() as directory, patch.object(build, 'REPO', Path(directory)):
+        with TemporaryDirectory() as directory, patch.object(build, 'REPO', Path(directory).resolve()):
             root = build.REPO
             (root / 'skills/reading').mkdir(parents=True)
             (root / 'brand').mkdir()
@@ -88,7 +88,7 @@ class Downloads(unittest.TestCase):
                         u = urlsplit(html.unescape(match[3]))
                         if u.scheme or u.netloc or not u.path:
                             continue
-                        target = os.path.normpath(os.path.join(str(Path(name).parent), unquote(u.path)))
+                        target = posixpath.normpath(posixpath.join(posixpath.dirname(name), unquote(u.path)))
                         self.assertTrue(target in names or target.rstrip('/') + '/index.html' in names, f'{name}: {match[3]}')
                 self.assertIn('instructor-gate.js', z.read(f'skills/{slug}/teaching.html').decode())
 

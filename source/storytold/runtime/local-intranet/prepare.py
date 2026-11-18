@@ -105,7 +105,7 @@ def browser_links(site, apps, include_learners=True):
             for learner in root.rglob('learner.html'):
                 pages[learner.relative_to(site).as_posix()] = (skill, tools[:4])
     assets = Path('brand')
-    for filename in ['access-project.js', 'access-project.css']:
+    for filename in ['access-project.js', 'access-project.css', 'student-guide.js']:
         destination = site / assets / filename
         destination.parent.mkdir(parents=True, exist_ok=True)
         original = SOURCE.parents[3] / assets / filename

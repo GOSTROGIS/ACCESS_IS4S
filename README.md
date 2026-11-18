@@ -97,3 +97,9 @@ The [Exercise Book web edition](skills/numeracy/books/ACCESS-Trades-Numeracy-Exe
 - **Construction Operations tab.** Edit the files in `source/hub/conops/`, then run `python3 source/hub/conops/inject.py` to rebuild the tab inside the Numeracy Hub. The tab is not in the exam builder yet: its tasks can be practised on the tab, but the exam builder does not draw questions from it.
 - **Links.** `python3 source/check-links.py` reports any relative link that points at a missing file.
 - **Old addresses.** `404.html` holds the list of moved folders. GitHub Pages shows it for any missing address, and it forwards old links (pages, PDFs and plates) to their new place.
+
+## Local coding assistant
+
+Run [Open Ollama Tools.cmd](Open%20Ollama%20Tools.cmd) from a Windows checkout to open a developer chat with this repository selected. The launcher looks for the shared Ollama Tools installation alongside your repository collection. For a different location, set `OLLAMA_TOOLS_DIR` to the folder containing `Start Ollama Tools.cmd`.
+
+The companion runs with the [Ollama](https://ollama.com/) model runtime on your computer.

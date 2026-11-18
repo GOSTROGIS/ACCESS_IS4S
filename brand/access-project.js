@@ -3,6 +3,11 @@
   'use strict';
 
   const navigation = document.getElementById('access-studio');
+  if (document.currentScript) {
+    const guide = document.createElement('script');
+    guide.src = new URL('student-guide.js', document.currentScript.src).href;
+    document.head.append(guide);
+  }
   if (!navigation || location.origin !== 'http://127.0.0.1:4180') return;
 
   async function connectTools() {
