@@ -27,6 +27,13 @@ jobs:
           python3 source/site/build_processing_workspace.py
           git diff --exit-code -- processing-tools
           node --test source/site/test-student-*.mjs
+      - name: Save and reopen an editor download in a browser project
+        run: |
+          npm install --prefix "$RUNNER_TEMP/processing-browser" playwright@1.56.1
+          "$RUNNER_TEMP/processing-browser/node_modules/.bin/playwright" install --with-deps chromium
+          python3 -m http.server 8799 --directory "$RUNNER_TEMP/public-site" --bind 127.0.0.1 > "$RUNNER_TEMP/processing-http.log" 2>&1 &
+          export NODE_PATH="$RUNNER_TEMP/processing-browser/node_modules"
+          node source/site/test-processing-download.cjs http://127.0.0.1:8799/processing-tools/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ runner.temp }}/public-site

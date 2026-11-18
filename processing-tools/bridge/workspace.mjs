@@ -130,11 +130,14 @@ async function start() {
     tell('ready');
     // Upstream apps using normal browser downloads keep that behavior. A copy
     // of each generated Blob is handed to the project before its URL is revoked.
-    const window = frame.contentWindow;
-    const click = window.HTMLAnchorElement.prototype.click;
-    window.HTMLAnchorElement.prototype.click = function () {
+    const anchor = frame.contentWindow.HTMLAnchorElement.prototype;
+    const click = anchor.click;
+    anchor.click = function () {
       if (this.download && this.href.startsWith('blob:')) {
-        void window.fetch(this.href).then(response => response.arrayBuffer()).then(bytes => exported(this.download, bytes))
+        const filename = this.download;
+        // Read the Blob in the adapter's realm so the resulting ArrayBuffer
+        // can be validated and transferred to the project after the click.
+        void fetch(this.href).then(response => response.arrayBuffer()).then(bytes => exported(filename, bytes))
           .catch(error => tell('error', { error: error.message }));
       }
       return click.call(this);
