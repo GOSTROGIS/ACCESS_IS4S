@@ -72,6 +72,8 @@ export function consumeNativeHandoff(config: Config, db: DatabaseSync, code: str
       const tokens = openTokens(new TokenBox(config.secrets.sessionKey), row.token_enc, aad(owner.product, hash));
       if (access && pinned?.github_id === owner.githubId && tokens && /^[\x21-\x7e]{20,4096}$/.test(tokens.access)) {
         session = createSession(db, new TokenBox(config.secrets.sessionKey), access.login, tokens, userAgent);
+        db.prepare("INSERT INTO settings(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value")
+          .run(`native_cli_session.${owner.product}`, sha256hex(session));
         audit(db, access.login, "sign-in", access.login, { via: "native", product: owner.product });
       }
     }

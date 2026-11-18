@@ -7,11 +7,11 @@ import { addLogin, removeLogin } from "../src/access.ts";
 import { connect } from "../src/db.ts";
 import type { Config } from "../src/dash/server/config.ts";
 import { NATIVE_ORIGINS } from "../src/dash/server/config.ts";
-import { TokenBox } from "../src/dash/server/crypto.ts";
+import { sha256hex, TokenBox } from "../src/dash/server/crypto.ts";
 import { createApp } from "../src/dash/server/index.ts";
 import { consumeNativeHandoff, issueNativeHandoff, nativeSessionCookie } from "../src/dash/server/native-signin.ts";
 import { NativeGitHubProvider, type Provider } from "../src/dash/server/provider.ts";
-import { loadSession, openTokens } from "../src/dash/server/sessions.ts";
+import { deleteSession, loadSession, openTokens } from "../src/dash/server/sessions.ts";
 
 const base = resolve(".native-signin-tests");
 mkdirSync(base, { recursive: true });
@@ -73,6 +73,27 @@ test("owner, immutable GitHub ID, access membership and header-safe credential c
     await assert.rejects(issueNativeHandoff(config, db, credential, verified));
     removeLogin(db, "native-install", owner.login);
     await assert.rejects(issueNativeHandoff(config, db, credential, verified));
+  } finally { db.close(); }
+});
+
+test("native CLI binding names only the newest consumed session hash and cannot fall back after local logout", async () => {
+  const { db, config } = fixture();
+  try {
+    const issue = async () => consumeNativeHandoff(config, db, codeOf((await issueNativeHandoff(config, db, credential, verified)).url))!;
+    const first = await issue(), second = await issue();
+    const binding = () => (db.prepare("SELECT value FROM settings WHERE key='native_cli_session.access'").get() as { value: string }).value;
+    assert.equal(binding(), sha256hex(second)); assert.notEqual(binding(), first); assert.notEqual(binding(), second);
+    assert.ok(loadSession(db, first) && loadSession(db, second));
+    const stored = JSON.stringify(db.prepare("SELECT * FROM settings").all());
+    assert.ok(!stored.includes(credential) && !stored.includes(first) && !stored.includes(second));
+    deleteSession(db, second);
+    assert.equal(db.prepare("SELECT 1 FROM sessions WHERE id_hash=?").get(binding()), undefined);
+    assert.ok(loadSession(db, first), "An older browser session still exists; a native CLI must never choose it as a fallback");
+    const pending = await issueNativeHandoff(config, db, credential, verified);
+    db.exec("CREATE TRIGGER native_audit_refusal BEFORE INSERT ON audit BEGIN SELECT RAISE(ABORT,'fixture failure'); END");
+    assert.throws(() => consumeNativeHandoff(config, db, codeOf(pending.url)), /fixture failure/);
+    assert.equal(binding(), sha256hex(second), "The binding and session creation commit atomically with handoff consumption");
+    assert.equal((db.prepare("SELECT count(*) AS n FROM sessions").get() as { n: number }).n, 1);
   } finally { db.close(); }
 });
 
