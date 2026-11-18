@@ -15,7 +15,10 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
   try {
     const root=join(scratch,'mirrors'); const hooks=join(scratch,'hooks'); await mkdir(root); await mkdir(hooks);
     const config=join(scratch,'gitconfig'); await writeFile(config,'');
-    const environment={...process.env,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:config,GIT_TERMINAL_PROMPT:'0'};
+    const trace=join(scratch,'git-trace.jsonl');
+    const environment={...process.env,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:config,GIT_TERMINAL_PROMPT:'0',GIT_TRACE2_EVENT:trace};
+    const syncCommands=async()=>(await readFile(trace,'utf8')).trim().split(/\r?\n/).map(line=>JSON.parse(line))
+      .filter(event=>event.event==='start' && event.argv?.includes(`core.hooksPath=${hooks}`)).map(event=>event.argv);
     const run=async(args,cwd=scratch)=>(await exec(git,args,{cwd,env:environment,encoding:'utf8',windowsHide:true})).stdout.trim();
     const writer=join(scratch,'writer'); const origin=join(scratch,'origin.git');
     await run(['init','--initial-branch=main',writer]);
@@ -25,6 +28,11 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
     const repo={name:'example',branch:'main',url:origin};
     const sync=()=>synchronizeRepository({git,root,repo,environment,hooks});
     assert.equal((await sync()).status,'cloned');
+    const clonedCommands=await syncCommands();assert.ok(clonedCommands.length>0);
+    for(const args of clonedCommands) {
+      assert.ok(args.includes('http.lowSpeedLimit=1'),'real sync Git commands retain the proven one-byte HTTP threshold');
+      assert.ok(args.includes('http.lowSpeedTime=120'),'real sync Git commands retain the proven 120-second HTTP window');
+    }
     const local=join(root,'example');assert.equal(await readFile(join(local,'sample.txt'),'utf8'),'one');
     await commit('two');await run(['push',origin,'main'],writer);
     const advanced=await sync();
@@ -70,6 +78,10 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
     await assert.rejects(readFile(join(independent,'unpublished.txt')));
     await assert.rejects(readFile(join(independent,'.git','objects','info','alternates')));
     await assert.rejects(run(['cat-file','-e',unpublished],independent));
+    const commands=await syncCommands();const fetched=commands.filter(args=>args.includes('fetch'));
+    assert.ok(fetched.length>0,'the actual fast-forward fixture executes Git fetch');
+    assert.ok(fetched.every(args=>args.includes('--progress')),'only fetch explicitly forces bounded progress diagnostics');
+    assert.ok(commands.filter(args=>!args.includes('fetch')).every(args=>!args.includes('--progress')),'clone, identity and local operations do not force progress');
   } finally {await rm(scratch,{recursive:true,force:true,maxRetries:5});}
 });
 
@@ -85,7 +97,7 @@ for(const policy of [{name:'job deadline',timeoutMs:2000,lowSpeedTime:60,exitCod
     const env={...process.env,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:config,GIT_TERMINAL_PROMPT:'0'};
     delete env.INTRANET_GITHUB_CREDENTIAL;delete env.GIT_ASKPASS;
     const start=Date.now();
-    const operation=containedGit({git,args:['-c','credential.helper=','-c','http.proxy=','-c','http.lowSpeedLimit=1024','-c',`http.lowSpeedTime=${policy.lowSpeedTime}`,'ls-remote',`http://127.0.0.1:${server.address().port}/synthetic-fixture.git`],cwd:scratch,env,timeoutMs:policy.timeoutMs});
+    const operation=containedGit({git,args:['-c','credential.helper=','-c','http.proxy=','-c','http.lowSpeedLimit=1','-c',`http.lowSpeedTime=${policy.lowSpeedTime}`,'ls-remote',`http://127.0.0.1:${server.address().port}/synthetic-fixture.git`],cwd:scratch,env,timeoutMs:policy.timeoutMs});
     await Promise.race([arrived,new Promise((_,reject)=>{const timer=setTimeout(()=>reject(Error('Git did not open its fixture connection')),5000);timer.unref();})]);
     await assert.rejects(operation,error=>error.code===policy.exitCode && !error.message.includes('synthetic-fixture'));
     await Promise.race([ended,new Promise((_,reject)=>{const timer=setTimeout(()=>reject(Error('The owned Git remote helper survived its job deadline')),3000);timer.unref();})]);

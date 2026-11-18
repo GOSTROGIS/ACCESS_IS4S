@@ -11,7 +11,7 @@ const run = promisify(execFile);
 const validName = name => typeof name === 'string' && /^(?!\.{1,2}$)[A-Za-z0-9_.-]{1,100}$/.test(name);
 const validPlacement = folder => typeof folder==='string' && /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,99}$/.test(folder) && folder.trim()===folder && !folder.endsWith('.');
 const validBranch = name => typeof name==='string' && name.length>0 && !name.startsWith('-') && !/[~^:?*\[\]\\\x00-\x20\x7f]/.test(name) && !name.includes('..') && !name.includes('@{') && !name.endsWith('/');
-const flags = hooks => ['-c', `core.hooksPath=${hooks}`, '-c', 'core.fsmonitor=false', '-c', 'core.symlinks=false', '-c', 'core.protectNTFS=true', '-c', 'core.longpaths=true', '-c', 'core.autocrlf=false', '-c', 'submodule.recurse=false', '-c', 'credential.helper=', '-c', 'http.lowSpeedLimit=1024', '-c', 'http.lowSpeedTime=45'];
+const flags = hooks => ['-c', `core.hooksPath=${hooks}`, '-c', 'core.fsmonitor=false', '-c', 'core.symlinks=false', '-c', 'core.protectNTFS=true', '-c', 'core.longpaths=true', '-c', 'core.autocrlf=false', '-c', 'submodule.recurse=false', '-c', 'credential.helper=', '-c', 'http.lowSpeedLimit=1', '-c', 'http.lowSpeedTime=120'];
 const commandHelper=fileURLToPath(new URL('./github-sync-command.py',import.meta.url));
 
 /** Each new Git tree joins a non-breakaway Windows job before any child code runs. */
@@ -173,7 +173,7 @@ export async function synchronizeRepository({git,python,root,repo,environment,ho
   if(branch !== repo.branch) return {name:repo.name,status:'different-branch',branch};
   if((await command(['status','--porcelain=v1','--untracked-files=normal'],target)).stdout) return {name:repo.name,status:'local-edits',branch};
   if(!(await command(['ls-remote','origin',`refs/heads/${repo.branch}`],target)).stdout.trim()) return {name:repo.name,status:'empty',branch};
-  await command(['fetch','--no-tags','--no-recurse-submodules','origin',`+refs/heads/${repo.branch}:refs/remotes/origin/${repo.branch}`],target).catch(error => {
+  await command(['fetch','--progress','--no-tags','--no-recurse-submodules','origin',`+refs/heads/${repo.branch}:refs/remotes/origin/${repo.branch}`],target).catch(error => {
     if(error.code===128) throw Error('Git fetch could not verify the owned default branch.'); throw error;
   });
   try {
