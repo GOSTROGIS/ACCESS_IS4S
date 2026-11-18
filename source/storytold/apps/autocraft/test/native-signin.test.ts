@@ -148,13 +148,17 @@ test("production HTTP handoff preserves host/origin, cookies, identity, permissi
     const page = await call(url + "/auth/native", { headers });
     assert.equal(page.status, 200); assert.equal(page.headers.get("referrer-policy"), "no-referrer");
     assert.match(page.headers.get("content-security-policy")!, /script-src 'nonce-/);
-    assert.match(await page.text(), /history.replaceState/);
+    assert.match(page.headers.get("content-security-policy")!, /connect-src 'self'/);
+    const client = await page.text();
+    assert.match(client, /history.replaceState/);
+    assert.match(client, /mode:'cors'/); assert.match(client, /redirect:'error'/);
     assert.equal(page.headers.get("set-cookie"), null);
     assert.equal((await call(url + "/api/test/me", { headers })).status, 401);
     const issued = await issueNativeHandoff(config, db, credential, verified);
     const body = new URLSearchParams({ code: codeOf(issued.url) });
     assert.equal((await call(url + "/auth/native/finish", { method: "POST", headers: { ...headers, host: "attacker.invalid" }, body })).status, 403);
     assert.equal((await call(url + "/auth/native/finish", { method: "POST", headers: { ...headers, origin: "https://attacker.invalid" }, body })).status, 403);
+    assert.equal((await call(url + "/auth/native/finish", { method: "POST", headers: { ...headers, origin: "null", accept: "application/json" }, body })).status, 403);
     const finish = await call(url + "/auth/native/finish", { method: "POST", headers, body, redirect: "manual" });
     assert.equal(finish.status, 303); assert.equal(finish.headers.get("location"), "/");
     const setCookie = finish.headers.get("set-cookie")!;
@@ -175,5 +179,12 @@ test("production HTTP handoff preserves host/origin, cookies, identity, permissi
     assert.equal(signout.status, 204);
     assert.equal((await call(url + "/api/test/me", { headers: { ...headers, cookie } })).status, 401);
     assert.equal(consumeNativeHandoff(config, db, codeOf(pending.url)), null);
+    const jsonIssued = await issueNativeHandoff(config, db, credential, verified);
+    const jsonFinish = await call(url + "/auth/native/finish", { method: "POST", headers: { ...headers, accept: "application/json" },
+      body: new URLSearchParams({ code: codeOf(jsonIssued.url) }) });
+    assert.equal(jsonFinish.status, 200); assert.deepEqual(await jsonFinish.json(), { ok: true });
+    assert.equal(jsonFinish.headers.get("location"), null); assert.equal(jsonFinish.headers.get("referrer-policy"), "no-referrer");
+    assert.match(jsonFinish.headers.get("set-cookie")!, /^__Host-access_autocraft_session=/);
+    assert.match(jsonFinish.headers.get("set-cookie")!, /HttpOnly; Secure; SameSite=Lax/);
   } finally { app.close(); server.closeAllConnections(); await new Promise<void>(resolve => server.close(() => resolve())); db.close(); }
 });

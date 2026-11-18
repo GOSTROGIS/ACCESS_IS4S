@@ -356,7 +356,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       if (req.method === "GET" && url.pathname === "/auth/native") {
         return { r: { html: nativeHandoffPage(nonce), headers: {
           "referrer-policy": "no-referrer",
-          "content-security-policy": `default-src 'none'; script-src 'nonce-${nonce}'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`,
+          "content-security-policy": `default-src 'none'; script-src 'nonce-${nonce}'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`,
         } } };
       }
       if (req.method !== "POST" || url.pathname !== "/auth/native/finish") return { r: apiError(405, "method not allowed") };
@@ -366,6 +366,7 @@ export function createApp(opts: AppOptions & { routes: Route[] }) {
       if ([...form.keys()].join(",") !== "code") return { r: apiError(400, "invalid sign-in form") };
       const id = consumeNativeHandoff(config, db, form.get("code") ?? "", req.headers["user-agent"]);
       if (!id) return { r: errorPage(nonce, 400, "Sign-in expired", "Use the installed native sign-in launcher again.") };
+      if (String(req.headers.accept ?? "").split(",").some(type => type.trim().split(";", 1)[0] === "application/json")) return { r: { json: { ok: true }, headers: { "referrer-policy": "no-referrer" } }, cookies: [cookie(sessionCookie, id, SESSION_TTL / 1000)] };
       return { r: { redirect: "/", headers: { "referrer-policy": "no-referrer" } }, cookies: [cookie(sessionCookie, id, SESSION_TTL / 1000)] };
     }
     const ip = clientIp(req);

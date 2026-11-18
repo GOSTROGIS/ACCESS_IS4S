@@ -89,6 +89,6 @@ export function nativeHandoffPage(nonce: string): string {
   return `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="referrer" content="no-referrer"><title>Native sign-in</title><body><p id="status">Completing native sign-in…</p><script nonce="${nonce}">
   const code=location.hash.slice(1);history.replaceState(null,'','/auth/native');
   if(!/^[A-Za-z0-9_-]{43}$/.test(code)){document.getElementById('status').textContent='Use the installed native sign-in launcher.';}
-  else{const form=document.createElement('form');form.method='POST';form.action='/auth/native/finish';const input=document.createElement('input');input.type='hidden';input.name='code';input.value=code;form.append(input);document.body.append(form);form.submit();}
+  else{fetch('/auth/native/finish',{method:'POST',mode:'cors',credentials:'same-origin',redirect:'error',referrerPolicy:'no-referrer',headers:{accept:'application/json'},body:new URLSearchParams({code})}).then(async response=>{if(!response.ok||(await response.json()).ok!==true)throw Error();location.replace('/')}).catch(()=>{document.getElementById('status').textContent='Sign-in expired or was refused. Use the installed native sign-in launcher again.';});}
   </script></body></html>`;
 }
