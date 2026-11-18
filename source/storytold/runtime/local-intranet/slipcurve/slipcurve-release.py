@@ -124,9 +124,9 @@ def locked(home):
             msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
 
 
-def run(args, *, env=None, stdin=None):
+def run(args, *, env=None, stdin=None, input=None):
     result = subprocess.run([str(arg) for arg in args], env=env, stdin=stdin, encoding='utf-8', errors='replace',
-                            capture_output=True, timeout=900)
+                            input=input, capture_output=True, timeout=900)
     if result.returncode:
         details = ('\n'.join(part.strip() for part in (result.stdout, result.stderr) if part)).strip()[-20_000:]
         raise ValueError(f'{Path(args[0]).name} exited {result.returncode}: {details}')
@@ -150,26 +150,44 @@ def local_git_environment():
 
 
 def checkout(git, target, scratch, source_cache=None):
+    if not COMMIT.fullmatch(target):
+        raise ValueError('Invalid published source commit')
     repo = scratch / 'repository'
     env = {**os.environ, 'GIT_TERMINAL_PROMPT': '0', 'GCM_INTERACTIVE': 'Never'}
     safe_env = local_git_environment()
     hooks = scratch / 'empty-hooks'
     hooks.mkdir()
+    cache = None
+    cached = False
     if source_cache:
         # Fetch only the authoritative published commit's reachable objects.
         # No source working files, alternate store or newer local refs are used.
         cache = Path(source_cache).resolve(strict=True)
         if run([git, '-C', cache, 'remote', 'get-url', 'origin'], env=safe_env) != ORIGIN:
             raise ValueError('The source cache is not the owned SLIPCURVE repository')
-        if run([git, '-C', cache, 'rev-parse', '--verify', target + '^{commit}'], env=safe_env) != target:
-            raise ValueError('The published commit is absent from the source cache')
+        entry = run([git, '-C', cache, 'cat-file', '--batch-check'], env=safe_env, input=target + '\n').split()
+        if entry == [target, 'missing']:
+            # The independent GitHub pull can legitimately lag the release
+            # check. A cache miss never changes the authoritative source pin.
+            cached = False
+        elif len(entry) == 3 and entry[0] == target and entry[1] == 'commit' and entry[2].isdigit():
+            cached = True
+        else:
+            raise ValueError('The source cache returned an invalid commit object')
+    if cached:
         run([git, '-c', 'core.longpaths=true', 'init', '--quiet', repo], env=safe_env)
         safe = [git, '-C', repo, '-c', 'core.longpaths=true', '-c', 'core.hooksPath=' + str(hooks),
                 '-c', 'core.fsmonitor=false', '-c', 'credential.helper=']
         run([*safe, 'fetch', '--quiet', '--no-tags', '--no-recurse-submodules', str(cache), target], env=safe_env)
         run([*safe, 'remote', 'add', 'origin', ORIGIN], env=safe_env)
     else:
-        run([git, '-c', 'core.longpaths=true', 'clone', '--no-checkout', '--no-tags', '--single-branch', '--branch', 'main', ORIGIN, repo], env=env)
+        # Borrow existing objects only while cloning the owned origin. Git
+        # dissociates the new repository; private working files/local commits
+        # are never selected, and the source cache itself remains untouched.
+        reference = ['--reference-if-able', str(cache), '--dissociate'] if cache else []
+        run([git, '-c', 'core.longpaths=true', '-c', 'core.hooksPath=' + str(hooks), '-c', 'core.fsmonitor=false',
+             'clone', '--filter=blob:none', '--no-checkout', '--no-tags', '--single-branch', '--branch', 'main',
+             *reference, ORIGIN, repo], env=env)
     run([git, '-C', repo, 'config', 'core.hooksPath', str(hooks)], env=safe_env)
     run([git, '-C', repo, 'fsck', '--strict', '--connectivity-only', target], env=safe_env)
     # The client build does not compile the separate installed native/WASM
