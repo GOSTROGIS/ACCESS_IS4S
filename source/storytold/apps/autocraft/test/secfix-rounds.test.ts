@@ -48,6 +48,7 @@ function world(n: number, replies: (round: number) => string): World {
     calls.push(`${cmd} ${a}`);
     if (a.includes("ls-tree")) return { code: 0, stdout: `${SRC}\n`, stderr: "" };
     if (a.includes("rev-parse --git-dir")) return { code: 0, stdout: ".\n", stderr: "" };
+    if (a.includes("rev-parse --is-bare-repository")) return { code: 0, stdout: "true\n", stderr: "" };
     if (a.includes("write-tree")) return { code: 0, stdout: `${"c".repeat(40)}\n`, stderr: "" };
     if (a.includes("commit-tree")) return { code: 0, stdout: `${"d".repeat(40)}\n`, stderr: "" };
     if (a.includes("diff-tree")) return { code: 0, stdout: `:100644 100644 a b M\0${SRC}\0:000000 100644 a b A\0crates/psd/tests/${testNameOf(n)}.rs\0`, stderr: "" };

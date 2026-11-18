@@ -128,6 +128,7 @@ export function world() {
             if (cmd === "git") {
               while (a[0] === "-c") a.splice(0, 2);
               if (a[0] === "rev-parse" && a[1] === "--git-dir") return ok(".\n");
+              if (a[0] === "rev-parse" && a[1] === "--is-bare-repository") return ok("true\n");
               if (a[0] === "fetch") return ok();
               if (a[0] === "rev-parse") return ok((a[1] === "refs/batch/main" ? MAIN : headOf(Number(a[1]!.split("pr-")[1]))) + "\n");
               if (a[0] === "merge-tree") return ok(`tree-${a.at(-1)}\n`);
