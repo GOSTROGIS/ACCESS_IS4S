@@ -1,7 +1,7 @@
 import { execFile, spawn } from 'node:child_process';
 import { appendFile, lstat, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { basename, dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs, promisify } from 'node:util';
 import { download, signedChecksum, verifyArchive } from '../acquire-web-releases.mjs';
@@ -146,6 +146,15 @@ async function slipcurveRuntime(root, mode, report) {
     if (!settings.git) throw Error('Set the installed git.exe path in the folder updater settings');
     args.push('--git', settings.git, '--python-deps', join(runner, 'python-deps'), '--chrome', settings.slipcurveChrome || settings.chrome,
       '--npm-cli', join(runner, 'npm', 'bin', 'npm-cli.js'));
+    if (settings.slipcurveSourceCache !== undefined) {
+      const cache = settings.slipcurveSourceCache;
+      if (typeof cache !== 'string' || !isAbsolute(cache) || !(await lstat(cache)).isDirectory() || relative(cache, await realpath(cache)) !== '') {
+        throw Error('The configured SLIPCURVE source cache must be an existing direct directory.');
+      }
+      // The release helper still resolves GitHub main first and validates the
+      // fixed owned origin and exact published objects; no working files import.
+      args.push('--source-cache', cache);
+    }
   }
   await projectRuntime('SLIPCURVE', mode, join(app, 'runtime', 'python.exe'), args, report);
 }
