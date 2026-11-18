@@ -78,10 +78,13 @@
     }
   }
   if (chat) {
+    const assistant = main.querySelector('[data-assistant-link]');
+    if (assistant) assistant.href = chat.href;
     const p = document.createElement('p'), a = document.createElement('a');
     if(relative !== 'index.html') chat.searchParams.set('lesson',relative);
     a.href=chat.href; a.rel='noopener noreferrer'; a.target='_blank'; a.textContent='Ask the student tutor';
     p.append(a); panel.append(p);
   }
-  const nav=main.querySelector('#access-studio'); if(nav) nav.after(panel); else main.prepend(panel);
+  const anchor=main.querySelector('#hub-tools-help') || main.querySelector('#access-studio');
+  if(anchor) anchor.after(panel); else main.prepend(panel);
 })();

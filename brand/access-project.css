@@ -26,6 +26,26 @@
   background: var(--gold-tint, #fff8e6);
 }
 
+.hub-tools {
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--surface);
+}
+
+.hub-tools a {
+  padding: 10px clamp(8px, 2vw, 22px);
+}
+
+main:has(> .hub-tools) {
+  padding-top: 16px;
+  row-gap: 22px;
+}
+
+#hub-tools-help summary {
+  cursor: pointer;
+  width: fit-content;
+}
+
 .access-tools-active main.wrap {
   padding-top: 16px;
   gap: 28px;

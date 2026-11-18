@@ -118,17 +118,29 @@ def browser_links(site, apps, include_learners=True):
         html = re.sub(r'\s*<!-- access-create:start -->.*?<!-- access-create:end -->\s*', '', html, flags=re.S)
         html = re.sub(r'\s*<section aria-label="Installed applications"><h2>Installed Storytold applications</h2>.*?</section>\s*', '', html, flags=re.S)
         prefix = '../' * (len(Path(page).parts) - 1)
-        label = 'Skills' if page == 'index.html' else 'Learn'
         application = tools[0] if tools else 'wordcraft'
-        practice = '<a href="storytold-labs.md">Practice guide</a>' if page.endswith('visual-studio/index.html') else ''
-        section = (f'\n{begin}\n<nav id="access-studio" class="access-learning-tabs" aria-label="Learning and tools" '
-                   f'data-skill="{escape(skill, quote=True)}" data-application="{application}" hidden>'
-                   f'<a href="{escape(Path(page).name, quote=True)}" aria-current="page">{label}</a>'
-                   f'<a data-tools-link href="/workspace/?skill={skill}&amp;app={application}">Tools</a>'
-                   f'{practice}'
-                   '</nav>'
-                   f'\n<link rel="stylesheet" href="{prefix}{assets.as_posix()}/access-project.css">'
-                   f'\n<script defer src="{prefix}{assets.as_posix()}/access-project.js"></script>\n{end}\n')
+        if page == 'index.html':
+            # The hub is also opened from Pages and directly from the synced folder.
+            # Plain links let the user launch installed services on demand in either case.
+            navigation = ('<nav id="access-studio" class="access-learning-tabs hub-tools" '
+                       'aria-label="Learning and tools" aria-describedby="hub-tools-help">'
+                       '<a href="index.html" aria-current="page">Skills</a>'
+                       '<a data-tools-link href="http://127.0.0.1:4180/workspace/?skill=digital&amp;app=wordcraft" '
+                       'rel="noreferrer">Storytold apps</a>'
+                       '<a data-assistant-link href="http://127.0.0.1:11436/student/" '
+                       'rel="noreferrer">AI assistant</a></nav>\n'
+                       '<details id="hub-tools-help"><summary>Using these tools on the intranet computer</summary>'
+                       '<p>In the Applications folder, run <strong>Start Intranet.cmd</strong> for Storytold '
+                       'or <strong>Open ACCESS student guide.cmd</strong> for the AI assistant.</p></details>')
+        else:
+            practice = '<a href="storytold-labs.md">Practice guide</a>' if page.endswith('visual-studio/index.html') else ''
+            navigation = ('<nav id="access-studio" class="access-learning-tabs" aria-label="Learning and tools" '
+                          f'data-skill="{escape(skill, quote=True)}" data-application="{application}" hidden>'
+                          f'<a href="{escape(Path(page).name, quote=True)}" aria-current="page">Learn</a>'
+                          f'<a data-tools-link href="/workspace/?skill={skill}&amp;app={application}">Tools</a>'
+                          f'{practice}</nav>')
+        section = (f'\n{begin}\n{navigation}\n<link rel="stylesheet" href="{prefix}brand/access-project.css">'
+                   f'\n<script defer src="{prefix}brand/access-project.js"></script>\n{end}\n')
         opening = re.search(r'<main\b[^>]*>', html)
         if not opening:
             raise ValueError(f'Missing main element in {page}')

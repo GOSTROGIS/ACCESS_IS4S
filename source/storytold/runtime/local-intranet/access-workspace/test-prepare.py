@@ -1,8 +1,33 @@
 """Check contextual links without changing a published lesson tree."""
 import importlib.util
 from pathlib import Path
+from html.parser import HTMLParser
 import tempfile
 import unittest
+
+
+class HubNavigation(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.visible = False
+        self.inside = False
+        self.links = {}
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if tag == 'nav' and attributes.get('id') == 'access-studio':
+            self.inside = True
+            self.visible = 'hidden' not in attributes
+        if self.inside and tag == 'a':
+            self.links[attributes['href']] = ''
+
+    def handle_data(self, data):
+        if self.inside and self.links:
+            self.links[next(reversed(self.links))] += data
+
+    def handle_endtag(self, tag):
+        if tag == 'nav':
+            self.inside = False
 
 spec = importlib.util.spec_from_file_location('intranet_prepare', Path(__file__).parents[1] / 'prepare.py')
 prepare = importlib.util.module_from_spec(spec)
@@ -39,6 +64,14 @@ class ContextLinks(unittest.TestCase):
                     self.assertIn('access-project.js', text)
                     self.assertLess(text.index('id="access-studio"'), text.index('<h1>Lesson remains</h1>'))
             writing = first['skills/writing/index.html']
+            hub = HubNavigation()
+            hub.feed(first['index.html'])
+            self.assertTrue(hub.visible)
+            self.assertEqual(hub.links, {
+                'index.html': 'Skills',
+                'http://127.0.0.1:4180/workspace/?skill=digital&app=wordcraft': 'Storytold apps',
+                'http://127.0.0.1:11436/student/': 'AI assistant',
+            })
             self.assertIn('data-skill="writing" data-application="wordcraft"', writing)
             self.assertIn('>Learn</a>', writing)
             self.assertIn('>Tools</a>', writing)
