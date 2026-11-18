@@ -117,26 +117,46 @@ class WindowsJob:
             self.parent = None
 
 
-def run_command(command, *, timeout, max_output=1024 * 1024, env=None, cwd=None):
+def run_command(command, *, timeout, max_output=1024 * 1024, env=None, cwd=None, input=None):
     """Return (child result, limit reason); never log command arguments or environment."""
     if os.name != 'nt':
         raise RuntimeError('Windows process containment is required.')
     if not command or not math.isfinite(timeout) or not 0 < timeout <= 86400 or not 0 < max_output <= 256 * 1024 * 1024:
         raise ValueError('A command and finite positive resource limits are required.')
+    if input is not None and (not isinstance(input, bytes) or len(input) > 1024 * 1024):
+        raise ValueError('Project input must be bounded bytes.')
     job = WindowsJob()
     process = None
     readers = []
     lock = threading.Lock()
     overflow = threading.Event()
     capture_error = threading.Event()
+    writer = None
     output, errors, total = [], [], [0]
     reason = None
     deadline = time.monotonic() + timeout
     try:
         # CREATE_NO_WINDOW | CREATE_SUSPENDED. No child code runs before assignment.
-        process = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+        process = subprocess.Popen(command, stdin=subprocess.PIPE if input is not None else subprocess.DEVNULL, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, env=env, cwd=cwd, shell=False, creationflags=0x08000004)
         job.assign_and_resume(process)
+
+        if input is not None:
+            def write():
+                try:
+                    process.stdin.write(input)
+                    process.stdin.flush()
+                except (BrokenPipeError, OSError):
+                    pass
+                finally:
+                    try:
+                        process.stdin.close()
+                    except OSError:
+                        pass
+            # The same finite command deadline also bounds a child that never reads.
+            # Job closure closes its entire tree before this owned writer is joined.
+            writer = threading.Thread(target=write, daemon=True)
+            writer.start()
 
         def read(stream, target):
             try:
@@ -179,6 +199,10 @@ def run_command(command, *, timeout, max_output=1024 * 1024, env=None, cwd=None)
             if process.poll() is None:
                 process.kill()  # Our exact still-suspended child if job assignment failed.
             process.wait(timeout=5)
+        if writer:
+            writer.join(timeout=5)
+            if writer.is_alive():
+                raise RuntimeError('Project input writer did not close.')
         for thread in readers:
             thread.join(timeout=5)
         if any(thread.is_alive() for thread in readers):
@@ -186,7 +210,7 @@ def run_command(command, *, timeout, max_output=1024 * 1024, env=None, cwd=None)
         if capture_error.is_set():
             raise RuntimeError('Project output capture failed.')
         if process:
-            for stream in (process.stdout, process.stderr):
+            for stream in (process.stdin, process.stdout, process.stderr):
                 if stream and not stream.closed:
                     stream.close()
     if overflow.is_set():

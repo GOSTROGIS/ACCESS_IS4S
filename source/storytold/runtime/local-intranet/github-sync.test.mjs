@@ -5,7 +5,8 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
 import {promisify} from 'node:util';
-import {synchronizeRepository} from './github-sync.mjs';
+import {createServer} from 'node:net';
+import {containedGit,ownedRepositories,synchronizeRepository} from './github-sync.mjs';
 
 const exec=promisify(execFile);
 const git=process.env.GITHUB_SYNC_TEST_GIT || 'git';
@@ -33,7 +34,7 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
     await run(['config','lfs.repositoryformatversion','1'],local);
     assert.deepEqual(await sync(),{name:'example',status:'local-config-requires-review',configuration:'lfs.repositoryformatversion'});
     await run(['config','lfs.repositoryformatversion','0'],local);
-    for(const [key,value] of [['filter.untrusted.process','never-execute-this'],['lfs.url','https://unrelated.invalid/objects']]) {
+    for(const [key,value] of [['filter.untrusted.process','never-execute-this'],['lfs.url','https://unrelated.invalid/objects'],['remote.origin.vcs','never-execute-this'],['http.proxy','http://unrelated.invalid'],['http.sslverify','false']]) {
       await run(['config',key,value],local);
       assert.deepEqual(await sync(),{name:'example',status:'local-config-requires-review',configuration:key});
       await run(['config','--unset',key],local);
@@ -70,4 +71,53 @@ test('mirrors clone, fast-forward, preserve edits and divergence, and adopt an e
     await assert.rejects(readFile(join(independent,'.git','objects','info','alternates')));
     await assert.rejects(run(['cat-file','-e',unpublished],independent));
   } finally {await rm(scratch,{recursive:true,force:true,maxRetries:5});}
+});
+
+for(const policy of [{name:'job deadline',timeoutMs:2000,lowSpeedTime:60,exitCode:124},{name:'libcurl low-speed limit',timeoutMs:10_000,lowSpeedTime:1,exitCode:128}]) test(`a genuine stalled Git HTTP transfer honors its ${policy.name} and closes the owned remote-helper socket`, {timeout:15_000}, async()=>{
+  const scratch=await realpath(await mkdtemp(join(tmpdir(),'github-sync-stall-')));
+  let connected,closed,socketError;
+  const arrived=new Promise(resolve=>{connected=resolve});
+  const ended=new Promise(resolve=>{closed=resolve});
+  const server=createServer(socket=>{socket.on('data',()=>{});socket.on('error',error=>{socketError=error});socket.once('close',closed);connected();});
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  try {
+    const config=join(scratch,'config');await writeFile(config,'');
+    const env={...process.env,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:config,GIT_TERMINAL_PROMPT:'0'};
+    delete env.INTRANET_GITHUB_CREDENTIAL;delete env.GIT_ASKPASS;
+    const start=Date.now();
+    const operation=containedGit({git,args:['-c','credential.helper=','-c','http.proxy=','-c','http.lowSpeedLimit=1024','-c',`http.lowSpeedTime=${policy.lowSpeedTime}`,'ls-remote',`http://127.0.0.1:${server.address().port}/synthetic-fixture.git`],cwd:scratch,env,timeoutMs:policy.timeoutMs});
+    await Promise.race([arrived,new Promise((_,reject)=>{const timer=setTimeout(()=>reject(Error('Git did not open its fixture connection')),5000);timer.unref();})]);
+    await assert.rejects(operation,error=>error.code===policy.exitCode && !error.message.includes('synthetic-fixture'));
+    await Promise.race([ended,new Promise((_,reject)=>{const timer=setTimeout(()=>reject(Error('The owned Git remote helper survived its job deadline')),3000);timer.unref();})]);
+    if(socketError && socketError.code!=='ECONNRESET') throw socketError;
+    assert.ok(Date.now()-start<8000);
+  } finally {await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true,maxRetries:5});}
+});
+
+test('a stalled existing credential helper is bounded and its synthetic credential never enters the error', {timeout:15_000}, async()=>{
+  const scratch=await realpath(await mkdtemp(join(tmpdir(),'github-sync-credential-')));
+  try {
+    const python=process.env.GITHUB_SYNC_TEST_PYTHON;
+    assert.ok(python,'Set the approved test Python path.');
+    const config=join(scratch,'config'),helper=join(scratch,'credential.py');
+    await writeFile(config,'');
+    await writeFile(helper,'import sys,time\nsys.stdin.buffer.read()\nprint("username=synthetic\\npassword=SYNTHETIC-NOT-A-CREDENTIAL\\n",flush=True)\ntime.sleep(60)\n');
+    const quote=value=>"'"+value.replaceAll("'","'\\''")+"'";
+    const env={...process.env,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:config,GIT_TERMINAL_PROMPT:'0',GCM_INTERACTIVE:'Never'};
+    await exec(git,['config','--file',config,'credential.helper',`!${quote(python.replaceAll('\\','/'))} ${quote(helper.replaceAll('\\','/'))}`],{env,windowsHide:true});
+    await assert.rejects(containedGit({git,python,args:['credential','fill'],credential:true,timeoutMs:1500,maxOutput:32768,cwd:scratch,env}),error=>error.code===124 && !JSON.stringify(error).includes('SYNTHETIC-NOT-A-CREDENTIAL') && !error.message.includes('password='));
+  } finally {await rm(scratch,{recursive:true,force:true,maxRetries:5});}
+});
+
+test('repository discovery refuses an oversized GitHub response without exposing its synthetic authorization',async()=>{
+  const original=globalThis.fetch;let cancelled=false;
+  try {
+    globalThis.fetch=async url=>String(url).endsWith('/user')?Response.json({login:'synthetic-owner'}):new Response(new ReadableStream({start(controller){controller.enqueue(new Uint8Array(4*1024*1024+1));},cancel(){cancelled=true}}));
+    await assert.rejects(ownedRepositories('synthetic-owner','SYNTHETIC-NOT-A-CREDENTIAL'),error=>error.message==='GitHub API exceeded its response limit.' && !JSON.stringify(error).includes('SYNTHETIC-NOT-A-CREDENTIAL'));
+    assert.ok(cancelled);
+    cancelled=false;
+    globalThis.fetch=async()=>new Response(new ReadableStream({cancel(){cancelled=true}}),{status:401});
+    await assert.rejects(ownedRepositories('synthetic-owner','SYNTHETIC-NOT-A-CREDENTIAL'),/GitHub API returned HTTP 401/);
+    assert.ok(cancelled,'HTTP error bodies are cancelled without reading or logging them');
+  } finally {globalThis.fetch=original;}
 });

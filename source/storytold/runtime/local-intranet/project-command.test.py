@@ -2,11 +2,13 @@
 import ctypes as c
 from ctypes import wintypes as w
 import json
+import importlib.util
 import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import unittest
 
@@ -210,6 +212,64 @@ time.sleep(60)
             capture_output=True, timeout=10, creationflags=HIDDEN)
         self.assertEqual(result.returncode, 0)
         self.assertEqual(result.stdout.strip(), b'0')
+
+    def command_module(self):
+        spec = importlib.util.spec_from_file_location('owned_project_command_test', LAUNCHER)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_explicit_bounded_input_is_delivered_in_memory(self):
+        value = b'protocol=https\nhost=synthetic.invalid\n\n'
+        result, reason = self.command_module().run_command([sys.executable, '-c',
+            'import sys,hashlib;d=sys.stdin.buffer.read();print(len(d));print(hashlib.sha256(d).hexdigest())'],
+            timeout=5, input=value, max_output=32768)
+        import hashlib
+        self.assertIsNone(reason)
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(result.stdout.splitlines(), [str(len(value)).encode(), hashlib.sha256(value).hexdigest().encode()])
+
+    def test_input_size_and_type_are_refused_before_a_child_starts(self):
+        module = self.command_module()
+        for value in ('not-bytes', b'x' * (1024 * 1024 + 1)):
+            with self.assertRaises(ValueError):
+                module.run_command([sys.executable, '-c', 'raise SystemExit(99)'], timeout=1, input=value)
+        self.assertIsNone(self.sentinel.poll())
+
+    def test_stalled_input_writer_closes_the_owned_tree_and_all_threads(self):
+        module = self.command_module()
+        before = set(threading.enumerate())
+        results = []
+        runner = threading.Thread(target=lambda: results.append(module.run_command(
+            [sys.executable, str(self.fixture), str(self.folder), 'sleep'], timeout=2, input=b'x' * (1024 * 1024))))
+        runner.start()
+        try:
+            deadline = time.monotonic() + 8
+            for name in ('sleep', 'leaf'):
+                marker = self.folder / (name + '.json')
+                while True:
+                    try:
+                        self.handles.append(ExactProcess(json.loads(marker.read_text())))
+                        break
+                    except (OSError, ValueError):
+                        if time.monotonic() >= deadline:
+                            raise AssertionError('Blocked-input fixture did not start')
+                        time.sleep(.01)
+        finally:
+            runner.join(timeout=10)
+        self.assertFalse(runner.is_alive())
+        self.assertEqual(results[0][1], 'timeout')
+        self.assert_tree_stopped_and_sentinel_alive()
+        self.assertEqual(set(threading.enumerate()) - before, set())
+
+    def test_credential_like_partial_output_has_a_deadline_and_finite_capture(self):
+        result, reason = self.command_module().run_command([sys.executable, '-c',
+            'import sys,time;sys.stdin.buffer.read();print("password=SYNTHETIC-NOT-A-CREDENTIAL",flush=True);time.sleep(60)'],
+            timeout=.5, max_output=32768, input=b'protocol=https\nhost=synthetic.invalid\n\n')
+        self.assertEqual(reason, 'timeout')
+        self.assertLessEqual(len(result.stdout) + len(result.stderr), 32768)
+        self.assertIn(b'SYNTHETIC-NOT-A-CREDENTIAL', result.stdout)
+        self.assertIsNone(self.sentinel.poll())
 
     def test_default_one_mebibyte_output_cap_includes_diagnostic(self):
         result = subprocess.run([sys.executable, str(LAUNCHER), '--timeout', '5', '--', sys.executable,

@@ -1,4 +1,4 @@
-import { execFile, spawn } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
@@ -11,7 +11,19 @@ const run = promisify(execFile);
 const validName = name => typeof name === 'string' && /^(?!\.{1,2}$)[A-Za-z0-9_.-]{1,100}$/.test(name);
 const validPlacement = folder => typeof folder==='string' && /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,99}$/.test(folder) && folder.trim()===folder && !folder.endsWith('.');
 const validBranch = name => typeof name==='string' && name.length>0 && !name.startsWith('-') && !/[~^:?*\[\]\\\x00-\x20\x7f]/.test(name) && !name.includes('..') && !name.includes('@{') && !name.endsWith('/');
-const flags = hooks => ['-c', `core.hooksPath=${hooks}`, '-c', 'core.fsmonitor=false', '-c', 'core.symlinks=false', '-c', 'core.protectNTFS=true', '-c', 'core.longpaths=true', '-c', 'core.autocrlf=false', '-c', 'submodule.recurse=false', '-c', 'credential.helper='];
+const flags = hooks => ['-c', `core.hooksPath=${hooks}`, '-c', 'core.fsmonitor=false', '-c', 'core.symlinks=false', '-c', 'core.protectNTFS=true', '-c', 'core.longpaths=true', '-c', 'core.autocrlf=false', '-c', 'submodule.recurse=false', '-c', 'credential.helper=', '-c', 'http.lowSpeedLimit=1024', '-c', 'http.lowSpeedTime=45'];
+const commandHelper=fileURLToPath(new URL('./github-sync-command.py',import.meta.url));
+
+/** Each new Git tree joins a non-breakaway Windows job before any child code runs. */
+export async function containedGit({git,python=process.env.GITHUB_SYNC_TEST_PYTHON,args,cwd,env,credential=false,timeoutMs=600_000,maxOutput=2*1024*1024}) {
+  if(process.platform!=='win32' || !python || !Number.isFinite(timeoutMs) || timeoutMs<=0 || timeoutMs>600_000) throw Error('A configured Windows Python command guard is required.');
+  const options=['-I','-B',commandHelper,'--timeout',String(timeoutMs/1000),'--max-output',String(maxOutput),...(credential?['--credential']:[]),'--',git,...args];
+  try { return await run(python,options,{cwd,env,encoding:'utf8',timeout:timeoutMs+15_000,maxBuffer:maxOutput,windowsHide:true}); }
+  catch(error) {
+    const failure=Error(credential?'The existing GitHub credential helper could not finish.':'The bounded Git command could not finish.');
+    failure.code=error.code; throw failure;
+  }
+}
 
 async function canonical(path) {
   if (relative(path, await realpath(path)) !== '') throw Error('A mirror path redirects outside its declared directory.');
@@ -27,26 +39,25 @@ async function regularTree(directory) {
   }
 }
 
-async function gitCredential(git) {
-  return new Promise((accept, reject) => {
-    const child = spawn(git, ['credential', 'fill'], {env:{...process.env,GIT_TERMINAL_PROMPT:'0',GCM_INTERACTIVE:'Never'}, windowsHide:true, stdio:['pipe','pipe','ignore']});
-    let body = '';
-    child.stdout.on('data', chunk => { body += chunk; if(body.length > 32_768) child.kill(); });
-    child.on('error', () => reject(Error('The existing Git credential helper could not start.')));
-    child.on('close', code => {
-      const credential = body.split(/\r?\n/).find(line => line.startsWith('password='))?.slice(9);
-      if(code || !credential) reject(Error('The existing GitHub credential helper did not return usable authentication.'));
-      else accept(credential);
-    });
-    child.stdin.end('protocol=https\nhost=github.com\n\n');
-  });
+async function gitCredential(git,python,cwd) {
+  const env=Object.fromEntries(Object.entries(process.env).filter(([name])=>!/^(?:GIT_|GCM_|NODE_(?:OPTIONS|PATH)$|PYTHON|BASH_ENV$|ENV$)/i.test(name)));
+  const {stdout}=await containedGit({git,python,args:['credential','fill'],credential:true,timeoutMs:30_000,maxOutput:32_768,cwd,env:{...env,GIT_CEILING_DIRECTORIES:dirname(cwd),GIT_TERMINAL_PROMPT:'0',GCM_INTERACTIVE:'Never'}});
+  const token=stdout.split(/\r?\n/).find(line=>line.startsWith('password='))?.slice(9);
+  if(!token) throw Error('The existing GitHub credential helper did not return usable authentication.');
+  return token;
 }
 
 async function api(path, token) {
   const response = await fetch(`https://api.github.com${path}`, {redirect:'error',signal:AbortSignal.timeout(30_000),
     headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json','User-Agent':'ACCESS-Intranet-Repository-Sync'}});
-  if(!response.ok) throw Error(`GitHub API returned HTTP ${response.status}.`);
-  return response.json();
+  if(!response.ok) {await response.body?.cancel();throw Error(`GitHub API returned HTTP ${response.status}.`);}
+  const chunks=[];let bytes=0;
+  for await(const chunk of response.body) {
+    bytes+=chunk.length;
+    if(bytes>4*1024*1024) throw Error('GitHub API exceeded its response limit.');
+    chunks.push(chunk);
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'));
 }
 
 export async function ownedRepositories(owner, token) {
@@ -66,7 +77,7 @@ export async function ownedRepositories(owner, token) {
   throw Error('Repository pagination exceeded its bounded limit.');
 }
 
-export async function synchronizeRepository({git,root,repo,environment,hooks,seed,placement}) {
+export async function synchronizeRepository({git,python,root,repo,environment,hooks,seed,placement}) {
   if(!validName(repo.name) || !validBranch(repo.branch)) throw Error('Invalid repository name or default branch.');
   if(placement && !validPlacement(placement)) throw Error('Invalid repository placement.');
   const parent=placement?await canonical(dirname(root)):root;
@@ -77,7 +88,7 @@ export async function synchronizeRepository({git,root,repo,environment,hooks,see
       delete env.INTRANET_GITHUB_CREDENTIAL;
       delete env.GIT_ASKPASS;
     }
-    return run(git,[...flags(hooks),...args],{cwd,env,encoding:'utf8',timeout:1_800_000,maxBuffer:2*1024*1024,windowsHide:true});
+    return containedGit({git,python,args:[...flags(hooks),...args],cwd,env});
   };
   let exists=true;
   try { await canonical(target); } catch(error) { if(error.code==='ENOENT') exists=false; else throw error; }
@@ -173,18 +184,18 @@ export async function synchronizeRepository({git,root,repo,environment,hooks,see
   return {name:repo.name,status:'current',branch,commit};
 }
 
-async function mirror(root,git,owner,seedRoot,placements) {
-  const token=await gitCredential(git);
-  const repos=await ownedRepositories(owner,token);
+async function mirror(root,git,python,owner,seedRoot,placements) {
   const scratch=await mkdtemp(join(tmpdir(),'intranet-github-'));
   try {
+    const token=await gitCredential(git,python,scratch);
+    const repos=await ownedRepositories(owner,token);
     const hooks=join(scratch,'hooks'); await mkdir(hooks);
     const config=join(scratch,'gitconfig'); await writeFile(config,'');
     const helper=join(scratch,'askpass.cjs');
     await writeFile(helper,"process.stdout.write(process.argv.slice(2).join(' ').toLowerCase().includes('username')?'x-access-token':process.env.INTRANET_GITHUB_CREDENTIAL);\n");
     const askpass=join(scratch,'askpass.cmd');
     await writeFile(askpass,`@\"${process.execPath}\" \"${helper}\" %*\r\n`);
-    const inherited=Object.fromEntries(Object.entries(process.env).filter(([name])=>!/^(?:GIT_|GCM_|NODE_OPTIONS$|BASH_ENV$|ENV$)/i.test(name)));
+    const inherited=Object.fromEntries(Object.entries(process.env).filter(([name])=>!/^(?:GIT_|GCM_|NODE_(?:OPTIONS|PATH)$|PYTHON|BASH_ENV$|ENV$)/i.test(name)));
     const environment={...inherited,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:config,GIT_TERMINAL_PROMPT:'0',GCM_INTERACTIVE:'Never',GIT_ASKPASS:askpass,INTRANET_GITHUB_CREDENTIAL:token};
     const results=[];
     const seeds=new Map();
@@ -195,7 +206,7 @@ async function mirror(root,git,owner,seedRoot,placements) {
         try {
           await canonical(candidate);
           await canonical(join(candidate,'.git'));
-          const origin=await run(git,[...flags(hooks),'-C',candidate,'config','--local','--no-includes','--get','remote.origin.url'],{env:{...environment,INTRANET_GITHUB_CREDENTIAL:'',GIT_ASKPASS:''},encoding:'utf8',windowsHide:true});
+          const origin=await containedGit({git,python,args:[...flags(hooks),'-C',candidate,'config','--local','--no-includes','--get','remote.origin.url'],env:{...environment,INTRANET_GITHUB_CREDENTIAL:'',GIT_ASKPASS:''}});
           if(repos.some(repo=>repo.url===origin.stdout.trim())) {
             const matches=seeds.get(origin.stdout.trim())||[];
             matches.push(candidate);
@@ -207,7 +218,7 @@ async function mirror(root,git,owner,seedRoot,placements) {
     async function synchronize(repo) {
       let result;
       try {
-        result=await synchronizeRepository({git,root,repo,environment,hooks,seed:seeds.get(repo.url),placement:Object.hasOwn(placements,repo.name)?placements[repo.name]:undefined});
+        result=await synchronizeRepository({git,python,root,repo,environment,hooks,seed:seeds.get(repo.url),placement:Object.hasOwn(placements,repo.name)?placements[repo.name]:undefined});
       }
       catch { result={name:repo.name,status:'failed'}; }
       console.log(`${result.name}: ${result.status}`);
@@ -233,10 +244,11 @@ async function mirror(root,git,owner,seedRoot,placements) {
 }
 
 async function main(){
-  const {values}=parseArgs({options:{root:{type:'string'},git:{type:'string'},owner:{type:'string',default:'GOSTROGIS'},'seed-root':{type:'string'},placements:{type:'string'}}});
-  if(!values.root || !values.git || !validName(values.owner)) throw Error('Supply --root, --git and the owner account.');
+  const {values}=parseArgs({options:{root:{type:'string'},git:{type:'string'},python:{type:'string'},owner:{type:'string',default:'GOSTROGIS'},'seed-root':{type:'string'},placements:{type:'string'}}});
+  if(!values.root || !values.git || !values.python || !validName(values.owner)) throw Error('Supply --root, --git, --python and the owner account.');
   const root=resolve(values.root); await mkdir(root,{recursive:true}); await canonical(root);
   const git=await canonical(resolve(values.git));
+  const python=await canonical(resolve(values.python));
   const placements=values.placements?JSON.parse(await readFile(await canonical(resolve(values.placements)),'utf8')):{};
   if(!placements || Array.isArray(placements) || typeof placements!=='object' ||
       Object.entries(placements).some(([name,folder])=>!validName(name)||!validPlacement(folder)) ||
@@ -245,7 +257,7 @@ async function main(){
   const lock=createServer(socket=>socket.destroy());
   const address=process.platform==='win32'?`\\\\.\\pipe\\intranet-github-${identity}`:join(tmpdir(),`intranet-github-${identity}.sock`);
   await new Promise((accept,reject)=>{lock.once('error',reject);lock.listen(address,accept)});
-  try { await mirror(root,git,values.owner,values['seed-root']?await canonical(resolve(values['seed-root'])):undefined,placements); } finally { await new Promise(done=>lock.close(done)); }
+  try { await mirror(root,git,python,values.owner,values['seed-root']?await canonical(resolve(values['seed-root'])):undefined,placements); } finally { await new Promise(done=>lock.close(done)); }
 }
 
 if(process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url)) main().catch(()=>{console.error('Repository sync could not finish. Existing mirrors and local changes are preserved.');process.exitCode=1});
