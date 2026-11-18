@@ -1,5 +1,5 @@
 import { cp, lstat, mkdir, readFile, readdir, realpath, rename, symlink, writeFile } from 'node:fs/promises';
-import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 
 const configuration = {
   filmcraft: ['FILMCRAFT_DATA_DIR', 'data'],
@@ -33,7 +33,7 @@ async function privateRoot(root, localAppData, remember) {
     if (value.schema !== 1 || !isAbsolute(value.directory)) throw Error('Invalid private profile location');
     const location = resolve(value.directory);
     const within = relative(root, location);
-    if (!within || (!within.startsWith('..') && !isAbsolute(within))) throw Error('Profiles must remain outside the synced installation');
+    if (!within || (!isAbsolute(within) && within !== '..' && !within.startsWith('..' + sep))) throw Error('Profiles must remain outside the synced installation');
     return location;
   }
   let ancestor = join(localAppData, 'ACCESS', 'Intranet', 'Storytold');

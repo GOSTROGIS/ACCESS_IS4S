@@ -45,3 +45,26 @@ test('owned document runtimes retain separate persistent product profiles', asyn
   await assert.rejects(productNativeEnvironment(root, '../other', 'wordcraft', options));
   await assert.rejects(productNativeEnvironment(root, 'access', '../wordcraft', options));
 });
+
+test('private profile pointers reject every installed child including names beginning with two dots', async t => {
+  const scratch = await mkdtemp(join(await realpath(tmpdir()), 'native-profile-'));
+  t.after(() => rm(scratch, { recursive: true, force: true }));
+  const root = join(scratch, 'installation');
+  await mkdir(join(root, 'tools'), { recursive: true });
+  const pointer = join(root, 'tools/native-profile-location.json');
+  const previous = process.env.LOCALAPPDATA;
+  process.env.LOCALAPPDATA = scratch;
+  try {
+    for (const directory of [root, join(root, 'private'), join(root, '..private')]) {
+      await writeFile(pointer, JSON.stringify({ schema: 1, directory }));
+      await assert.rejects(productNativeEnvironment(root, 'access', 'wordcraft'), /outside the synced installation/u);
+    }
+    const directory = join(scratch, 'private');
+    await writeFile(pointer, JSON.stringify({ schema: 1, directory }));
+    const env = await productNativeEnvironment(root, 'access', 'wordcraft');
+    assert.equal(env.WORDCRAFT_PROFILE_DIR, join(directory, 'products/access/wordcraft'));
+  } finally {
+    if (previous === undefined) delete process.env.LOCALAPPDATA;
+    else process.env.LOCALAPPDATA = previous;
+  }
+});
