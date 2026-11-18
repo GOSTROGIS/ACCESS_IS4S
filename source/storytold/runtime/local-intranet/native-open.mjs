@@ -12,7 +12,7 @@ try {
   const id = uri.pathname.slice(1);
   if (uri.protocol !== 'slipcurve-app:' || uri.hostname !== 'open' || uri.username || uri.password || uri.port ||
       uri.search || uri.hash || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) || process.argv.length !== 3) throw Error('Invalid application link');
-  const product = productIdentity(id);
+  const product = productIdentity(id === 'autocraft' ? 'access-autocraft' : id);
   if (product?.application === 'autocraft') {
     const controller = join(root, 'tools/autocraft-linux/controller.mjs');
     if (relative(controller, await realpath(controller))) throw Error('Automation controller is redirected');
@@ -25,10 +25,6 @@ try {
     const env = await productNativeEnvironment(root, product.product, product.application);
     const child = spawn(join(tree, selected.entry), [], { cwd: tree, env, detached: true, stdio: 'ignore', windowsHide: true });
     await new Promise((accept, reject) => { child.once('spawn', accept); child.once('error', reject); });
-    child.unref();
-  } else if (id === 'autocraft') {
-    const program = join(process.env.SystemRoot, 'System32', 'rundll32.exe');
-    const child = spawn(program, ['url.dll,FileProtocolHandler', 'http://127.0.0.1:8993/'], { detached: true, stdio: 'ignore', windowsHide: true });
     child.unref();
   } else {
     const { apps } = JSON.parse(await readFile(join(root, 'Storytold/native/native-apps.json'), 'utf8'));

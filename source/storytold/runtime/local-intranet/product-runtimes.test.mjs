@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import test from 'node:test';
 import { runtimeTree } from './runtime-state.mjs';
 import { activeProductRuntime, installedAutomations, installedProductRuntimes, productPort, rollbackProductRuntime, resumeProductRuntime, selectProductRuntime, validateProductRuntime, verifyProductRuntime } from './product-runtimes.mjs';
-import { runtimeServer } from './intranet.mjs';
+import { portalInstallation, runtimeServer } from './intranet.mjs';
 
 const hash = value => createHash('sha256').update(value).digest('hex');
 async function fixture(t) {
@@ -145,4 +145,15 @@ test('automation inventory publishes only approved product launch identities and
     await writeFile(path, JSON.stringify({ schema: 1, services: [{ ...row, ...patch }] }));
     await assert.rejects(installedAutomations(root), /Invalid installed automation/u);
   }
+});
+
+test('native selections and browser edition updates reuse the live portal while new browser routes change its topology', () => {
+  const base = portalInstallation('fixture', [], [], []);
+  const native = { id: 'access-wordcraft', product: 'access', application: 'wordcraft', kind: 'native', version: 'first' };
+  assert.equal(portalInstallation('fixture', [], [], [native]), base);
+  const browser = { ...native, kind: 'web', port: 4307 };
+  const installed = portalInstallation('fixture', [], [], [browser, native]);
+  assert.notEqual(installed, base);
+  assert.equal(portalInstallation('fixture', [], [], [native, { ...browser, version: 'updated', held: true }]), installed);
+  assert.notEqual(portalInstallation('fixture', [], [], [browser, { ...browser, id: 'slipcurve-wordcraft', product: 'slipcurve', port: 4327 }]), installed);
 });

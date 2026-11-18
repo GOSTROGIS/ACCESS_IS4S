@@ -317,6 +317,12 @@ async function startSlipcurve() {
   child.once('exit', () => process.off('exit', stop));
 }
 
+export function portalInstallation(root, apps, variants, runtimes) {
+  const routes = runtimes.filter(row => row.kind === 'web').map(({ id, product, application, port }) =>
+    ({ id, product, application, port })).sort((a, b) => a.port - b.port || a.id.localeCompare(b.id));
+  return createHash('sha256').update(root).update(JSON.stringify(apps)).update(JSON.stringify(variants)).update(JSON.stringify(routes)).digest('hex');
+}
+
 async function main() {
   const apps = await installedApps();
   const productRuntimes = await installedProductRuntimes(home);
@@ -328,7 +334,7 @@ async function main() {
     return null;
   });
   const url = `http://${address}:${portalPort}/`;
-  const installation = createHash('sha256').update(home).update(JSON.stringify(apps)).update(JSON.stringify(variants)).update(JSON.stringify(productRuntimes)).digest('hex');
+  const installation = portalInstallation(home, apps, variants, productRuntimes);
   if (await existingPortal(url, installation)) {
     console.log(`Intranet is already running at ${url}`);
     openBrowser(url);
