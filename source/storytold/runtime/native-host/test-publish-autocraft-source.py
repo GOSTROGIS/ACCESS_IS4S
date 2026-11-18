@@ -6,8 +6,10 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tarfile
 import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -104,6 +106,8 @@ class Publication(unittest.TestCase):
         expected = set(self.command(self.origin, 'ls-tree', '-r', '--name-only', 'HEAD:' + self.prefix).splitlines())
         self.assertEqual(set(receipt['files']), expected)
         self.assertIn('src/cli.ts', receipt['files'])
+
+
         self.assertIn('web/src/main.ts', receipt['files'])
         archive = self.root / 'candidate/source.tar'
         with tarfile.open(archive) as stream:
@@ -185,6 +189,38 @@ class Publication(unittest.TestCase):
         self.revision = self.command(self.origin, 'rev-parse', 'HEAD').strip()
         with self.assertRaisesRegex(ValueError, 'Unsupported'):
             self.publish()
+
+
+@unittest.skipUnless(os.name == 'nt', 'Windows process containment')
+class ProcessContainment(unittest.TestCase):
+    def test_timeout_terminates_actual_child_and_grandchild_and_closes_capture_pipes(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-process-fixture-') as folder:
+            root = Path(folder).resolve()
+            started, escaped = root / 'started', root / 'escaped'
+            grandchild = 'import pathlib,sys,time;pathlib.Path(sys.argv[1]).write_text("started");time.sleep(6);pathlib.Path(sys.argv[2]).write_text("escaped")'
+            child = 'import pathlib,subprocess,sys,time;subprocess.Popen([sys.executable,"-c",sys.argv[1],sys.argv[2],sys.argv[3]]);\nwhile not pathlib.Path(sys.argv[2]).exists():time.sleep(.01)\nprint("ready",flush=True);time.sleep(60)'
+            begin = time.monotonic()
+            with self.assertRaises(subprocess.TimeoutExpired):
+                publisher.run_bounded([sys.executable, '-I', '-B', '-c', child, grandchild, str(started), str(escaped)],
+                    env=publisher.environment(), timeout=3)
+            self.assertLess(time.monotonic() - begin, 6)
+            self.assertTrue(started.is_file(), 'The real grandchild must have executed before the timeout')
+            time.sleep(4)
+            self.assertFalse(escaped.exists(), 'The timed-out grandchild must not survive its owned process job')
+
+    def test_failed_job_assignment_never_executes_the_suspended_child(self):
+        with tempfile.TemporaryDirectory(prefix='autocraft-process-fixture-') as folder:
+            marker = Path(folder).resolve() / 'must-not-execute'
+            with mock.patch.object(publisher.WindowsJob, 'assign_and_resume', side_effect=ValueError('containment refused')):
+                with self.assertRaisesRegex(ValueError, 'containment refused'):
+                    publisher.run_bounded([sys.executable, '-I', '-B', '-c', 'import pathlib,sys;pathlib.Path(sys.argv[1]).write_text("executed")', str(marker)],
+                        env=publisher.environment(), timeout=3)
+            self.assertFalse(marker.exists())
+
+    def test_unbounded_child_output_is_refused_without_printing_or_retaining_it(self):
+        with self.assertRaisesRegex(ValueError, 'output limit'):
+            publisher.run_bounded([sys.executable, '-I', '-B', '-c', 'import os,time;os.write(1,b"x"*1048576);time.sleep(60)'],
+                env=publisher.environment(), timeout=5, max_output=1024)
 
 
 if __name__ == '__main__':

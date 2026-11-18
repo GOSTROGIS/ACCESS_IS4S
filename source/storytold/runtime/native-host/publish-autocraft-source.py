@@ -11,6 +11,8 @@ import re
 import subprocess
 import tarfile
 import tempfile
+import threading
+import time
 import urllib.request
 
 PRODUCTS = {
@@ -18,6 +20,161 @@ PRODUCTS = {
     'slipcurve': ('https://github.com/GOSTROGIS/SLIPCURVE.git', 'vendor/storytold/apps/autocraft'),
 }
 SHA = re.compile(r'[a-f0-9]{40}')
+
+
+class WindowsJob:
+    """A new suspended process joins our non-breakaway job before any of its code executes.
+
+    https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects
+    """
+    def __init__(self):
+        import ctypes as c
+        from ctypes import wintypes as w
+        class Basic(c.Structure):
+            _fields_ = [('process_time', c.c_int64), ('job_time', c.c_int64), ('flags', w.DWORD),
+                ('minimum', c.c_size_t), ('maximum', c.c_size_t), ('processes', w.DWORD),
+                ('affinity', c.c_size_t), ('priority', w.DWORD), ('scheduling', w.DWORD)]
+        class IO(c.Structure):
+            _fields_ = [(name, c.c_uint64) for name in ('read_ops', 'write_ops', 'other_ops', 'read_bytes', 'write_bytes', 'other_bytes')]
+        class Extended(c.Structure):
+            _fields_ = [('basic', Basic), ('io', IO), ('process_memory', c.c_size_t), ('job_memory', c.c_size_t),
+                ('peak_process', c.c_size_t), ('peak_job', c.c_size_t)]
+        class Thread(c.Structure):
+            _fields_ = [('size', w.DWORD), ('usage', w.DWORD), ('id', w.DWORD), ('owner', w.DWORD),
+                ('base', w.LONG), ('delta', w.LONG), ('flags', w.DWORD)]
+        self.c, self.w, self.Thread = c, w, Thread
+        self.kernel = k = c.WinDLL('kernel32', use_last_error=True)
+        for name, result, args in (
+            ('CreateJobObjectW', w.HANDLE, [c.c_void_p, w.LPCWSTR]),
+            ('SetInformationJobObject', w.BOOL, [w.HANDLE, c.c_int, c.c_void_p, w.DWORD]),
+            ('AssignProcessToJobObject', w.BOOL, [w.HANDLE, w.HANDLE]),
+            ('CloseHandle', w.BOOL, [w.HANDLE]),
+            ('CreateToolhelp32Snapshot', w.HANDLE, [w.DWORD, w.DWORD]),
+            ('Thread32First', w.BOOL, [w.HANDLE, c.POINTER(Thread)]),
+            ('Thread32Next', w.BOOL, [w.HANDLE, c.POINTER(Thread)]),
+            ('OpenThread', w.HANDLE, [w.DWORD, w.BOOL, w.DWORD]),
+            ('ResumeThread', w.DWORD, [w.HANDLE]),
+        ):
+            function = getattr(k, name)
+            function.restype, function.argtypes = result, args
+        self.handle = k.CreateJobObjectW(None, None)
+        if not self.handle:
+            raise ValueError('The owned source process could not be contained')
+        limits = Extended()
+        limits.basic.flags = 0x2000  # JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE; no breakaway.
+        if not k.SetInformationJobObject(self.handle, 9, c.byref(limits), c.sizeof(limits)):
+            self.close()
+            raise ValueError('The owned source process could not be contained')
+
+    def assign_and_resume(self, process):
+        c, k = self.c, self.kernel
+        if not k.AssignProcessToJobObject(self.handle, int(process._handle)):
+            raise ValueError('The owned source process could not join its containment job')
+        snapshot = k.CreateToolhelp32Snapshot(4, 0)  # TH32CS_SNAPTHREAD
+        if snapshot == c.c_void_p(-1).value:
+            raise ValueError('The owned source process thread could not be opened')
+        try:
+            thread = self.Thread()
+            thread.size = c.sizeof(thread)
+            more = k.Thread32First(snapshot, c.byref(thread))
+            while more:
+                if thread.owner == process.pid:
+                    handle = k.OpenThread(2, False, thread.id)  # THREAD_SUSPEND_RESUME
+                    if handle:
+                        try:
+                            if k.ResumeThread(handle) == 1:
+                                return
+                        finally:
+                            k.CloseHandle(handle)
+                more = k.Thread32Next(snapshot, c.byref(thread))
+            raise ValueError('The owned source process remained suspended')
+        finally:
+            k.CloseHandle(snapshot)
+
+    def close(self):
+        if self.handle:
+            self.kernel.CloseHandle(self.handle)
+            self.handle = None
+
+
+def run_bounded(args, *, env, cwd=None, input=None, timeout=900, max_output=32 * 1024 * 1024):
+    """Bound output and time for this exact new process tree; never signal an existing process."""
+    job = WindowsJob() if os.name == 'nt' else None
+    process = None
+    writer = None
+    readers = []
+    overflow = threading.Event()
+    totals, output, errors = [0], [], []
+    guard = threading.Lock()
+    try:
+        process = subprocess.Popen(args, env=env, cwd=cwd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, creationflags=0x08000004 if job else 0, start_new_session=not job)
+        if job:
+            job.assign_and_resume(process)
+        deadline = time.monotonic() + timeout
+        def read(stream, target):
+            try:
+                while block := stream.read(65536):
+                    with guard:
+                        totals[0] += len(block)
+                        if totals[0] > max_output:
+                            overflow.set()
+                        if not overflow.is_set():
+                            target.append(block)
+            finally:
+                stream.close()
+        for stream, target in ((process.stdout, output), (process.stderr, errors)):
+            thread = threading.Thread(target=read, args=(stream, target), daemon=True)
+            thread.start()
+            readers.append(thread)
+        def write():
+            try:
+                if input:
+                    process.stdin.write(input)
+                    process.stdin.flush()
+            except (BrokenPipeError, OSError):
+                pass
+            finally:
+                process.stdin.close()
+        writer = threading.Thread(target=write, daemon=True)
+        writer.start()
+        while process.poll() is None:
+            if overflow.is_set():
+                raise ValueError('The owned source process exceeded its output limit')
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise subprocess.TimeoutExpired('owned source process', timeout)
+            try:
+                process.wait(timeout=min(0.1, remaining))
+            except subprocess.TimeoutExpired:
+                pass
+    finally:
+        # Closing this unnamed job also closes descendants' inherited capture handles.
+        if job:
+            job.close()
+        elif process:
+            import signal
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        if process:
+            if process.poll() is None:
+                process.kill()  # Only our freshly created, still-suspended process if assignment failed.
+            process.wait(timeout=5)
+        for reader in readers:
+            reader.join(timeout=5)
+        if writer:
+            writer.join(timeout=5)
+        if any(reader.is_alive() for reader in readers) or writer and writer.is_alive():
+            raise ValueError('The owned source process capture did not close')
+        if process:
+            for stream in (process.stdin, process.stdout, process.stderr):
+                if stream and not stream.closed:
+                    stream.close()
+    if overflow.is_set():
+        raise ValueError('The owned source process exceeded its output limit')
+    return subprocess.CompletedProcess(args, process.returncode, b''.join(output), b''.join(errors))
 
 
 def environment():
@@ -38,8 +195,7 @@ def git_command(git, repo, *args):
 
 
 def run(git, repo, *args, network_env=None, input=None):
-    result = subprocess.run(git_command(git, repo, *args), env=network_env or environment(), input=input,
-                            capture_output=True, timeout=900)
+    result = run_bounded(git_command(git, repo, *args), env=network_env or environment(), input=input, timeout=900)
     if result.returncode:
         raise ValueError('The approved Git source operation failed')
     return result.stdout
@@ -130,8 +286,8 @@ def network_credentials(git, product):
     access = ''
     try:
         with tempfile.TemporaryDirectory(prefix='autocraft-native-source-auth-') as cwd:
-            result = subprocess.run([str(manager), 'get'], input=b'protocol=https\nhost=github.com\n\n',
-                cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=30)
+            result = run_bounded([str(manager), 'get'], input=b'protocol=https\nhost=github.com\n\n',
+                cwd=Path(cwd).resolve(strict=True), env=env, timeout=30, max_output=32768)
         if result.returncode or len(result.stdout) > 32768:
             raise ValueError('The existing native GitHub sign-in is unavailable')
         values = dict(line.split('=', 1) for line in result.stdout.decode('utf-8').splitlines() if '=' in line)
@@ -290,7 +446,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix='autocraft-owned-source-') as temporary:
-        network = Path(temporary) / 'network.git'
+        network = Path(temporary).resolve(strict=True) / 'network.git'
         with network_credentials(args.git, args.product) as credentials:
             revision = acquire_source(args.git, args.source_cache, args.product, network, credentials)
         receipt = build_candidate(args.git, network, args.product, revision, args.output)
