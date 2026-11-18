@@ -44,7 +44,7 @@ fn nav_harness(language: &str, percent: u16) -> egui_kittest::Harness<'static, W
 #[test]
 fn user_name_field_disables_when_protection_starts() {
     let mut h = nav_harness("en", 100);
-    let user_name = || egui_kittest::kittest::By::new().role(egui::accesskit::Role::TextInput).value("WordCraft User");
+    let user_name = || egui_kittest::kittest::By::new().role(egui::accesskit::Role::TextInput).value("User");
     assert!(!h.get(user_name()).accesskit_node().is_disabled());
     h.state_mut().run("review.restrict", json!({"mode": "readOnly"})).unwrap();
     h.run_steps(4);
@@ -361,10 +361,10 @@ fn general_start_up_turns_the_start_screen_off_and_on() {
     );
     h.run_steps(4);
     assert!(h.query_by_label("Start-up").is_some(), "the section is there");
-    h.get_by_label("Show the Start screen when WordCraft starts").click();
+    h.get_by_label("Show the Start screen when this application starts").click();
     h.run_steps(4);
     assert!(!h.state().ui.start_screen, "the checkbox turns it off");
-    h.get_by_label("Show the Start screen when WordCraft starts").click();
+    h.get_by_label("Show the Start screen when this application starts").click();
     h.run_steps(4);
     assert!(h.state().ui.start_screen, "and on again");
 }
@@ -520,4 +520,24 @@ fn screen_paper_color_options_round_trip_and_work_without_a_document() {
     h.get_by_label("Warm cream").click();
     h.run_steps(3);
     assert_eq!(h.state().session.prefs.paper_color, PaperColor::Cream);
+}
+
+#[test]
+fn product_default_does_not_migrate_stored_authors_or_loaded_metadata() {
+    let fresh = app();
+    assert_eq!(fresh.session.author, "User");
+    for (author, initials) in [("WordCraft User", ""), ("Ana Lee", "AL"), ("", "X")] {
+        let mut loaded = app();
+        loaded.session.doc.core.creator = "Existing creator".into();
+        loaded.session.doc.core.last_modified_by = "Existing editor".into();
+        let before = loaded.session.doc.clone();
+        let preferences = serde_json::to_vec(&json!({"author": author, "initials": initials})).unwrap();
+        loaded.apply_prefs(UiState::from_json(&preferences).unwrap());
+        assert_eq!(loaded.session.author, author);
+        assert_eq!(loaded.session.initials, initials);
+        assert_eq!(loaded.session.doc, before);
+        let restored = loaded.prefs();
+        assert_eq!(restored.author.as_deref(), Some(author));
+        assert_eq!(restored.initials, initials);
+    }
 }

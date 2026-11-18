@@ -2925,3 +2925,36 @@ fn drop_cap_options_round_trip() {
         (Some(4), Some(true), None, None)
     );
 }
+
+#[test]
+fn product_writer_options_leave_existing_personal_metadata_intact() {
+    let mut doc = Document::from_text("Existing document");
+    doc.core.creator = "Existing creator".into();
+    doc.core.last_modified_by = "Existing editor".into();
+    doc.core.revision = 7;
+    doc.set_custom_prop("Project author", "Existing <author> & team");
+    let before = doc.clone();
+    for flavor in [
+        wordcraft_docx::Flavor::Document,
+        wordcraft_docx::Flavor::MacroDocument,
+        wordcraft_docx::Flavor::Template,
+        wordcraft_docx::Flavor::MacroTemplate,
+    ] {
+        let bytes = wordcraft_docx::write_as(&doc, flavor).unwrap();
+        let mut archive = craft_zip::Archive::open(&bytes, craft_zip::Limits { max_entries: 10_000, max_total_bytes: 64 << 20 }).unwrap();
+        let app = String::from_utf8(archive.read("docProps/app.xml", 1 << 20).unwrap().unwrap()).unwrap();
+        assert!(app.contains(concat!("<Application>", "ACCESS IS4S Documents", "</Application>")), "{app}");
+        let reopened = wordcraft_docx::read(&bytes).unwrap();
+        assert_eq!(reopened.core, before.core);
+        assert_eq!(reopened.custom_props, before.custom_props);
+    }
+    let flat = wordcraft_docx::write_flat(&doc).unwrap();
+    assert!(std::str::from_utf8(&flat).unwrap().contains(concat!("<Application>", "ACCESS IS4S Documents", "</Application>")));
+    let reopened = wordcraft_docx::read_xml(&flat).unwrap();
+    assert_eq!(reopened.core, before.core);
+    assert_eq!(reopened.custom_props, before.custom_props);
+    let legacy = wordcraft_docx::read_xml(&wordcraft_docx::write_wordml2003(&doc).unwrap()).unwrap();
+    assert_eq!(legacy.core.creator, before.core.creator);
+    assert_eq!(legacy.core.last_modified_by, before.core.last_modified_by);
+    assert_eq!(doc, before);
+}

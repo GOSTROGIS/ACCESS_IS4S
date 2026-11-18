@@ -1070,21 +1070,25 @@ dependencies = [
 [[package]]
 name = "craft-docx"
 version = "0.1.0"
-source = "git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c#41fb227542efb8a7748caa1c659f271d8605303c"
 dependencies = [
  "base64 0.23.1",
  "chrono",
+ "craft-cfb",
  "craft-drawingml",
  "craft-math",
  "craft-offcrypto",
  "craft-opc",
  "craft-wordmodel",
  "craft-xml",
+ "image",
  "log",
+ "proptest",
  "quick-xml 0.41.0",
+ "serde_json",
  "thiserror 2.0.21",
  "unicode-bidi",
  "zeroize",
+ "zip",
 ]
 
 [[package]]
@@ -1214,12 +1218,13 @@ dependencies = [
 [[package]]
 name = "craft-latex"
 version = "0.1.0"
-source = "git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c#41fb227542efb8a7748caa1c659f271d8605303c"
 dependencies = [
  "craft-flow",
+ "craft-markdown",
  "craft-math",
  "craft-mime",
  "craft-wordmodel",
+ "proptest",
 ]
 
 [[package]]
@@ -1278,7 +1283,6 @@ dependencies = [
 [[package]]
 name = "craft-odf"
 version = "0.1.0"
-source = "git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c#41fb227542efb8a7748caa1c659f271d8605303c"
 dependencies = [
  "aes",
  "base64 0.23.1",
@@ -1299,6 +1303,25 @@ dependencies = [
  "sha2 0.11.1",
  "thiserror 2.0.21",
  "zeroize",
+ "zip",
+]
+
+[[package]]
+name = "craft-odf"
+version = "0.1.0"
+source = "git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c#41fb227542efb8a7748caa1c659f271d8605303c"
+dependencies = [
+ "aes",
+ "base64 0.23.1",
+ "craft-xml",
+ "craft-zip",
+ "flate2",
+ "getrandom 0.3.4",
+ "hmac",
+ "sha1 0.11.0",
+ "sha2 0.11.1",
+ "thiserror 2.0.21",
+ "zeroize",
 ]
 
 [[package]]
@@ -1306,7 +1329,7 @@ name = "craft-ods"
 version = "0.1.0"
 source = "git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c#41fb227542efb8a7748caa1c659f271d8605303c"
 dependencies = [
- "craft-odf",
+ "craft-odf 0.1.0 (git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c)",
  "craft-sheet",
  "craft-xml",
  "thiserror 2.0.21",
@@ -1377,14 +1400,15 @@ dependencies = [
 [[package]]
 name = "craft-rtf"
 version = "0.1.0"
-source = "git+https://github.com/storytold/craft-libs?rev=41fb227542efb8a7748caa1c659f271d8605303c#41fb227542efb8a7748caa1c659f271d8605303c"
 dependencies = [
  "craft-codepage",
  "craft-flow",
  "craft-metafile",
+ "craft-mime",
  "craft-wordmodel",
  "encoding_rs",
  "image",
+ "proptest",
 ]
 
 [[package]]
@@ -7395,7 +7419,7 @@ dependencies = [
  "craft-math",
  "craft-metafile",
  "craft-mime",
- "craft-odf",
+ "craft-odf 0.1.0",
  "craft-ods",
  "craft-rtf",
  "craft-sheet",

@@ -58,27 +58,182 @@
     "apps/wordcraft/src/main.rs": {
       "upstreamSha256": "4f48e4f5e19b8a0ec7303f7dcfcf4c87e9e8812c351a98be4c2cfe0ad07d6c38",
       "sha256": "6550c73d193991d04fa817021d1d942be4ee5632f243f59b353d18c3887bf211",
-      "purpose": "Owner window or page display label; no protocol or format changes"
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
     },
     "crates/ui-egui/src/windows.rs": {
       "upstreamSha256": "2bdb39dd8484fb4c2565af0057df7e7fe6e49f5b590e5257d81b07c8fc7f380b",
       "sha256": "697f49ddc6600cef15090e4e8cc92e260195f3aa43a2f7542539688b3a709f95",
-      "purpose": "Owner window or page display label; no protocol or format changes"
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
     },
     "apps/wordcraft/build.rs": {
       "upstreamSha256": "fc4a6595b28e606b90a1327be38020b3415791714e9460956190c74a94835bb4",
       "sha256": "6db8fc14f5a1fbf5489a7b8473853b3a33d80d9da6ea297a19cf20b6e890da23",
-      "purpose": "Owner window or page display label; no protocol or format changes"
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
     },
     "crates/ui-egui/src/chrome.rs": {
       "upstreamSha256": "b9b046ee01718ecda31fa7cf9ed8874c0e5ebd8ff3ca0415c75a1e55ecd63b6c",
-      "sha256": "56b52a33b34ccec168335b4aa1a0152b12e1af5954593c3874ac9042a0306874",
-      "purpose": "Owner window or page display label; no protocol or format changes"
+      "sha256": "c2d247fa751dfa9b9f4a83c83268b0b541263b9e0a54d2ef5b98216d70d88a31",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
     },
     "crates/ui-egui/src/tests.rs": {
       "upstreamSha256": "ed24a08e444f6bbf22822e74f925662375052f4810a71b69c84eee69ea100c1b",
-      "sha256": "c8243c588401c7fa1ec681d36cc6338eb96fa9ed59b5efbd66db23cbd89d478e",
-      "purpose": "Owner window or page display label; no protocol or format changes"
+      "sha256": "e88a728ccc3a7054a574e28b70f9ca2894c4d64d2530a77f43159900d04939fd",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/lib.rs": {
+      "upstreamSha256": "6342df7fc655f9e8d94699510157c808f0a2ea3381201b64be71dc88ad781dcf",
+      "sha256": "7854c1110899648416cbf875acf5d823dfdcaa2fb21718080634f7dfd264fd6d",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    ".gitattributes": {
+      "upstreamSha256": "7df0a54dc17cff3e30cbda2fdf64f2330b931ce6243f53968b67a000a287cda1",
+      "sha256": "e6a1485134efe344b39c78bb7115ddd9a1f9975a9773b56db0740e1c01803e97",
+      "purpose": "Preserve exact branding receipt bytes; retain upstream attribute defaults"
+    },
+    "crates/ui-egui/src/i18n/audit.rs": {
+      "upstreamSha256": "60e3eea7bd9e237a547f00f25d29e0fa0432bdb539af1eb2b6be645128cf4501",
+      "sha256": "6b0fa02e1437c7f636cc11c560bfbe2f662c1d290a62ee2bca658b0c99e399c5",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "apps/wordcraft-web/src/web.rs": {
+      "upstreamSha256": "b042bf22788cff0427293f36bc82fb6449f535b7fed38771eaa8e937f65bd634",
+      "sha256": "1b3fb896975a3d8e71442f7178e1a24a472b89a075f99983e8e0bc486bed7045",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "apps/wordcraft/src/clipboard.rs": {
+      "upstreamSha256": "466fd4329dd04c5c6fb28da35d5423efb9dae171a73916ef214ba0bc81637654",
+      "sha256": "69ce89078fd644edd3b40bc718d27c81cca7a453110372d04d910da941ab9a62",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "apps/wordcraft/src/default_apps.rs": {
+      "upstreamSha256": "7760337052ed1d300bf138f0af6d3a6716b951def087e5d65d999d4a7e51937c",
+      "sha256": "378dc7f0feea7dce977770409fc69ad3ef618adf614e15708e35fa3f70d66502",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/docx/src/lib.rs": {
+      "upstreamSha256": "36a24db386176703ef6c2297e20567cecfe0253c91bf39f643b7850fa61804a6",
+      "sha256": "e2f009634665865bfc9b6a5adf538af2fddaf9e5884e04a38aea5cc2e8ed973c",
+      "purpose": "Product software identity through writer options; preserve authors, history and custom properties"
+    },
+    "crates/engine/src/session/lifecycle.rs": {
+      "upstreamSha256": "e6bd1bc44e6c0c693dd454ba9dc9cf4b9bf129ff6f32c5eff7522826fcde0095",
+      "sha256": "acbf5e2e1ccdf2eb234202b76d1d6a2eb08580ee20cac72bc7e2e187932985e7",
+      "purpose": "Neutral new-session author only; retain explicit saved names and document history"
+    },
+    "crates/engine/src/tests.rs": {
+      "upstreamSha256": "21ca6a10de29cdb824b956ba8441c8d359754be281d9c965f44e9f571e407770",
+      "sha256": "61f0803e5d1c5234e4a371cea8e996360bcd233abaa476b6dce7be0720217e3b",
+      "purpose": "Neutral new-session author only; retain explicit saved names and document history"
+    },
+    "crates/pdf/src/metadata.rs": {
+      "upstreamSha256": "23222af96efbe3922783b365cec5c0e7a55aa36f4c98be22b6250e4cd0bf1862",
+      "sha256": "284e219436b4a0b3a58dd6248f7e355cb0f08f36e595e285c30ec535142f9646",
+      "purpose": "Product PDF generator label; preserve creator, export author and privacy options"
+    },
+    "crates/pdf/src/tests.rs": {
+      "upstreamSha256": "72ae8bf140092d32997c863a1d7771d4c41fadd96e4d19ae8cf953cd13273034",
+      "sha256": "db7fdd41e5ab1c61f8b17614c31d3d818786f69f792efba2666eb0d5f6d34f71",
+      "purpose": "Product PDF generator label; preserve creator, export author and privacy options"
+    },
+    "crates/ui-egui/src/app/commands.rs": {
+      "upstreamSha256": "e76fcc2b6b0b86abe4aa6bbeca891ad7e41edb399aab2417536494d852c7fc5b",
+      "sha256": "652d23ee3c927c7484c5214c396d9e74d9324ac2d8981d687d0fc13116ea2e58",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/backstage.rs": {
+      "upstreamSha256": "c95e09b47bbeb2bf1461b3628b57248d8c372710f10d587eda54d1f90de59648",
+      "sha256": "fdcb3308801b3f39cb27e47ea9ff6f38bdfeffef1c1b07efe647b13b9c984a21",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/backstage/tests.rs": {
+      "upstreamSha256": "c938d3d3ceb9e39c5f54f797929c8d11ca596cce6e97c26f3c634aa450b13131",
+      "sha256": "c9917a972427dbfae4590c1806df55f671d2ab37123b89ff2e95084b9ec5798d",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/dialogs/chrome.rs": {
+      "upstreamSha256": "bfd6f6bc2055c93e8f2a3caab32f6655c3d8297cfa29276fc85d9a286e58a253",
+      "sha256": "1ace78459135aec1020e5f6db6bde85d87a383c8df7b54573d39d6e2cd627b5d",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/dialogs/dispatch.rs": {
+      "upstreamSha256": "6a8e97d929e047e7b97e46d9895a06fce06a9249a8646d831073186593193a7b",
+      "sha256": "80f7dd3759510fd5d0482e0d8b7ec83499f2701b64b4c135da0d1c171e6ee730",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/file_browser.rs": {
+      "upstreamSha256": "4564759410d359bb516e98f1fffb8fd91939389e5bb924238dabc809339eb01c",
+      "sha256": "18ea8e15e01d8ea3d8f291f44d1ef11fc15cc46485b6bc6e3fd6e02f880d3608",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/language_packs.rs": {
+      "upstreamSha256": "7932c6568cf63c7daaae525411c089e30f46cef7a5c60e02e6c8b84098364635",
+      "sha256": "6aa1aea971c3c5137eccbe163baa23f3552de327ac476063a01c7c511484bb82",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/options.rs": {
+      "upstreamSha256": "a324dff166549eb50fee76ac8a404852f4fe8bea9b728cf84d786d9f45e4a3f9",
+      "sha256": "074c358aed5a7d0b4c0cc74d9c713704bce5ec4cae00a6fc0c9d81e20c7d2875",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/options/tests.rs": {
+      "upstreamSha256": "c8e81eb3361d60818058924e67a6e0570b0df8f69d1850a784ce03e2df12cfea",
+      "sha256": "fa43d683a223f114b39dce82a20045ef893de2e1830a6ff62fc7f76feb379525",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/ribbon/view.rs": {
+      "upstreamSha256": "65eed5eae08302d7a5a24aa9a9e2c10830343d17cd4fa2e5fa576653316df27b",
+      "sha256": "777b536425b52539a3f5befdb45d5b80cd088140d3bf767f3415e93d52dc36a2",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/docx/tests/it/roundtrip.rs": {
+      "upstreamSha256": "278c749ed73a162f2ce6d94184b60f105460f9a25e34a42bb5a5480384e57bed",
+      "sha256": "0a39aa96f87c3615a09b0450e5dd361eef825abc65de2c1e374c79a8ed9e8cd1",
+      "purpose": "Product software identity through writer options; preserve authors, history and custom properties"
+    },
+    "apps/wordcraft/src/print.rs": {
+      "upstreamSha256": "731975a31d51dec3fc766a112dc6d209ee3f2ddc975cd2a535d996cce3811052",
+      "sha256": "5617fc057a3d53c07ba517ae2849e6ba1cb2041bc056ec769a06722cd217d3ff",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/print_page.rs": {
+      "upstreamSha256": "71a8707d77916f10825377b829cd54437722440bbacd28faf8efc272cba90690",
+      "sha256": "ca4cce1b3e565c9c1eed6ff07bc717147afc000aa2b98aee1078a7ed2c5de90e",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/updates_ui.rs": {
+      "upstreamSha256": "0854f115deccfadc6cd5cd3553c9b150608d4162b25a2bf468e21f3b145c1332",
+      "sha256": "ee85f9911c28c0e12f6c6a6b7d4eb00435558e8525be326b0af33f9b0a6eaafa",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/ui-egui/src/zotero.rs": {
+      "upstreamSha256": "473db50a07bd9886e443a7cd6ab66572ac673e00ab00857222cffa0ad4a7fdc9",
+      "sha256": "7d166db528a663eeb6066fdc3b4a64af2bee7e609bce772dc2cce11d20058ee1",
+      "purpose": "Owner display labels and account icon; retain command IDs, features and upstream attribution"
+    },
+    "crates/formats/src/latex.rs": {
+      "upstreamSha256": "06faffef157653c288dc837ad2eb088762cb38182c88e1007465d68e483ce7bb",
+      "sha256": "1ec554ef046253975c3e292a7b48ce8c0529a4664a122d27318159661e38d93c",
+      "purpose": "Product generator options for complete RTF, LaTeX and OpenDocument writers; preserve original document conversion"
+    },
+    "crates/formats/src/odt.rs": {
+      "upstreamSha256": "8aec48fdde9810cacfd885b8ad41fb1cb034f617eab53c4bf0111858629149ed",
+      "sha256": "a1b63ab5fb64a4c88b2f529a518ff7f4d651505191e23deccad2c83a3ed8c3e4",
+      "purpose": "Product generator options for complete RTF, LaTeX and OpenDocument writers; preserve original document conversion"
+    },
+    "crates/formats/src/rtf.rs": {
+      "upstreamSha256": "a05690c55417d73abe6f5a135f234c24d1184f1b87cb7e889c7b1f291a8d33fb",
+      "sha256": "9586f066bbc747ae595511b3f981ca04a5c260177f4a565d8a063a47d32c4534",
+      "purpose": "Product generator options for complete RTF, LaTeX and OpenDocument writers; preserve original document conversion"
+    },
+    "crates/formats/src/tests.rs": {
+      "upstreamSha256": "f74424aee04b7f173d69ab7ed32074704808bb1d07d033111a6a3af45fd6a340",
+      "sha256": "9b532f6e05bb98b3f98c9f742dbb41f834d54e3539cd50f258d4e68b45ff74d5",
+      "purpose": "Product generator options for complete RTF, LaTeX and OpenDocument writers; preserve original document conversion"
+    },
+    "crates/docx/tests/it/passthrough.rs": {
+      "upstreamSha256": "ba2e4e3afb614bc810616b7038dfe8bfd6f86adad41824f323e8e7d2f1cfded5",
+      "sha256": "36823bdd4c3260becf16a21144b39f3b1ff43f289fc4acabd282e0519ec66ffb",
+      "purpose": "Product software identity through writer options; preserve authors, history and custom properties"
     }
   }
 }

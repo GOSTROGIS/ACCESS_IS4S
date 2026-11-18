@@ -3525,7 +3525,7 @@ fn tracked_style_change_round_trips_through_docx() {
     let ch = st.chr_change.as_ref().expect("the change survives the round trip");
     assert_eq!(ch.old.bold, None, "the change keeps Heading 1 as it was");
     let rev = d.revisions.get(ch.rev as usize).expect("the revision is read back");
-    assert_eq!((rev.kind, rev.author.as_str()), (RevisionKind::Format, "WordCraft User"));
+    assert_eq!((rev.kind, rev.author.as_str()), (RevisionKind::Format, "User"));
 
     // And the change is resolved on the reopened document.
     let mut r = Session::new(d);
@@ -3924,7 +3924,7 @@ fn set_author_refuses_blank_names_and_clamps_long_ones() {
     let mut s = s();
     for bad in [json!(null), json!({}), json!({"name": 5}), json!({"name": ""}), json!({"name": " \t\n "}), json!({"name": "\u{0}\u{7}"})] {
         assert!(s.run("file.setAuthor", &bad).is_err(), "{bad} should be refused");
-        assert_eq!(s.author, "WordCraft User", "a refused name leaves the author alone");
+        assert_eq!(s.author, "User", "a refused name leaves the author alone");
     }
     run(&mut s, "file.setAuthor", json!({"name": "Ada\u{0}\u{1b} Lovelace"}));
     assert_eq!(s.author, "Ada Lovelace", "control characters can't reach the saved XML");

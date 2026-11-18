@@ -2,6 +2,9 @@
 
 use wordcraft_doc::{Document, SectionProps};
 
+// Software identity is separate from all personal document properties.
+const PRODUCT_EXPORT_OPTIONS: craft_odf::text::ExportOptions<'static> = craft_odf::text::ExportOptions { application: "ACCESS IS4S Documents" };
+
 pub use craft_odf::text::{CryptError, TEMPLATE_MIME, TEXT_MIME, decrypt, encrypt, is_encrypted};
 
 fn shared_section(page: &SectionProps) -> craft_wordmodel::SectionProps {
@@ -32,15 +35,15 @@ pub fn import_flat_on(bytes: &[u8], page: &SectionProps) -> Result<Document, Str
 
 pub fn export(doc: &Document) -> Result<Vec<u8>, String> {
     let shared = wordcraft_docx::to_shared_model(doc).map_err(|e| e.to_string())?;
-    craft_odf::text::export(&shared)
+    craft_odf::text::export_with_options(&shared, &PRODUCT_EXPORT_OPTIONS)
 }
 
 pub fn export_template(doc: &Document) -> Result<Vec<u8>, String> {
     let shared = wordcraft_docx::to_shared_model(doc).map_err(|e| e.to_string())?;
-    craft_odf::text::export_template(&shared)
+    craft_odf::text::export_template_with_options(&shared, &PRODUCT_EXPORT_OPTIONS)
 }
 
 pub fn export_flat(doc: &Document) -> Result<Vec<u8>, String> {
     let shared = wordcraft_docx::to_shared_model(doc).map_err(|e| e.to_string())?;
-    craft_odf::text::export_flat(&shared)
+    craft_odf::text::export_flat_with_options(&shared, &PRODUCT_EXPORT_OPTIONS)
 }

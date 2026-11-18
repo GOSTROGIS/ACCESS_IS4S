@@ -38,6 +38,10 @@ pub const TABLE: &[(&str, Class)] = &[
     ("doc", Class::Layer(1)),
     ("fonts", Class::Layer(1)),
     ("layout", Class::Layer(2)),
+    ("craft-docx", Class::Layer(2)),
+    ("craft-rtf", Class::Layer(2)),
+    ("craft-latex", Class::Layer(2)),
+    ("craft-odf", Class::Layer(2)),
     ("docx", Class::Layer(2)),
     ("docbin", Class::Layer(2)),
     ("formats", Class::Layer(2)),
@@ -59,7 +63,8 @@ pub const TABLE: &[(&str, Class)] = &[
 /// The L0 foundation is a small chain: `raster` builds on `color` and
 /// `geom`, which the §3 diagram draws on one line. The GPU backend (`gpu`)
 /// reuses the CPU reference (`compose`) for LUTs and parity tests.
-pub const INTRA_LAYER_ORDER: &[&[&str]] = &[&["doc", "fonts"], &["docx", "formats"]];
+pub const INTRA_LAYER_ORDER: &[&[&str]] =
+    &[&["doc", "fonts"], &["craft-docx", "docx", "formats"], &["craft-rtf", "formats"], &["craft-latex", "formats"], &["craft-odf", "formats"]];
 
 fn intra_layer_allowed(from: &str, to: &str) -> bool {
     let (from, to) = (short_name(from), short_name(to));
@@ -332,5 +337,37 @@ mod tests {
         assert!(doc.deps[0].workspace && !doc.deps[1].workspace);
         assert_eq!(doc.deps[2].kind, Dev);
         assert!(check(&g).is_empty());
+    }
+}
+
+#[cfg(test)]
+mod owned_writer_layer_tests {
+    use super::*;
+
+    #[test]
+    fn vendored_writer_is_below_its_adapter_and_cannot_depend_on_ui() {
+        let adapter = Crate { name: "wordcraft-docx".into(), deps: vec![Dep { name: "craft-docx".into(), kind: DepKind::Normal, workspace: true }] };
+        assert!(check(&[adapter]).is_empty());
+        let reverse = Crate { name: "craft-docx".into(), deps: vec![Dep { name: "wordcraft-docx".into(), kind: DepKind::Normal, workspace: true }] };
+        assert!(matches!(check(&[reverse])[..], [Violation::Upward { .. }]));
+        let ui = Crate { name: "craft-docx".into(), deps: vec![Dep { name: "egui".into(), kind: DepKind::Normal, workspace: false }] };
+        assert!(matches!(check(&[ui])[..], [Violation::UiBelowL6 { .. }]));
+    }
+}
+
+#[cfg(test)]
+mod owned_format_layer_tests {
+    use super::*;
+
+    #[test]
+    fn owned_format_writers_stay_below_the_adapter_and_cannot_depend_on_ui() {
+        for writer in ["craft-rtf", "craft-latex", "craft-odf"] {
+            let adapter = Crate { name: "wordcraft-formats".into(), deps: vec![Dep { name: writer.into(), kind: DepKind::Normal, workspace: true }] };
+            assert!(check(&[adapter]).is_empty());
+            let reverse = Crate { name: writer.into(), deps: vec![Dep { name: "wordcraft-formats".into(), kind: DepKind::Normal, workspace: true }] };
+            assert!(matches!(check(&[reverse])[..], [Violation::Upward { .. }]));
+            let ui = Crate { name: writer.into(), deps: vec![Dep { name: "egui".into(), kind: DepKind::Normal, workspace: false }] };
+            assert!(matches!(check(&[ui])[..], [Violation::UiBelowL6 { .. }]));
+        }
     }
 }

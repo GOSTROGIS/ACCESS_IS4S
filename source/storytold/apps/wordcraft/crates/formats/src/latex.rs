@@ -2,6 +2,9 @@
 
 use wordcraft_doc::{Document, SectionProps};
 
+// Software identity is separate from all personal document properties.
+const PRODUCT_EXPORT_OPTIONS: craft_latex::ExportOptions<'static> = craft_latex::ExportOptions { application: "ACCESS IS4S Documents" };
+
 pub use craft_latex::{escape_text, latex_to_linear, linear_to_latex};
 
 pub fn import(bytes: &[u8]) -> Document {
@@ -20,7 +23,7 @@ pub fn parse(text: &str) -> craft_flow::Flow {
 
 pub fn export(doc: &Document) -> String {
     match wordcraft_docx::to_shared_model(doc) {
-        Ok(shared) => craft_latex::export(&shared),
+        Ok(shared) => craft_latex::export_with_options(&shared, &PRODUCT_EXPORT_OPTIONS),
         Err(_) => String::new(),
     }
 }

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "files": {
+    "Cargo.toml": {
+      "upstreamSha256": "6a9e75dfb4c00972a448bb7ab398f71a019014e4aa1f6486f66f9de0c6e09c2c",
+      "sha256": "1819965bc092405afa78e1187fbbe0f945598f9c1ec659d29ddc8d168c4299f9",
+      "purpose": "Resolve original Cargo inheritance with documented two-lint compatibility delta"
+    },
+    "src/export.rs": {
+      "upstreamSha256": "52f700ac36afb23d9db86011209b0aad8c8f4a49178c8af0850bf8649c83fb92",
+      "sha256": "fefa99d7e411c25ec883b080a731b9ebd9f0da56e11374bb1a8e3ca7db7a0fd2",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    },
+    "src/lib.rs": {
+      "upstreamSha256": "f2690a54c03da1efc166be53e91d0c34fb2eaa0678a014beba1c930984b72897",
+      "sha256": "ae1334ce6c2d34434f245676c6ff825f339d13e6df9041a213b0ecff257631ff",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    },
+    "src/tests.rs": {
+      "upstreamSha256": "747fc240652318ebab903837fd11d4d78ad8897a13c9d7691af94d95726c4328",
+      "sha256": "4a0aeaa4fed0d947eb9ecaa7421c74f78bc992f3b4bffc772d9bc121ba78151f",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    }
+  }
+}

@@ -82,7 +82,7 @@ impl WordApp {
 /// for Updates shows.
 #[cfg(not(target_arch = "wasm32"))]
 fn refused_check() -> craft_update::updater::CheckSource {
-    let why = tl!("Updates are off in this window: WordCraft was started with another program's AppImage settings. Start WordCraft from its own menu entry to update it.")
+    let why = tl!("Updates are off in this window: the document editor was started with another program's AppImage settings. Start the editor from its own menu entry to update it.")
         .to_string();
     std::sync::Arc::new(move || Err(why.clone()))
 }

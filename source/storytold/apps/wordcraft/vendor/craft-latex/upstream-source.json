@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "repository": "https://github.com/storytold/craft-libs.git",
+  "commit": "41fb227542efb8a7748caa1c659f271d8605303c",
+  "prefix": "crates/latex",
+  "tree": "b8df2f4a5bb8ec32dfff04ef6ab48e0203c31fa3",
+  "files": {
+    "AGENTS.md": {
+      "sourcePath": "AGENTS.md",
+      "mode": "100644",
+      "blob": "aa4561e67cd95237d94ce8a329dcd7093074c07a",
+      "bytes": 6372,
+      "sha256": "eb8533743726a92d2e1c2e2a65ff89c2f5f53f9921bcdc648ffab7299e06e65f"
+    },
+    "ATTRIBUTION.md": {
+      "sourcePath": "ATTRIBUTION.md",
+      "mode": "100644",
+      "blob": "32bae195dc97d304496eedb0855bed99f0a182af",
+      "bytes": 23449,
+      "sha256": "142d9fa00c6b714573f481c1b4eec1a01e8062d0a579882d5cbadd66108f4be6"
+    },
+    "upstream/Cargo.workspace.toml": {
+      "sourcePath": "Cargo.toml",
+      "mode": "100644",
+      "blob": "38b82c843dfbf337561676297d8247baf8187ea9",
+      "bytes": 11318,
+      "sha256": "fb2c2c0da52f0604525cb374288e76561154685fd96a4840239419964557b496"
+    },
+    "LICENSE-APACHE": {
+      "sourcePath": "LICENSE-APACHE",
+      "mode": "100644",
+      "blob": "f433b1a53f5b830a205fd2df78e2b34974656c7b",
+      "bytes": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    "LICENSE-MIT": {
+      "sourcePath": "LICENSE-MIT",
+      "mode": "100644",
+      "blob": "e1450bdf57b9c0577e8b947db77ec77f4fea9d38",
+      "bytes": 1102,
+      "sha256": "2f42c0cafc8ad394d91373fe1f342aee5453850b151a51405c68cae9ada86d26"
+    },
+    "NOTICE": {
+      "sourcePath": "NOTICE",
+      "mode": "100644",
+      "blob": "e1cffb26ce0ac91c40920b0ceaf27d559b83f111",
+      "bytes": 21720,
+      "sha256": "62544fcaa549af375aab1990019c3371ebfd74ae089616f5e46ee1d3c07c7c52"
+    },
+    "clippy.toml": {
+      "sourcePath": "clippy.toml",
+      "mode": "100644",
+      "blob": "8f54197d8788b1a09ee7ef319a602dc7e26c003a",
+      "bytes": 314,
+      "sha256": "495631404c79c044afe7286bf3da775261bd2e11bc3c5fa1b8543f52b63d5d90"
+    },
+    "Cargo.toml": {
+      "sourcePath": "crates/latex/Cargo.toml",
+      "mode": "100644",
+      "blob": "4367c0b02ae4e4c0efcca21c5cb6f58e840748bb",
+      "bytes": 773,
+      "sha256": "6a9e75dfb4c00972a448bb7ab398f71a019014e4aa1f6486f66f9de0c6e09c2c"
+    },
+    "README.md": {
+      "sourcePath": "crates/latex/README.md",
+      "mode": "100644",
+      "blob": "b5a8b56cdcc0dd3408800f3741eafee853cecd05",
+      "bytes": 2095,
+      "sha256": "fab649d1c467f75bceee3dea0c35de77dea1922560f57b9559888e2f2ba84be2"
+    },
+    "src/export.rs": {
+      "sourcePath": "crates/latex/src/export.rs",
+      "mode": "100644",
+      "blob": "aba132219d90efbf4db0ab21b5511085a1777092",
+      "bytes": 19611,
+      "sha256": "52f700ac36afb23d9db86011209b0aad8c8f4a49178c8af0850bf8649c83fb92"
+    },
+    "src/lex.rs": {
+      "sourcePath": "crates/latex/src/lex.rs",
+      "mode": "100644",
+      "blob": "711adb5516a997b39c4f44d508120f40fa475ab5",
+      "bytes": 15966,
+      "sha256": "b802f6f0e99d95799efc71988ba9fe3c156fde0b6655d74a83be551ab6657903"
+    },
+    "src/lib.rs": {
+      "sourcePath": "crates/latex/src/lib.rs",
+      "mode": "100644",
+      "blob": "7a45e15638ccdfb30df6d5263340dedd7842a473",
+      "bytes": 2244,
+      "sha256": "f2690a54c03da1efc166be53e91d0c34fb2eaa0678a014beba1c930984b72897"
+    },
+    "src/limits.rs": {
+      "sourcePath": "crates/latex/src/limits.rs",
+      "mode": "100644",
+      "blob": "3c5a4fcdd0b4a9adfbcb7938b9aca6030d490ed9",
+      "bytes": 445,
+      "sha256": "e8fa6f2a5581b0579e214de77bc54ef07bf4a002cca14f186fe6e58d1451c0c1"
+    },
+    "src/parser.rs": {
+      "sourcePath": "crates/latex/src/parser.rs",
+      "mode": "100644",
+      "blob": "36552e07a037f96a395ed01b3ef903ff20d4c641",
+      "bytes": 33962,
+      "sha256": "1e106609f96adb51fed6d0218c8382c1b088e7d728574b9bed5e4ede099c26af"
+    },
+    "src/table.rs": {
+      "sourcePath": "crates/latex/src/table.rs",
+      "mode": "100644",
+      "blob": "c6bc981d0f3e1c35ab2fa02c14e6dc321c27fe2e",
+      "bytes": 8685,
+      "sha256": "21acafa13b0e50ffb0f95f435fa06526f3b83080bc2690ece160fe0311962535"
+    },
+    "src/tests.rs": {
+      "sourcePath": "crates/latex/src/tests.rs",
+      "mode": "100644",
+      "blob": "ccf349c8008734e9b2494cb2a041b85ee055ccbb",
+      "bytes": 18597,
+      "sha256": "747fc240652318ebab903837fd11d4d78ad8897a13c9d7691af94d95726c4328"
+    },
+    "src/units.rs": {
+      "sourcePath": "crates/latex/src/units.rs",
+      "mode": "100644",
+      "blob": "75ac02a2b70d49bb38d188af484215f990e5d9d0",
+      "bytes": 7129,
+      "sha256": "51bcbb29260a5bb1c3a125978e1bfbf4cdc691f5188e4467f1373d07d7b5a44e"
+    },
+    "tests/hostile.rs": {
+      "sourcePath": "crates/latex/tests/hostile.rs",
+      "mode": "100644",
+      "blob": "a1f24933607a51acc896831197d3e3a5e2af197e",
+      "bytes": 5312,
+      "sha256": "8993b7216d6ebe358b21668223a46c3b9802024d75e5676e8373174c4133c3d1"
+    },
+    "rustfmt.toml": {
+      "sourcePath": "rustfmt.toml",
+      "mode": "100644",
+      "blob": "3121924d651ded44b389c1f699ab9d1152ecbfb1",
+      "bytes": 45,
+      "sha256": "1b51e53edb3571229e84540b9b08514fb23d8c8d3225e8b984773f5c36eaa906"
+    },
+    "upstream/Cargo.crate.toml": {
+      "sourcePath": "crates/latex/Cargo.toml",
+      "mode": "100644",
+      "blob": "4367c0b02ae4e4c0efcca21c5cb6f58e840748bb",
+      "bytes": 773,
+      "sha256": "6a9e75dfb4c00972a448bb7ab398f71a019014e4aa1f6486f66f9de0c6e09c2c"
+    }
+  },
+  "materializedCargoSha256": "1819965bc092405afa78e1187fbbe0f945598f9c1ec659d29ddc8d168c4299f9",
+  "cargoMaterialization": "Resolve original inherited package metadata and recognized lints; retain all sibling dependencies at the same upstream Git revision and original features.",
+  "cargoCompatibility": {
+    "toolchain": "1.95.0",
+    "omittedUnsupportedLintAllows": [
+      "lints.rust.unused_workspace_dependencies",
+      "lints.clippy.unused_workspace_dependencies"
+    ],
+    "reason": "These allow entries name nonexistent lints in the pinned toolchain. Original manifests are retained verbatim."
+  }
+}

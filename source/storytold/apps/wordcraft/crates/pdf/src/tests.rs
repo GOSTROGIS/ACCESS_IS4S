@@ -3248,3 +3248,21 @@ fn chart_and_equation_text_keep_their_pdf_bytes() {
         ["B", "o", "d", "y", " ", "t", "e", "x", "R", "v", "n", "u", "2", "0", "4", "+", "1", "\u{1D465}"].into_iter().map(String::from).collect();
     assert_eq!(shown, expected);
 }
+
+#[test]
+fn product_pdf_generator_keeps_document_authorship() {
+    let mut d = Document::from_text("Existing document");
+    d.core.creator = "Existing creator".into();
+    d.core.last_modified_by = "Existing editor".into();
+    d.core.title = "Existing title".into();
+    let before = d.clone();
+    let mut options = PdfOptions::default();
+    let m = super::metadata::metadata(&d, &options);
+    assert_eq!(m.creator, "ACCESS IS4S Documents");
+    assert_eq!(m.producer, "ACCESS IS4S Documents");
+    assert_eq!(m.authors, ["Existing creator"]);
+    assert_eq!(m.title.as_deref(), Some("Existing title"));
+    options.author = Some("Explicit export author".into());
+    assert_eq!(super::metadata::metadata(&d, &options).authors, ["Explicit export author"]);
+    assert_eq!(d, before);
+}

@@ -7,6 +7,12 @@ use wordcraft_doc::{PartKind, StoryRef};
 use crate::theme::{Tokens, TypeRung, fit_text, medium, paint_text, regular, semibold, text_width};
 use crate::{StatusCount, StatusCounts, WordApp, icons};
 
+// Keep stored authors and comment initials intact. The untouched placeholder uses a
+// neutral account icon; an explicit name or initials still draws the user's initials.
+pub(crate) fn account_initials(session: &wordcraft_engine::Session) -> Option<String> {
+    if session.author == "User" && session.initials.trim().is_empty() { None } else { Some(session.user_initials().chars().take(2).collect()) }
+}
+
 /// Why the caret's language isn't spell-checked (dictionary unreadable or missing), if it isn't.
 pub(crate) fn dictionary_problem(lang: &str, unreadable: &Option<(std::path::PathBuf, String)>, missing: Option<&str>) -> Option<String> {
     match (unreadable, missing) {
@@ -16,7 +22,7 @@ pub(crate) fn dictionary_problem(lang: &str, unreadable: &Option<(std::path::Pat
         )),
         (None, Some(name)) => Some(crate::i18n::fmt(
             tl!(
-                "No spelling dictionary for {language} is installed, so it isn't checked. WordCraft looks for the Hunspell dictionary {name} in the WORDCRAFT_DICTIONARIES folder and in the usual system locations."
+                "No spelling dictionary for {language} is installed, so it isn't checked. This application looks for the Hunspell dictionary {name} in the WORDCRAFT_DICTIONARIES folder and in the usual system locations."
             ),
             &[("language", lang), ("name", name)],
         )),
@@ -388,14 +394,18 @@ pub fn title_bar(app: &mut WordApp, ui: &mut Ui) {
                         let (r, resp) = ui.allocate_exact_size(vec2(control_h, control_h), Sense::click());
                         ui.painter().circle_filled(r.center(), control_h / 2.0 - 1.0, t.accent);
                         resp.widget_info(|| egui::WidgetInfo::labeled(egui::Role::Button, true, tl!("Account")));
-                        let initials: String = app.session.user_initials().chars().take(2).collect();
-                        ui.painter().text(r.center(), Align2::CENTER_CENTER, initials, semibold(10.5), t.on_accent);
-                        if resp.on_hover_text(format!("{} — set your name in File › Options", app.session.author)).clicked() {
+                        if let Some(initials) = account_initials(&app.session) {
+                            ui.painter().text(r.center(), Align2::CENTER_CENTER, initials, semibold(10.5), t.on_accent);
+                        } else {
+                            icons::paint(ui.painter(), Rect::from_center_size(r.center(), vec2(16.0, 16.0)), "user", t.on_accent, t.on_accent);
+                        }
+                        let account_name = if account_initials(&app.session).is_none() { tl!("Account") } else { &app.session.author };
+                        if resp.on_hover_text(format!("{account_name} — set your name in File › Options")).clicked() {
                             let _ = app.run("ui.backstage", json!({"value": true, "page": "options", "pane": "general"}));
                         }
                         ui.add_space(8.0);
                         if app.ui.show_discord {
-                            let (r, resp) = ui.allocate_exact_size(vec2(84.0, 22.0), Sense::click());
+                            let (r, resp) = ui.allocate_exact_size(vec2(104.0, 22.0), Sense::click());
                             ui.painter().rect_filled(r, 11.0, if resp.hovered() { t.accent_text } else { t.accent });
                             icons::paint(
                                 ui.painter(),
@@ -407,11 +417,11 @@ pub fn title_bar(app: &mut WordApp, ui: &mut Ui) {
                             ui.painter().text(
                                 pos2(crate::rtl::lead_x(rtl, r, 24.0), r.center().y),
                                 crate::rtl::lead_center(rtl),
-                                tl!("Discord"),
+                                tl!("Community"),
                                 medium(11.5),
                                 t.on_accent,
                             );
-                            if resp.on_hover_text(tl!("Join the ArtCraft community on Discord")).clicked() {
+                            if resp.on_hover_text(tl!("Open the upstream community chat")).clicked() {
                                 let _ = app.run("ui.discord", json!({}));
                             }
                             ui.add_space(8.0);

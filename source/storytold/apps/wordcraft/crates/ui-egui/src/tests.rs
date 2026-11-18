@@ -4140,7 +4140,7 @@ fn the_print_preview_fills_the_pane_zooms_and_scrolls_both_ways() {
 #[test]
 fn the_default_app_button_shows_only_with_the_hosts_hook() {
     use egui_kittest::kittest::Queryable;
-    const LABEL: &str = "Make WordCraft the default for Word documents…";
+    const LABEL: &str = "Make this application the default for Word documents…";
     for hook in [false, true] {
         let calls = std::rc::Rc::new(std::cell::Cell::new(0));
         let mut a = app();
@@ -9028,4 +9028,22 @@ fn mouse_wheel_scroll_speed_does_not_alter_ctrl_wheel_zoom_distance() {
             })
             .drop_without_applying_deltas();
     }
+}
+
+/// Display branding never rewrites the author used by revisions, comments or saved documents.
+#[test]
+fn owner_account_icon_keeps_explicit_author_and_initials() {
+    let mut session = Session::new(wordcraft_doc::Document::new());
+    assert!(crate::chrome::account_initials(&session).is_none());
+    assert_eq!(session.author, "User");
+    session.author = "Ana Lee".into();
+    assert_eq!(crate::chrome::account_initials(&session).as_deref(), Some("AL"));
+    session.author = "WordCraft User".into();
+    session.initials.clear();
+    assert_eq!(crate::chrome::account_initials(&session).as_deref(), Some("WU"));
+    session.initials = "WU".into();
+    assert_eq!(crate::chrome::account_initials(&session).as_deref(), Some("WU"));
+    session.author = "علي أحمد".into();
+    session.initials.clear();
+    assert_eq!(crate::chrome::account_initials(&session).as_deref(), Some("عأ"));
 }

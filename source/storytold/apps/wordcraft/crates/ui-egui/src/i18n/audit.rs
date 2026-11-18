@@ -232,7 +232,7 @@ impl<'a> Exempt<'a> {
             || plain.starts_with('@') // contributor handles
             || plain.starts_with("Style") || plain.starts_with("Table Style ") // a new style's default name
             || plain.contains('┬') || plain.contains('\u{2061}') // equation input (UnicodeMath), drawn as math
-            || matches!(plain, "WordCraft" | "WordCraft User" | "Discord" | "https://" | "auto" | "I. II. III." | "i. ii. iii." | "I, II, III, …" | "i, ii, iii, …")
+            || matches!(plain, "ACCESS IS4S Documents" | "WordCraft" | "WordCraft User" | "User" | "Discord" | "https://" | "auto" | "I. II. III." | "i. ii. iii." | "I, II, III, …" | "i, ii, iii, …")
             || plain == "CONFIDENTIAL" // the watermark dialog's text: document content, kept as typed
             || plain == "Figure 1" // the caption dialog's sample: the label goes into the document as is
             || crate::dialogs_insert::date_time_preview_matches(plain)
@@ -842,4 +842,13 @@ fn the_arabic_interface_is_mirrored_and_never_panics() {
         }
     }
     super::set_current(super::Lang::EN);
+}
+
+#[test]
+fn owner_name_is_not_a_translation_bypass() {
+    let app = WordApp::new(wordcraft_engine::Session::new(wordcraft_doc::Document::new()), crate::Services::default());
+    let math = std::collections::HashSet::new();
+    let exempt = Exempt::new(&app, &math);
+    assert!(exempt.allows(&app, "ACCESS IS4S Documents"));
+    assert!(!exempt.allows(&app, "ACCESS IS4S Documents needs a translation"));
 }

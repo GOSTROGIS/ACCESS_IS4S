@@ -73,28 +73,31 @@ pub fn read_xml(bytes: &[u8]) -> Result<wordcraft_doc::Document, DocxError> {
     from_shared_model(shared)
 }
 
+// Software identity is a writer option, never a document author or custom property.
+const PRODUCT_WRITE_OPTIONS: craft_docx::WriteOptions<'static> = craft_docx::WriteOptions { application: "ACCESS IS4S Documents" };
+
 /// Write a document as `.docx`.
 pub fn write(doc: &wordcraft_doc::Document) -> Result<Vec<u8>, DocxError> {
     let shared = to_shared_model(doc)?;
-    craft_docx::write(&shared)
+    craft_docx::write_with_options(&shared, &PRODUCT_WRITE_OPTIONS)
 }
 
 /// Write a document with a specific package flavor.
 pub fn write_as(doc: &wordcraft_doc::Document, flavor: Flavor) -> Result<Vec<u8>, DocxError> {
     let shared = to_shared_model(doc)?;
-    craft_docx::write_as(&shared, flavor)
+    craft_docx::write_as_with_options(&shared, flavor, &PRODUCT_WRITE_OPTIONS)
 }
 
 /// Write a document as a Flat OPC XML file.
 pub fn write_flat(doc: &wordcraft_doc::Document) -> Result<Vec<u8>, DocxError> {
     let shared = to_shared_model(doc)?;
-    craft_docx::write_flat(&shared)
+    craft_docx::write_flat_with_options(&shared, &PRODUCT_WRITE_OPTIONS)
 }
 
 /// Write a document as Word 2003 XML.
 pub fn write_wordml2003(doc: &wordcraft_doc::Document) -> Result<Vec<u8>, DocxError> {
     let shared = to_shared_model(doc)?;
-    craft_docx::write_wordml2003(&shared)
+    craft_docx::write_wordml2003_with_options(&shared, &PRODUCT_WRITE_OPTIONS)
 }
 
 /// Draw a chart.

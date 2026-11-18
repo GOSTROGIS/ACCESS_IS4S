@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "application": "wordcraft",
+  "host": "win32",
+  "toolchain": "1.95.0-x86_64-pc-windows-msvc",
+  "rustVersion": "1.95.0",
+  "native": {
+    "target": "x86_64-pc-windows-msvc",
+    "packages": ["wordcraft", "wordcraft-cli"],
+    "entry": "wordcraft.exe",
+    "outputs": ["wordcraft.exe", "wordcraft-cli.exe"],
+    "rustFlags": "-C target-feature=+crt-static",
+    "requiredInputRoots": ["rust-bin", "rust-host-lib", "msvc-include", "msvc-lib", "windows-sdk-include", "windows-sdk-lib", "qa-python-runtime", "qa-python-deps"]
+  },
+  "web": {
+    "target": "wasm32-unknown-unknown",
+    "packages": ["wordcraft-web"],
+    "entry": "index.html",
+    "wasmArtifact": "wordcraft-web.wasm",
+    "wasmBindgen": "0.2.129",
+    "index": "apps/wordcraft-web/index.html",
+    "icon": "assets/app-icon/wordcraft.ico",
+    "requiredInputRoots": ["rust-bin", "rust-host-lib", "rust-wasm-lib", "msvc-include", "msvc-lib", "windows-sdk-include", "windows-sdk-lib", "qa-python-runtime", "qa-python-deps", "qa-browser-runtime"]
+  },
+  "inputs": {
+    "fonts": {
+      "repository": "https://github.com/storytold/craft-fonts.git",
+      "commit": "b076417b5880bd4154bd22f00695b1d28c6bea83"
+    },
+    "i18n": {
+      "repository": "https://github.com/storytold/craft-i18n.git",
+      "pinFile": "craft-i18n.rev"
+    }
+  },
+  "nativeToolVersions": {
+    "llvm": "23.1.5",
+    "llvmSource": "392dfff97d29b59d77e5cac6d4b6ef2585fe7117",
+    "windowsSdk": "10.0.26100",
+    "msvcLibraries": "14.44.17.14"
+  },
+  "upstreamGate": ["run", "--locked", "--jobs", "1", "--package", "xtask", "--", "ci"],
+  "features": "Complete upstream default native and web packages. No --no-default-features, feature removals, profile overrides, or replacement editors.",
+  "webPackaging": "Original source canvas page and icon; complete wasm-bindgen browser output including snippets. No wasm-opt postprocessing.",
+  "functionalGate": "verify-product-wordcraft.py",
+  "qaInputs": {
+    "pythonRuntimeRoot": "qa-python-runtime",
+    "pythonDepsRoot": "qa-python-deps",
+    "browserRoot": "qa-browser-runtime"
+  }
+}

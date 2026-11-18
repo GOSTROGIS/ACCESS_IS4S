@@ -1,0 +1,236 @@
+{
+  "schema": 1,
+  "repository": "https://github.com/storytold/craft-libs.git",
+  "commit": "41fb227542efb8a7748caa1c659f271d8605303c",
+  "prefix": "crates/rtf",
+  "tree": "07e67db5a5e342a1d437677c02a9f0f939563a0d",
+  "files": {
+    "AGENTS.md": {
+      "sourcePath": "AGENTS.md",
+      "mode": "100644",
+      "blob": "aa4561e67cd95237d94ce8a329dcd7093074c07a",
+      "bytes": 6372,
+      "sha256": "eb8533743726a92d2e1c2e2a65ff89c2f5f53f9921bcdc648ffab7299e06e65f"
+    },
+    "ATTRIBUTION.md": {
+      "sourcePath": "ATTRIBUTION.md",
+      "mode": "100644",
+      "blob": "32bae195dc97d304496eedb0855bed99f0a182af",
+      "bytes": 23449,
+      "sha256": "142d9fa00c6b714573f481c1b4eec1a01e8062d0a579882d5cbadd66108f4be6"
+    },
+    "upstream/Cargo.workspace.toml": {
+      "sourcePath": "Cargo.toml",
+      "mode": "100644",
+      "blob": "38b82c843dfbf337561676297d8247baf8187ea9",
+      "bytes": 11318,
+      "sha256": "fb2c2c0da52f0604525cb374288e76561154685fd96a4840239419964557b496"
+    },
+    "LICENSE-APACHE": {
+      "sourcePath": "LICENSE-APACHE",
+      "mode": "100644",
+      "blob": "f433b1a53f5b830a205fd2df78e2b34974656c7b",
+      "bytes": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    "LICENSE-MIT": {
+      "sourcePath": "LICENSE-MIT",
+      "mode": "100644",
+      "blob": "e1450bdf57b9c0577e8b947db77ec77f4fea9d38",
+      "bytes": 1102,
+      "sha256": "2f42c0cafc8ad394d91373fe1f342aee5453850b151a51405c68cae9ada86d26"
+    },
+    "NOTICE": {
+      "sourcePath": "NOTICE",
+      "mode": "100644",
+      "blob": "e1cffb26ce0ac91c40920b0ceaf27d559b83f111",
+      "bytes": 21720,
+      "sha256": "62544fcaa549af375aab1990019c3371ebfd74ae089616f5e46ee1d3c07c7c52"
+    },
+    "clippy.toml": {
+      "sourcePath": "clippy.toml",
+      "mode": "100644",
+      "blob": "8f54197d8788b1a09ee7ef319a602dc7e26c003a",
+      "bytes": 314,
+      "sha256": "495631404c79c044afe7286bf3da775261bd2e11bc3c5fa1b8543f52b63d5d90"
+    },
+    "Cargo.toml": {
+      "sourcePath": "crates/rtf/Cargo.toml",
+      "mode": "100644",
+      "blob": "47eafd5da8fc6e6c29c61d02a21b7afc41067e6f",
+      "bytes": 1381,
+      "sha256": "7d49d832a114f1b09f04fb37fd15e8caa8b9c170f743d424c51b31cce6098b2a"
+    },
+    "README.md": {
+      "sourcePath": "crates/rtf/README.md",
+      "mode": "100644",
+      "blob": "12e979140755a9d5afa728239c3e64358294f34a",
+      "bytes": 6070,
+      "sha256": "9f587302c8c343d8aa5d9b64380909b9272c80b37dc119473ac5613f2a181e5a"
+    },
+    "src/codepage.rs": {
+      "sourcePath": "crates/rtf/src/codepage.rs",
+      "mode": "100644",
+      "blob": "91bc00469b977160768bdfa5f46e9549925730ba",
+      "bytes": 387,
+      "sha256": "5850cf6e20a2854b5e98176ea5370b388ac303b39522ddf95a437fecc544eb2e"
+    },
+    "src/date.rs": {
+      "sourcePath": "crates/rtf/src/date.rs",
+      "mode": "100644",
+      "blob": "e0c58ab124ac11a1004e1656b1055620835d3950",
+      "bytes": 4793,
+      "sha256": "5d0325000011603a625542be55e8dcd56be8e005cd9132cb7949105ff0e01440"
+    },
+    "src/doc.rs": {
+      "sourcePath": "crates/rtf/src/doc.rs",
+      "mode": "100644",
+      "blob": "f87e13d76d14c3d3d2363cbb274d01904962b8ed",
+      "bytes": 2931,
+      "sha256": "cf6f802ae80aed1256982b2d5ad60459085092c73b7c26a73cb35efeecfe91e0"
+    },
+    "src/doc/export.rs": {
+      "sourcePath": "crates/rtf/src/doc/export.rs",
+      "mode": "100644",
+      "blob": "69fab3d7661d036fd892efc2acf011d1e7d0d138",
+      "bytes": 40707,
+      "sha256": "6953a6a52f0297efbcb35bfab9af53f4f41bad0f16f7c0e7dd4769e24e4f786d"
+    },
+    "src/doc/parse.rs": {
+      "sourcePath": "crates/rtf/src/doc/parse.rs",
+      "mode": "100644",
+      "blob": "60a65740a32e18ca155171c4054c998404b6b032",
+      "bytes": 20602,
+      "sha256": "3d8181243dd240721b4e21d01b528d9c8fbed9b20b22b143139aa100e349697e"
+    },
+    "src/doc/reader.rs": {
+      "sourcePath": "crates/rtf/src/doc/reader.rs",
+      "mode": "100644",
+      "blob": "c0cc1c1ea268c5e757fe780e3c9ec1b0386a78d2",
+      "bytes": 22374,
+      "sha256": "ec258a15b7f23b58ae6ad04cf53d5e8747b72c67c868d889e6954f08c84cac9b"
+    },
+    "src/doc/state.rs": {
+      "sourcePath": "crates/rtf/src/doc/state.rs",
+      "mode": "100644",
+      "blob": "486b94a3224a47cf2147431e2887bd40d41517c7",
+      "bytes": 11506,
+      "sha256": "fdc41ddeaa932d3cc563f2e691384efd327eb52f556ac7b77813fc445e790b88"
+    },
+    "src/doc/styles.rs": {
+      "sourcePath": "crates/rtf/src/doc/styles.rs",
+      "mode": "100644",
+      "blob": "014a105b4ceab6ab0fbdcc5be9490e95dcc8c7c7",
+      "bytes": 9349,
+      "sha256": "c677b6ab8afa8455f16be834484f137637cc73207eef14c4b7d8e94e7f7003da"
+    },
+    "src/doc/tests.rs": {
+      "sourcePath": "crates/rtf/src/doc/tests.rs",
+      "mode": "100644",
+      "blob": "7c1075a86bac806ec32a2f745731a3c75983dbf2",
+      "bytes": 95285,
+      "sha256": "d68c93318d167343cea1e4a4c120c35b42c865c992ef35d2086c4148a0db5140"
+    },
+    "src/doc/text.rs": {
+      "sourcePath": "crates/rtf/src/doc/text.rs",
+      "mode": "100644",
+      "blob": "dceaef6d0d73f2af7a118d723d573948fe6ae307",
+      "bytes": 14421,
+      "sha256": "bd5c5ff75b9416a5e84335ad4615a85f68b4130855eabeb19253a4f9797a13b7"
+    },
+    "src/doc/word.rs": {
+      "sourcePath": "crates/rtf/src/doc/word.rs",
+      "mode": "100644",
+      "blob": "28360c616cbccc540d825ac714ea2db6f7144b3d",
+      "bytes": 26014,
+      "sha256": "7c2f881899c57eb973162b0c7cbdbc2a30c675e30aa68eb60337c7a0cdb3fcbc"
+    },
+    "src/lex.rs": {
+      "sourcePath": "crates/rtf/src/lex.rs",
+      "mode": "100644",
+      "blob": "348c9e6bb73efa69dc6a72f53d3fc8406715529d",
+      "bytes": 8905,
+      "sha256": "132399363aa47e6c08e7d9ccaebb5ca5b6f98de61d9a1a8172591f59f151fb00"
+    },
+    "src/lib.rs": {
+      "sourcePath": "crates/rtf/src/lib.rs",
+      "mode": "100644",
+      "blob": "3d5bb4c44b021e1d71b98ab540110e701d5c4f9d",
+      "bytes": 2013,
+      "sha256": "6d62eca409bbbc6acde75ab72d0e16e8295068e91c791d356e1173060142cf72"
+    },
+    "src/model.rs": {
+      "sourcePath": "crates/rtf/src/model.rs",
+      "mode": "100644",
+      "blob": "acbb3c7ee140e7aef63ac1793cc1667d9e099f0d",
+      "bytes": 3663,
+      "sha256": "5b0e852e4c5267916d219f654a6bd198b72f1b2dbc8362c9ef4f204a8f5a7a51"
+    },
+    "src/outlook.rs": {
+      "sourcePath": "crates/rtf/src/outlook.rs",
+      "mode": "100644",
+      "blob": "7ce886b88300a423661e535e729cf7290c3f2a70",
+      "bytes": 25529,
+      "sha256": "9d798f35435b00498682b11f5e7028b954425f50095f6ca2eba7c52daeabfeed"
+    },
+    "src/outlook_tests.rs": {
+      "sourcePath": "crates/rtf/src/outlook_tests.rs",
+      "mode": "100644",
+      "blob": "7eb41dbd20c49b0058fc48a3d37684e698221e9b",
+      "bytes": 16240,
+      "sha256": "715c5f1981c47ca55553f906ef39d605c43cf0dc02dcd0b4ab0927b8442b913e"
+    },
+    "src/read.rs": {
+      "sourcePath": "crates/rtf/src/read.rs",
+      "mode": "100644",
+      "blob": "46007dd9c398d717ca9e65a69a7b1627d5190436",
+      "bytes": 18340,
+      "sha256": "0d9d79490b6c0fb0d37a3bab07c50de0171fb7391f96c6b20cef78adf4b88d3f"
+    },
+    "src/text.rs": {
+      "sourcePath": "crates/rtf/src/text.rs",
+      "mode": "100644",
+      "blob": "b1411842ec8b4499ddb6544a4c43a26a68faab3c",
+      "bytes": 10138,
+      "sha256": "e30014c310d201a65708cbb080f2e90e648f22840d0bb72dfbf5957056eb512e"
+    },
+    "src/write.rs": {
+      "sourcePath": "crates/rtf/src/write.rs",
+      "mode": "100644",
+      "blob": "0b8f1dc8d1a08095955a1c834b03f0f8bb458829",
+      "bytes": 7520,
+      "sha256": "6363bcfbd42bac22225f0d622e1c71a66caac4edbb86783830d8b72acd97370f"
+    },
+    "tests/read_write.rs": {
+      "sourcePath": "crates/rtf/tests/read_write.rs",
+      "mode": "100644",
+      "blob": "9ef8fbfb70b6777623ff65019d83d1e92ab93bc8",
+      "bytes": 22563,
+      "sha256": "2d8255ad5e29b18fc53e7bd6697a3d34af5e95651c727f6ad17d2d70f625ab3d"
+    },
+    "rustfmt.toml": {
+      "sourcePath": "rustfmt.toml",
+      "mode": "100644",
+      "blob": "3121924d651ded44b389c1f699ab9d1152ecbfb1",
+      "bytes": 45,
+      "sha256": "1b51e53edb3571229e84540b9b08514fb23d8c8d3225e8b984773f5c36eaa906"
+    },
+    "upstream/Cargo.crate.toml": {
+      "sourcePath": "crates/rtf/Cargo.toml",
+      "mode": "100644",
+      "blob": "47eafd5da8fc6e6c29c61d02a21b7afc41067e6f",
+      "bytes": 1381,
+      "sha256": "7d49d832a114f1b09f04fb37fd15e8caa8b9c170f743d424c51b31cce6098b2a"
+    }
+  },
+  "materializedCargoSha256": "bc5397bd1399e01cb48f903cfd5589cb05af484dda4a5837f0fd2cc26b6b5787",
+  "cargoMaterialization": "Resolve original inherited package metadata and recognized lints; retain all sibling dependencies at the same upstream Git revision and original features.",
+  "cargoCompatibility": {
+    "toolchain": "1.95.0",
+    "omittedUnsupportedLintAllows": [
+      "lints.rust.unused_workspace_dependencies",
+      "lints.clippy.unused_workspace_dependencies"
+    ],
+    "reason": "These allow entries name nonexistent lints in the pinned toolchain. Original manifests are retained verbatim."
+  }
+}

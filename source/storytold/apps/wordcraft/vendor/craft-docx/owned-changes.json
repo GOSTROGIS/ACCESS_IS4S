@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "files": {
+    "Cargo.toml": {
+      "upstreamSha256": "32cb9d6b8c9b38090f8ba32af23db0b1a2ed372a4c0d25795a0f4f3827664ddf",
+      "sha256": "fb3faff370a80dd5638ece25b14cbf77464f4a40d15483d5d97c5887ea794fb0",
+      "purpose": "Resolve original Cargo inheritance with documented two-lint compatibility delta"
+    },
+    "src/flat.rs": {
+      "upstreamSha256": "d655e151753ff7a847d9d29a0f7825f380f0ad486661ccf26cd8656e07888a6d",
+      "sha256": "46ca7b1e49ddee216cf28d08ba22c21c61136c4ebe0b06ee108c9936d636e748",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    },
+    "src/lib.rs": {
+      "upstreamSha256": "fd19a6038ae5b57f8c16ef099348a4b1953c7b3b6fcda8428b2b649df882bc0d",
+      "sha256": "b50661731dc78e16d0902d87acc43ff643e2159ba5ef03e20d25c24b10c1face",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    },
+    "src/wordml2003_write.rs": {
+      "upstreamSha256": "aa6d5f62f61bb7846e95d3962b355c3b03720a5239d28d7fd784b6c822a487d4",
+      "sha256": "e5ef681000b98bd84fd77559160af2489c6c22a951517b44b030b4e74f8e0db8",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    },
+    "src/write.rs": {
+      "upstreamSha256": "f7c7a4b4161e1bb71bbfa4dae3d0d00874a7371420ad683356cc7beb9ef07169",
+      "sha256": "a19d48535c868931398598e8096740206a84120e4fce7d33388b1fa11c86d649",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    },
+    "src/write/parts.rs": {
+      "upstreamSha256": "3f33af388a0fc460b3ca78ec2e0b17e0fda63cea313d90990b5f88137a4b5525",
+      "sha256": "368df4b9f469a606b3b1fe24c3511fa79e0b0686305283acaa47de1258b33439",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    },
+    "src/write/settings.rs": {
+      "upstreamSha256": "5e9dbe58750f733e0366180e72e3856fe395da991d062aa890360cdc9b7fb906",
+      "sha256": "27ee63e198de7ce2f3403139e023240ed3930145ac65c3e815386b9467c9117a",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    },
+    "tests/it/privacy.rs": {
+      "upstreamSha256": "f944066c3e620abda7f0e8bdaa9a308b63880d9b82784fbd9b636da261073c48",
+      "sha256": "f1f655d95d428ac9565a9ac1cf552607b589c582de4b4d6569dafc1b6357c5a3",
+      "purpose": "Add optional escaped software identity and regression coverage; retain original APIs/defaults and document metadata"
+    }
+  }
+}

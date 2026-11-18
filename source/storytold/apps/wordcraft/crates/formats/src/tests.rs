@@ -346,7 +346,7 @@ fn odt_round_trip() {
 fn latex_round_trip() {
     check_round_trip("tex", true);
     let tex = String::from_utf8(export("tex", &sample()).unwrap().unwrap()).unwrap();
-    assert!(tex.starts_with("% Written by WordCraft") && tex.contains("\\documentclass{article}"), "{tex}");
+    assert!(tex.starts_with("% Written by ACCESS IS4S Documents") && tex.contains("\\documentclass{article}"), "{tex}");
     assert!(tex.contains("\\section*{Main Heading}") && tex.contains("\\subsection*{Second Level}"), "{tex}");
     assert!(tex.contains("\\textbf{bold}") && tex.contains("\\textit{italic}"), "{tex}");
     assert!(tex.contains("\\href{https://example.com/x}{a link}"), "{tex}");
@@ -1202,4 +1202,36 @@ fn latex_export_keeps_repeated_spaces() {
     assert!(!tex.contains("  "), "{tex}");
     let d = crate::import("tex", tex.as_bytes()).unwrap().unwrap();
     assert_eq!(para_texts(&d), vec!["a  b   c".to_string()]);
+}
+
+#[test]
+fn product_generators_keep_existing_format_metadata() {
+    let mut doc = Document::from_text("Existing document");
+    doc.core.creator = "Existing creator".into();
+    doc.core.last_modified_by = "Existing editor".into();
+    doc.set_custom_prop("Project owner", "Existing <author> & team");
+    let before = doc.clone();
+    let rtf = crate::rtf::export(&doc);
+    assert!(rtf.contains(concat!("{\\*\\generator ", "ACCESS IS4S Documents", ";}")));
+    assert_eq!(crate::rtf::import(rtf.as_bytes()).unwrap().core.creator, "Existing creator");
+    let latex = crate::latex::export(&doc);
+    assert!(latex.starts_with(concat!("% Written by ", "ACCESS IS4S Documents", ".\n")));
+    assert!(latex.contains("pdfauthor={Existing creator}"));
+    for template in [false, true] {
+        let bytes = if template { crate::odt::export_template(&doc) } else { crate::odt::export(&doc) }.unwrap();
+        let mut package = craft_zip::Archive::open(&bytes, craft_zip::Limits { max_entries: 10_000, max_total_bytes: 64 << 20 }).unwrap();
+        let meta = String::from_utf8(package.read("meta.xml", 1 << 20).unwrap().unwrap()).unwrap();
+        assert!(meta.contains(concat!("<meta:generator>", "ACCESS IS4S Documents", "</meta:generator>")), "{meta}");
+        assert_existing_product_odf_metadata(&crate::odt::import(&bytes).unwrap());
+    }
+    let flat = crate::odt::export_flat(&doc).unwrap();
+    assert!(std::str::from_utf8(&flat).unwrap().contains(concat!("<meta:generator>", "ACCESS IS4S Documents", "</meta:generator>")));
+    assert_existing_product_odf_metadata(&crate::odt::import_flat(&flat).unwrap());
+    assert_eq!(doc, before);
+}
+
+fn assert_existing_product_odf_metadata(doc: &Document) {
+    assert_eq!(doc.core.creator, "Existing creator");
+    assert_eq!(doc.core.last_modified_by, "Existing editor");
+    assert_eq!(doc.custom_prop("Project owner"), Some("Existing <author> & team"));
 }

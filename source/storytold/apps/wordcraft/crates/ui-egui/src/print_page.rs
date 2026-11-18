@@ -551,7 +551,8 @@ pub fn export_formats(app: &mut WordApp, ui: &mut Ui) {
     #[cfg(all(unix, not(target_os = "macos"), not(target_arch = "wasm32")))]
     {
         ui.add_space(8.0);
-        if ui.add(egui::Button::new(egui::RichText::new(tl!("Browse in WordCraft…")).font(medium(13.5))).min_size(vec2(320.0, 34.0))).clicked() {
+        if ui.add(egui::Button::new(egui::RichText::new(tl!("Browse in this application…")).font(medium(13.5))).min_size(vec2(320.0, 34.0))).clicked()
+        {
             let _ = app.run("ui.fileBrowser", json!({"purpose": "export"}));
         }
     }
