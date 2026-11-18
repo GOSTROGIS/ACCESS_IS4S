@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { cp, lstat, mkdir, mkdtemp, open, readFile, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { devNull, tmpdir } from 'node:os';
-import { dirname, join, relative, resolve, sep } from 'node:path';
+import { delimiter, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, promisify } from 'node:util';
 import { consultingEdition, consultingPaths, consultingRegistry, consultingRevision, consultingState } from './consulting-edition.mjs';
@@ -20,11 +20,15 @@ const tests = [
 const systemVariables = new Set(['PATH', 'PATHEXT', 'SYSTEMROOT', 'SYSTEMDRIVE', 'WINDIR', 'COMSPEC',
   'TEMP', 'TMP', 'TMPDIR', 'OS', 'PROCESSOR_ARCHITECTURE', 'NUMBER_OF_PROCESSORS']);
 
-function executionEnvironment(overrides = {}, extra = []) {
+export function executionEnvironment(overrides = {}, extra = []) {
   const system = Object.fromEntries(Object.entries(process.env)
     .filter(([key]) => systemVariables.has(key.toUpperCase()) || extra.includes(key.toUpperCase()))
     .map(([key, value]) => [key.toUpperCase(), value]));
-  return { ...system, ...overrides };
+  const environment = { ...system, ...overrides };
+  // Publication validators start Node children by name; the scheduled owner
+  // environment need not have this approved bundled runtime on its PATH.
+  environment.PATH = [dirname(process.execPath), environment.PATH || ''].filter(Boolean).join(delimiter);
+  return environment;
 }
 
 // Only Git receives the profile paths needed by the owner's configured credential helper.
@@ -190,7 +194,8 @@ async function update(root, config) {
     await gitExec(['-C', checkout, 'checkout', '--detach', commit]);
     const status = await gitExec(['-C', checkout, 'status', '--porcelain']);
     if (status.stdout.trim() || commit !== await revision(git)) throw Error('CONSULTING source changed during candidate checkout');
-    const args = { cwd: checkout, timeout: 1_200_000, windowsHide: true, maxBuffer: 4 * 1024 * 1024, env: executionEnvironment() };
+    const args = { cwd: checkout, timeout: 1_200_000, windowsHide: true, maxBuffer: 4 * 1024 * 1024,
+      env: executionEnvironment({ PATH: [dirname(python), process.env.PATH || ''].filter(Boolean).join(delimiter) }) };
     await run(python, ['-I', '-B', 'scripts/validate-publications.py', '--root', checkout], args);
     await run(process.execPath, ['scripts/build.mjs'], args);
     const npmConfig = join(scratch, 'npmrc');
