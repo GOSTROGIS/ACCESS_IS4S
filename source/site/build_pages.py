@@ -663,6 +663,13 @@ def main():
     from build_downloads import main as build_downloads
     build_downloads()
     add_project_workspaces()
+    for page in sorted((REPO / 'skills').rglob('learner.html')):
+        text = page.read_text(encoding='utf-8')
+        if 'brand/student-guide.js' in text or 'brand/access-project.js' in text:
+            continue
+        prefix = '../' * (len(page.relative_to(REPO).parts) - 1)
+        tag = f'<script defer src="{prefix}brand/student-guide.js"></script>'
+        page.write_text(text.replace('</head>', tag + '\n</head>', 1), encoding='utf-8')
     print(f'built hub, 8 skill pages, Numeracy chapters, Carpentry page, {n} carpentry intake(s), {g} page(s) newly locked')
 
 

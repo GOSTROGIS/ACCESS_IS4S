@@ -1,6 +1,17 @@
 const browserList = document.getElementById('browser-apps');
 const nativeList = document.getElementById('native-apps');
 const status = document.getElementById('status');
+if (location.hostname === '127.0.0.1') {
+  const link = document.createElement('a');
+  link.href = 'http://127.0.0.1:11435/';
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.textContent = 'Local coding chat';
+  const detail = document.createElement('span');
+  detail.textContent = 'If chat is closed, run Start Ollama Tools.cmd from the shared Ollama folder.';
+  link.append(detail);
+  document.querySelector('nav.projects')?.append(link);
+}
 const workspaces = new Set(['gridcraft', 'wordcraft']);
 
 try {
