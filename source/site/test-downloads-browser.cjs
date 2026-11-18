@@ -24,10 +24,15 @@ const slugs = ['reading', 'writing', 'numeracy', 'digital', 'problem-solving',
         const page = await context.newPage();
         const errors = [], localFailures = [];
         page.on('pageerror', e => errors.push(e.message));
-        page.on('requestfailed', r => { if (r.url().startsWith('file:')) localFailures.push(r.url()); });
-        const open = relative => page.goto(pathToFileURL(path.join(folder, relative)).href);
+        page.on('requestfailed', r => {
+          if (r.url().startsWith('file:')) localFailures.push({url:r.url(), reason:r.failure()?.errorText});
+        });
+        const open = relative => page.goto(pathToFileURL(path.join(folder, relative)).href, {waitUntil:'networkidle'});
         await open('START-HERE.html');
         await page.getByRole('link', { name: 'Open this skill section' }).click();
+        // A skill landing page loads its guide from the deferred navigation
+        // script. Verify the actual guide before navigating to the next chapter.
+        await page.locator('#access-student-guide').waitFor({state:'attached'});
         assert.ok(await page.locator('main').isVisible(), `${slug}: landing page`);
         for (const role of ['learner', 'teaching', 'answers']) {
           await open(`skills/${slug}/${role}.html`);
