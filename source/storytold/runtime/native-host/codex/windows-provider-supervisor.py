@@ -334,21 +334,25 @@ class NativeProvider:
         return not self.children.job.parent_exited() and self.broker.poll()is None and not self.protocol.failed.is_set() and all(child.poll()is None and not channel.failed.is_set() for child,channel in self.tunnels.values())
 
     def close(self):
-        if self.protocol and self.broker.poll()is None:
-            for product,(child,_) in self.tunnels.items():
-                try:self.protocol.control('unregister',product,child.pid)
+        try:
+            if self.protocol and self.broker.poll()is None:
+                for product,(child,_) in self.tunnels.items():
+                    try:self.protocol.control('unregister',product,child.pid)
+                    except Exception:pass
+                try:self.broker.stdin.close()
+                except OSError:pass
+            for child,_ in self.tunnels.values():
+                if child.poll()is None:
+                    child.kill()
+                child.wait(timeout=5)
+            if self.prepared and not self.children.job.parent_exited():
+                try:self.remote('cleanup',{})
                 except Exception:pass
-            try:self.broker.stdin.close()
-            except OSError:pass
-        for child,_ in self.tunnels.values():
-            if child.poll()is None:
-                child.kill()
-            child.wait(timeout=5)
-        if self.prepared and not self.children.job.parent_exited():
-            try:self.remote('cleanup',{})
-            except Exception:pass
-            self.prepared=False
-        self.children.close()
+                self.prepared=False
+        finally:
+            # A failed tunnel wait or cleanup must never retain the broker,
+            # remaining transports or descendants in the owned Windows job.
+            self.children.close()
 
 
 def main():

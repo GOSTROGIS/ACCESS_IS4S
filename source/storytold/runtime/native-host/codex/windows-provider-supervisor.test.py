@@ -107,5 +107,61 @@ finally:
     for handle in handles:kernel.CloseHandle(handle)
     owner.stdout.close();owner.stderr.close()
 
+# A tunnel wait failure must not skip the actual Job Object close. Use an
+# uninitialized NativeProvider only to avoid configuration or provider access;
+# its close method and the owned process containment are the real production
+# implementations. The injected failure is limited to the tunnel wait method.
+owned=supervision.OwnedChildren(helper)
+unrelated=subprocess.Popen([str(node),'-e','setInterval(()=>{},1000)'],
+    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,creationflags=0x08000000)
+handles=[]
+try:
+    grandchild_code='process.stdout.write("ready\\n");setInterval(()=>{},1000)'
+    tree_code=('const {spawn}=require("node:child_process");'
+        'const child=spawn(process.execPath,["-e",'+json.dumps(grandchild_code)+'],{stdio:["ignore","pipe","ignore"],windowsHide:true});'
+        'child.stdout.once("data",()=>process.stdout.write(JSON.stringify({pid:process.pid,descendant:child.pid})+'+json.dumps('\n')+'));'
+        'setInterval(()=>{},1000)')
+    child=owned.start([str(node),'-e',tree_code])
+    lines=queue.Queue(maxsize=1)
+    threading.Thread(target=lambda:lines.put(child.stdout.readline()),daemon=True).start()
+    value=json.loads(lines.get(timeout=15))
+    assert set(value)=={'pid','descendant'}
+    handles=[read_handle(value[key]) for key in ['pid','descendant']]
+    failing_tunnel=owned.start([str(node),'-e','setInterval(()=>{},1000)'])
+
+    class WaitFailure:
+        pid=failing_tunnel.pid
+        def poll(self):return failing_tunnel.poll()
+        def kill(self):return failing_tunnel.kill()
+        def wait(self,timeout):raise subprocess.TimeoutExpired('synthetic-owned-tunnel',timeout)
+
+    provider=object.__new__(supervision.NativeProvider)
+    provider.children=owned
+    provider.protocol=None
+    provider.broker=None
+    provider.prepared=False
+    # Failure on the first tunnel must still terminate the next actual tunnel
+    # and its already-running descendant through unconditional job closure.
+    provider.tunnels={'access':(WaitFailure(),None),'slipcurve':(child,None)}
+    propagated=False
+    try:provider.close()
+    except subprocess.TimeoutExpired:propagated=True
+    result={'schema':1,'injectedTunnelWaitFailurePropagated':propagated,
+        'actualJobClosed':owned.job.handle is None,
+        'ownedChildExited':exited(handles[0],2000),
+        'ownedGrandchildExited':exited(handles[1],2000),
+        'unrelatedProcessPreserved':unrelated.poll()is None,
+        'guestOperations':0,'credentialAccess':False,'modelCalls':0}
+    assert result['injectedTunnelWaitFailurePropagated']
+    assert result['actualJobClosed'], 'Tunnel wait failure skipped the unconditional Job Object close'
+    assert result['ownedChildExited'] and result['ownedGrandchildExited']
+    assert result['unrelatedProcessPreserved']
+    checks.append('tunnel-wait-failure-still-closes-owned-child-and-grandchild')
+finally:
+    owned.close()
+    for handle in handles:kernel.CloseHandle(handle)
+    unrelated.terminate()
+    unrelated.wait(timeout=5)
+
 report={'ok':True,'checks':checks,'passed':len(checks),'failed':0,'guestOperations':0,'credentialAccess':False,'modelCalls':0}
 print(json.dumps(report))
