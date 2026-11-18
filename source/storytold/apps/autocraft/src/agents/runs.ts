@@ -27,6 +27,7 @@ export type RunEnd = {
   summary?: string | null; error?: string | null; output?: string | null;
   costUsd?: number | null;
   model?: string;
+  reasoningEffort?: string | null;
   providerUsage?: { inputTokens: number; cachedInputTokens: number; cacheWriteInputTokens: number; outputTokens: number; reasoningOutputTokens: number; totalTokens: number; modelProvider: string; usageComplete?: boolean };
 };
 
@@ -63,9 +64,9 @@ export function insertRun(db: DatabaseSync, s: RunStart): number {
 export function finishRun(db: DatabaseSync, id: number, e: RunEnd): void {
   const t = e.tokens;
   db.prepare(`UPDATE agent_runs SET state = ?, ended_at = ?, input_tokens = ?, output_tokens = ?, cache_read_tokens = ?, cache_write_tokens = ?, cost_usd = ?, summary = ?, error = ?, progress = NULL,
-    model=COALESCE(?,model),provider_usage=?
+    model=COALESCE(?,model),reasoning_effort=CASE WHEN ? THEN ? ELSE reasoning_effort END,provider_usage=?
     WHERE id = ? AND state = 'running'`)
-    .run(e.state, now(), t?.input ?? null, t?.output ?? null, t?.cacheRead ?? null, t?.cacheWrite ?? null, e.costUsd ?? null, e.summary ?? null, e.error ? e.error.slice(0, ERROR_MAX) : null, e.model ?? null, e.providerUsage ? JSON.stringify(e.providerUsage) : null, id);
+    .run(e.state, now(), t?.input ?? null, t?.output ?? null, t?.cacheRead ?? null, t?.cacheWrite ?? null, e.costUsd ?? null, e.summary ?? null, e.error ? e.error.slice(0, ERROR_MAX) : null, e.model ?? null, Object.hasOwn(e, "reasoningEffort") ? 1 : 0, e.reasoningEffort ?? null, e.providerUsage ? JSON.stringify(e.providerUsage) : null, id);
   if (e.output) db.prepare("UPDATE agent_run_texts SET output = ? WHERE run_id = ?").run(packText(scrub(e.output.slice(0, TEXT_MAX))), id);
   setImmediate(runEnded); // after the caller's own follow-up claim, which gets the freed slot first
 }

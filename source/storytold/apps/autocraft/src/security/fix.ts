@@ -1,6 +1,7 @@
 // The private fix of a finding: a patch on the scan's pinned commit, built and tested in the worker container, reviewed by
 // Opus, and kept as a local commit in the bare cache that is never pushed before Land. Nothing here writes to GitHub:
 // `gh api user` and the fetch of the default branch are reads.
+import { serializeServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { createHash, randomBytes } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -35,7 +36,7 @@ import {
   FIX_RUN_BASE, FIX_ROUNDS, fixBranch, giveaway, parseFixReply, patchGiveaway, quietProblem, securityRepo,
   type SecurityFixCheckInput, type SecurityFixInput,
 } from "./rules.ts";
-import { advance, clearRounds, rawFinding, recordFixCall, scanRow, scanTestOf } from "./store.ts";
+import { advance, acceptFix, clearRounds, rawFinding, recordFixCall, scanRow, scanTestOf } from "./store.ts";
 import { usageRunId } from "./real.ts";
 
 const SHA = /^[0-9a-f]{40}$/;
@@ -58,7 +59,7 @@ export type FixDeps = {
    * One model call; `tool` is the build tool of the fix call. The reply text is null when the call gave none.
    * `session` (fix calls): with `resume` the call continues that kept session with the message, and falls back to a new call on `input` when it cannot; the reply's `kept` is the session the call ends with and `resumed` tells whether the call continued one.
    */
-  ask: (id: "security.fix" | "security.fixcheck", input: SecurityFixInput | SecurityFixCheckInput, o: { checkout?: string; tool?: CheckTool; agent: string; run: string; session?: SessionAsk }) => Promise<{ text: string | null; cost: number | null; resumed?: boolean; kept?: KeptSession }>;
+  ask: (id: "security.fix" | "security.fixcheck", input: SecurityFixInput | SecurityFixCheckInput, o: { checkout?: string; tool?: CheckTool; agent: string; run: string; session?: SessionAsk }) => Promise<{ text: string | null; cost: number | null; resumed?: boolean; kept?: KeptSession; serving?: ServingMetadata }>;
   who: (repo: string) => Promise<{ login: string; email: string }>;
   cancelled: () => boolean;
   log: (line: string) => void;
@@ -81,7 +82,7 @@ export function defaultFixDeps(db: DatabaseSync, scanId: number, io: { cancelled
       const resumed = session?.resume !== undefined;
       const before = (db.prepare("SELECT COALESCE(MAX(id), 0) AS n FROM agent_runs").get() as { n: number }).n;
       const r = await runModelStep(db, textStep<typeof input>(id), input, { checkout: o.checkout, check: o.tool, ...(session && { session }), cancelled: io.cancelled, usage: { run: o.run, agent: o.agent, stage: "security", items: (ok) => (ok ? 1 : 0) } });
-      return { text: r.ok ? r.value : null, cost: reportedRunCost(db, input.repo, input.number, before, r.usage.cost), resumed, ...(session?.kept && { kept: session.kept }) };
+      return { text: r.ok ? r.value : null, cost: reportedRunCost(db, input.repo, input.number, before, r.usage.cost), resumed, ...(r.ok && r.serving !== undefined && { serving: r.serving }), ...(session?.kept && { kept: session.kept }) };
     },
   };
 }
@@ -101,7 +102,7 @@ export function resumeFixMessage(failure: string): string {
   return `The harness checked your diff and the round failed:\n\n${failure.trim()}\n\nFix it. Reply in the same format as before (TITLE line, SUMMARY line, the marker line, then the complete diff): the whole corrected diff, not a change to your earlier diff.`;
 }
 
-type RoundRow = { round: number; patch: string; test_patch: string; title: string; summary: string; head_task: number; base_task: number; retried: number; session: string | null; state: string; failure: string | null; created_at: string };
+type RoundRow = { serving_metadata: string | null; round: number; patch: string; test_patch: string; title: string; summary: string; head_task: number; base_task: number; retried: number; session: string | null; state: string; failure: string | null; created_at: string };
 const roundRows = (db: DatabaseSync, repo: string, n: number): RoundRow[] =>
   db.prepare("SELECT * FROM security_fix_rounds WHERE repo = ? AND number = ? ORDER BY round").all(repo, n) as RoundRow[];
 
@@ -144,7 +145,7 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
   }
   // The model session of the last fix call, continued by the next round while the prompt cache is warm; its store is deleted when the job ends.
   const ledger = new SessionLedger();
-  let budgetPaused = false;
+  let budgetPaused = false, finalizationStorage = false;
   let inFlightSession: SessionAsk | undefined;
   try {
     const scan = scanRow(db, row.scan_id);
@@ -216,10 +217,16 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
       if (changes.some((c) => !okFiles.has(c[3]!) || (c[2] === "A" ? c[1] !== "100644" : c[2] !== "M" || c[0] !== c[1]))) return { ok: false, why: "the commit would change files or modes outside the validated diff" };
       // A local ref in the bare cache; nothing is pushed before Land.
       await git.must(["update-ref", fixRef(repo, n), commit]);
-      const moved = advance(db, repo, n, ["fixing"], "ready", {
-        fix_commit: commit, fix_patch: patch, fix_title: r.title, fix_summary: r.summary, fix_branch: fixBranch(r.title, randomBytes(3).toString("hex")), fix_files: JSON.stringify(files), fix_ref: fixRef(repo, n), note: null,
+      // Return the exact session to the active round before its atomic archival.
+      // A persistence error is retryable storage work, never a model rejection.
+      finalizationStorage = true;
+      ledger.stored(parseSessions(r.session));
+      if (r.session) db.prepare("UPDATE security_fix_rounds SET session = ? WHERE repo = ? AND number = ? AND round = ? AND state = 'building'")
+        .run(r.session, repo, n, r.round);
+      const moved = acceptFix(db, repo, n, {
+        fix_serving_metadata: r.serving_metadata, fix_commit: commit, fix_patch: patch, fix_title: r.title, fix_summary: r.summary, fix_branch: fixBranch(r.title, randomBytes(3).toString("hex")), fix_files: JSON.stringify(files), fix_ref: fixRef(repo, n), note: null,
       });
-      clearRounds(db, repo, n);
+      finalizationStorage = false;
       return { ok: true, summary: moved ? `${repo} finding ${n}: fix ready (${files.length} files, round ${r.round})` : `finding ${n}: left fixing while the fix was written` };
     };
     let previous: SecurityFixInput["previous"];
@@ -308,8 +315,8 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
         throw e;
       }
       const keptNow: Kept = reply.kept ? { "": reply.kept } : {};
-      db.prepare("INSERT OR REPLACE INTO security_fix_rounds (repo, number, round, patch, test_patch, title, summary, head_task, base_task, session, state, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'building', ?)")
-        .run(repo, n, round, v.patch, v.testPatch, parsed.title, parsed.summary, ids[0], ids[1], storeSessions(keptNow, new Date()), new Date().toISOString());
+      db.prepare("INSERT OR REPLACE INTO security_fix_rounds (repo, number, round, patch, test_patch, title, summary, head_task, base_task, session, state, created_at, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'building', ?, ?)")
+        .run(repo, n, round, v.patch, v.testPatch, parsed.title, parsed.summary, ids[0], ids[1], storeSessions(keptNow, new Date()), new Date().toISOString(), serializeServingMetadata(reply.serving));
       ledger.stored(keptNow);
       const queued = `${repo} finding ${n}: round ${round} queued for build${confidentialReadyAt(db) === null ? "; waiting for a confidential build environment" : ""}`;
       log(queued);
@@ -317,6 +324,7 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
     }
     return giveUp(db, repo, n, lastWhy, log);
   } catch (e) {
+    if (finalizationStorage) throw e;
     if (e instanceof CodexBudgetError) {
       budgetPaused = true;
       const retained = inFlightSession?.kept ?? inFlightSession?.resume?.session;
@@ -331,7 +339,7 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
     giveUp(db, repo, n, `the fix failed: ${(e as Error).message}`, log);
     throw e;
   } finally {
-    if (!budgetPaused) ledger.release();
+    if (!budgetPaused && !finalizationStorage) ledger.release();
   }
 }
 
@@ -343,6 +351,6 @@ async function reviewPatch(db: DatabaseSync, d: FixDeps, input: SecurityFixCheck
   recordFixCall(db, o.scanId, o.n, "review", started, parsed?.ok === true, reply.cost);
   if (!parsed) return { ok: false, reason: "the patch review gave no answer" };
   if (!parsed.ok) return { ok: false, reason: `the patch review gave no valid answer: ${parsed.error}` };
-  if (parsed.check.verdict === "reject") return { ok: false, reason: `Opus rejected the patch: ${parsed.check.reasons}${parsed.check.problems.length ? ` (${parsed.check.problems.join("; ")})` : ""}` };
+  if (parsed.check.verdict === "reject") return { ok: false, reason: `The reviewing assistant rejected the patch: ${parsed.check.reasons}${parsed.check.problems.length ? ` (${parsed.check.problems.join("; ")})` : ""}` };
   return { ok: true };
 }

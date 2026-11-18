@@ -4,6 +4,7 @@
 // current hash; Haiku decides where Jev is under 90 % sure, and for every item
 // while Jev is unavailable (src/agents/jev.ts). The reach is
 // recomputed from the mirror's reach signals on every pass, without a model.
+import { serializeServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { runTiered } from "../agents/step.ts";
 import { PRIORITY } from "../agents/steps.ts";
@@ -24,17 +25,17 @@ function dueItems(db: DatabaseSync): Due[] {
   return plannedItems(db, "prioritize").map((p) => ({ ...itemOf(db, p.facts.repo, p.facts.number), hash: p.facts.embedHash }));
 }
 
-type Verdict = { jev: { impact: Impact; p: number } | null; haiku: { impact: Impact; reason: string } | null };
+type Verdict = { serving?: ServingMetadata; jev: { impact: Impact; p: number } | null; haiku: { impact: Impact; reason: string } | null };
 
 function save(db: DatabaseSync, item: Due, v: Verdict): boolean {
   const s = settleImpact(v.jev, v.haiku?.impact ?? null);
   if (!s) return false;
   const reason = s.model === "haiku" ? v.haiku!.reason : v.jev ? `${v.jev.impact} ${v.jev.p.toFixed(2)}` : "";
-  db.prepare(`INSERT INTO item_priority (repo, number, text_hash, impact, jev_impact, jev_p, haiku_impact, score, model, reason, at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  db.prepare(`INSERT INTO item_priority (repo, number, text_hash, impact, jev_impact, jev_p, haiku_impact, score, model, reason, at, serving_metadata)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT (repo, number) DO UPDATE SET text_hash = excluded.text_hash, impact = excluded.impact, jev_impact = excluded.jev_impact, jev_p = excluded.jev_p,
-      haiku_impact = excluded.haiku_impact, serving_metadata = NULL, model = excluded.model, reason = excluded.reason, at = excluded.at`).run(item.repo, item.number, item.hash, s.impact, v.jev?.impact ?? null, v.jev?.p ?? null,
-    v.haiku?.impact ?? null, 0, s.model, reason, now());
+      haiku_impact = excluded.haiku_impact, serving_metadata = excluded.serving_metadata, model = excluded.model, reason = excluded.reason, at = excluded.at`).run(item.repo, item.number, item.hash, s.impact, v.jev?.impact ?? null, v.jev?.p ?? null,
+    v.haiku?.impact ?? null, 0, s.model, reason, now(), serializeServingMetadata(s.model === "haiku" ? v.serving : undefined));
   return true;
 }
 
@@ -83,7 +84,7 @@ export async function runPrioritize(db: DatabaseSync, opts: PrioritizeOptions): 
     const verdicts = new Map<string, Verdict>();
     for (const item of chunk) {
       const ref = refOf(item), v = t.jev.get(ref) ?? null;
-      verdicts.set(ref, { jev: v, haiku: t.haiku.get(ref) ?? null });
+      verdicts.set(ref, { jev: v, haiku: t.haiku.get(ref) ?? null, serving: t.serving.get(ref) });
       if (v) res.jev++;
       if (t.haiku.has(ref)) res.haiku++;
     }

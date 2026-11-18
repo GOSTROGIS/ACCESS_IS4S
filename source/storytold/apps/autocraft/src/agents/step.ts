@@ -13,6 +13,7 @@ import type { Item } from "../classify/parse.ts";
 import type { Lint, LintProblem } from "../replylint.ts";
 import { CodexBudgetError, CodexUsageError } from "./codex/budget.ts";
 import { modelPolicy } from "./codex/config.ts";
+import { parseServingMetadata, summarizeStoredServingMetadata, type ServingMetadata } from "./provenance.ts";
 
 /** What a parser knows about the reply it reads. */
 export type ParseCtx = {
@@ -95,14 +96,14 @@ export type StepOpts<I, C = void> = Omit<AskOptions, "lint"> & {
 };
 
 export type StepResult<I, V> =
-  | { ok: true; value: V; values: V[]; rest?: I; usage: Usage; runId: string | undefined }
+  | { ok: true; value: V; values: V[]; servingValues: (ServingMetadata | undefined)[]; serving?: ServingMetadata; rest?: I; usage: Usage; runId: string | undefined }
   | { ok: false; error: string; usage: Usage; runId: string | undefined };
 
 const zero = (): Usage => ({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null });
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const sizeOf = <I,>(step: { size?: (i: I) => number }, x: I) => step.size ? step.size(x) : Array.isArray(x) ? x.length : 1;
 
-type Reply = { text: string; usage: Usage; problems?: LintProblem[]; fixTurn?: boolean } | { answers: unknown; usage: Usage; code: number | null; json: boolean };
+type Reply = { text: string; serving?: ServingMetadata; usage: Usage; problems?: LintProblem[]; fixTurn?: boolean } | { answers: unknown; usage: Usage; code: number | null; json: boolean };
 
 /**
  * Runs one declared step on `input`: the call, the parse, up to `attempts` calls (a parse error or a failed call repeats
@@ -115,6 +116,8 @@ export async function runModelStep<I, V, C = void>(db: DatabaseSync, step: Claud
   const start = new Date().toISOString();
   const providerAtStart = step.provider === "claude" ? modelPolicy(db).provider : null;
   const values: V[] = [];
+  const servingValues: (ServingMetadata | undefined)[] = [];
+  let fallbackServing: ServingMetadata | undefined;
   let usage = zero();
   let todo: I | undefined = input, rest: I | undefined = input;
   let fallback: V | null = null, error = "no answer", sawUsage = false;
@@ -162,18 +165,23 @@ export async function runModelStep<I, V, C = void>(db: DatabaseSync, step: Claud
     if (parsed && "text" in r && r.problems?.length && (step as ClaudeStep<I, V>).lint?.onFail === "retry") parsed = null;
     if (!parsed) {
       error = "no valid answer";
-      fallback ??= (step as { fallback?: (a: never, i: I, c: ParseCtx, x: C) => V | null }).fallback?.(reply, todo, ctx, opts.ctx as C) ?? null;
+      if (fallback === null) {
+        fallback = (step as { fallback?: (a: never, i: I, c: ParseCtx, x: C) => V | null }).fallback?.(reply, todo, ctx, opts.ctx as C) ?? null;
+        if (fallback !== null) fallbackServing = "text" in r ? parseServingMetadata(r.serving) : undefined;
+      }
       continue;
     }
     values.push(parsed.value);
+    servingValues.push("text" in r ? parseServingMetadata(r.serving) : undefined);
     todo = rest = parsed.rest;
   }
-  if (!values.length && fallback !== null) { values.push(fallback); rest = undefined; }
+  if (!values.length && fallback !== null) { values.push(fallback); servingValues.push(fallbackServing); rest = undefined; }
   const ok = values.length > 0;
   save(ok, reportedFailure);
   const runId = opts.usage?.run;
   if (!ok) return { ok: false, error, usage, runId };
-  return { ok: true, value: values[values.length - 1]!, values, ...(rest !== undefined && { rest }), usage, runId };
+  const serving = summarizeStoredServingMetadata(servingValues);
+  return { ok: true, value: values[values.length - 1]!, values, servingValues, ...(serving !== undefined && { serving }), ...(rest !== undefined && { rest }), usage, runId };
 }
 
 async function call<I, V, C>(db: DatabaseSync, step: ClaudeStep<I, V, C> | JevStep<I, V, C>, input: I, opts: StepOpts<I, C>): Promise<Reply | null> {
@@ -224,6 +232,8 @@ export type TieredResult<JV, HV> = {
   /** Jev's answer per ref (null: none, or Jev was not asked). */
   jev: Map<string, JV | null>;
   haiku: Map<string, HV>;
+  /** Exact accepted fallback call per item; the logical haiku key remains unchanged. */
+  serving: Map<string, ServingMetadata>;
   /** Items Jev could not be asked or answer because it is unavailable, so Haiku decided alone. */
   alone: Set<string>;
   /** Items sent to Haiku. */
@@ -231,7 +241,7 @@ export type TieredResult<JV, HV> = {
 };
 
 export async function runTiered<It, JV, HV, C = void, B = It[]>(db: DatabaseSync, tier: TieredStep<It, JV, HV, C, B>, items: It[], opts: TieredOpts<It, C> = {}): Promise<TieredResult<JV, HV>> {
-  const out: TieredResult<JV, HV> = { jev: new Map(), haiku: new Map(), alone: new Set(), asked: new Set() };
+  const out: TieredResult<JV, HV> = { jev: new Map(), haiku: new Map(), serving: new Map(), alone: new Set(), asked: new Set() };
   if (jevAvailable(db)) {
     await pool(items.map((x) => async () => {
       if (!jevAvailable(db)) return;
@@ -256,7 +266,11 @@ export async function runTiered<It, JV, HV, C = void, B = It[]>(db: DatabaseSync
     for (const x of batch) out.asked.add(tier.ref(x));
     const r = await runModelStep(db, tier.haiku, tier.batch ? tier.batch(batch, opts.ctx as C) : (batch as unknown as B), {
       ctx: opts.ctx, usage: opts.haikuUsage?.(batch, n), cancelled: opts.cancelled });
-    if (r.ok) for (const v of r.values) for (const [ref, a] of v) out.haiku.set(ref, a);
+    if (r.ok) for (const [index, values] of r.values.entries()) for (const [ref, a] of values) {
+      out.haiku.set(ref, a);
+      const serving = r.servingValues[index];
+      if (serving !== undefined) out.serving.set(ref, serving); else out.serving.delete(ref);
+    }
   }), () => queueRoom(db), { first: opts.first });
   return out;
 }

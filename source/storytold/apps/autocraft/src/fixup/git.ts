@@ -3,9 +3,10 @@
 // filters, textconv drivers or hooks run), reached over HTTPS with the gh
 // credential helper, with every command given the same locked-down config.
 import { spawn } from "node:child_process";
-import { mkdirSync } from "node:fs";
+import { closeSync, lstatSync, mkdirSync, openSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
-import { join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import { envVar } from "../env.ts";
 import { APP_CREDENTIAL_ARGS } from "../github/install-token.ts";
 import { readEnvFor } from "../github/read.ts";
@@ -14,7 +15,7 @@ import { readEnvFor } from "../github/read.ts";
 export type ExecResult = { code: number; stdout: string; stderr: string; sent?: false };
 /** `replaceEnv`: `env` is the child's whole environment, not an addition to this process's (the app lane, which must not inherit the box account's tokens). */
 /** `inherit`: run with this process's own environment and the box account's login, never the app's read token (the security-advisory writes, the pipeline account lookup). */
-export type ExecOpts = { cwd?: string; env?: Record<string, string>; input?: string; replaceEnv?: boolean; inherit?: boolean };
+export type ExecOpts = { cwd?: string; env?: Record<string, string>; input?: string; replaceEnv?: boolean; inherit?: boolean; timeoutMs?: number };
 /** Runs a command; resolves with its exit code, rejects only when it can't be started. */
 export type Exec = (cmd: string, args: string[], opts?: ExecOpts) => Promise<ExecResult>;
 
@@ -28,7 +29,9 @@ export const exec: Exec = async (cmd, args, opts = {}) => {
 };
 
 const spawned = (cmd: string, args: string[], opts: ExecOpts, env: NodeJS.ProcessEnv | undefined): Promise<ExecResult> => new Promise((resolve, reject) => {
-  const p = spawn(cmd, args, { cwd: opts.cwd, env, stdio: ["pipe", "pipe", "pipe"], timeout: 300_000 });
+  const timeout = opts.timeoutMs ?? 300_000;
+  if (!Number.isInteger(timeout) || timeout <= 0 || timeout > 300_000) { reject(new Error("A finite Git command deadline is required")); return; }
+  const p = spawn(cmd, args, { cwd: opts.cwd, env, stdio: ["pipe", "pipe", "pipe"], timeout });
   let stdout = "", stderr = "";
   p.stdout.on("data", (d) => (stdout += d));
   p.stderr.on("data", (d) => (stderr += d));
@@ -72,6 +75,10 @@ export const GIT_ENV = { GIT_LFS_SKIP_SMUDGE: "1", GIT_TERMINAL_PROMPT: "0", GIT
 /** GIT_DIR for the bare repository `dir`: the repository is given, not discovered. */
 export const gitDirEnv = (dir: string): { GIT_DIR: string } => ({ GIT_DIR: resolve(dir) });
 
+const INIT_TIMEOUT_MS = 30_000;
+const INIT_LOCK_ID = 0x41554749;
+const initializations = new Map<string, Promise<void>>();
+
 export class Git {
   readonly dir: string;
   private run: Exec;
@@ -84,11 +91,11 @@ export class Git {
    * git in the bare repository; `env` adds to the locked-down environment. With `app` the credentials are
    * the installation token's (`app.env` is the child's whole environment) instead of the box account's.
    */
-  async git(args: string[], opts: { input?: string; env?: Record<string, string>; app?: { env: Record<string, string> } } = {}): Promise<ExecResult> {
+  async git(args: string[], opts: { input?: string; env?: Record<string, string>; app?: { env: Record<string, string> }; timeoutMs?: number } = {}): Promise<ExecResult> {
     const app = opts.app;
     const go = () => app
-      ? this.run("git", [...HARDENING, ...APP_CREDENTIAL_ARGS, ...args], { cwd: this.dir, input: opts.input, env: { ...app.env, ...GIT_ENV, ...gitDirEnv(this.dir), ...opts.env }, replaceEnv: true })
-      : this.run("git", [...HARDENING, ...args], { cwd: this.dir, input: opts.input, env: { ...GIT_ENV, ...gitDirEnv(this.dir), ...opts.env } });
+      ? this.run("git", [...HARDENING, ...APP_CREDENTIAL_ARGS, ...args], { cwd: this.dir, input: opts.input, env: { ...app.env, ...GIT_ENV, ...gitDirEnv(this.dir), ...opts.env }, replaceEnv: true, ...(opts.timeoutMs !== undefined && { timeoutMs: opts.timeoutMs }) })
+      : this.run("git", [...HARDENING, ...args], { cwd: this.dir, input: opts.input, env: { ...GIT_ENV, ...gitDirEnv(this.dir), ...opts.env }, ...(opts.timeoutMs !== undefined && { timeoutMs: opts.timeoutMs }) });
     if (args[0] !== "fetch") return go();
     // Sessions fetch into the same bare cache at once; a ref lock held by another fetch clears within moments.
     let r = await go();
@@ -100,7 +107,7 @@ export class Git {
   }
 
   /** Like git(), failing on a non-zero exit. */
-  async must(args: string[], opts: { input?: string; env?: Record<string, string> } = {}): Promise<string> {
+  async must(args: string[], opts: { input?: string; env?: Record<string, string>; timeoutMs?: number } = {}): Promise<string> {
     const r = await this.git(args, opts);
     if (r.code !== 0) throw new Error(`git ${args[0]} failed: ${r.stderr.trim().split("\n").pop() ?? r.code}`);
     return r.stdout;
@@ -108,9 +115,54 @@ export class Git {
 
   async init(): Promise<void> {
     mkdirSync(this.dir, { recursive: true });
-    // GIT_DIR names the directory, so rev-parse succeeds only when it holds a repository.
-    const r = await this.git(["rev-parse", "--git-dir"]);
-    if (r.code !== 0) await this.must(["init", "--bare", "--quiet", "."]);
+    const entry = lstatSync(this.dir);
+    if (!entry.isDirectory() || entry.isSymbolicLink() || (process.getuid && entry.uid !== process.getuid())) throw new Error("The private Git cache must be an owned directory");
+    const canonical = realpathSync(this.dir);
+    const key = process.platform === "win32" ? canonical.toLowerCase() : canonical;
+    const active = initializations.get(key);
+    if (active) return active;
+    const operation = this.initializeBare(canonical);
+    initializations.set(key, operation);
+    try { await operation; }
+    finally { if (initializations.get(key) === operation) initializations.delete(key); }
+  }
+
+  private async validBare(): Promise<boolean> {
+    // GIT_DIR names the metadata directory; nothing is discovered from cwd.
+    const found = await this.git(["rev-parse", "--git-dir"], { timeoutMs: INIT_TIMEOUT_MS });
+    if (found.code !== 0) return false;
+    const bare = await this.git(["rev-parse", "--is-bare-repository"], { timeoutMs: INIT_TIMEOUT_MS });
+    if (bare.code !== 0 || bare.stdout.trim() !== "true") throw new Error("The private Git cache must be a bare repository");
+    return true;
+  }
+
+  private async initializeBare(canonical: string): Promise<void> {
+    if (await this.validBare()) return;
+    // SQLite supplies an OS-released cross-process lock without a PID/mtime
+    // stale-owner takeover. The private sidecar is cache coordination only.
+    // Keep coordination outside the bare repository so genuine custom
+    // templates cannot collide with it or acquire extra package contents.
+    const path = join(dirname(canonical), "." + basename(canonical) + ".autocraft-init.sqlite");
+    try { closeSync(openSync(path, "wx", 0o600)); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error; }
+    const entry = lstatSync(path);
+    if (!entry.isFile() || entry.isSymbolicLink() || entry.nlink !== 1 || (process.getuid && (entry.uid !== process.getuid() || (entry.mode & 0o077) !== 0))) throw new Error("The private Git initialization lock must be an owned regular file");
+    const lock = new DatabaseSync(path, { timeout: INIT_TIMEOUT_MS });
+    try {
+      lock.exec("BEGIN IMMEDIATE");
+      const id = (lock.prepare("PRAGMA application_id").get() as { application_id: number }).application_id;
+      const tables = (lock.prepare("SELECT COUNT(*) AS n FROM sqlite_master").get() as { n: number }).n;
+      if (id !== INIT_LOCK_ID && (id !== 0 || tables !== 0)) throw new Error("Conflicting private Git initialization lock");
+      if (id === 0) lock.exec(`PRAGMA application_id = ${INIT_LOCK_ID}`);
+      if (!(await this.validBare())) {
+        await this.must(["init", "--bare", "--quiet", "."], { timeoutMs: INIT_TIMEOUT_MS });
+        if (!(await this.validBare())) throw new Error("Git did not initialize the private bare cache");
+      }
+      lock.exec("COMMIT");
+    } finally {
+      try { if (lock.isTransaction) lock.exec("ROLLBACK"); }
+      finally { lock.close(); }
+    }
   }
 
   /** Fetches the PR's head (`refs/pull/N/head` of the base repo) and returns the commit it points at. */

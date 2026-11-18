@@ -1,4 +1,5 @@
 // The real dependencies of the security scan: the pinned checkout from the bare cache and `claude` in the read-only sandbox.
+import type { ServingMetadata } from "../agents/provenance.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { ownerOf } from "../owners.ts";
 import { askClaude, saveUsage, type Usage } from "../classify/run.ts";
@@ -36,10 +37,11 @@ export function realDeps(db: DatabaseSync, scanId: number, io: { cancelled: () =
     const session: SessionAsk | undefined = retained ? { resume: { session: retained.session,
       message: "Continue the retained read-only scan work under the new bounded budget. " + JSON.stringify({ ...input, repo_dir: REPO_PATH }) } } : undefined;
     let text: string | null = null, usage: Usage | null = null;
+    let serving: ServingMetadata | undefined;
     try {
       const r = await askClaude(id, "opus", [{ ...input, repo_dir: REPO_PATH }] as never, db, { checkout: dir, ...(session && { session }) });
       if (r) {
-        text = r.text; usage = r.usage;
+        text = r.text; usage = r.usage; serving = r.serving;
         const completed = new SessionLedger();
         completed.hold(session?.kept); completed.release();
       }
@@ -56,7 +58,7 @@ export function realDeps(db: DatabaseSync, scanId: number, io: { cancelled: () =
       usage ? { ...usage, cost } : { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost }, start, new Date().toISOString());
     const runId = (db.prepare(`SELECT MIN(r.id) AS id FROM agent_runs r JOIN agent_run_items i ON i.run_id = r.id WHERE i.repo = ? AND i.number = ? AND r.id > ?`)
       .get(input.repo, input.number, before) as { id: number | null }).id;
-    return { text, cost, runId };
+    return { text, cost, runId, ...(serving !== undefined && { serving }) };
   };
   return {
     ...io,

@@ -1,5 +1,6 @@
 // Reading the model's fenced `choices` block: every extra is checked with the step checkers, every core with its extras through
 // compose and validateCard. What fails is dropped with a note; what survives is what `writeChoices` and `mergeChoices` store.
+import type { ServingMetadata } from "../agents/provenance.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { applicableSteps, cleanComment, decisionStamp, openDecision, parseReply, type Parsed, commentText, labelStep, assignStep, reviewersStep, unlabelStep, openIssueStep, validateCard, type NewCard, type Step } from "../conversations/cards.ts";
 import { optionsOf, type DecisionRow } from "../decisions.ts";
@@ -333,14 +334,14 @@ export function parseTurn(db: DatabaseSync, repo: string, n: number, reply: stri
  * Stores validated choices for a decision: a prepare writes a whole new row, a conversation turn merges into the current one.
  * Call inside the transaction that inserts the turn (`turnId`); `seen` is the item snapshot JSON the turn was written against.
  */
-export function storeParsedChoices(db: DatabaseSync, d: DecisionRow, p: ParsedChoices, o: { turnId: number | null; seen: string | null; source: "prepare" | "conversation"; by?: string | null; /** The decision's stamp when the reply's prompt was built. */ stampThen?: string | null }): void {
+export function storeParsedChoices(db: DatabaseSync, d: DecisionRow, p: ParsedChoices, o: { turnId: number | null; seen: string | null; source: "prepare" | "conversation"; by?: string | null; serving?: ServingMetadata; /** The decision's stamp when the reply's prompt was built. */ stampThen?: string | null }): void {
   // A late reply: the decision was answered, undone or asked again while the call ran.
   const now = db.prepare("SELECT * FROM main.decisions WHERE id = ?").get(d.id) as unknown as DecisionRow | undefined;
   if (!now || now.answer !== null || (o.stampThen != null && decisionStamp(db, now) !== o.stampThen)) return;
   let seen: ChoicesRow["seen"] = { head: null, lastComment: null };
   try { const v = JSON.parse(o.seen ?? "{}") as { head?: string | null; last_comment?: string | null }; seen = { head: v.head ?? null, lastComment: v.last_comment ?? null }; } catch { /* no snapshot */ }
   const stamp = decisionStamp(db, d);
-  const by = o.by === undefined ? {} : { by: o.by };
+  const by = { ...(o.by === undefined ? {} : { by: o.by }), serving: o.serving };
   if (o.source === "conversation") {
     mergeChoices(db, d.id, { turnId: o.turnId, stamp, seen, cores: p.cores, add: p.add, drop: p.drop, pick: p.pick }, by);
     return;

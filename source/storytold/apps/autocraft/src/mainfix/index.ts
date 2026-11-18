@@ -9,6 +9,9 @@
 //
 //   autocraft main-fix --repo R [--apply]
 //   autocraft main-fix-approval [--repo R]
+import { parseServingMetadata, serializeServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
+import { CodexUsageError } from "../agents/codex/budget.ts";
+import { modelPolicy } from "../agents/codex/config.ts";
 import { storedNote } from "../github/note.ts";
 import { leaseItem } from "../runner/leases.ts";
 import { CLI_BY, type By } from "../core/gates.ts";
@@ -49,7 +52,7 @@ const EXCERPT_CHARS = 1500;
 const OPEN_ISSUE = "open-issue";
 const NOT_NOW = "not-now";
 
-export type Verdict = { check: string; verdict: MainFixVerdict; reason: string };
+export type Verdict = { serving?: ServingMetadata; check: string; verdict: MainFixVerdict; reason: string };
 export type MainFixDeps = {
   gh: Gh;
   exec: Exec;
@@ -80,23 +83,26 @@ export function defaultDeps(): MainFixDeps {
     gh: ghExec, exec, now: () => new Date(),
     fix: {
       root: fixupDir(),
-      ask: async (db, input, checkout, tool) => (await askClaude("cifix.patch", PATCH.models[0]!, input, db, { checkout, check: tool }))?.text ?? null,
-      check: async (db, input, checkout) => (await askClaude("fixup.check", CHECK.models[0]!, input, db, { checkout }))?.text ?? null,
+      ask: async (db, input, checkout, tool) => (await askClaude("cifix.patch", PATCH.models[0]!, input, db, { checkout, check: tool }))?? null,
+      check: async (db, input, checkout) => (await askClaude("fixup.check", CHECK.models[0]!, input, db, { checkout }))?? null,
       checkout: (repo, branch, sha) => checkoutForCommit(repo, branch, sha, console.log),
     },
     classify: async (db, input) => {
       const model = PROMPT.models[0]!;
       const start = new Date().toISOString();
-      const reply = await askClaude("mainfix.classify", model, [input], db);
-      const usage = reply?.usage ?? ({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null } as Usage);
-      saveUsage(db, `main-fix-${start.replace(/[-:]/g, "").slice(0, 15)}`, "main-fix", "main-fix", model, reply ? 1 : 0, usage, start, new Date().toISOString());
-      return reply ? parseVerdicts(reply.text, input.checks.map((c) => c.check)) : null;
+      const save = (usage: Usage, items: number) => saveUsage(db, `main-fix-${start.replace(/[-:]/g, "").slice(0, 15)}`, "main-fix", "main-fix", model, items, usage, start, new Date().toISOString());
+      let reply;
+      try { reply = await askClaude("mainfix.classify", model, [input], db); }
+      catch (error) { if (error instanceof CodexUsageError && error.usage) save(error.usage, 0); throw error; }
+      if (reply) save(reply.usage, 1);
+      else if (modelPolicy(db).provider !== "codex") save({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null }, 0);
+      return reply ? parseVerdicts(reply.text, input.checks.map((c) => c.check), reply.serving) : null;
     },
   };
 }
 
 /** The checks of a reply; a check the reply leaves out or sorts into no known kind is code. Null when the reply holds no JSON object with a checks array. */
-export function parseVerdicts(text: string, checks: string[]): Verdict[] | null {
+export function parseVerdicts(text: string, checks: string[], serving?: ServingMetadata): Verdict[] | null {
   const parsed = wholeReplyJson(text) as { checks?: unknown } | null;
   if (!parsed || !Array.isArray(parsed.checks)) return null;
   const given = new Map<string, { verdict?: unknown; reason?: unknown }>();
@@ -104,7 +110,7 @@ export function parseVerdicts(text: string, checks: string[]): Verdict[] | null 
   return checks.map((check) => {
     const g = given.get(check);
     const verdict = VERDICTS.find((v) => v === g?.verdict);
-    return { check, verdict: verdict ?? "code", reason: words(plain(typeof g?.reason === "string" ? g.reason : "")) || (verdict ? "" : "no clear verdict") };
+    return { check, ...(serving !== undefined && { serving: verdict ? serving : parseServingMetadata({}) }), verdict: verdict ?? "code", reason: words(plain(typeof g?.reason === "string" ? g.reason : "")) || (verdict ? "" : "no clear verdict") };
   });
 }
 
@@ -210,7 +216,7 @@ async function classifyHead(db: DatabaseSync, repo: string, cur: Current, deps: 
   for (const c of failure.checks) {
     const v = verdicts.find((x) => x.check === c.name) ?? { check: c.name, verdict: "code" as const, reason: "no verdict" };
     const row: FixRow = {
-      ...base, check: c.name, verdict: v.verdict, state: "nothing-to-do", reason: v.reason || null, run_id: c.runId,
+      ...base, check: c.name, serving_metadata: serializeServingMetadata(v.serving), verdict: v.verdict, state: "nothing-to-do", reason: v.reason || null, run_id: c.runId,
       run_url: c.runId ? `https://github.com/${slugOf(repo)}/actions/runs/${c.runId}` : null, excerpt: excerptOf(c) || null, updated_at: at,
     };
     if (v.verdict === "code") { onCodeVerdict(db, row, v.reason || "a build, lint or test step failed", at); s.needsFix++; continue; }

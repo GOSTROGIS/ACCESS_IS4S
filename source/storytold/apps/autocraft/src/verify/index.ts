@@ -9,6 +9,7 @@
 // Part 2 (results) belongs in ./results.ts: it reads the finished tasks of each `planned` or `running`
 // verification, sets the state, summary and finished_at, writes the failure summary and cancels the
 // queued tasks of a verification whose PR head moved on (state `stale`).
+import { serializeServingMetadata } from "../agents/provenance.ts";
 import { leaseItem } from "../runner/leases.ts";
 import { queueRoom } from "../agents/call.ts";
 import { POOL_MAX, pool } from "../classify/run.ts";
@@ -78,15 +79,15 @@ export type VerifySummary = {
 const now = () => new Date().toISOString();
 const refOf = (c: { repo: string; number: number }) => `${c.repo}#${c.number}`;
 
-type Saved = { kind: string; reason: string; plan: unknown; model: string | null; headTask: number | null; baseTask: number | null; baseSha: string | null; state: string; summary: string | null };
+type Saved = { servingMetadata?: string | null; kind: string; reason: string; plan: unknown; model: string | null; headTask: number | null; baseTask: number | null; baseSha: string | null; state: string; summary: string | null };
 
 /** Stores the verification of a PR head and its stages row. */
 export function saveVerification(db: DatabaseSync, c: { repo: string; number: number; head_oid: string }, v: Saved): void {
   const at = now();
-  db.prepare(`INSERT OR REPLACE INTO verifications (repo, number, head_sha, base_sha, kind, reason, plan, model, head_task_id, base_task_id, state, summary, created_at, finished_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  db.prepare(`INSERT OR REPLACE INTO verifications (repo, number, head_sha, base_sha, kind, reason, plan, model, head_task_id, base_task_id, state, summary, created_at, finished_at, serving_metadata)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
     .run(c.repo, c.number, c.head_oid, v.baseSha, v.kind, v.reason, v.plan === null ? null : JSON.stringify(v.plan), v.model, v.headTask, v.baseTask, v.state, v.summary, at,
-      v.state === "ci-enough" || v.state === "error" || v.state === "unavailable" ? at : null);
+      v.state === "ci-enough" || v.state === "error" || v.state === "unavailable" ? at : null, v.servingMetadata ?? null);
   const stage = v.state === "planned" ? "verify-planned" : v.state === "ci-enough" ? "verify-ci-enough" : v.state === "unavailable" ? "verify-unavailable" : "verify-error";
   db.prepare("INSERT INTO main.stages (repo, number, stage, at, actor, note) VALUES (?, ?, ?, ?, ?, ?)")
     .run(c.repo, c.number, stage, at, "verify", `${v.kind} at ${c.head_oid.slice(0, 7)}: ${v.summary ?? v.reason}`.slice(0, 300));
@@ -182,29 +183,30 @@ export async function runVerify(db: DatabaseSync, params: VerifyParams, log: (li
         usage: { run: runId, agent: `verify-${c.number}`, stage: "verify", items: (ok) => (ok ? 1 : 0) },
       });
       const result = planned.ok ? planned.value : null;
+      const servingMetadata = serializeServingMetadata(planned.ok ? planned.serving : undefined);
       if (!result) { log(`  ${ref}: no answer from the planner`); summary.skipped.push(ref); handle(); return; }
       handle();
       if (!result.ok) {
         log(`  ${ref}: invalid plan: ${result.error}`);
-        saveVerification(db, c, { ...errorRow(result.error), model: deps.model });
+        saveVerification(db, c, { ...errorRow(result.error), model: deps.model, servingMetadata });
         summary.errors++;
         return;
       }
       const plan = result.plan;
       summary.kinds[plan.kind] = (summary.kinds[plan.kind] ?? 0) + 1;
       if (plan.kind === "ci-enough") {
-        saveVerification(db, c, { kind: plan.kind, reason: plan.reason, plan: null, model: deps.model, headTask: null, baseTask: null, baseSha: base, state: "ci-enough", summary: plan.reason });
+        saveVerification(db, c, { servingMetadata, kind: plan.kind, reason: plan.reason, plan: null, model: deps.model, headTask: null, baseTask: null, baseSha: base, state: "ci-enough", summary: plan.reason });
         return;
       }
       try {
         const ids = queueTasks(db, plan, { repo, number: c.number, head: c.head_oid, base });
         summary.tasks.push(...ids);
         queued = true;
-        saveVerification(db, c, { kind: plan.kind, reason: plan.reason, plan: storedPlan(plan), model: deps.model, headTask: ids[0] ?? null, baseTask: ids[1] ?? null, baseSha: base, state: "planned", summary: plan.reason });
+        saveVerification(db, c, { servingMetadata, kind: plan.kind, reason: plan.reason, plan: storedPlan(plan), model: deps.model, headTask: ids[0] ?? null, baseTask: ids[1] ?? null, baseSha: base, state: "planned", summary: plan.reason });
       } catch (e) {
         if (!(e instanceof BuildError)) throw e;
         log(`  ${ref}: tasks not queued: ${e.message}`);
-        saveVerification(db, c, { ...errorRow(`tasks not queued: ${e.message}`), model: deps.model });
+        saveVerification(db, c, { ...errorRow(`tasks not queued: ${e.message}`), model: deps.model, servingMetadata });
         summary.errors++;
       }
     } finally { release(); }

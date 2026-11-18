@@ -49,7 +49,9 @@ test("provider sandbox preserves real app-server and MCP capabilities without mo
   const spec = { binary: "/verified/codex", node: "/verified/node", sessionDir: "/private/session-one", checkout: "/private/checkout",
     shared: [{ name: "OWN", dir: "/private/own" }], mounts: [{ host: "/trusted/item-tools", path: "/app/item-tools" }] };
   const command = codexSandbox(spec);
-  assert.deepEqual(command.env, { PATH: "/usr/bin", LANG: "C.UTF-8" });
+  assert.deepEqual(command.env, { PATH: "/opt/codex:/usr/bin", LANG: "C.UTF-8" });
+  assert.equal(command.args[command.args.indexOf(spec.node) + 1], "/opt/codex/node");
+  assert.ok(command.args.includes('shell_environment_policy.set.PATH="/opt/codex:/usr/bin"'));
   assert.ok(command.args.includes("--unshare-all") && command.args.includes("--die-with-parent"));
   assert.ok(command.args.includes('cli_auth_credentials_store="ephemeral"') && command.args.includes('approval_policy="never"'));
   assert.equal(command.args.at(-1), "app-server");
@@ -66,6 +68,17 @@ test("provider sandbox preserves real app-server and MCP capabilities without mo
   assert.equal((repair.features as Record<string, boolean>).multi_agent_v2, false);
   assert.equal((repair.agents as { enabled: boolean }).enabled, false);
   assert.equal(((repair.mcp_servers as Record<string, { enabled: boolean }>).build!).enabled, false);
+});
+
+test("registered MCP Node commands use the dedicated provider mount without rewriting other commands or arguments", () => {
+  const args = ["/app/item-tools/main.ts", "/usr/bin/node"];
+  const env = { ITEM_TOOL_URL: "http://127.0.0.1:1234/" };
+  const servers = codexMcpServers({ item: { command: "/usr/bin/node", args, env },
+    other: { command: "/trusted/other-command", args: ["/usr/bin/node"], env: {} } }, 60_000) as Record<string, { command: string; args: string[]; env: Record<string, string> }>;
+  assert.equal(servers.item!.command, "/opt/codex/node");
+  assert.deepEqual(servers.item!.args, args); assert.deepEqual(servers.item!.env, env);
+  assert.equal(servers.other!.command, "/trusted/other-command");
+  assert.deepEqual(servers.other!.args, ["/usr/bin/node"]);
 });
 
 test("actual provider and reasoning remain truthful for historical, unknown and Codex rows", () => {

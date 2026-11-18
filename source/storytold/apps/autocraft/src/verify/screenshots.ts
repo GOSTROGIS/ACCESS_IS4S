@@ -2,6 +2,7 @@
 // runVerify for a PR head: when the repo's switch is on, it has a screenshot config and the diff touches a UI
 // path, a planning call chooses a script from the config's commands and two display tasks render it at the base
 // and at the head. It never touches the `verifications` rows that gate merges; its own state is `screenshot_runs`.
+import { parseServingMetadata, serializeServingMetadata, summarizeStoredServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { createHash } from "node:crypto";
 import { copyFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { open, readFile, stat } from "node:fs/promises";
@@ -37,10 +38,11 @@ import type { CollectDeps } from "./results.ts";
 export const MAX_SHOT_DIFF_CHARS = 60_000;
 
 /** Injectable parts, so tests need no model. `plan` returns the parsed reply, or null when the call gave no answer. */
+type Served<T> = T & { serving?: ServingMetadata };
 export type ScreenshotDeps = {
-  plan?: (input: ScreenshotPlanInput, ctx: { ref: string; config: ScreenshotConfig }) => Promise<ScreenshotParsed | null>;
+  plan?: (input: ScreenshotPlanInput, ctx: { ref: string; config: ScreenshotConfig }) => Promise<Served<ScreenshotParsed> | null>;
   /** The model comparison of the before/after images; `dir` holds `before/` and `after/`. Null when the call gave no answer. */
-  compare?: (input: ScreenshotCompareInput, ctx: { ref: string; dir: string }) => Promise<CompareParsed | null>;
+  compare?: (input: ScreenshotCompareInput, ctx: { ref: string; dir: string }) => Promise<Served<CompareParsed> | null>;
 };
 
 type Env = Pick<VerifyDeps, "fetchDiff" | "baseOf" | "model" | "checkout"> & { screenshots?: ScreenshotDeps };
@@ -50,12 +52,12 @@ const nowIso = (): string => new Date().toISOString();
 const refOf = (c: { repo: string; number: number }): string => `${c.repo}#${c.number}`;
 
 /** The state of a screenshot run for a head: its row is the record that the head was handled. */
-export function insertRun(db: DatabaseSync, c: { repo: string; number: number; head_oid: string }, r: { state: string; reason: string | null; baseSha?: string | null; plan?: unknown; headTask?: number | null; baseTask?: number | null }): void {
+export function insertRun(db: DatabaseSync, c: { repo: string; number: number; head_oid: string }, r: { state: string; reason: string | null; baseSha?: string | null; plan?: unknown; headTask?: number | null; baseTask?: number | null; servingMetadata?: string | null }): void {
   const at = nowIso();
-  db.prepare(`INSERT OR IGNORE INTO screenshot_runs (repo, number, head_sha, base_sha, state, reason, plan, head_task_id, base_task_id, created_at, finished_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  db.prepare(`INSERT OR IGNORE INTO screenshot_runs (repo, number, head_sha, base_sha, state, reason, plan, head_task_id, base_task_id, created_at, finished_at, serving_metadata)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
     .run(c.repo, c.number, c.head_oid, r.baseSha ?? null, r.state, r.reason, r.plan === undefined ? null : JSON.stringify(r.plan), r.headTask ?? null, r.baseTask ?? null, at,
-      r.state === "planned" ? null : at);
+      r.state === "planned" ? null : at, r.servingMetadata ?? null);
 }
 
 function stage(db: DatabaseSync, c: Cand, name: "screenshot-planned" | "screenshot-skipped", note: string, log: (line: string) => void): void {
@@ -87,38 +89,39 @@ export async function maybeScreenshot(db: DatabaseSync, c: Cand, deps: Env, log:
     commands: Object.entries(config.commands).map(([name, s]) => ({ name, doc: s.doc, params: s.params, capture: s.capture === true })),
     ...(config.size ? { size: config.size } : {}),
   };
-  const plan = deps.screenshots?.plan ?? (async (i: ScreenshotPlanInput, x: { ref: string; config: ScreenshotConfig }): Promise<ScreenshotParsed | null> => {
+  const plan = deps.screenshots?.plan ?? (async (i: ScreenshotPlanInput, x: { ref: string; config: ScreenshotConfig }): Promise<Served<ScreenshotParsed> | null> => {
     const checkout = (await deps.checkout?.(c.repo, c.number, c.head_oid)) ?? undefined;
     if (checkout) i.repo_dir = REPO_PATH;
     const r = await runModelStep(db, VERIFY_SCREENSHOT, i, {
       model: deps.model, checkout, ctx: x,
       usage: { run: runId, agent: `screenshot-${c.number}`, stage: "verify", items: (ok: boolean) => (ok ? 1 : 0) },
     });
-    return r.ok ? r.value : null;
+    return r.ok ? { ...r.value, ...(r.serving !== undefined && { serving: r.serving }) } : null;
   });
   const result = await plan(input, { ref, config });
   if (!result) { log(`  ${ref}: screenshots: no answer from the planner`); return false; }
+  const servingMetadata = serializeServingMetadata(result.serving);
   if (!result.ok) {
     log(`  ${ref}: screenshots: invalid plan: ${result.error}`);
-    insertRun(db, c, { state: "error", reason: `invalid plan: ${result.error}`.slice(0, 300), baseSha: base });
+    insertRun(db, c, { state: "error", reason: `invalid plan: ${result.error}`.slice(0, 300), baseSha: base, servingMetadata });
     return false;
   }
   const p = result.plan;
   if (!p.screenshot) {
-    insertRun(db, c, { state: "skipped", reason: p.reason, baseSha: base });
+    insertRun(db, c, { state: "skipped", reason: p.reason, baseSha: base, servingMetadata });
     stage(db, c, "screenshot-skipped", p.reason, log);
     return false;
   }
   try {
     const ids = queueScreenshotTasks(db, p.steps, config, { repo: c.repo, number: c.number, head: c.head_oid, base });
     if (!ids.length) return false;   // the switch went off since the check above
-    insertRun(db, c, { state: "planned", reason: p.reason, baseSha: base, plan: { steps: p.steps }, headTask: ids[0] ?? null, baseTask: ids[1] ?? null });
+    insertRun(db, c, { state: "planned", reason: p.reason, baseSha: base, servingMetadata, plan: { steps: p.steps }, headTask: ids[0] ?? null, baseTask: ids[1] ?? null });
     stage(db, c, "screenshot-planned", `${p.steps.length} steps: ${p.reason}`, log);
     return true;
   } catch (e) {
     if (!(e instanceof BuildError)) throw e;
     log(`  ${ref}: screenshots: tasks not queued: ${e.message}`);
-    insertRun(db, c, { state: "error", reason: `tasks not queued: ${e.message}`.slice(0, 300), baseSha: base });
+    insertRun(db, c, { state: "error", reason: `tasks not queued: ${e.message}`.slice(0, 300), baseSha: base, servingMetadata });
     return false;
   }
 }
@@ -126,6 +129,7 @@ export async function maybeScreenshot(db: DatabaseSync, c: Cand, deps: Env, log:
 // ---- collecting ---------------------------------------------------------------
 
 type Run = {
+  serving_metadata: string | null;
   repo: string; number: number; head_sha: string; base_sha: string | null; state: string; plan: string | null;
   head_task_id: number | null; base_task_id: number | null; item_state: string | null; item_head: string | null;
   title: string | null; body: string | null;
@@ -168,12 +172,12 @@ export function screenshotsDue(db: DatabaseSync): boolean {
 }
 
 /** The default comparison: Opus reads the image pairs from `dir`, mounted as the call's read-only checkout (a plain directory works: nothing of the sandbox needs a repository). */
-async function compareWithModel(db: DatabaseSync, input: ScreenshotCompareInput, ctx: { ref: string; dir: string }, runId: string, n: number): Promise<CompareParsed | null> {
+async function compareWithModel(db: DatabaseSync, input: ScreenshotCompareInput, ctx: { ref: string; dir: string }, runId: string, n: number): Promise<Served<CompareParsed> | null> {
   const r = await runModelStep(db, VERIFY_COMPARE, { ...input, repo_dir: REPO_PATH }, {
     checkout: ctx.dir, ctx: { ref: ctx.ref },
     usage: { run: runId, agent: `screenshot-compare-${n}`, stage: "verify", items: (ok: boolean) => (ok ? 1 : 0) },
   });
-  return r.ok ? r.value : null;
+  return r.ok ? { ...r.value, ...(r.serving !== undefined && { serving: r.serving }) } : null;
 }
 
 /**
@@ -199,10 +203,10 @@ export async function collectScreenshots(db: DatabaseSync, deps: Pick<CollectDep
 async function collectOne(db: DatabaseSync, r: Run, deps: Pick<CollectDeps, "screenshots">, log: (line: string) => void, runId: string): Promise<boolean> {
   const ref = `${r.repo}#${r.number}`, sha7 = r.head_sha.slice(0, 7);
   const at = (): string => new Date().toISOString();
-  const finish = (state: string, f: { reason?: string | null; verdict?: string; clear?: boolean; comparison?: string; model?: string } = {}): boolean =>
-    Number(db.prepare(`UPDATE screenshot_runs SET state = ?, reason = COALESCE(?, reason), verdict = ?, clear = ?, comparison = ?, model = ?, serving_metadata = NULL, finished_at = ?
+  const finish = (state: string, f: { reason?: string | null; verdict?: string; clear?: boolean; comparison?: string; model?: string; servingMetadata?: string | null } = {}): boolean =>
+    Number(db.prepare(`UPDATE screenshot_runs SET state = ?, reason = COALESCE(?, reason), verdict = ?, clear = ?, comparison = ?, model = ?, serving_metadata = CASE WHEN ? THEN ? ELSE serving_metadata END, finished_at = ?
       WHERE repo = ? AND number = ? AND head_sha = ? AND state IN ('planned', 'running')`)
-      .run(state, f.reason ?? null, f.verdict ?? null, f.clear === undefined ? null : f.clear ? 1 : 0, f.comparison ?? null, f.model ?? null, at(), r.repo, r.number, r.head_sha).changes) > 0;
+      .run(state, f.reason ?? null, f.verdict ?? null, f.clear === undefined ? null : f.clear ? 1 : 0, f.comparison ?? null, f.model ?? null, Object.hasOwn(f, "servingMetadata") ? 1 : 0, f.servingMetadata ?? null, at(), r.repo, r.number, r.head_sha).changes) > 0;
   // The only stage row a screenshot run writes is `hold`; its other outcomes are read from screenshot_runs.
   const row = (stageName: string, note: string): void => { jobItem(db, r.repo, r.number, `${stageName}: ${note} at ${sha7}`, log); };
   const ids = [r.head_task_id, r.base_task_id];
@@ -281,7 +285,7 @@ async function collectOne(db: DatabaseSync, r: Run, deps: Pick<CollectDeps, "scr
     shots: names.map((name) => ({ name, before: `before/${name}`, after: `after/${name}` })),
   };
   const dir = mkdtempSync(join(tmpdir(), "shots-"));
-  let parsed: CompareParsed | null;
+  let parsed: Served<CompareParsed> | null;
   try {
     mkdirSync(join(dir, "before")); mkdirSync(join(dir, "after"));
     for (const p of pairs) { copyFileSync(p.b!, join(dir, "before", p.name)); copyFileSync(p.a!, join(dir, "after", p.name)); }
@@ -294,7 +298,7 @@ async function collectOne(db: DatabaseSync, r: Run, deps: Pick<CollectDeps, "scr
   const { verdict, clear } = parsed.result;
   const summary = scrub(parsed.result.summary);
   const model = CLAUDE_PROMPTS["verify.compare"].models[0];
-  if (!finish("compared", { verdict, clear, comparison: summary, model })) return false;
+  if (!finish("compared", { verdict, clear, comparison: summary, model, servingMetadata: serializeServingMetadata(summarizeStoredServingMetadata([parseServingMetadata(r.serving_metadata), parsed.serving])) })) return false;
 
   if (verdict === "regression" && clear) {
     // The head may have moved, or the switch gone off, while the model looked: hold only the head that was compared, and only while the feature is on.

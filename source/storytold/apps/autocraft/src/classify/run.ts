@@ -38,6 +38,7 @@ import { flagsOf, jevVerdict, parseHaikuReply, parseRef, refOf, type Item, type 
 import { envVar } from "../env.ts";
 import { wholeReplyJson } from "../core/reply-json.ts";
 import { modelPolicy } from "../agents/codex/config.ts";
+import { serializeServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { CodexBudgetError } from "../agents/codex/budget.ts";
 import { CODEX_EXECUTION_READY, CODEX_UNAVAILABLE } from "../agents/codex/capabilities.ts";
 
@@ -193,10 +194,10 @@ export function resultUsage(j: { usage?: Record<string, number>; total_cost_usd?
   return { usage: { ...main, ...(extra.length > 0 && { extra }) }, all: { input: sum("input"), output: sum("output"), cacheRead: sum("cacheRead"), cacheWrite: sum("cacheWrite") } };
 }
 
-export function saveVerdict(db: DatabaseSync, classifier: string, runId: string, v: Verdict): void {
+export function saveVerdict(db: DatabaseSync, classifier: string, runId: string, v: Verdict, serving?: ServingMetadata): void {
   const [repo, num] = v.ref.split("#");
-  db.prepare(`INSERT OR REPLACE INTO main.classifications (repo, number, classifier, run_id, at, type_label, flags, reason, probs)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(repo!, Number(num), classifier, runId, now(), v.type_label, flagsOf(v), v.reason, v.probs);
+  db.prepare(`INSERT OR REPLACE INTO main.classifications (repo, number, classifier, run_id, at, type_label, flags, reason, probs, serving_metadata)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(repo!, Number(num), classifier, runId, now(), v.type_label, flagsOf(v), v.reason, v.probs, serializeServingMetadata(serving));
 }
 
 export function saveUsage(db: DatabaseSync, runId: string, agent: string, stage: string, model: string, items: number, u: Usage, start: string, end: string): void {
@@ -346,7 +347,7 @@ export function setWorkspace(f: WorkspaceFn): () => void {
  * and headroom, runs with that account's CLAUDE_CONFIG_DIR, and is recorded from
  * start to end (src/agents).
  */
-export type Reply = { text: string; usage: Usage; turns?: number };
+export type Reply = { text: string; usage: Usage; turns?: number; serving?: ServingMetadata };
 /** The arguments of a fix turn: one turn and no permission for any tool. The tool list itself stays, so the resumed session's prompt cache still matches. */
 export function noToolArgs(args: string[]): string[] {
   const out: string[] = [];
@@ -659,7 +660,7 @@ export async function runHaiku(db: DatabaseSync, runId: string, items: Item[], b
   for (let i = 0; i < items.length; i += batchSize) batches.push(items.slice(i, i + batchSize));
   await pool(batches.map((batch, n) => async () => {
     const r = await runModelStep(db, CLASSIFY_HAIKU, batch, { model, usage: { run: runId, agent: `haiku-${String(n).padStart(2, "0")}`, stage: "classify" } });
-    if (r.ok) for (const verdicts of r.values) for (const v of verdicts) saveVerdict(db, "haiku", runId, v);
+    if (r.ok) for (const [index, verdicts] of r.values.entries()) for (const v of verdicts) saveVerdict(db, "haiku", runId, v, r.servingValues[index]);
     const left = r.ok ? r.rest ?? [] : batch;
     if (left.length) console.error(`haiku batch ${n}: no valid answer for ${left.map(refOf).join(", ")}`);
   }), () => queueRoom(db), { first: opts.cold });

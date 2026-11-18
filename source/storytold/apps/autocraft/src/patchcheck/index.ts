@@ -1,5 +1,6 @@
 // The Opus check of a patch we wrote, before it reaches GitHub (Fix-up pushes, Fix PRs). The model's reply is
 // text our code validates; every check is recorded in patch_checks for the Item page.
+import { serializeServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { createHash } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
 import { wholeReplyJson } from "../core/reply-json.ts";
@@ -29,9 +30,9 @@ export type PatchCheckRow = {
 };
 
 /** `subject` is the commit the patch applies to: the PR head (fixup) or the default branch head (fix). */
-export function recordCheck(db: DatabaseSync, r: { kind: CheckKind; repo: string; number: number; subject: string; patch: string; round: number; model: string; check: PatchCheck; at: string }): void {
-  db.prepare("INSERT INTO patch_checks (kind, repo, number, subject, patch_hash, round, verdict, reasons, problems, model, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .run(r.kind, r.repo, r.number, r.subject, patchHash(r.patch), r.round, r.check.verdict, r.check.reasons, JSON.stringify(r.check.problems), r.model, r.at);
+export function recordCheck(db: DatabaseSync, r: { kind: CheckKind; repo: string; number: number; subject: string; patch: string; round: number; model: string; serving?: ServingMetadata; check: PatchCheck; at: string }): void {
+  db.prepare("INSERT INTO patch_checks (kind, repo, number, subject, patch_hash, round, verdict, reasons, problems, model, created_at, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+    .run(r.kind, r.repo, r.number, r.subject, patchHash(r.patch), r.round, r.check.verdict, r.check.reasons, JSON.stringify(r.check.problems), r.model, r.at, serializeServingMetadata(r.serving));
 }
 
 export function checksOf(db: DatabaseSync, repo: string, number: number): PatchCheckRow[] {

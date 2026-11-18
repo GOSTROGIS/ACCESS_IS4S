@@ -1,6 +1,19 @@
 import type { ReportedServingMetadata, ServingMetadata } from "../../web/src/api/types.ts";
 
 export type { ReportedServingMetadata, ServingMetadata };
+export { servingLabel } from "../../web/src/lib/serving.ts";
+/** Legacy dependencies may return plain text; real providers retain their exact receipt. */
+export type ModelText = string | { text: string; serving?: ServingMetadata };
+export function modelText(value: ModelText | null): { text: string; serving?: ServingMetadata } | null {
+  if (value === null) return null;
+  if (typeof value === "string") return { text: value };
+  const serving = parseServingMetadata(value.serving);
+  return { text: value.text, ...(serving !== undefined && { serving }) };
+}
+/** Called only with the actual durable run id and actual notification-time model/effort segments. */
+export function reportedServing(runId: number, models: ReportedServingMetadata["models"] | undefined): ServingMetadata {
+  return parseServingMetadata({ schema: 1, provider: "codex", runs: [runId], models })!;
+}
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
 const exact = (value: Record<string, unknown>, keys: string[]) => Object.keys(value).sort().join("|") === [...keys].sort().join("|");
 const unknown = (): ServingMetadata => ({ schema: 0, provider: "unknown", runs: [], models: [] });

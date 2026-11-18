@@ -1,6 +1,9 @@
 // Part 2 of the Verify stage: result collection from finished tasks, the failure summary, the retry of
 // an infrastructure error and the cancel of tasks whose PR moved on. Part 1 (index.ts) only plans and queues.
 // Pass or fail comes from the tasks' exit codes, never from a model; Haiku only describes a failure.
+import { parseServingMetadata, serializeServingMetadata, summarizeStoredServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
+import { CodexUsageError } from "../agents/codex/budget.ts";
+import { modelPolicy } from "../agents/codex/config.ts";
 import { setAsideAnswerBeforeFailure } from "../merge/verify-override.ts";
 import { leaseItem } from "../runner/leases.ts";
 import type { DatabaseSync } from "node:sqlite";
@@ -50,6 +53,7 @@ export type VerificationView = {
 };
 
 type Row = {
+  serving_metadata: string | null;
   repo: string; number: number; head_sha: string; base_sha: string | null; kind: string; reason: string; plan: string | null; model: string | null;
   head_task_id: number | null; base_task_id: number | null; state: VerificationState; summary: string | null; note: string | null;
   created_at: string; finished_at: string | null;
@@ -184,16 +188,23 @@ const fallbackSummary = (f: NonNullable<Verdict["failed"]>): string =>
   `${f.step} ${f.timedOut ? "timed out" : `failed with exit code ${f.exitCode ?? "none"}`}`;
 
 /** Haiku's account of a failed step, or null. The log and the command are untrusted and scrubbed before they leave and before the reply is stored. */
-export async function summariseFailure(db: DatabaseSync, v: { repo: string; number: number }, taskId: number, f: NonNullable<Verdict["failed"]>, deps: CollectDeps, runId: string): Promise<string> {
+export async function summariseFailure(db: DatabaseSync, v: { repo: string; number: number }, taskId: number, f: NonNullable<Verdict["failed"]>, deps: CollectDeps, runId: string, onServing?: (serving: ServingMetadata | undefined) => void): Promise<string> {
   const task = getTask(db, taskId);
   const step = task?.plan.find((s: TaskStep) => s.name === f.step);
   const input: VerifySummaryInput = {
     ref: `${v.repo}#${v.number}`, step: f.step, command: scrub((step?.cmd ?? []).join(" ")), log: scrub(stepLog(db, taskId, f.step)),
   };
   const start = now();
-  const reply = await askClaude("verify.summary", deps.model, [input], db);
-  saveUsage(db, runId, `verify-collect-${v.number}`, "verify", deps.model, reply ? 1 : 0, reply?.usage ?? ({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null } as Usage), start, now());
+  const codex = modelPolicy(db).provider === "codex";
+  let reply: Awaited<ReturnType<typeof askClaude>>;
+  try { reply = await askClaude("verify.summary", deps.model, [input], db); }
+  catch (error) {
+    if (error instanceof CodexUsageError && error.usage) saveUsage(db, runId, `verify-collect-${v.number}`, "verify", deps.model, 0, error.usage, start, now());
+    throw error;
+  }
+  if (reply || !codex) saveUsage(db, runId, `verify-collect-${v.number}`, "verify", deps.model, reply ? 1 : 0, reply?.usage ?? ({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null } as Usage), start, now());
   const text = reply ? scrub(cut(reply.text)) : "";
+  if (text) onServing?.(reply?.serving);
   return text || fallbackSummary(f);
 }
 
@@ -234,9 +245,9 @@ export async function runCollect(db: DatabaseSync, params: { dryRun?: boolean; /
     try {
       if (stopped()) return;
       const ref = `${v.repo}#${v.number}`;
-      const finish = (state: string, summary: string | null, note: string | null): boolean => {
-        const r = db.prepare("UPDATE verifications SET state = ?, summary = ?, note = ?, finished_at = ? WHERE repo = ? AND number = ? AND head_sha = ? AND state IN ('planned', 'running')")
-          .run(state, summary, note, now(), v.repo, v.number, v.head_sha);
+      const finish = (state: string, summary: string | null, note: string | null, servingMetadata?: string | null): boolean => {
+        const r = db.prepare("UPDATE verifications SET state = ?, summary = ?, note = ?, serving_metadata = CASE WHEN ? THEN ? ELSE serving_metadata END, finished_at = ? WHERE repo = ? AND number = ? AND head_sha = ? AND state IN ('planned', 'running')")
+          .run(state, summary, note, servingMetadata !== undefined ? 1 : 0, servingMetadata ?? null, now(), v.repo, v.number, v.head_sha);
         const changed = Number(r.changes) > 0;
         if (changed && (state === "failed" || state === "error")) setAsideAnswerBeforeFailure(db, v.repo, v.number, v.head_sha, now());
         return changed;
@@ -289,8 +300,9 @@ export async function runCollect(db: DatabaseSync, params: { dryRun?: boolean; /
         const why = oneLine(verdict.reason ?? "error");
         if (finish("error", why, null)) { s.errors++; s.changed++; stageRow(db, v, "verify-error", at, `${v.kind} at ${sha7}: ${why}`); }
       } else {
-        const summary = verdict.failed ? await summariseFailure(db, v, v.head_task_id!, verdict.failed, d, runId) : oneLine(verdict.reason ?? "failed");
-        if (finish("failed", summary, null)) {
+        let gotServing = false, summaryServing: ServingMetadata | undefined;
+        const summary = verdict.failed ? await summariseFailure(db, v, v.head_task_id!, verdict.failed, d, runId, serving => { gotServing = true; summaryServing = serving; }) : oneLine(verdict.reason ?? "failed");
+        if (finish("failed", summary, null, gotServing ? serializeServingMetadata(summarizeStoredServingMetadata([parseServingMetadata(v.serving_metadata), summaryServing])) : undefined)) {
           s.failed++; s.changed++;
           stageRow(db, v, "verify-failed", at, `${v.kind} at ${sha7}: ${summary}`);
           stageRow(db, v, "hold", at, `verify failed: ${summary}`);

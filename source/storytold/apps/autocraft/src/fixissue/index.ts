@@ -1,3 +1,4 @@
+import { modelText, serializeServingMetadata, parseServingMetadata, summarizeStoredServingMetadata, type ModelText, type ServingMetadata, servingLabel } from "../agents/provenance.ts";
 import { storedNote } from "../github/note.ts";
 // Stage 7, Fix issues: the issue path of the pipeline. For an open bugfix issue with a clear fix, Sonnet triages
 // it, then writes a unified diff (the fix and one regression test) that our code validates. Build tasks in the
@@ -82,7 +83,7 @@ export type FixIssueDeps = {
   /** Every git and gh command. */
   exec: Exec;
   /** The model's reply to a fixissue prompt, or null when it gave none. */
-  ask: (db: DatabaseSync, id: Id, input: TriageInput | PatchInput | FixIssueCheckInput, runId: string, checkout?: string, tool?: CheckTool) => Promise<string | null>;
+  ask: (db: DatabaseSync, id: Id, input: TriageInput | PatchInput | FixIssueCheckInput, runId: string, checkout?: string, tool?: CheckTool) => Promise<ModelText | null>;
   /** Host directory with a read-only checkout of `sha` (reachable from `branch`) for the sandboxed model calls, or null to ask without tools. Absent: no tools. */
   checkout?: (repo: string, branch: string, sha: string) => Promise<string | null>;
   /** The head commit of the repo's default branch, or null. */
@@ -118,7 +119,7 @@ export function defaultDeps(): FixIssueDeps {
     ask: async (db, id, input, runId, checkout, tool) => {
       // One call: the caller reads the reply itself.
       const r = await runModelStep(db, textStep<typeof input>(id), input, { checkout, check: tool, usage: { run: runId, agent: `fixissue-${input.ref.replace(/[^A-Za-z0-9]/g, "-")}`, stage: "fixissue", items: (ok) => (ok ? 1 : 0) } });
-      return r.ok ? r.value : null;
+      return r.ok ? { text: r.value, serving: r.serving } : null;
     },
   };
 }
@@ -193,6 +194,14 @@ function update(db: DatabaseSync, d: FixIssueDeps, r: { repo: string; number: nu
     .run(...keys.map((k) => set[k]!), iso(d), r.repo, r.number);
 }
 
+/** Accepted contributors to this attempt, not sole authors of its current patch. A fresh triage replaces the row. */
+export function recordAttemptContribution(db: DatabaseSync, d: FixIssueDeps, r: AttemptRow, serving: ServingMetadata | undefined, set: Record<string, string | number | null> = {}): void {
+  const current = attemptOf(db, r.repo, r.number);
+  const raw = serializeServingMetadata(summarizeStoredServingMetadata([current?.serving_metadata, serving]));
+  update(db, d, r, { ...set, serving_metadata: raw });
+  r.serving_metadata = raw;
+}
+
 function stage(db: DatabaseSync, d: FixIssueDeps, r: { repo: string; number: number }, kind: "hold" | "take", note: string): void {
   db.prepare("INSERT INTO main.stages (repo, number, stage, at, actor, note) VALUES (?, ?, ?, ?, ?, ?)").run(r.repo, r.number, kind, iso(d), ACTOR, note.slice(0, 300));
   jobItem(db, r.repo, r.number, note, () => {});   // the callers log the outcome themselves
@@ -251,10 +260,10 @@ type Ctx = { db: DatabaseSync; d: FixIssueDeps; git: Git; log: (l: string) => vo
 
 /** Asks with a checkout of the base commit when there is one; the input then carries the repository path. */
 const checkoutOf = async (x: Ctx, base: { repo: string; sha: string }): Promise<string | undefined> => (await x.d.checkout?.(base.repo, branchOf(x.db, base.repo), base.sha)) ?? undefined;
-async function ask(x: Ctx, id: Id, input: TriageInput | PatchInput | FixIssueCheckInput, base: { repo: string; sha: string }, number?: number, have?: string, validate?: (patch: string) => string | null): Promise<string | null> {
+async function ask(x: Ctx, id: Id, input: TriageInput | PatchInput | FixIssueCheckInput, base: { repo: string; sha: string }, number?: number, have?: string, validate?: (patch: string) => string | null): Promise<ReturnType<typeof modelText>> {
   const checkout = have ?? await checkoutOf(x, base);
   const tool = id === "fixissue.patch" ? new CheckTool({ db: x.db, step: "fixissue", repo: base.repo, number: number ?? null, head: base.sha, base: base.sha, applies: applyCheck(x.git, x.d.root, base.sha, validate) }) : undefined;
-  return x.d.ask(x.db, id, checkout ? { ...input, repo_dir: REPO_PATH } : input, x.runId, checkout, tool);
+  return modelText(await x.d.ask(x.db, id, checkout ? { ...input, repo_dir: REPO_PATH } : input, x.runId, checkout, tool));
 }
 
 /** The build scripts of `sha` from its manifests; null (every build.rs refused) when the commit cannot be fetched or read. */
@@ -286,14 +295,18 @@ async function startAttempt(x: Ctx, c: IssueCandidate): Promise<"started" | "ski
   const paths = sourcePaths(listed, MAX_PATHS, scripts);
   const input: TriageInput = { ...issueText(db, c), crates: cr.crates, paths };
   let parsed: ReturnType<typeof parseTriage> | null = null;
+  let triageServing: ServingMetadata | undefined;
   for (let attempt = 0; attempt < TRIAGE.limits.attempts && !(parsed && parsed.ok); attempt++) {
     const reply = await ask(x, "fixissue.triage", input, { repo: c.repo, sha: main });
-    if (reply !== null) parsed = parseTriage(reply, ref, cr.crates, paths, scripts);
+    if (reply !== null) {
+      parsed = parseTriage(reply.text, ref, cr.crates, paths, scripts);
+      if (parsed.ok) triageServing = reply.serving;
+    }
   }
   const at = iso(d);
   const row = (state: string, reason: string, extra: Partial<AttemptRow> = {}): AttemptRow => {
-    db.prepare(`INSERT OR REPLACE INTO fix_attempts (repo, number, main_sha, text_hash, state, round, files, crate, crate_dir, reason, size, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?)`).run(c.repo, c.number, main, c.hash, state, extra.files ?? null, extra.crate ?? null, extra.crate_dir ?? null, reason, extra.size ?? null, at, at);
+    db.prepare(`INSERT OR REPLACE INTO fix_attempts (repo, number, main_sha, text_hash, state, round, files, crate, crate_dir, reason, size, created_at, updated_at, serving_metadata)
+      VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?)`).run(c.repo, c.number, main, c.hash, state, extra.files ?? null, extra.crate ?? null, extra.crate_dir ?? null, reason, extra.size ?? null, at, at, serializeServingMetadata(triageServing));
     return attemptOf(db, c.repo, c.number)!;
   };
   if (!parsed) { log(`  ${ref}: no answer from the triage`); return "none"; }
@@ -429,8 +442,8 @@ async function patchRound(x: Ctx, r: AttemptRow): Promise<boolean> {
   };
   const reply = await ask(x, "fixissue.patch", input, { repo: r.repo, sha: r.main_sha }, r.number, checkout, (p) => refusal(validateFixPatch(p, files, testPath, r.crate_dir!, regressionName(r.number), scripts)));
   if (reply === null) { roundFailed(db, d, row, round, "the model gave no answer", r.patch, log); return false; }
-  const v = validateFixPatch(reply, files, testPath, r.crate_dir!, regressionName(r.number), scripts);
-  if (!v.ok) { roundFailed(db, d, row, round, v.reason, reply.slice(0, 60_000), log); return false; }
+  const v = validateFixPatch(reply.text, files, testPath, r.crate_dir!, regressionName(r.number), scripts);
+  if (!v.ok) { roundFailed(db, d, row, round, v.reason, reply.text.slice(0, 60_000), log); return false; }
   const scratch = mkdtempSync(join(d.root, ".index-"));
   let applied;
   try {
@@ -442,7 +455,7 @@ async function patchRound(x: Ctx, r: AttemptRow): Promise<boolean> {
   try {
     const ids = tasksFor({ repo: r.repo, number: r.number, main_sha: r.main_sha, crate: r.crate!, test: regressionName(r.number) }, v.patch, v.testPatch).map((t) => createTask(db, t));
     queueWarmBuild(db, r.repo, r.main_sha);
-    update(db, d, r, { state: "testing", round, patch: v.patch, test_patch: v.testPatch, serving_metadata: null, head_task_id: ids[0]!, base_task_id: ids[1]!, summary: null });
+    recordAttemptContribution(db, d, r, reply.serving, { state: "testing", round, patch: v.patch, test_patch: v.testPatch, head_task_id: ids[0]!, base_task_id: ids[1]!, summary: null });
     log(`  ${ref}: round ${round}: ${v.files.join(", ")} (${v.changed} lines); tasks ${ids.join(", ")} queued`);
     return true;
   } catch (e) {
@@ -515,7 +528,7 @@ export async function runFixIssue(db: DatabaseSync, params: FixIssueParams, log:
 export type CollectParams = { dryRun?: boolean; onHandled?: (n: number) => void; /** True when no new item should start (cancel, deadline, pipeline off). */ stopping?: () => boolean; by?: By };
 export type CollectDeps = FixIssueDeps & {
   /** Haiku's account of a failed step. */
-  summarise: (db: DatabaseSync, repo: string, number: number, taskId: number, step: string) => Promise<string>;
+  summarise: (db: DatabaseSync, repo: string, number: number, taskId: number, step: string) => Promise<ModelText>;
 };
 export type CollectSummary = { runId: string; looked: number; passed: number; opened: number; failedRounds: number; failed: number; retried: number; changed: number };
 
@@ -523,7 +536,11 @@ export function collectDefaults(): CollectDeps {
   const d = defaultDeps();
   return {
     ...d,
-    summarise: async (db, repo, number, taskId, step) => summariseFailure(db, { repo, number }, taskId, { role: "head", step, exitCode: null, timedOut: false }, { model: CLAUDE_PROMPTS["verify.summary"].models[0]! }, `fixissue-collect-${Date.now()}`),
+    summarise: async (db, repo, number, taskId, step) => {
+      let serving: ServingMetadata | undefined, reported = false;
+      const text = await summariseFailure(db, { repo, number }, taskId, { role: "head", step, exitCode: null, timedOut: false }, { model: CLAUDE_PROMPTS["verify.summary"].models[0]! }, `fixissue-collect-${Date.now()}`, value => { reported = true; serving = value; });
+      return reported ? { text, serving } : text;
+    },
   };
 }
 
@@ -585,8 +602,9 @@ export async function runFixIssueCollect(db: DatabaseSync, params: CollectParams
       }
       s.changed++;
       if (ho.kind === "fail") {
-        const summary = await d.summarise(db, r.repo, r.number, head.id, ho.step);
-        roundFailed(db, d, r, r.round, `head: ${summary}`, r.patch, ilog);
+        const summary = modelText(await d.summarise(db, r.repo, r.number, head.id, ho.step))!;
+        if (summary.text) recordAttemptContribution(db, d, r, summary.serving);
+        roundFailed(db, d, r, r.round, `head: ${summary.text}`, r.patch, ilog);
         s.failedRounds++;
       } else if (bo.kind === "pass") {
         roundFailed(db, d, r, r.round, "the regression test passes without the fix, so it does not show the bug", r.patch, ilog);
@@ -629,11 +647,12 @@ async function checkPatch(x: Ctx, r: AttemptRow): Promise<boolean> {
   };
   const reply = await ask(x, "fixissue.check", input, { repo: r.repo, sha: r.main_sha });
   if (reply === null) return failRound("the patch check gave no answer");
-  const v = parseCheck(reply);
+  const v = parseCheck(reply.text);
   if (!v.ok) return failRound(`the patch check gave no valid answer: ${v.error}`);
-  recordCheck(db, { kind: "fixissue", repo: r.repo, number: r.number, subject: r.main_sha, patch, round: r.round, model: CHECK.models[0]!, check: v.check, at: iso(d) });
+  recordCheck(db, { kind: "fixissue", repo: r.repo, number: r.number, subject: r.main_sha, patch, round: r.round, model: CHECK.models[0]!, serving: reply.serving, check: v.check, at: iso(d) });
+  recordAttemptContribution(db, d, r, reply.serving);
   audit(db, ACTOR, "fixissue-check", refOf(r), { run: x.runId, round: r.round, verdict: v.check.verdict, reasons: v.check.reasons });
-  if (v.check.verdict === "reject") return failRound(`Opus rejected the patch: ${checkLine(v.check)}`);
+  if (v.check.verdict === "reject") return failRound(`${servingLabel(reply.serving, "Opus")} rejected the patch: ${checkLine(v.check)}`);
   return true;
 }
 
@@ -691,7 +710,7 @@ export async function comment(x: Ctx, g: GuardedItem | GuardedRepo, r: AttemptRo
   if (db.prepare("SELECT 1 FROM audit WHERE action = 'fixissue-comment' AND target = ?").get(ref)) return;
   if (await closedLive(x, r)) { log(`  ${ref}: not commenting, the issue is closed`); return; }
   const text = commentText(url);
-  const cm = await ghComment({ db, login: ACTOR }, g, d.exec, "fixissue-comment", { repo: r.repo, number: r.number, pr: false }, storedNote({ by: "model", kind: "comment", model: PATCH.models[0] }, r.serving_metadata), text, { run: x.runId });
+  const cm = await ghComment({ db, login: ACTOR }, g, d.exec, "fixissue-comment", { repo: r.repo, number: r.number, pr: false }, storedNote({ by: "model", kind: r.serving_metadata == null ? "comment" : "comment; workflow contributors", model: PATCH.models[0] }, r.serving_metadata), text, { run: x.runId });
   if (cm.code !== 0) log(`  ${ref}: comment failed: ${oneLine(cm.stderr)}`);
 }
 
@@ -782,7 +801,7 @@ export async function openPr(x: Ctx, r: AttemptRow): Promise<boolean> {
     if (await closedLive(x, r)) { fail(db, d, r, "the issue is closed"); return false; }
     const body = prBody(r.number, files, testPath);
     // The audit row is written before the command runs and counts from then on, so the reservation ends there.
-    const pr = await ghOpenPr({ db, login: ACTOR }, g, (...a: Parameters<typeof d.exec>) => { giveBack(); return d.exec(...a); }, "fixissue-pr", { repo: r.repo, target: ref, base: branchOf(db, r.repo), head: `${fork.split("/")[0]}:${branch}`, title: prTitle(title), body }, storedNote({ by: "model", kind: "pull request", model: PATCH.models[0] }, r.serving_metadata), { run: x.runId, branch });
+    const pr = await ghOpenPr({ db, login: ACTOR }, g, (...a: Parameters<typeof d.exec>) => { giveBack(); return d.exec(...a); }, "fixissue-pr", { repo: r.repo, target: ref, base: branchOf(db, r.repo), head: `${fork.split("/")[0]}:${branch}`, title: prTitle(title), body }, storedNote({ by: "model", kind: r.serving_metadata == null ? "pull request" : "pull request; workflow contributors", model: PATCH.models[0] }, r.serving_metadata), { run: x.runId, branch });
     giveBack();
     const url = pr.stdout.trim().split("\n").pop() ?? "";
     if (pr.code !== 0 || !urlOk(url, r.repo)) { log(`  ${ref}: PR not opened: ${oneLine(pr.stderr || pr.stdout)}`); tried(); return false; }

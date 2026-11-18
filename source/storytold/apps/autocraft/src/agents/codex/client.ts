@@ -1,19 +1,23 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { AppServerFailure, AppServerRpc, normalizedUsage, type CodexTokenUsage } from "./rpc.ts";
 import { ExternalTokenAuth, type LeaseProvider } from "./external-auth.ts";
-import { codexSandbox, type CodexSandboxSpec } from "./sandbox.ts";
+import { CODEX_TOOL_PATH, codexSandbox, type CodexSandboxSpec } from "./sandbox.ts";
 import type { ModelPolicy } from "./config.ts";
 import { CodexBudgetError } from "./budget.ts";
+import type { ReportedServingMetadata } from "../provenance.ts";
 
 export type ReportedUsage = CodexTokenUsage & { totalTokens: number };
 export type CodexReply = {
-  text: string; model: string; modelProvider: string; reasoningEffort: string; threadId: string; turnId: string;
-  usage: ReportedUsage; responses: number; items: Record<string, unknown>[]; hasReportedUsage: boolean;
+  text: string; model: string; modelProvider: string; reasoningEffort: string | null; threadId: string; turnId: string;
+  usage: ReportedUsage; responses: number; items: Record<string, unknown>[]; hasReportedUsage: boolean; primaryHasReportedUsage?: boolean;
   extra: { model: string; usage: ReportedUsage }[];
+  /** Exact notification-time model and reported effort; null is genuinely unreported. */
+  servedModels?: ReportedServingMetadata["models"];
 };
 export type CodexSessionState = { schema: 1; threads: { threadId: string; model: string; total: ReportedUsage }[] };
 type Object = Record<string, unknown>;
 const object = (x: unknown): x is Object => !!x && typeof x === "object" && !Array.isArray(x);
+const effort = (value: unknown): string | null => typeof value === "string" && /^[a-zA-Z0-9._-]{1,100}$/.test(value) ? value : null;
 const id = (x: unknown): x is string => typeof x === "string" && /^[A-Za-z0-9_-]{1,128}$/.test(x);
 function refuse(): never { throw new AppServerFailure("PROTOCOL"); }
 const zero = (): ReportedUsage => ({ inputTokens: 0, cachedInputTokens: 0, cacheWriteInputTokens: 0, outputTokens: 0, reasoningOutputTokens: 0, totalTokens: 0 });
@@ -46,6 +50,8 @@ export class CodexClient {
   private thread: { id: string; model: string; modelProvider: string; reasoningEffort: string } | null = null;
   private readonly stopPolling: ReturnType<typeof setInterval>;
   private readonly threadModels = new Map<string, string>();
+  private readonly threadEfforts = new Map<string, string | null>();
+  private readonly rerouted = new Map<string, { model: string; effort: string | null }>();
   private readonly cumulativeUsage = new Map<string, ReportedUsage>();
   private readonly snapshotGeneration = new Map<string, number>();
   private cumulativeMode = false;
@@ -73,12 +79,24 @@ export class CodexClient {
     this.stopPolling = setInterval(() => { try { this.active(); } catch (error) { this.halted = error; void this.rpc.close(); } }, 250);
     this.rpc.subscribe((method, params) => {
       if (!object(params)) return;
-      if (method === "thread/started" && object(params.thread) && id(params.thread.id) && typeof params.thread.model === "string") this.threadModels.set(params.thread.id, params.thread.model);
-      if (method === "thread/settings/updated" && id(params.threadId) && object(params.threadSettings) && typeof params.threadSettings.model === "string") this.threadModels.set(params.threadId, params.threadSettings.model);
-      if (method === "model/rerouted" && id(params.threadId) && typeof params.toModel === "string") this.threadModels.set(params.threadId, params.toModel);
+      if (method === "thread/started" && object(params.thread) && id(params.thread.id) && typeof params.thread.model === "string") {
+        if (this.threadModels.get(params.thread.id) !== params.thread.model) this.threadEfforts.set(params.thread.id, null);
+        this.threadModels.set(params.thread.id, params.thread.model);
+      }
+      if (method === "thread/settings/updated" && id(params.threadId) && object(params.threadSettings) && typeof params.threadSettings.model === "string") {
+        this.threadModels.set(params.threadId, params.threadSettings.model);
+        this.threadEfforts.set(params.threadId, effort(params.threadSettings.effort));
+        for (const [key, value] of this.rerouted) if (key.startsWith(params.threadId + ":") && value.model === params.threadSettings.model) value.effort = effort(params.threadSettings.effort);
+      }
+      if (method === "model/rerouted" && id(params.threadId) && id(params.turnId) && typeof params.toModel === "string") {
+        const key = `${params.threadId}:${params.turnId}`;
+        if (!this.retiredTurns.has(key)) this.rerouted.set(key, { model: params.toModel, effort: null });
+        while (this.rerouted.size > 4096) this.rerouted.delete(this.rerouted.keys().next().value!);
+      }
       if ((method === "item/started" || method === "item/completed") && object(params.item) && params.item.type === "subAgentActivity" &&
           id(params.item.agentThreadId) && typeof params.item.model === "string") {
         this.threadModels.set(params.item.agentThreadId, params.item.model);
+        this.threadEfforts.set(params.item.agentThreadId, effort(params.item.reasoningEffort));
         if (!this.cumulativeUsage.has(params.item.agentThreadId)) this.cumulativeUsage.set(params.item.agentThreadId, zero());
       }
       if (method === "thread/tokenUsage/updated" && id(params.threadId) && object(params.tokenUsage)) {
@@ -120,7 +138,7 @@ export class CodexClient {
     this.active();
     const params = { model: this.policy.model, cwd: "/work", approvalPolicy: "never", sandbox: "read-only", developerInstructions: instructions,
       config: { ...config, cli_auth_credentials_store: "ephemeral", model_reasoning_effort: this.policy.reasoningEffort,
-        shell_environment_policy: { inherit: "none", set: { PATH: "/usr/bin", LANG: "C.UTF-8" } },
+        shell_environment_policy: { inherit: "none", set: { PATH: CODEX_TOOL_PATH, LANG: "C.UTF-8" } },
         features: { ...(object(config.features) ? config.features : {}),
           rollout_budget: { enabled: true, limit_tokens: this.policy.maxTokens, enforce_limit: true, prefill_token_weight: 1, sampling_token_weight: 1 } } } };
     const beforeSnapshot = threadId ? this.snapshotGeneration.get(threadId) ?? 0 : 0;
@@ -134,6 +152,7 @@ export class CodexClient {
         result.thread.historyMode !== "paginated" || threadId && result.thread.id !== threadId) refuse();
     this.thread = { id: result.thread.id, model: result.model, modelProvider: result.modelProvider, reasoningEffort: result.reasoningEffort as string };
     this.threadModels.set(result.thread.id, result.model);
+    this.threadEfforts.set(result.thread.id, effort(result.reasoningEffort));
     this.cumulativeMode = !!threadId;
     if (!threadId) this.cumulativeUsage.set(result.thread.id, zero());
     else {
@@ -169,28 +188,36 @@ export class CodexClient {
     if (!thread || !Number.isSafeInteger(maximumResponses) || maximumResponses < 1) refuse();
     const items = new Map<string, Object>(), responses = new Set<string>();
     const byModel = new Map<string, ReportedUsage>();
+    const served = new Map<string, Set<string | null>>(), allowedThreads = new Set([thread.id]);
+    let parentModel = thread.model;
+    const servedModels = (): ReportedServingMetadata["models"] => [...served].map(([model, efforts]) => ({ model, reasoningEfforts: [...efforts] }));
+    const primaryEffort = (model: string): string | null => { const values = served.get(model); return values?.size === 1 ? [...values][0]! : null; };
     const baselines = new Map(this.cumulativeUsage), activeTurns = new Map<string, string>(), endedTurns = new Set<string>();
     let turnId: string | null = null, completed: Object | null = null, failure = false;
     let capped = false;
     let capMessage = "The Codex token budget was exhausted; partial work and its session are retained.";
     const snapshot = (): void => {
-      const model = this.threadModels.get(thread!.id) ?? thread!.model;
-      this.observed = { text: "", model, modelProvider: thread!.modelProvider, reasoningEffort: thread!.reasoningEffort, threadId: thread!.id,
-        turnId: turnId ?? "pending", usage: byModel.get(model) ?? zero(), responses: responses.size, items: [...items.values()], hasReportedUsage: byModel.size > 0,
+      const model = parentModel;
+      this.observed = { text: "", model, modelProvider: thread!.modelProvider, reasoningEffort: primaryEffort(model), servedModels: servedModels(), threadId: thread!.id,
+        turnId: turnId ?? "pending", usage: byModel.get(model) ?? zero(), responses: responses.size, items: [...items.values()], hasReportedUsage: byModel.size > 0, primaryHasReportedUsage: byModel.has(model),
         extra: [...byModel].filter(([name]) => name !== model).map(([name, usage]) => ({ model: name, usage })) };
     };
     let resolveDone: () => void;
     const done = new Promise<void>(resolve => { resolveDone = resolve; });
     let resolveTerminal: () => void;
     const terminal = new Promise<void>(resolve => { resolveTerminal = resolve; });
-    const account = (model: string | undefined, key: string, usage: ReportedUsage | null): void => {
+    const account = (model: string | undefined, reasoning: string | null, parent: boolean, key: string, usage: ReportedUsage | null): void => {
       if (responses.has(key)) return;
       responses.add(key);
       if (!usage || !model) {
         capMessage = "The provider did not report attributable usage; the call was stopped and its partial session retained.";
         failure = true; capped = true; resolveDone!();
       }
-      else byModel.set(model, sum(byModel.get(model) ?? zero(), usage));
+      else {
+        byModel.set(model, sum(byModel.get(model) ?? zero(), usage));
+        const efforts = served.get(model) ?? new Set<string | null>(); efforts.add(reasoning); served.set(model, efforts);
+        if (parent) parentModel = model;
+      }
       const total = [...byModel.values()].reduce((n, u) => n + u.totalTokens, 0);
       snapshot();
       if (responses.size > maximumResponses || this.consumedTokens + total > this.policy.maxTokens) {
@@ -199,20 +226,23 @@ export class CodexClient {
         failure = true; capped = true; resolveDone!();
       }
     };
-    type Event = { method: string; value: Object; model: string | undefined; childBaseline?: ReportedUsage };
+    type Event = { method: string; value: Object; model: string | undefined; reasoning: string | null; childBaseline?: ReportedUsage };
     const early: Event[] = [];
     let responseKnown = false;
     const finishIfReady = (): void => {
       if (completed && [...activeTurns].every(([threadId, active]) => endedTurns.has(`${threadId}:${active}`))) resolveDone!();
     };
-    const receive = ({ method, value, model, childBaseline }: Event): void => {
+    const receive = ({ method, value, model, reasoning, childBaseline }: Event): void => {
       if (!object(value)) return;
       if ((method === "item/started" || method === "item/completed") && object(value.item) && value.item.type === "subAgentActivity" &&
           value.threadId === thread!.id && value.turnId === turnId && id(value.item.agentThreadId) &&
-          !baselines.has(value.item.agentThreadId) && childBaseline) {
-        baselines.set(value.item.agentThreadId, childBaseline);
+          !allowedThreads.has(value.item.agentThreadId) && childBaseline) {
+        baselines.set(value.item.agentThreadId, childBaseline); allowedThreads.add(value.item.agentThreadId);
       }
-      if (!id(value.threadId) || !baselines.has(value.threadId)) return;
+      if (!id(value.threadId) || !allowedThreads.has(value.threadId) || !baselines.has(value.threadId)) return;
+      if (method === "model/rerouted" && value.turnId === activeTurns.get(value.threadId) && typeof value.toModel === "string") {
+        this.threadModels.set(value.threadId, value.toModel); this.threadEfforts.set(value.threadId, null);
+      }
       if (method === "turn/started" && object(value.turn) && id(value.turn.id)) {
         const key = `${value.threadId}:${value.turn.id}`, previous = activeTurns.get(value.threadId);
         if (this.retiredTurns.has(key) || value.threadId === thread!.id && value.turn.id !== turnId) return;
@@ -220,14 +250,14 @@ export class CodexClient {
         activeTurns.set(value.threadId, value.turn.id);
       }
       if (method === "rawResponse/completed" && !this.cumulativeMode && id(value.responseId) && value.turnId === activeTurns.get(value.threadId)) {
-        account(model, value.responseId, value.usage === null ? null : reportedUsage(value.usage));
+        account(model, reasoning, value.threadId === thread!.id, value.responseId, value.usage === null ? null : reportedUsage(value.usage));
       }
       if (method === "thread/tokenUsage/updated" && this.cumulativeMode && object(value.tokenUsage) && value.turnId === activeTurns.get(value.threadId)) {
         const total = reportedUsage(value.tokenUsage.total), previous = baselines.get(value.threadId)!;
         const delta = Object.fromEntries(Object.keys(total).map(key => [key, total[key as keyof ReportedUsage] - previous[key as keyof ReportedUsage]]));
         const usage = reportedUsage(delta);
         baselines.set(value.threadId, total);
-        if (usage.totalTokens > 0) account(model, `${value.threadId}:${JSON.stringify(total)}`, usage);
+        if (usage.totalTokens > 0) account(model, reasoning, value.threadId === thread!.id, `${value.threadId}:${JSON.stringify(total)}`, usage);
       }
       if ((method === "item/started" || method === "item/completed") && value.turnId === activeTurns.get(value.threadId) && object(value.item) && id(value.item.id)) {
         items.set(`${value.threadId}:${value.item.id}`, value.item); snapshot(); this.progress(value.item, method === "item/completed");
@@ -240,7 +270,9 @@ export class CodexClient {
     };
     const off = this.rpc.subscribe((method, value) => {
       if (!object(value)) return;
-      const event = { method, value, model: this.threadModels.get(String(value.threadId)),
+      const route = this.rerouted.get(`${value.threadId}:${value.turnId}`);
+      const event = { method, value, model: route?.model ?? this.threadModels.get(String(value.threadId)),
+        reasoning: route ? route.effort : this.threadEfforts.get(String(value.threadId)) ?? null,
         ...(object(value.item) && id(value.item.agentThreadId) && { childBaseline: this.cumulativeUsage.get(value.item.agentThreadId) }) };
       if (!responseKnown) { if (early.length >= 4096) refuse(); early.push(event); }
       else receive(event);
@@ -262,12 +294,12 @@ export class CodexClient {
       const messages = [...items].filter(([key]) => key.startsWith(thread!.id + ":")).map(([, item]) => item).filter(x => x.type === "agentMessage" && typeof x.text === "string");
       const text = messages.filter(x => x.phase === "final_answer").map(x => x.text).join("\n") || messages.at(-1)?.text;
       if (typeof text !== "string" || !text) refuse();
-      const model = this.threadModels.get(thread!.id) ?? thread!.model;
+      const model = parentModel;
       if (!byModel.has(model)) refuse();
       const usage = byModel.get(model) ?? zero();
       this.consumedTokens += [...byModel.values()].reduce((n, value) => n + value.totalTokens, 0);
-      const reply = { text, model, modelProvider: thread!.modelProvider, reasoningEffort: thread!.reasoningEffort, threadId: thread!.id,
-        turnId: turnId!, usage, responses: responses.size, items: [...items.values()], hasReportedUsage: true,
+      const reply = { text, model, modelProvider: thread!.modelProvider, reasoningEffort: primaryEffort(model), servedModels: servedModels(), threadId: thread!.id,
+        turnId: turnId!, usage, responses: responses.size, items: [...items.values()], hasReportedUsage: true, primaryHasReportedUsage: true,
         extra: [...byModel].filter(([key]) => key !== model).map(([key, value]) => ({ model: key, usage: value })) };
       this.observed = reply;
       return reply;

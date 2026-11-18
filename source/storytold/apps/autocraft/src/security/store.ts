@@ -67,7 +67,7 @@ const parse = <T>(s: string | null, fallback: T): T => {
 
 export type FindingRow = {
   repo: string; number: number; scan_id: number; area: string; title: string; severity: FindingSeverity; urgent: number; state: FindingState; refs: string;
-  reach: string; impact: string; verification: string | null; fix_commit: string | null; fix_pr: number | null; ghsa_id: string | null; fork: string | null; fix_patch: string | null; fix_title: string | null; fix_summary: string | null; fix_branch: string | null; fix_files: string | null; fix_ref: string | null; note: string | null; env_wait_at: string | null; reason: string | null; decided_by: string | null; created_at: string; updated_at: string; fix_attempts: number; last_failure: string | null;
+  reach: string; impact: string; verification: string | null; fix_commit: string | null; fix_pr: number | null; ghsa_id: string | null; fork: string | null; fix_patch: string | null; fix_title: string | null; fix_summary: string | null; fix_branch: string | null; fix_files: string | null; fix_ref: string | null; note: string | null; env_wait_at: string | null; reason: string | null; decided_by: string | null; created_at: string; updated_at: string; fix_attempts: number; last_failure: string | null; serving_metadata?: string | null; fix_serving_metadata?: string | null;
 };
 
 export const findingKey = (repo: string, n: number): string => `${repo}:finding:${n}`;
@@ -92,17 +92,44 @@ function withScanTests(db: DatabaseSync, rows: FindingSummary[]): FindingSummary
 
 const SEVERITY_ORDER = "CASE severity WHEN 'critical' THEN 0 WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END";
 
-/** Forgets the rounds of a finding's fix (it ended, ready or not) and removes the sessions they still keep. The rounds stay in security_fix_log, without patches. */
-export function clearRounds(db: DatabaseSync, repo: string, n: number): void {
+/** Copies exact round receipts and removes the active rows. Filesystem changes happen only after SQL succeeds. */
+function archiveRounds(db: DatabaseSync, repo: string, n: number): (string | null)[] {
   const f = db.prepare("SELECT fix_attempts, state FROM security_findings WHERE repo = ? AND number = ?").get(repo, n) as { fix_attempts: number; state: string } | undefined;
   const attempt = f?.fix_attempts ?? 0;
   const ended = new Date().toISOString();
-  for (const r of (db.prepare("SELECT * FROM security_fix_rounds WHERE repo = ? AND number = ? ORDER BY round").all(repo, n) as { round: number; session: string | null; state: string; failure: string | null; title: string; created_at: string }[])) {
-    dropSessions(r.session);
-    db.prepare("INSERT OR REPLACE INTO security_fix_log (repo, number, attempt, round, state, failure, title, created_at, ended_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
-      .run(repo, n, attempt, r.round, r.state === "building" && f?.state === "ready" ? "passed" : r.state, r.failure, r.title, r.created_at, ended);
+  const rows = db.prepare("SELECT * FROM security_fix_rounds WHERE repo = ? AND number = ? ORDER BY round").all(repo, n) as { round: number; session: string | null; state: string; failure: string | null; title: string; created_at: string; serving_metadata: string | null }[];
+  for (const r of rows) {
+    db.prepare("INSERT OR REPLACE INTO security_fix_log (repo, number, attempt, round, state, failure, title, created_at, ended_at, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(repo, n, attempt, r.round, r.state === "building" && f?.state === "ready" ? "passed" : r.state, r.failure, r.title, r.created_at, ended, r.serving_metadata);
   }
   db.prepare("DELETE FROM security_fix_rounds WHERE repo = ? AND number = ?").run(repo, n);
+  return rows.map(row => row.session);
+}
+
+/** The guarded acceptance, history copy and removal form one retryable SQL operation. */
+function finishRounds(db: DatabaseSync, repo: string, n: number, accept: () => boolean): boolean {
+  const outerTransaction = db.isTransaction;
+  db.exec("SAVEPOINT security_fix_archive");
+  let accepted = false, sessions: (string | null)[] = [];
+  try {
+    accepted = accept();
+    if (accepted) sessions = archiveRounds(db, repo, n);
+    db.exec("RELEASE security_fix_archive");
+  } catch (error) {
+    if (db.isTransaction) {
+      try { db.exec("ROLLBACK TO security_fix_archive"); }
+      finally { db.exec("RELEASE security_fix_archive"); }
+    }
+    throw error;
+  }
+  // An enclosing transaction may still roll back: leave its files intact for the session-store collector.
+  if (!outerTransaction) for (const stored of sessions) dropSessions(stored);
+  return accepted;
+}
+
+/** Forgets the rounds of a finding's fix atomically, retaining exact history and disposing sessions after commit. */
+export function clearRounds(db: DatabaseSync, repo: string, n: number): void {
+  finishRounds(db, repo, n, () => true);
 }
 
 /**
@@ -181,6 +208,12 @@ export function advance(db: DatabaseSync, repo: string, n: number, from: Finding
   const r = db.prepare(`UPDATE security_findings SET state = ?, updated_at = ?${by ? ", decided_by = ?" : ""}${cols.map((c) => `, ${c} = ?`).join("")} WHERE repo = ? AND number = ? AND state IN (${marks})`)
     .run(to, now(), ...(by ? [by] : []), ...cols.map((c) => set[c]!), repo, n, ...from);
   return r.changes > 0;
+}
+
+/** The accepted patch receipt and commit move together before any round is cleared.
+ * A concurrent state change keeps the unaccepted rounds and their exact patch receipts intact. */
+export function acceptFix(db: DatabaseSync, repo: string, n: number, fields: Record<string, string | number | null>): boolean {
+  return finishRounds(db, repo, n, () => advance(db, repo, n, ["fixing"], "ready", fields));
 }
 
 /** The finding's row whatever its state, for the steps that work on it. */

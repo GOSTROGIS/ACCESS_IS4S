@@ -9,6 +9,7 @@
 //
 // Without --apply it is a dry run: local tables only, nothing called or written.
 // The checkout is untrusted data: nothing from it is ever run (see git.ts).
+import { modelText, serializeServingMetadata, parseServingMetadata, summarizeStoredServingMetadata, type ModelText, type ServingMetadata, servingLabel } from "../agents/provenance.ts";
 import { duplicateHeld } from "../dupes/held.ts";
 import { commitIdentity, ownLogins, type CommitIdentity } from "../github/identity.ts";
 import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
@@ -79,11 +80,11 @@ export type FixupDeps = {
   exec: Exec;
   fetchDiff: DiffFetcher;
   /** The model's reply to the fixup.patch prompt, or null when it gave none. */
-  ask: (db: DatabaseSync, input: FixupPr[], checkout?: string, tool?: CheckTool, session?: SessionAsk) => Promise<string | null>;
+  ask: (db: DatabaseSync, input: FixupPr[], checkout?: string, tool?: CheckTool, session?: SessionAsk) => Promise<ModelText | null>;
   /** The model's reply to the fixup.check prompt (Opus), or null when it gave none. */
-  check: (db: DatabaseSync, input: FixupCheckInput[], checkout?: string) => Promise<string | null>;
+  check: (db: DatabaseSync, input: FixupCheckInput[], checkout?: string) => Promise<ModelText | null>;
   /** The model's reply to the fixup.conflict prompt (Sonnet), or null when it gave none. Absent: conflicts are not resolved by a model. */
-  resolve?: (db: DatabaseSync, input: ConflictPr[], checkout?: string, session?: SessionAsk) => Promise<string | null>;
+  resolve?: (db: DatabaseSync, input: ConflictPr[], checkout?: string, session?: SessionAsk) => Promise<ModelText | null>;
   /** Host directory with a read-only checkout of the PR head for the sandboxed model calls, or null to ask without tools. Absent: no tools. */
   checkout?: (repo: string, number: number, head: string) => Promise<string | null>;
   now: () => Date;
@@ -94,9 +95,9 @@ export type FixupDeps = {
 export function defaultDeps(): FixupDeps {
   return {
     querier: new Client(1000), exec, fetchDiff: ghDiff, now: () => new Date(), root: fixupDir(),
-    ask: async (db, input, checkout, tool, session) => (await askClaude("fixup.patch", PROMPT.models[0]!, input, db, { checkout, check: tool, session }))?.text ?? null,
-    check: async (db, input, checkout) => (await askClaude("fixup.check", CHECK.models[0]!, input, db, { checkout }))?.text ?? null,
-    resolve: async (db, input, checkout, session) => (await askClaude("fixup.conflict", CONFLICT.models[0]!, input, db, { checkout, session }))?.text ?? null,
+    ask: async (db, input, checkout, tool, session) => (await askClaude("fixup.patch", PROMPT.models[0]!, input, db, { checkout, check: tool, session }))?? null,
+    check: async (db, input, checkout) => (await askClaude("fixup.check", CHECK.models[0]!, input, db, { checkout }))?? null,
+    resolve: async (db, input, checkout, session) => (await askClaude("fixup.conflict", CONFLICT.models[0]!, input, db, { checkout, session }))?? null,
     checkout: (r, n, h) => checkoutForPr(r, n, h, console.log),
   };
 }
@@ -174,6 +175,7 @@ const sourceOf = (c: FixCandidate): string => (c.carry ? "carry" : c.source ?? "
 
 export const whoAmI = (run: Exec): Promise<Who> => pipelineAccount(run);
 
+const patchServing = (c: FixCandidate): string | null => c.patchServingMetadata !== undefined ? c.patchServingMetadata : c.lint?.servingMetadata ?? null;
 class Recorder {
   private db: DatabaseSync;
   private at: () => string;
@@ -185,14 +187,14 @@ class Recorder {
   /** Written before the push: the commit about to be pushed, so a crash between the push and its record leaves the head in the push chain. */
   pushing(c: FixCandidate, commit: string, files: string[]): void {
     // A stored patch's row (any source) is the record of the push; a carry-over also keeps its own.
-    if (c.lint) this.db.prepare("UPDATE fixups SET state = 'pushing', to_head = ?, files = ? WHERE rowid = ?").run(commit, JSON.stringify(files), c.lint.rowid);
+    if (c.lint) this.db.prepare("UPDATE fixups SET state = 'pushing', to_head = ?, files = ?, serving_metadata = ? WHERE rowid = ?").run(commit, JSON.stringify(files), patchServing(c), c.lint.rowid);
     if (c.carry) {
       this.db.prepare("UPDATE dupe_carries SET to_head = ?, from_head = ?, updated_at = ? WHERE decision_id = ? AND number = ?").run(commit, c.head, this.at(), c.carry.decisionId, c.number);
       return;
     }
     if (c.lint) return;
-    this.db.prepare("INSERT INTO fixups (repo, number, from_head, to_head, state, reason, files, attempt, created_at, source, operator_fix) VALUES (?, ?, ?, ?, 'pushing', NULL, ?, ?, ?, ?, ?)")
-      .run(c.repo, c.number, c.head, commit, JSON.stringify(files), c.attempt, this.at(), c.source ?? null, c.operator?.id ?? null);
+    this.db.prepare("INSERT INTO fixups (repo, number, from_head, to_head, state, reason, files, attempt, created_at, source, operator_fix, serving_metadata) VALUES (?, ?, ?, ?, 'pushing', NULL, ?, ?, ?, ?, ?, ?)")
+      .run(c.repo, c.number, c.head, commit, JSON.stringify(files), c.attempt, this.at(), c.source ?? null, c.operator?.id ?? null, patchServing(c));
   }
 
   /** The model patch waits for its lint task: a first row, or the same row with the next round's patch and task. */
@@ -239,17 +241,17 @@ class Recorder {
       this.db.prepare("UPDATE dupe_carries SET state = ?, attempts = attempts + ?, outcome = ?, to_head = ?, from_head = ?, updated_at = ? WHERE decision_id = ? AND number = ?")
         .run(next, tried || state === "pushed" ? 1 : 0, reason ? `${state}: ${reason}` : state, toHead, toHead ? c.head : null, at, c.carry.decisionId, c.number);
       // The stored patch's row, if the carry-over went through the lint check, ends with it.
-      if (c.lint) this.db.prepare("UPDATE fixups SET state = ?, reason = ?, files = ?, to_head = ?, patch = NULL WHERE rowid = ?").run(state, reason, JSON.stringify(files), toHead, c.lint.rowid);
+      if (c.lint) this.db.prepare("UPDATE fixups SET state = ?, reason = ?, files = ?, to_head = ?, patch = NULL, serving_metadata = ? WHERE rowid = ?").run(state, reason, JSON.stringify(files), toHead, patchServing(c), c.lint.rowid);
       return;
     }
     // The candidate's own row: its stored patch, else the open row of its source (and of its operator request).
     const open = (c.lint ? { id: c.lint.rowid } : this.db.prepare("SELECT rowid AS id FROM fixups WHERE repo = ? AND number = ? AND from_head = ? AND state IN ('pushing', 'linting') AND COALESCE(source, 'review') = ? AND operator_fix IS ? ORDER BY rowid DESC")
       .get(c.repo, c.number, c.head, c.source ?? "review", c.operator?.id ?? null)) as { id: number } | undefined;
     if (open) {
-      this.db.prepare("UPDATE fixups SET state = ?, reason = ?, files = ?, to_head = ? WHERE rowid = ?").run(state, reason, JSON.stringify(files), toHead, open.id);
+      this.db.prepare("UPDATE fixups SET state = ?, reason = ?, files = ?, to_head = ?, serving_metadata = ? WHERE rowid = ?").run(state, reason, JSON.stringify(files), toHead, state === "asked" ? c.servingMetadata ?? null : patchServing(c), open.id);
     } else {
-      this.db.prepare("INSERT INTO fixups (repo, number, from_head, to_head, state, reason, files, attempt, created_at, source, operator_fix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(c.repo, c.number, c.head, toHead, state, reason, JSON.stringify(files), c.attempt, at, c.source ?? null, c.operator?.id ?? null);
+      this.db.prepare("INSERT INTO fixups (repo, number, from_head, to_head, state, reason, files, attempt, created_at, source, operator_fix, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        .run(c.repo, c.number, c.head, toHead, state, reason, JSON.stringify(files), c.attempt, at, c.source ?? null, c.operator?.id ?? null, state === "asked" ? c.servingMetadata ?? null : patchServing(c));
     }
     const hold = state === "cannot-push" || state === "too-large" || state === "push-denied";
     const note = state === "pushed" ? `fix-up pushed at ${short(c.head)}: ${files.join(", ")}${reason ? `; ${reason}` : ""}`
@@ -503,10 +505,11 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
       // The model's patch: the stored one when it is clean, else a new answer (with the findings on the earlier patch).
       const ses: SessionAsk = c.lint && findings.length ? sessionAsk(c.lint.session, "", findings, new Date(at())) : {};
       if (folded !== null) dropSessions(c.lint!.session);
-      const patchServingMetadata = folded !== null ? c.lint?.servingMetadata : null;
-      const raw = folded !== null ? c.lint!.patch : await d.ask(db, [{ ref, title: oneTitle(db, c), fixes: c.fixes, ...(quiet ? { quiet } : {}), files: shown, diff: diff.text, ...(c.operator ? { operator: c.operator.instructions } : {}), ...(carried ? { carried_from: carried } : {}),
+      const patchAnswer = folded !== null ? { text: c.lint!.patch, serving: parseServingMetadata(c.lint?.servingMetadata) } : modelText(await d.ask(db, [{ ref, title: oneTitle(db, c), fixes: c.fixes, ...(quiet ? { quiet } : {}), files: shown, diff: diff.text, ...(c.operator ? { operator: c.operator.instructions } : {}), ...(carried ? { carried_from: carried } : {}),
         ...(c.lint && findings.length ? { previous: { patch: c.lint.patch, findings } } : {}), ...repoDir }], checkout,
-        new CheckTool({ db, step: "fixup", repo, number: c.number, head, base: pr.baseRefOid ?? null, applies: applyCheck(git, d.root, head, (p) => refusal(c.operator ? validatePatch(splitChanges(p).diff, null, (x) => operatorEditable(x, scripts)) : validatePatch(p, files, (x) => fixupEditable(x, scripts)))) }), ses);
+        new CheckTool({ db, step: "fixup", repo, number: c.number, head, base: pr.baseRefOid ?? null, applies: applyCheck(git, d.root, head, (p) => refusal(c.operator ? validatePatch(splitChanges(p).diff, null, (x) => operatorEditable(x, scripts)) : validatePatch(p, files, (x) => fixupEditable(x, scripts)))) }), ses));
+      const raw = patchAnswer?.text ?? null;
+      const patchServingMetadata = serializeServingMetadata(patchAnswer?.serving);
       ledger.hold(ses.kept);
       if (c.lint && folded === null) dropSessions(c.lint.session, ses.kept ? { "": ses.kept } : {});
       if (raw === null) { fail("failed", "the model gave no answer"); return; }
@@ -515,6 +518,7 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
       const reply = split.diff;
       const v = c.operator ? validatePatch(reply, null, (x) => operatorEditable(x, scripts)) : validatePatch(reply, files, (x) => fixupEditable(x, scripts));
       if (!v.ok) { fail("refused", v.reason); return; }
+      c = { ...c, patchServingMetadata };
       const word = quiet ? patchGiveaway(v.patch) : null;
       if (word) { fail("refused", QUIET_PATCH_REFUSAL); return; }
 
@@ -540,13 +544,14 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
       // Opus checks the validated patch; only an approve goes on. A stored patch that came back clean was checked already (the format changes are whitespace only).
       if (folded === null) {
         if (v.patch.length > CHECK_PATCH_CAP) { fail("refused", `the patch is over the ${CHECK_PATCH_CAP} character limit for the check`); return; }
-        const checkReply = await d.check(db, [{ ref, title: oneTitle(db, c), review_reason: c.reason, fixes: c.fixes, ...(c.operator ? { operator: c.operator.instructions } : {}), diff: diff.text.slice(0, CHECK_DIFF_CAP), patch: v.patch, ...(carried ? { carried_from: carried.map((x) => ({ ...x, diff: x.diff.slice(0, Math.floor(CHECK_DIFF_CAP / carried.length)) })) } : {}), ...repoDir }], checkout);
+        const checkAnswer = modelText(await d.check(db, [{ ref, title: oneTitle(db, c), review_reason: c.reason, fixes: c.fixes, ...(c.operator ? { operator: c.operator.instructions } : {}), diff: diff.text.slice(0, CHECK_DIFF_CAP), patch: v.patch, ...(carried ? { carried_from: carried.map((x) => ({ ...x, diff: x.diff.slice(0, Math.floor(CHECK_DIFF_CAP / carried.length)) })) } : {}), ...repoDir }], checkout));
+        const checkReply = checkAnswer?.text ?? null;
         if (checkReply === null) { fail("failed", "the patch check gave no answer"); return; }
         const verdict = parseCheck(checkReply);
         if (!verdict.ok) { fail("failed", `the patch check gave no valid answer: ${verdict.error}`); return; }
-        recordCheck(db, { kind: "fixup", repo, number: c.number, subject: head, patch: v.patch, round: c.attempt, model: CHECK.models[0]!, check: verdict.check, at: at() });
+        recordCheck(db, { kind: "fixup", repo, number: c.number, subject: head, patch: v.patch, round: c.attempt, model: CHECK.models[0]!, serving: checkAnswer?.serving, check: verdict.check, at: at() });
         audit(db, ACTOR, "fixup-check", ref, { run: runId, head, verdict: verdict.check.verdict, reasons: verdict.check.reasons });
-        if (verdict.check.verdict === "reject") { fail("rejected", `Opus rejected the patch: ${checkLine(verdict.check)}`); return; }
+        if (verdict.check.verdict === "reject") { fail("rejected", `${servingLabel(checkAnswer?.serving, "Opus")} rejected the patch: ${checkLine(verdict.check)}`); return; }
       }
 
       // The model calls took minutes: read the PR again before pushing.
@@ -563,7 +568,7 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
         const round = c.lint ? c.lint.round + 1 : 1;
         const task = await queueLintFor(db, { step: "fixup", repo, number: c.number, head, base: now.baseRefOid ?? null, patch: v.patch });
         if (task !== null) {
-          rec.linting(c, v.patch, v.files, task, "pending", round, ses.kept ? storeSessions({ "": ses.kept }, new Date(at())) : null, split.changes);
+          rec.linting(c, v.patch, v.files, task, "pending", round, ses.kept ? storeSessions({ "": ses.kept }, new Date(at())) : null, split.changes, patchServingMetadata);
           if (ses.kept) ledger.stored({ "": ses.kept });
           jobItem(db, repo, c.number, `patch stored; lint task ${task} queued (round ${round})`, log);
           return;
@@ -585,7 +590,7 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
       jobItem(db, repo, c.number, `pushed ${short(commit)} on ${short(head)}: ${v.files.join(", ")}`, log);
 
       const body = c.carry ? carryCommentText(c.carry.sources.map((x) => x.number), v.files) : c.operator ? operatorCommentText(v.files, quiet ? [] : await postableChanges(db, repo, `${repo}#${c.number}`, split.changes, c.operator.instructions)) : commentText(v.files, c.attempt);
-      const note = storedNote<Note>(c.carry ? { by: "operator", model: PROMPT.models[0] } : c.operator ? { by: "fixed-operator" } : { by: "model", kind: "comment", model: PROMPT.models[0] }, patchServingMetadata);
+      const note = storedNote<Note>(c.carry ? { by: "operator", model: PROMPT.models[0] } : c.operator ? { by: "operator", model: PROMPT.models[0] } : { by: "model", kind: "comment", model: PROMPT.models[0] }, patchServingMetadata);
       // A plain review-fix push right after our own review-fix comment extends that comment instead of adding a second one.
       const prev = c.carry || c.operator ? null : await newestOwnComment(d.querier, new Set([who.login, ...ownLogins(db, repo)]), repo, c.number);
       const prevLines = prev ? fixupCommentLines(prev.body) : null;

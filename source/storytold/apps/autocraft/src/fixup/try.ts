@@ -2,6 +2,7 @@
 // model call with the check tool, then apply, validate, the Opus patch check and the lint task) and prints what happened.
 // It stores no fixups row, records no check or audit row and writes nothing to GitHub; model usage, model_checks and the
 // worker tasks are recorded as for any run. The pipeline setting and the stage's limits do not apply.
+import { modelText, servingLabel } from "../agents/provenance.ts";
 import { mkdirSync } from "node:fs";
 import type { DatabaseSync } from "node:sqlite";
 import { getTask, TERMINAL } from "../build/tasks.ts";
@@ -68,7 +69,8 @@ export async function runFixupTry(db: DatabaseSync, repo: string, number: number
   const base = (await d.querier.query(BASE_QUERY, { owner: ownerOf(repo), name: repo, n: number }) as { repository?: { pullRequest?: { baseRefOid?: string } | null } }).repository?.pullRequest?.baseRefOid ?? null;
   const tool = new CheckTool({ db, step: "fixup", repo, number, head, base, applies: applyCheck(git, d.root, head, (p) => refusal(validatePatch(p, files, (x) => fixupEditable(x, scripts)))) });
   const t0 = Date.now();
-  const reply = await d.ask(db, [{ ref, title: (item.title ?? "").slice(0, 300), fixes, files: shown, diff: diff.text, ...repoDir }], checkout, tool);
+  const patchAnswer = modelText(await d.ask(db, [{ ref, title: (item.title ?? "").slice(0, 300), fixes, files: shown, diff: diff.text, ...repoDir }], checkout, tool));
+  const reply = patchAnswer?.text ?? null;
   log(`model call took ${Math.round((Date.now() - t0) / 1000)} s`);
 
   const offered = checkout !== undefined && CLAUDE_PROMPTS["fixup.patch"].sandbox?.check === true;
@@ -91,11 +93,12 @@ export async function runFixupTry(db: DatabaseSync, repo: string, number: number
 
   let code = 0;
   if (v.patch.length > CHECK_PATCH_CAP) { log(`\nOpus check skipped: the patch is over the ${CHECK_PATCH_CAP} character limit`); return 1; }
-  const checkReply = await d.check(db, [{ ref, title: (item.title ?? "").slice(0, 300), review_reason: review.reason ?? "", fixes, diff: diff.text.slice(0, CHECK_DIFF_CAP), patch: v.patch, ...repoDir }], checkout);
+  const checkAnswer = modelText(await d.check(db, [{ ref, title: (item.title ?? "").slice(0, 300), review_reason: review.reason ?? "", fixes, diff: diff.text.slice(0, CHECK_DIFF_CAP), patch: v.patch, ...repoDir }], checkout));
+  const checkReply = checkAnswer?.text ?? null;
   const verdict = checkReply === null ? null : parseCheck(checkReply);
-  if (!verdict) log("\nOpus check: no answer");
-  else if (!verdict.ok) log(`\nOpus check: no valid answer: ${verdict.error}`);
-  else { log(`\nOpus check: ${verdict.check.verdict}: ${checkLine(verdict.check)}`); if (verdict.check.verdict === "reject") code = 2; }
+  if (!verdict) log("\nPatch check: no answer");
+  else if (!verdict.ok) log(`\n${servingLabel(checkAnswer?.serving, "Opus")} check: no valid answer: ${verdict.error}`);
+  else { log(`\n${servingLabel(checkAnswer?.serving, "Opus")} check: ${verdict.check.verdict}: ${checkLine(verdict.check)}`); if (verdict.check.verdict === "reject") code = 2; }
 
   const task = await queueLintFor(db, { step: "fixup", repo, number, head, base, patch: v.patch });
   if (task === null) { log("\nlint: the patch changes no .rs file; no lint task"); return code; }

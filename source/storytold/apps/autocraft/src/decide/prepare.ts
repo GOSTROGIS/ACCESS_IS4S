@@ -4,6 +4,7 @@
 // A single-item decision gets an Opus turn in the item's conversation and its choices (a pick, drafted params and extras per
 // core) stored as the decision's current version; a group decision gets a summary and a pick only. Our code accepts only a
 // pick that is one of the decision's cores or options.
+import { serializeServingMetadata } from "../agents/provenance.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { queueRoom } from "../agents/call.ts";
 import { runModelStep, type ClaudeStep } from "../agents/step.ts";
@@ -194,7 +195,7 @@ export async function prepare(db: DatabaseSync, ids: string[], p: PrepareParams)
   const failed = db.prepare(`UPDATE main.decisions SET recommend_failures = CASE WHEN prepare_failed_head IS ? THEN COALESCE(recommend_failures, 0) + 1 ELSE 1 END,
     recommend_failed_at = ?, prepare_failed_head = ? WHERE id = ?`);
   const store = db.prepare(`UPDATE main.decisions SET recommended = ?, recommended_reason = ?, recommended_by = ?, summary = ?, summary_by = ?, summary_at = ?,
-    serving_metadata = NULL, prepared_at = ?, prepared_head = ?, prepared_discussion = ?, recommend_failures = NULL, recommend_failed_at = NULL, prepare_failed_head = NULL, prepare_requested_at = NULL
+    serving_metadata = ?, prepared_at = ?, prepared_head = ?, prepared_discussion = ?, recommend_failures = NULL, recommend_failed_at = NULL, prepare_failed_head = NULL, prepare_requested_at = NULL
     WHERE id = ? AND answer IS NULL AND question = ? AND options = ?`);
   const res: PrepareResult = { stored: 0, failed: 0 };
   await pool(ids.map((id, k) => async () => {
@@ -277,9 +278,9 @@ export async function prepare(db: DatabaseSync, ids: string[], p: PrepareParams)
     try {
       if (single) {
         const cards = got.ask ? [got.ask] : [];
-        insertTurn(db, repo, n, { kind: "opus", login: "opus", body: got.text, block: opusBlock(got.text, cards, got.choices), notes: got.notes, cards, ...(got.choices && { choices: { decision: d, parsed: got.choices, source: "prepare" as const, by: model } }) }, { diff: p.diff });
+        insertTurn(db, repo, n, { serving: r.serving, kind: "opus", login: "opus", body: got.text, block: opusBlock(got.text, cards, got.choices), notes: got.notes, cards, ...(got.choices && { choices: { decision: d, parsed: got.choices, source: "prepare" as const, by: model } }) }, { diff: p.diff });
       }
-      store.run(got.pick, got.pick ? got.reason || null : null, model, got.summary, model, at, at, head, readKey, d.id, d.question, d.options);
+      store.run(got.pick, got.pick ? got.reason || null : null, model, got.summary, model, at, serializeServingMetadata(r.serving), at, head, readKey, d.id, d.question, d.options);
       res.stored++;
     } catch (e) {
       p.log(`decide: could not store the prepare of ${d.id}: ${(e as Error).message}`);

@@ -1,4 +1,5 @@
 // Referee: Sonnet decides disagreements between Jev and Haiku under the written rules.
+import { serializeServingMetadata } from "../agents/provenance.ts";
 import { jobItem } from "../runner/job-items.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { queueRoom } from "../agents/call.ts";
@@ -37,8 +38,8 @@ export async function refereeItems(db: DatabaseSync, runId: string, items: Item[
   const perCall = opts.perCall ?? REFEREE.limits.perCall;
   const chunks: Item[][] = [];
   for (let i = 0; i < items.length; i += perCall) chunks.push(items.slice(i, i + perCall));
-  const ins = db.prepare(`INSERT OR REPLACE INTO main.classifications (repo, number, classifier, run_id, at, type_label, flags, reason, probs)
-    VALUES (?, ?, 'sonnet', ?, ?, ?, '[]', ?, ?)`);
+  const ins = db.prepare(`INSERT OR REPLACE INTO main.classifications (repo, number, classifier, run_id, at, type_label, flags, reason, probs, serving_metadata)
+    VALUES (?, ?, 'sonnet', ?, ?, ?, '[]', ?, ?, ?)`);
   const have = db.prepare(`SELECT 1 FROM classifications WHERE repo = ? AND number = ? AND classifier = 'sonnet' AND run_id = ? AND at >= ?`);
   // Evaluation runs resume: any earlier answer in the run counts. Pipeline runs ask again, since a new answer replaces the old one.
   let total = 0, sent = 0;
@@ -54,9 +55,9 @@ export async function refereeItems(db: DatabaseSync, runId: string, items: Item[
         ...(opts.model && { model: opts.model }),
         onAttempt: (todo) => opts.onSent?.((sent += todo.length)),
       });
-      if (r.ok) for (const verdicts of r.values) for (const v of verdicts) {
+      if (r.ok) for (const [index, verdicts] of r.values.entries()) for (const v of verdicts) {
         const [repo, num] = v.ref.split("#");
-        ins.run(repo!, Number(num), runId, new Date().toISOString(), v.type_label, v.why, opts.pipeline ? JSON.stringify({ sure: v.sure === true, ...(opts.model && { final: true }) }) : null);
+        ins.run(repo!, Number(num), runId, new Date().toISOString(), v.type_label, v.why, opts.pipeline ? JSON.stringify({ sure: v.sure === true, ...(opts.model && { final: true }) }) : null, serializeServingMetadata(r.servingValues[index]));
         got++;
         jobItem(db, repo!, Number(num), `refereed${opts.model ? ` by ${opts.model}` : ""} as ${v.type_label}${v.sure === true ? "" : " (unsure)"}`);
       }
@@ -67,14 +68,14 @@ export async function refereeItems(db: DatabaseSync, runId: string, items: Item[
         const answered = new Set(r.ok ? r.values.flat().map((v) => v.ref) : []);
         for (const i of first) {
           if (answered.has(`${i.repo}#${i.number}`)) continue;
-          const row = db.prepare(`SELECT type_label, reason, probs, at FROM classifications WHERE repo = ? AND number = ? AND classifier = 'sonnet' AND run_id = ?`).get(i.repo, i.number, runId) as { type_label: string; reason: string | null; probs: string | null; at: string } | undefined;
+          const row = db.prepare(`SELECT type_label, reason, probs, at, serving_metadata FROM classifications WHERE repo = ? AND number = ? AND classifier = 'sonnet' AND run_id = ?`).get(i.repo, i.number, runId) as { type_label: string; reason: string | null; probs: string | null; at: string; serving_metadata: string | null } | undefined;
           if (!row) continue;
           let p: Record<string, unknown> = {};
           try { p = (JSON.parse(row.probs ?? "{}") as Record<string, unknown>) ?? {}; } catch { /* keep empty */ }
           p.opusFailures = (typeof p.opusFailures === "number" ? p.opusFailures : 0) + 1;
           p.opusFailedAt = new Date().toISOString();
-          db.prepare(`INSERT OR REPLACE INTO main.classifications (repo, number, classifier, run_id, at, type_label, flags, reason, probs) VALUES (?, ?, 'sonnet', ?, ?, ?, '[]', ?, ?)`)
-            .run(i.repo, i.number, runId, row.at, row.type_label, row.reason, JSON.stringify(p));
+          db.prepare(`INSERT OR REPLACE INTO main.classifications (repo, number, classifier, run_id, at, type_label, flags, reason, probs, serving_metadata) VALUES (?, ?, 'sonnet', ?, ?, ?, '[]', ?, ?, ?)`)
+            .run(i.repo, i.number, runId, row.at, row.type_label, row.reason, JSON.stringify(p), row.serving_metadata);
         }
       }
     }

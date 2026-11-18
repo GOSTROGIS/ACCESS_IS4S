@@ -1,6 +1,7 @@
 // The security deep scan engine: threat model, one call per area, one verify call per finding, with a spend cap
 // checked before every call. It runs in the runner's job process (step `security-scan`) on a pinned commit of the
 // default branch; nothing here writes to GitHub.
+import { serializeServingMetadata, summarizeStoredServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import type { DatabaseSync } from "node:sqlite";
@@ -18,7 +19,7 @@ import {
 
 /** One model call. `text` is null when the call gave no answer; `cost` is what it cost whatever the outcome, null when unknown. */
 /** `runId` is the first agent run the call made (shown on the scan page); absent when it made none. */
-export type Reply = { text: string | null; cost: number | null; runId?: number | null };
+export type Reply = { text: string | null; cost: number | null; runId?: number | null; serving?: ServingMetadata };
 export type Ask = {
   (id: "security.model", input: SecurityModelInput): Promise<Reply | null>;
   (id: "security.area", input: SecurityAreaInput): Promise<Reply | null>;
@@ -169,7 +170,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
   let areaGuess = areaGuessUsd(0);
 
   /** One call with the cap and stop checks before it; the call's cost goes to the scan and, for area work, to the area. */
-  async function call<T>(kind: "model" | "area" | "verify" | "test", expected: number, meta: { area?: number; finding?: number; bill?: number }, run: () => Promise<Reply | null>, readReply: (text: string) => T | null): Promise<{ value: T; cost: number | null } | null> {
+  async function call<T>(kind: "model" | "area" | "verify" | "test", expected: number, meta: { area?: number; finding?: number; bill?: number }, run: () => Promise<Reply | null>, readReply: (text: string) => T | null): Promise<{ value: T; cost: number | null; serving?: ServingMetadata } | null> {
     let spent: number | null = 0;
     for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
       if (stopped()) throw new Stopped();
@@ -193,7 +194,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
         if (meta.bill !== undefined) db.prepare("UPDATE security_areas SET cost_usd = cost_usd + ? WHERE scan_id = ? AND idx = ?").run(c, scanId, meta.bill);
       }
       spent = spent === null || c === null ? null : spent + c;
-      if (value !== null) return { value, cost: spent };
+      if (value !== null) return { value, cost: spent, ...(reply?.serving !== undefined && { serving: reply.serving }) };
     }
     return null;
   }
@@ -217,6 +218,8 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
     const keptAreas = kept ? (db.prepare("SELECT idx, name, paths, entry_points, risk, why, state FROM security_areas WHERE scan_id = ? ORDER BY idx").all(scanId) as { idx: number; name: string; paths: string; entry_points: string; risk: number; why: string; state: string }[]) : [];
     const resumed = !!kept && keptAreas.length > 0;
     let summaryText: string, entryPoints: ThreatModel["entryPoints"];
+    // Continued scans without a stored model receipt retain explicitly incomplete attribution.
+    let modelServing: ServingMetadata | undefined;
     const areas: ThreatArea[] = [];
     const sizes: number[] = [];
     const doneIdx = new Set<number>();
@@ -235,6 +238,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
       progress(`${repo}: threat model`);
       const modeled = await call<ThreatModel>("model", MODEL_GUESS_USD, {}, () => deps.ask("security.model", { ...base }), parseThreatModel);
       if (!modeled) return fail("The threat model could not be read.");
+      modelServing = modeled.serving;
       summaryText = modeled.value.summary;
       entryPoints = modeled.value.entryPoints;
       for (const a of modeled.value.areas) {
@@ -253,8 +257,8 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
     const guesses = sizes.map(areaGuessUsd);
 
     const known: Known[] = (db.prepare("SELECT number, state, fingerprint, title, refs, category FROM security_findings WHERE repo = ?").all(repo) as KnownRow[]).map(knownOf);
-    const insFinding = db.prepare(`INSERT INTO security_findings (repo, number, scan_id, area, title, severity, urgent, state, refs, category, reach, impact, fingerprint, created_at, updated_at, duplicate_of)
-      VALUES (?, (SELECT COALESCE(MAX(number), 0) + 1 FROM security_findings WHERE repo = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING number`);
+    const insFinding = db.prepare(`INSERT INTO security_findings (repo, number, scan_id, area, title, severity, urgent, state, refs, category, reach, impact, fingerprint, created_at, updated_at, duplicate_of, serving_metadata)
+      VALUES (?, (SELECT COALESCE(MAX(number), 0) + 1 FROM security_findings WHERE repo = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING number`);
 
     const unverifiedOf = (area: string): { number: number; c: Candidate }[] =>
       (db.prepare("SELECT * FROM security_findings WHERE scan_id = ? AND area = ? AND state = 'unverified' ORDER BY number").all(scanId, area) as { number: number; title: string; severity: Candidate["severity"]; urgent: number; category: string | null; refs: string; reach: string; impact: string }[])
@@ -273,7 +277,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
       // An area the cap stopped during verification has its findings already; only the unchecked ones are verified.
       const leftover = resumed ? unverifiedOf(area.name) : [];
       const hasFindings = resumed && !!db.prepare("SELECT 1 FROM security_findings WHERE scan_id = ? AND area = ?").get(scanId, area.name);
-      const found = hasFindings ? { value: [] as Candidate[], cost: 0 } : await call<Candidate[]>("area", areaGuess, { area: idx, bill: idx }, () => deps.ask("security.area", input), parseCandidates);
+      const found = hasFindings ? { value: [] as Candidate[], cost: 0, serving: undefined } : await call<Candidate[]>("area", areaGuess, { area: idx, bill: idx }, () => deps.ask("security.area", input), parseCandidates);
       if (!found) {
         db.prepare("UPDATE security_areas SET state = 'failed' WHERE scan_id = ? AND idx = ?").run(scanId, idx);
         deps.log(`area ${area.name}: no readable answer`);
@@ -288,7 +292,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
           const earlier = earlierFinding(known, cand);
           const at = now();
           // A repeat is kept as a hidden row that points at the earlier finding, which shows it in its timeline.
-          const row = insFinding.get(repo, repo, scanId, area.name, cand.title, cand.severity, cand.urgent ? 1 : 0, earlier ? "duplicate" : "unverified", JSON.stringify(cand.refs), cand.category, cand.reach, cand.impact, fingerprintOf(cand), at, at, earlier?.number ?? null) as { number: number };
+          const row = insFinding.get(repo, repo, scanId, area.name, cand.title, cand.severity, cand.urgent ? 1 : 0, earlier ? "duplicate" : "unverified", JSON.stringify(cand.refs), cand.category, cand.reach, cand.impact, fingerprintOf(cand), at, at, earlier?.number ?? null, serializeServingMetadata(summarizeStoredServingMetadata([modelServing, found.serving]))) as { number: number };
           known.push({ number: row.number, state: earlier ? "duplicate" : "unverified", fingerprint: fingerprintOf(cand), sink: cand.refs[0]!, refs: cand.refs, title: cand.title, category: cand.category ?? null });
           if (!earlier) fresh.push({ number: row.number, c: cand });
         }
@@ -306,7 +310,8 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
           if (checked.cost !== null) verifyCalls.push(checked.cost);
           const verdict = checked.value;
           const v: FindingVerification = { kind: "reasoning", result: verdict.result, notes: verdict.notes, score: verdict.score, proposedTest: verdict.proposedTest };
-          db.prepare("UPDATE security_findings SET state = ?, verification = ?, updated_at = ? WHERE repo = ? AND number = ?").run(survives(verdict) ? "new" : "disproved", JSON.stringify(v), now(), repo, f.number);
+          const discovery = db.prepare("SELECT serving_metadata FROM security_findings WHERE repo = ? AND number = ?").get(repo, f.number)!;
+          db.prepare("UPDATE security_findings SET state = ?, verification = ?, updated_at = ?, serving_metadata = ? WHERE repo = ? AND number = ?").run(survives(verdict) ? "new" : "disproved", JSON.stringify(v), now(), serializeServingMetadata(summarizeStoredServingMetadata([discovery.serving_metadata, checked.serving])), repo, f.number);
           if (survives(verdict)) {
             // The test row is written before `confirmed`, so the automatic fix sees it and waits for the result.
             if (verdict.proposedTest?.trim() && deps.writeTest && deps.crates && featureOn(db, "scan-tests")) {

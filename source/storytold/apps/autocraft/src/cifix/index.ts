@@ -1,3 +1,4 @@
+import { modelText, serializeServingMetadata, parseServingMetadata, summarizeStoredServingMetadata, type ModelText, type ServingMetadata, servingLabel } from "../agents/provenance.ts";
 import { storedNote } from "../github/note.ts";
 // CI fix: a PR we want whose gate check failed at its reviewed head gets one of three things, by what the log says:
 //   format  the formatter runs in a build environment (never on this host) and its diff is pushed; no model;
@@ -115,9 +116,9 @@ export type CifixDeps = {
   /** Reads from GitHub (`gh` arguments): the failed check runs and their logs. */
   gh: Gh;
   /** The model's reply to the cifix.patch prompt, or null when it gave none. */
-  ask: (db: DatabaseSync, input: CifixPr[], checkout?: string, tool?: CheckTool, session?: SessionAsk) => Promise<string | null>;
+  ask: (db: DatabaseSync, input: CifixPr[], checkout?: string, tool?: CheckTool, session?: SessionAsk) => Promise<ModelText | null>;
   /** The model's reply to the fixup.check prompt (Opus), or null when it gave none. */
-  check: (db: DatabaseSync, input: FixupCheckInput[], checkout?: string) => Promise<string | null>;
+  check: (db: DatabaseSync, input: FixupCheckInput[], checkout?: string) => Promise<ModelText | null>;
   /** Host directory with a read-only checkout of the PR head for the sandboxed model calls, or null to ask without tools. */
   checkout?: (repo: string, number: number, head: string) => Promise<string | null>;
   now: () => Date;
@@ -131,8 +132,8 @@ const codeNote: Note = { by: "model", kind: "comment", model: PROMPT.models[0] }
 export function defaultDeps(): CifixDeps {
   return {
     querier: new Client(1000), exec, fetchDiff: ghDiff, gh: ghExec, now: () => new Date(), root: fixupDir(),
-    ask: async (db, input, checkout, tool, session) => (await askClaude("cifix.patch", PROMPT.models[0]!, input, db, { checkout, check: tool, session }))?.text ?? null,
-    check: async (db, input, checkout) => (await askClaude("fixup.check", CHECK.models[0]!, input, db, { checkout }))?.text ?? null,
+    ask: async (db, input, checkout, tool, session) => (await askClaude("cifix.patch", PROMPT.models[0]!, input, db, { checkout, check: tool, session }))?? null,
+    check: async (db, input, checkout) => (await askClaude("fixup.check", CHECK.models[0]!, input, db, { checkout }))?? null,
     checkout: (r, n, h) => checkoutForPr(r, n, h, console.log),
   };
 }
@@ -175,6 +176,7 @@ export function errorFiles(log: string): string[] {
 
 type Fix = { patch: string; files: string[]; changed: number };
 
+const patchServing = (c: CifixCandidate): string | null => c.patchServingMetadata !== undefined ? c.patchServingMetadata : c.lint?.servingMetadata ?? null;
 class Recorder {
   private db: DatabaseSync;
   private at: () => string;
@@ -190,10 +192,10 @@ class Recorder {
   /** Written before the push: the commit about to be pushed, so a crash between the push and its record leaves the head in the push chain. */
   pushing(c: CifixCandidate, kind: "format" | "code", commit: string, files: string[]): void {
     const open = this.open(c);
-    if (open) this.db.prepare("UPDATE ci_fixes SET state = 'pushing', to_head = ?, files = ? WHERE rowid = ?").run(commit, JSON.stringify(files), open.id);
+    if (open) this.db.prepare("UPDATE ci_fixes SET state = 'pushing', to_head = ?, files = ?, serving_metadata = ? WHERE rowid = ?").run(commit, JSON.stringify(files), patchServing(c), open.id);
     else {
-      this.db.prepare("INSERT INTO ci_fixes (repo, number, head, to_head, kind, state, reason, files, attempt, created_at) VALUES (?, ?, ?, ?, ?, 'pushing', NULL, ?, ?, ?)")
-        .run(c.repo, c.number, c.head, commit, kind, JSON.stringify(files), c.attempt, this.at());
+      this.db.prepare("INSERT INTO ci_fixes (repo, number, head, to_head, kind, state, reason, files, attempt, created_at, serving_metadata) VALUES (?, ?, ?, ?, ?, 'pushing', NULL, ?, ?, ?, ?)")
+        .run(c.repo, c.number, c.head, commit, kind, JSON.stringify(files), c.attempt, this.at(), patchServing(c));
     }
   }
 
@@ -232,10 +234,10 @@ class Recorder {
     // A comment that did not reach GitHub leaves the open row (a try, holding the stored patch or formatter task) for the retry: its own row times the backoff.
     const open = state === "comment-unsent" ? undefined : this.open(c);
     if (open && state !== "formatting") {
-      this.db.prepare("UPDATE ci_fixes SET state = ?, reason = ?, files = ?, to_head = ? WHERE rowid = ?").run(state, reason, files, o.toHead ?? null, open.id);
+      this.db.prepare("UPDATE ci_fixes SET state = ?, reason = ?, files = ?, to_head = ?, serving_metadata = ? WHERE rowid = ?").run(state, reason, files, o.toHead ?? null, patchServing(c), open.id);
     } else {
-      this.db.prepare("INSERT INTO ci_fixes (repo, number, head, to_head, kind, state, reason, files, attempt, task_id, runs, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(c.repo, c.number, c.head, o.toHead ?? null, kind, state, reason, files, c.attempt, o.task ?? null, o.runs ? JSON.stringify(o.runs) : null, at);
+      this.db.prepare("INSERT INTO ci_fixes (repo, number, head, to_head, kind, state, reason, files, attempt, task_id, runs, created_at, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        .run(c.repo, c.number, c.head, o.toHead ?? null, kind, state, reason, files, c.attempt, o.task ?? null, o.runs ? JSON.stringify(o.runs) : null, at, patchServing(c));
     }
     if (state === "infra" || state === "formatting" || state === "rerun" || state === "rerunning") return;
     const note = state === "pushed" ? `CI fix pushed at ${short(c.head)}: ${(o.files ?? []).join(", ")}`
@@ -286,7 +288,7 @@ export type PatchRequest = {
 
 export type PatchResult =
   | { ok: false; state: "failed" | "refused"; reason: string }
-  | { ok: true; v: { patch: string; files: string[]; changed: number }; shown: CifixPr["files"]; names: string[]; model: string; check: (patch: string) => Promise<string | null> };
+  | { ok: true; v: { patch: string; files: string[]; changed: number }; shown: CifixPr["files"]; names: string[]; model: string; serving?: ServingMetadata; check: (patch: string) => Promise<string | null> };
 
 /**
  * The guard (see guardPatch) on the patch as git applies it at `head`: the patched tree is built in a scratch index under
@@ -347,7 +349,8 @@ export async function patchFromFailure(db: DatabaseSync, d: Pick<CifixDeps, "ask
   if (!shown.length) return no("failed", "the failure names no file a CI fix may edit");
   const quiet = !!r.quiet || isQuiet(db, repo, r.number);
   const tool = new CheckTool({ db, step: "cifix", repo, number: r.number || null, head, base: r.base, applies: applyCheck(git, d.root, head, (p) => refusal(validatePatch(p, shown.map((s) => s.path), (x) => editable(x, scripts)))) });
-  const reply = await d.ask(db, [{ ref, title, failure: logText(failure), ...(quiet ? { quiet } : {}), files: shown, diff: r.diffText, ...(r.previous ? { previous: r.previous } : {}), ...repoDir }], checkout, tool, r.session);
+  const patchAnswer = modelText(await d.ask(db, [{ ref, title, failure: logText(failure), ...(quiet ? { quiet } : {}), files: shown, diff: r.diffText, ...(r.previous ? { previous: r.previous } : {}), ...repoDir }], checkout, tool, r.session));
+  const reply = patchAnswer?.text ?? null;
   if (reply === null) return no("failed", "the model gave no answer");
   const v = validatePatch(reply, shown.map((s) => s.path), (x) => editable(x, scripts));
   if (!v.ok) return no("refused", v.reason);
@@ -363,15 +366,16 @@ export async function patchFromFailure(db: DatabaseSync, d: Pick<CifixDeps, "ask
       review_reason: r.reviewReason ?? `The check ${names.join(", ")} fails at this head. The patch must make it pass without changing what the pull request does.`,
       ci_failure: { checks: names, log: JSON.stringify(logText(failure)).slice(0, CHECK_LOG_CAP) },
     };
-    const reply2 = await d.check(db, [input], checkout);
+    const checkAnswer = modelText(await d.check(db, [input], checkout));
+    const reply2 = checkAnswer?.text ?? null;
     if (reply2 === null) return "the patch check gave no answer";
     const verdict = parseCheck(reply2);
     if (!verdict.ok) return `the patch check gave no valid answer: ${verdict.error}`;
-    recordCheck(db, { kind: "fixup", repo, number: r.number, subject: head, patch, round: r.round, model: CHECK.models[0]!, check: verdict.check, at: r.at() });
+    recordCheck(db, { kind: "fixup", repo, number: r.number, subject: head, patch, round: r.round, model: CHECK.models[0]!, serving: checkAnswer?.serving, check: verdict.check, at: r.at() });
     audit(db, r.actor, "cifix-check", ref, { run: r.runId, head, verdict: verdict.check.verdict, reasons: verdict.check.reasons });
-    return verdict.check.verdict === "reject" ? `rejected: Opus rejected the patch: ${checkLine(verdict.check)}` : null;
+    return verdict.check.verdict === "reject" ? `rejected: ${servingLabel(checkAnswer?.serving, "Opus")} rejected the patch: ${checkLine(verdict.check)}` : null;
   };
-  return { ok: true, v, shown, names, model: PROMPT.models[0]!, check };
+  return { ok: true, v, shown, names, model: PROMPT.models[0]!, serving: patchAnswer?.serving, check };
 }
 
 export async function runCifix(db: DatabaseSync, params: CifixParams, log: (line: string) => void = console.log, deps?: CifixDeps): Promise<CifixSummary> {
@@ -423,9 +427,11 @@ async function runCifixWith(db: DatabaseSync, params: CifixParams, log: (line: s
   };
 
   /** Applies a validated patch to the PR head: pushed to the branch, or posted as a comment where the branch is closed to us. */
-  const deliver = async (c: CifixCandidate, kind: "format" | "code", pr: PrNode, v: Fix, checkName: string, check?: (patch: string) => Promise<string | null>, shown: CifixPr["files"] = [], folded: string | null = null, ses: SessionAsk = {}): Promise<void> => {
+  const deliver = async (c: CifixCandidate, kind: "format" | "code", pr: PrNode, v: Fix, checkName: string, check?: (patch: string) => Promise<string | null>, shown: CifixPr["files"] = [], folded: string | null = null, ses: SessionAsk = {}, serving?: ServingMetadata): Promise<void> => {
     const ref = refOf(c);
-    const deliveredNote = storedNote(codeNote, folded !== null ? c.lint?.servingMetadata : null);
+    const deliveredMetadata = folded !== null ? c.lint?.servingMetadata ?? null : serializeServingMetadata(serving);
+    c = { ...c, patchServingMetadata: deliveredMetadata };
+    const deliveredNote = storedNote(codeNote, deliveredMetadata);
     const fail = (state: "failed" | "refused" | "rejected", raw: string) => {
       const reason = scrubReason(raw, d.root);
       rec.set(c, kind, state, reason, { files: v.files });
@@ -497,7 +503,7 @@ async function runCifixWith(db: DatabaseSync, params: CifixParams, log: (line: s
       const round = c.lint ? c.lint.round + 1 : 1;
       const task = await queueLintFor(db, { step: "cifix", repo, number: c.number, head: c.head, base: now.baseRefOid ?? null, patch: v.patch });
       if (task !== null) {
-        rec.linting(c, v.patch, v.files, task, "pending", round, ses.kept ? storeSessions({ "": ses.kept }, new Date(at())) : null);
+        rec.linting(c, v.patch, v.files, task, "pending", round, ses.kept ? storeSessions({ "": ses.kept }, new Date(at())) : null, deliveredMetadata);
         if (ses.kept) ledger.stored({ "": ses.kept });
         log(`  ${ref}: patch stored; lint task ${task} queued (round ${round})`);
         return;
@@ -510,7 +516,7 @@ async function runCifixWith(db: DatabaseSync, params: CifixParams, log: (line: s
         // Not sent: nothing reached GitHub, so the step tries again after a backoff. Otherwise GitHub may have posted it.
         const reason = `the comment ${cm.sent === false ? "was not sent" : "failed"}: ${scrubReason(oneLine(cm.stderr), d.root)}`;
         // A patch that needed no lint task is stored in place of any earlier round's, so the retry posts it without new model work.
-        if (cm.sent === false && kind === "code" && folded === null) rec.linting(c, v.patch, v.files, null, "pending", c.lint ? c.lint.round + 1 : 1, null);
+        if (cm.sent === false && kind === "code" && folded === null) rec.linting(c, v.patch, v.files, null, "pending", c.lint ? c.lint.round + 1 : 1, null, deliveredMetadata);
         rec.set(c, kind, cm.sent === false ? "comment-unsent" : "comment-failed", reason, { files: v.files });
         summary.failed.push({ ref, reason });
         log(`  ${ref}: ${reason}`);
@@ -601,7 +607,7 @@ async function runCifixWith(db: DatabaseSync, params: CifixParams, log: (line: s
     if (c.lint) dropSessions(c.lint.session, ses.kept ? { "": ses.kept } : {});
     if (!made.ok) { fail(made.state, made.reason); return; }
     const { v, shown, names, check } = made;
-    await deliver(c, "code", pr, v, names[0] ?? "CI", check, shown, null, ses);
+    await deliver(c, "code", pr, v, names[0] ?? "CI", check, shown, null, ses, made.serving);
   };
 
   /**

@@ -1,6 +1,7 @@
 // Pre-merge review: Opus reads, independently of the first review, the head commit of each PR the merge rule would merge
 // without a person, and lists defects and minor findings. One call per PR head. Reads GitHub (the diff); writes only to
 // the local database. What the findings do to the PR is the merge queue (src/merge/queue.ts) and the fix-up route.
+import { serializeServingMetadata } from "../agents/provenance.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { queueRoom } from "../agents/call.ts";
 import { pool } from "../classify/run.ts";
@@ -138,7 +139,7 @@ export async function runPremerge(db: DatabaseSync, params: PremergeParams, log:
         jobItem(db, repo, e.number, "the head moved during the review; not stored", log);
         s.moved.push(ref);
       } else if (got) {
-        savePremerge(db, { repo, number: e.number, head, at: now(), runId, model: deps.model, findings: got.findings, searched: got.searched, conflicts: got.conflicts, unsure: got.unsure, claims: got.claims, baseRef: p.baseRef });
+        savePremerge(db, { repo, number: e.number, head, at: now(), runId, model: deps.model, servingMetadata: serializeServingMetadata(r.ok ? r.serving : undefined), findings: got.findings, searched: got.searched, conflicts: got.conflicts, unsure: got.unsure, claims: got.claims, baseRef: p.baseRef });
         jobItem(db, repo, e.number, `pre-merge review: ${got.findings.length} findings`, log);
         s.reviewed++; s.findings += got.findings.length; s.defects += got.findings.filter((f) => f.severity === "defect").length;
       } else fail("retry: no valid reply from the model");

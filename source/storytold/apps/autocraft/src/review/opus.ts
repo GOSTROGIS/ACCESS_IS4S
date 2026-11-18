@@ -1,6 +1,7 @@
 // Stage 5, Review: Opus reviews every wanted PR, one PR per call, and its verdict is the
 // one every later stage reads (the `final_reviews` view). After a new push Opus reads only
 // the delta since the head it reviewed before. Reads GitHub (diffs); never writes to it.
+import { serializeServingMetadata } from "../agents/provenance.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { CLAUDE_PROMPTS } from "../prompts/index.ts";
 import { currentJobId, queueRoom } from "../agents/call.ts";
@@ -318,7 +319,7 @@ export async function runOpusReview(db: DatabaseSync, params: OpusParams, log: (
       }
       // A maintainer's word the model was not shown leaves the take to a person.
       if (p.maintDropped && got.sure && (got.verdict === "take" || got.verdict === "take-fix")) got = { ...got, sure: false, risks: [...got.risks, "a maintainer's comment was left out of the review for length"] };
-      saveOpus(db, runId, c, { mode, base, baseRef, model: deps.model, review: got, snap, unapplied: outcomes });
+      saveOpus(db, runId, c, { mode, base, baseRef, model: deps.model, servingMetadata: serializeServingMetadata(r.ok ? r.serving : undefined), review: got, snap, unapplied: outcomes });
       tally(c, got);
     } else {
       recordReviewFailure(db, c.repo, c.number, c.head_oid);

@@ -1,3 +1,4 @@
+import { serializeServingMetadata, summarizeStoredServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { storedNote } from "../github/note.ts";
 // The fix PR of a red default branch: for each `needs-fix` row of an approved repo whose head is still red, one attempt
 // (per repo, head and check): skip when main is green again or an open PR already covers the failure, otherwise the CI fix
@@ -169,15 +170,15 @@ async function attempt(c: Ctx, rows: FixRow[], count: () => void, ledger: Sessio
       try { return await git.applyToTree(head, patch, join(scratch, "index"), exact); }
       finally { rmSync(scratch, { recursive: true, force: true }); }
     };
-    const store = (patch: string, files: string[], task: number, state: "pending" | "requeued", round: number, session: string | null, servingMetadata: string | null = null): void => {
+    // This receipt describes accepted workflow contributors, not the sole author of a current patch.
+    let workflowMetadata = serializeServingMetadata(summarizeStoredServingMetadata(live.map(r => r.serving_metadata)));
+    const store = (patch: string, files: string[], task: number, state: "pending" | "requeued", round: number, session: string | null, servingMetadata: string | null = workflowMetadata): void => {
       for (const r of live) c.setState(r, "linting", null, at(), { patch, files: JSON.stringify(files), lint_task: task, lint_round: round, lint_state: state, session, serving_metadata: servingMetadata });
     };
 
-    let regenerated = false;
-    type Made = { ok: true; patch: string; files: string[]; changed: number; shown: CifixPr["files"]; model: string; applied: Awaited<ReturnType<typeof treeOf>> } | { ok: false; reason: string };
+    type Made = { ok: true; patch: string; files: string[]; changed: number; shown: CifixPr["files"]; model: string; serving?: ServingMetadata; applied: Awaited<ReturnType<typeof treeOf>> } | { ok: false; reason: string };
     /** A model patch (with the earlier patch and its findings after a lint round), applied and checked. */
     const generate = async (previous: { patch: string; findings: string[] } | null, round: number, ses: SessionAsk = {}): Promise<Made> => {
-      regenerated = true;
       const made = await patchFromFailure(c.db, c.fix, {
         git, ref, title, repo: c.repo, number: 0, base: head, ...(now.culpritPr && isQuiet(c.db, c.repo, now.culpritPr) ? { quiet: true } : {}), head, round, failure: { head, checks }, diffText: "", ...(previous ? { previous } : {}), session: ses,
         runId: `main-fix-${c.repo}-${at().replace(/[-:]/g, "").slice(0, 15)}`, actor: PR_ACTOR, at,
@@ -194,7 +195,7 @@ async function attempt(c: Ctx, rows: FixRow[], count: () => void, ledger: Sessio
       // Checked here: the collect step has no excerpts to check against.
       const early = outsideShown(shown, await git.diffText(head, tree.tree));
       if (early) return { ok: false, reason: early };
-      return { ok: true, patch: v.patch, files: v.files, changed: v.changed, shown, model: made.model, applied: tree };
+      return { ok: true, patch: v.patch, files: v.files, changed: v.changed, shown, model: made.model, serving: made.serving, applied: tree };
     };
 
     let patch: string, patchFiles: string[], changed: number, shown: CifixPr["files"] = [], model = PATCH_MODEL;
@@ -229,6 +230,7 @@ async function attempt(c: Ctx, rows: FixRow[], count: () => void, ledger: Sessio
         dropSessions(w.session, ses.kept ? { "": ses.kept } : {});
         if (!made.ok) return set(live, "fix-failed", made.reason);
         ({ patch, files: patchFiles, changed, shown, model, applied } = made);
+        workflowMetadata = serializeServingMetadata(summarizeStoredServingMetadata([workflowMetadata, made.serving]));
         const task = await queueLintFor(c.db, { step: "mainfix", repo: c.repo, number: null, head, base: head, patch });
         if (task === null) { /* the new patch changes no Rust file: nothing to lint */ } else {
           store(patch, patchFiles, task, "pending", w.round + 1, ses.kept ? storeSessions({ "": ses.kept }, new Date(at())) : null);
@@ -242,6 +244,7 @@ async function attempt(c: Ctx, rows: FixRow[], count: () => void, ledger: Sessio
       const made = await generate(null, 1, ses);
       if (!made.ok) return set(live, "fix-failed", made.reason);
       ({ patch, files: patchFiles, changed, shown, model, applied } = made);
+        workflowMetadata = serializeServingMetadata(summarizeStoredServingMetadata([workflowMetadata, made.serving]));
       // Like every model patch, this one is linted before it is pushed; the collect step on a later run folds in the formatting or sends findings back.
       const task = await queueLintFor(c.db, { step: "mainfix", repo: c.repo, number: null, head, base: head, patch });
       if (task !== null) {
@@ -281,11 +284,11 @@ async function attempt(c: Ctx, rows: FixRow[], count: () => void, ledger: Sessio
       if (push.code !== 0) return set(live, "fix-failed", `push failed: ${oneLine(push.stderr)}`);
       const body = prBody({ head, checks: live.map((r) => ({ name: r.check, runUrl: r.run_url })), culprit: now.culprit, culpritPr: now.culpritPr, files: patchFiles, changed });
       const pr = await ghOpenPr({ db: c.db, login: PR_ACTOR }, g, c.exec, "main-fix-pr", { repo: c.repo, target: ref, base: now.branch, head: `${owner}:${branch}`, title, body },
-        storedNote({ by: "model", kind: "pull request", model }, stored && !regenerated ? live[0]?.serving_metadata : null), { branch, files: patchFiles });
+        storedNote({ by: "model", kind: workflowMetadata == null ? "pull request" : "pull request; workflow contributors", model }, workflowMetadata), { branch, files: patchFiles });
       url = pr.stdout.trim().split("\n").pop() ?? "";
       if (pr.code !== 0 || !urlOk(url, c.repo)) return set(live, "fix-failed", `the pull request was not opened: ${oneLine(pr.stderr || pr.stdout)}`);
     }
-    for (const r of live) c.setState(r, "pr-opened", r.reason, at(), { pr_number: Number(url.split("/").pop()), pr_url: url });
+    for (const r of live) c.setState(r, "pr-opened", r.reason, at(), { pr_number: Number(url.split("/").pop()), pr_url: url, serving_metadata: workflowMetadata });
     c.log(`  ${c.repo}: ${names.join(", ")}: opened ${url}`);
     return "opened";
   } catch (e) {

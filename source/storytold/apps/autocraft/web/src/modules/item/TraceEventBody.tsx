@@ -13,6 +13,7 @@ import { DecisionSummary } from "../../ui/organisms/DecisionSummary";
 import { ReviewDetail } from "../../ui/organisms/ReviewDetail";
 import { batchPath, githubItemUrl } from "../../lib/links";
 import { Badge } from "../../ui/atoms/Badge";
+import { workflowServingLabel } from "../../lib/serving";
 
 const text = (v: unknown): string | null => (typeof v === "string" && v ? v : v === null || v === undefined ? null : String(v));
 
@@ -83,6 +84,7 @@ export function TraceEventBody({ event: e, item }: { event: TraceEvent; item: Ev
 
   return (
     <div className="flex min-w-0 flex-col gap-3">
+      {e.kind === "step" && e.serving && <p className="text-xs text-ink/55">{workflowServingLabel(e.serving)}</p>}
       {needsDetail && (detail.data ? <Fields e={e} fields={detail.data.fields} /> : detail.error ? <ErrorLine error={detail.error.message} /> : <div className="h-8" aria-hidden />)}
       {e.kind === "review" && e.ref.runIds?.map((id, i, all) => <ReviewCall key={id} runId={id} n={all.length > 1 ? i + 1 : 0} of={all.length} />)}
       {e.ref.taskId !== undefined && (task.data ? <TaskDetail task={task.data} /> : task.error ? <ErrorLine error={task.error.message} /> : <div className="h-16" aria-hidden />)}

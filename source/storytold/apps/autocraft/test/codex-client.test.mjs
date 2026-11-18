@@ -66,7 +66,21 @@ function fixture(options = {}) {
           const finishChild = () => notify('turn/completed', { threadId: 'thread-child', turn: { id: 'child-turn', status: 'completed', error: null } });
           if (options.delayedChildFinal) setTimeout(finishChild, 20); else finishChild();
         }
+        if (options.unattachedChild) {
+          notify('turn/started', { threadId: 'thread-old-child', turn: { id: 'unrelated-child-turn' } });
+          report('thread-old-child', 'unrelated-child-turn', 'unrelated-child-response');
+          notify('turn/completed', { threadId: 'thread-old-child', turn: { id: 'unrelated-child-turn', status: 'completed', error: null } });
+        }
         report('thread-one', 'turn-one', 'response-one');
+        if (options.reroute || options.staleReroute) {
+          notify('model/rerouted', { threadId: 'thread-one', turnId: options.staleReroute ? 'old-turn' : 'turn-one',
+            fromModel: 'gpt-6.2-sol', toModel: 'gpt-rerouted-actual', reason: 'highRiskCyberActivity' });
+          if (!options.staleReroute) report('thread-one', 'turn-one', 'response-rerouted');
+        }
+        if (options.changedEffort) {
+          notify('thread/settings/updated', { threadId: 'thread-one', threadSettings: { model: 'gpt-6.2-sol', effort: 'high' } });
+          report('thread-one', 'turn-one', 'response-high');
+        }
         const complete = () => {
           if (options.staleNoise) {
             notify('turn/started', { threadId: 'thread-one', turn: { id: 'old-turn' } });
@@ -104,6 +118,7 @@ test('official client lifecycle preserves early completion, real provenance and 
     assert.equal(start.params.experimentalRawEvents, true); assert.equal(start.params.ephemeral, false);
     assert.equal(start.params.historyMode, 'paginated');
     assert.equal(start.params.config.cli_auth_credentials_store, 'ephemeral');
+    assert.deepEqual(start.params.config.shell_environment_policy, { inherit: 'none', set: { PATH: '/opt/codex:/usr/bin', LANG: 'C.UTF-8' } });
     assert.equal(start.params.config.features.rollout_budget.enforce_limit, true);
     assert.equal(f.sent.filter(x => x.method === 'model/list').length, 2);
     const login = f.sent.find(x => x.method === 'account/login/start');
@@ -202,6 +217,7 @@ test('resolved child model usage is separate and child text cannot become the pa
     assert.equal(result.text, 'synthetic final fixture');
     assert.deepEqual(result.extra.map(x => [x.model, x.usage.totalTokens]), [['gpt-child-actual', 120]]);
     assert.equal(result.usage.totalTokens, 120);
+    assert.deepEqual(result.servedModels, [{ model: 'gpt-child-actual', reasoningEfforts: ['low'] }, { model: 'gpt-6.2-sol', reasoningEfforts: ['medium'] }]);
   } finally { await f.client.close(); }
 });
 
@@ -220,5 +236,50 @@ test('unreported usage cannot be accepted as a completed zero-token response', a
     await f.client.initialize(); await f.client.open('fixture', {});
     await assert.rejects(f.client.turn('fixture', 1), CodexBudgetError);
     assert.equal(f.client.lastObserved().hasReportedUsage, false);
+  } finally { await f.client.close(); }
+});
+
+
+test('actual reroute reports both contributing models and leaves the unreported routed effort unknown', async () => {
+  const f = fixture({ reroute: true });
+  try {
+    await f.client.initialize(); await f.client.open('fixture', {});
+    const result = await f.client.turn('fixture', 2);
+    assert.equal(result.model, 'gpt-rerouted-actual');
+    assert.equal(result.reasoningEffort, null);
+    assert.deepEqual(result.servedModels, [{ model: 'gpt-6.2-sol', reasoningEfforts: ['medium'] }, { model: 'gpt-rerouted-actual', reasoningEfforts: [null] }]);
+  } finally { await f.client.close(); }
+});
+
+test('reasoning changes retain each actually reported effort instead of the requested initial setting', async () => {
+  const f = fixture({ changedEffort: true });
+  try {
+    await f.client.initialize(); await f.client.open('fixture', {});
+    const result = await f.client.turn('fixture', 2);
+    assert.equal(result.reasoningEffort, null);
+    assert.deepEqual(result.servedModels, [{ model: 'gpt-6.2-sol', reasoningEfforts: ['medium', 'high'] }]);
+  } finally { await f.client.close(); }
+});
+
+test('a late old-turn reroute cannot corrupt the active turn model or serving receipt', async () => {
+  const f = fixture({ staleReroute: true });
+  try {
+    await f.client.initialize(); await f.client.open('fixture', {});
+    const result = await f.client.turn('fixture', 1);
+    assert.equal(result.model, 'gpt-6.2-sol');
+    assert.deepEqual(result.servedModels, [{ model: 'gpt-6.2-sol', reasoningEfforts: ['medium'] }]);
+  } finally { await f.client.close(); }
+});
+
+test('an old child in persisted state contributes nothing unless the active parent actually invokes it', async () => {
+  const f = fixture({ unattachedChild: true });
+  try {
+    await f.client.initialize();
+    f.client.restoreState({ schema: 1, threads: [{ threadId: 'thread-old-child', model: 'gpt-old-child', total: { inputTokens: 0, cachedInputTokens: 0, cacheWriteInputTokens: 0, outputTokens: 0, reasoningOutputTokens: 0, totalTokens: 0 } }] });
+    await f.client.open('fixture', {});
+    const result = await f.client.turn('fixture', 1);
+    assert.equal(result.responses, 1);
+    assert.deepEqual(result.extra, []);
+    assert.deepEqual(result.servedModels, [{ model: 'gpt-6.2-sol', reasoningEfforts: ['medium'] }]);
   } finally { await f.client.close(); }
 });

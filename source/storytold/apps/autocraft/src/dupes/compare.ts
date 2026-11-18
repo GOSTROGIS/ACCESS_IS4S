@@ -6,6 +6,7 @@
 // state, diffs); never writes to it.
 //
 //   autocraft dupe-compare [--limit N] [--dry-run]
+import { serializeServingMetadata, summarizeStoredServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { jobItem } from "../runner/job-items.ts";
 import { referenceDir } from "../reference.ts";
 import { defaultSemanticDeps, type SemanticDeps } from "../reference-lint.ts";
@@ -37,7 +38,7 @@ const ISSUE_PROMPT = CLAUDE_PROMPTS["dupes.compare-issues.sonnet"];
 /** Most sets compared per job unless the step's limit says otherwise. */
 export const DEFAULT_LIMIT = 50;
 
-export type Reply = { text: string; usage: Usage } | null;
+export type Reply = { text: string; usage: Usage; serving?: ServingMetadata } | null;
 export type CompareDeps = {
   /** Reads the live state and head of the members just before the model calls; absent: the mirror's view stands. */
   querier?: Querier;
@@ -145,7 +146,7 @@ function issueInput(db: DatabaseSync, repo: string, numbers: number[]): CompareI
 type Chunk = { keep: number; reason: string; summary: string | null; why: string | null; others: ComparisonResult["others"] };
 
 /** One call for up to GROUP_MAX members; null when the model gave no valid answer. */
-async function compareChunk(x: Ctx, s: KindSet, numbers: number[], usage: { u: Usage; model: string }): Promise<Chunk | null> {
+async function compareChunk(x: Ctx, s: KindSet, numbers: number[], usage: { u: Usage; model: string; serving: (ServingMetadata | undefined)[] }): Promise<Chunk | null> {
   const { deps } = x;
   if (s.kind === "pr") {
     const input = await prInput(x, s.repo, numbers);
@@ -162,6 +163,7 @@ async function compareChunk(x: Ctx, s: KindSet, numbers: number[], usage: { u: U
     const semantic = dir ? deps.semantic ?? defaultSemanticDeps(x.db, input.ref) : undefined;
     const r = await runModelStep(x.db, COMPARE_PRS, { numbers, input }, { ctx: { dir, semantic }, ask: (i, lint) => deps.ask("dupes.compare-prs.opus", model, i.input, checkout ?? undefined, lint) });
     usage.u = add(usage.u, r.usage);
+    if (r.ok) usage.serving.push(r.serving);
     return r.ok ? r.value : null;
   }
   const input = issueInput(x.db, s.repo, numbers);
@@ -169,7 +171,8 @@ async function compareChunk(x: Ctx, s: KindSet, numbers: number[], usage: { u: U
   usage.model = model;
   const r = await runModelStep(x.db, COMPARE_ISSUES, { numbers, input }, { ask: (i) => deps.ask("dupes.compare-issues.sonnet", model, i.input) });
   usage.u = add(usage.u, r.usage);
-  return r.ok ? r.value : null;
+  if (r.ok) usage.serving.push(r.serving);
+    return r.ok ? r.value : null;
 }
 
 /** Compares the whole set, in rounds when it is larger than GROUP_MAX. */
@@ -178,7 +181,7 @@ async function compareSet(x: Ctx, s: KindSet): Promise<StoredComparison> {
   // Best by rule first, so every chunk holds a mix of strong and weak members and the rule's pick reaches the last round.
   const infos = canonInfo(x.db, s.repo, s.members.map((m) => m.number)).sort(compareCanonical);
   let current = infos.map((i) => i.number);
-  const usage = { u: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null } as Usage, model: "" };
+  const usage = { u: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null } as Usage, model: "", serving: [] as (ServingMetadata | undefined)[] };
   const start = at;
   const lost = new Map<number, { winner: number; other: ComparisonResult["others"][number] }>();
   let rounds = 0, last: Chunk | null = null;
@@ -211,7 +214,7 @@ async function compareSet(x: Ctx, s: KindSet): Promise<StoredComparison> {
   });
   return {
     repo: s.repo, key: s.key, kind: s.kind, members: s.members.map((m) => m.number), hash: s.hash, kept, source: "model", model: usage.model,
-    reason: last?.reason ?? null, summary: last?.summary ?? null, why: last?.why ?? null, result: { others, rounds }, error: null, attempts: 0, at,
+    reason: last?.reason ?? null, summary: last?.summary ?? null, why: last?.why ?? null, result: { others, rounds }, error: null, attempts: 0, at, serving_metadata: serializeServingMetadata(summarizeStoredServingMetadata(usage.serving)),
   };
 }
 

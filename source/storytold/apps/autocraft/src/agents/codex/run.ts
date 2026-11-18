@@ -22,6 +22,8 @@ import { nativeTransport, verifyBinary } from "./transport.ts";
 import { CodexBudgetError, CodexUsageError, promptBudgetPolicy } from "./budget.ts";
 import { safeCodexSessionDir } from "./session.ts";
 import { CODEX_EXECUTION_READY, CODEX_UNAVAILABLE } from "./capabilities.ts";
+import { CODEX_NODE_PATH, CODEX_TOOL_PATH } from "./sandbox.ts";
+import { reportedServing, summarizeStoredServingMetadata } from "../provenance.ts";
 
 const object = (x: unknown): x is Record<string, unknown> => !!x && typeof x === "object" && !Array.isArray(x);
 /** Declared AutoCraft tools only; extra native executors have no implicit grant. */
@@ -41,15 +43,22 @@ export function withoutCodexTools(config: Record<string, unknown>): Record<strin
     })) };
 }
 export function codexReplyUsage(reply: CodexReply): Usage {
-  return { ...normalizedUsage(reply.usage), provider: "codex", model: reply.model, reasoningEffort: reply.reasoningEffort,
-    ...(reply.extra.length > 0 && { extra: reply.extra.map(x => ({ model: x.model, usage: normalizedUsage(x.usage) })) }) };
+  // A stopped parent may have no reported counters even when a real child reported usage.
+  // Persist only those actual child counters, never a fabricated zero-token parent row.
+  const partialChild = reply.primaryHasReportedUsage === false ? reply.extra[0] : undefined;
+  if (reply.primaryHasReportedUsage === false && !partialChild) throw new Error("No reported Codex usage.");
+  const model = partialChild?.model ?? reply.model;
+  const extra = partialChild ? reply.extra.slice(1) : reply.extra;
+  return { ...normalizedUsage(partialChild?.usage ?? reply.usage), provider: "codex", model,
+    ...(!partialChild && reply.reasoningEffort !== null && { reasoningEffort: reply.reasoningEffort }),
+    ...(extra.length > 0 && { extra: extra.map(x => ({ model: x.model, usage: normalizedUsage(x.usage) })) }) };
 }
 export function codexMcpServers(servers: Record<string, unknown>, wallMs: number): Record<string, unknown> {
   return Object.fromEntries(Object.entries(servers).map(([name, value]) => {
     if (!/^[a-zA-Z0-9_-]{1,64}$/.test(name) || !object(value) || typeof value.command !== "string" ||
         !Array.isArray(value.args) || value.args.some(x => typeof x !== "string") || !object(value.env) ||
         Object.values(value.env).some(x => typeof x !== "string") || Object.keys(value).some(k => !["command", "args", "env"].includes(k))) throw new Error("Unsupported registered MCP transport.");
-    return [name, { command: value.command, args: value.args, env: value.env, env_vars: [], enabled: true, required: true,
+    return [name, { command: value.command === "/usr/bin/node" ? CODEX_NODE_PATH : value.command, args: value.args, env: value.env, env_vars: [], enabled: true, required: true,
       startup_timeout_sec: 30, tool_timeout_sec: Math.ceil(wallMs / 1000) }];
   }));
 }
@@ -126,7 +135,7 @@ export async function askCodex<K extends ClaudePromptId>(id: K, input: ClaudeInp
     if (workspace) {
       const role = agentsDefinition(Object.keys(tools?.mcpServers ?? {}))[EXPLORER] as { prompt: string; description: string };
       const rolePath = join(sessions, "workspace-search.toml");
-      writeFileSync(rolePath, `model = ${JSON.stringify(policy.model)}\nmodel_reasoning_effort = ${JSON.stringify(policy.reasoningEffort)}\nsandbox_mode = "read-only"\napproval_policy = "never"\ndeveloper_instructions = ${JSON.stringify(role.prompt + " Use Codex read-only shell/search and the registered item MCP tools. Never modify files or request elevated permissions.")}\n[shell_environment_policy]\ninherit = "none"\n[shell_environment_policy.set]\nPATH = "/usr/bin"\nLANG = "C.UTF-8"\n`, { mode: 0o600 });
+      writeFileSync(rolePath, `model = ${JSON.stringify(policy.model)}\nmodel_reasoning_effort = ${JSON.stringify(policy.reasoningEffort)}\nsandbox_mode = "read-only"\napproval_policy = "never"\ndeveloper_instructions = ${JSON.stringify(role.prompt + " Use Codex read-only shell/search and the registered item MCP tools. Never modify files or request elevated permissions.")}\n[shell_environment_policy]\ninherit = "none"\n[shell_environment_policy.set]\nPATH = ${JSON.stringify(CODEX_TOOL_PATH)}\nLANG = "C.UTF-8"\n`, { mode: 0o600 });
       mounts.push({ host: rolePath, path: "/provider-role.toml" });
     }
     const maxWallMs = Math.min(policy.maxWallMs, reg.limits.timeoutSeconds * 1000 + (bridge ? CHECK_MAX_WALL_MS : 0));
@@ -165,10 +174,10 @@ export async function askCodex<K extends ClaudePromptId>(id: K, input: ClaudeInp
         cacheRead: total.cacheRead + e.usage.cachedInputTokens, cacheWrite: total.cacheWrite + e.usage.cacheWriteInputTokens, cost: null }), normalizedUsage(reply.usage));
       const stored = scrub(reply.text);
       if (reg.codeReply && hasFixedCredential(reply.text)) throw new Error("The reply contains a credential and was refused.");
-      finishRun(db, currentRun, { state: "done", tokens: totals, costUsd: null, model: reply.model,
+      finishRun(db, currentRun, { state: "done", tokens: totals, costUsd: null, model: reply.model, reasoningEffort: reply.reasoningEffort,
         providerUsage: { ...reply.usage, modelProvider: reply.modelProvider, usageComplete: true }, summary: `Codex answered in ${reply.responses} model responses`, output: stored });
       activeRun = null;
-      return { text: reg.codeReply ? reply.text : stored, usage, turns: reply.responses };
+      return { text: reg.codeReply ? reply.text : stored, usage, turns: reply.responses, serving: reportedServing(currentRun, reply.servedModels) };
     };
     let reply = await turn(sessions === existing?.dir ? resume!.message : parts.stdin, Math.min(policy.maxTurns, reg.sandbox?.maxTurns ?? 1));
     const followup = async (message: string, limit: number, noTools = false): Promise<LintedReply | null> => {
@@ -197,7 +206,7 @@ export async function askCodex<K extends ClaudePromptId>(id: K, input: ClaudeInp
     };
     if (checkTool && needsClippy(checkTool, reply.text)) {
       const fix = await followup(CHECK_REMINDER, Math.min(policy.maxTurns, reg.sandbox?.maxTurns ?? 1));
-      if (fix) reply = { ...fix, usage: add(reply.usage, fix.usage) };
+      if (fix) reply = { ...fix, usage: add(reply.usage, fix.usage), serving: summarizeStoredServingMetadata([reply.serving, fix.serving]) };
     }
     if (opts.session && sandboxed) {
       persistSession(); delete opts.session.resume;
@@ -215,7 +224,7 @@ export async function askCodex<K extends ClaudePromptId>(id: K, input: ClaudeInp
     const total = add(reply.usage, fix.usage), merged = mergeFixFields(reply.text, fix.text, problems);
     if (merged === null) return { ...reply, usage: total, problems: await full(), fixTurn: true };
     const after = await opts.lint(merged, "fix");
-    return after === null ? { ...reply, usage: total, problems: await full(), fixTurn: true } : { text: merged, usage: total, problems: after, fixTurn: true };
+    return after === null ? { ...reply, usage: total, problems: await full(), fixTurn: true } : { text: merged, usage: total, problems: after, fixTurn: true, serving: summarizeStoredServingMetadata([reply.serving, fix.serving]) };
   } catch (error) {
     error = client?.haltReason() ?? error;
     const observed = activeRun !== null && observingRun === activeRun ? client?.lastObserved() : null;
@@ -232,7 +241,7 @@ export async function askCodex<K extends ClaudePromptId>(id: K, input: ClaudeInp
     const capped = error instanceof CodexBudgetError || error instanceof AppServerFailure && error.code === "DEADLINE";
     if (activeRun !== null) finishRun(db, activeRun, { state: "failed", summary: capped ? "Codex bounded-policy stop; partial session retained" : "Codex call failed",
       error: error instanceof CodexBudgetError ? error.message : capped ? "The Codex time budget was exhausted; partial work was retained." : "The Codex call was refused, stopped or could not complete.",
-      ...(totals && { tokens: totals }), ...(observed?.hasReportedUsage && { model: observed.model, providerUsage: { ...observed.usage, modelProvider: observed.modelProvider, usageComplete: false } }), costUsd: null });
+      ...(totals && { tokens: totals }), ...(observed?.hasReportedUsage && observed.primaryHasReportedUsage !== false && { model: observed.model, reasoningEffort: observed.reasoningEffort, providerUsage: { ...observed.usage, modelProvider: observed.modelProvider, usageComplete: false } }), costUsd: null });
     if (isHalt(error)) throw error;
     if (error instanceof CodexBudgetError) throw new CodexBudgetError(error.message, partialUsage);
     if (capped) throw new CodexBudgetError("The Codex time budget was exhausted; partial work and its session are retained.", partialUsage);

@@ -1,5 +1,6 @@
 // Conversation storage: the item block (written once), the turns in prompt order, and the cards of each Opus turn.
 // Every turn stores the exact text its prompt block carries, so later prompts repeat earlier ones byte for byte.
+import { serializeServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { isBotLogin } from "../review/bots.ts";
 import { createHash, randomUUID } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
@@ -205,7 +206,7 @@ export async function ensureConversation(db: DatabaseSync, repo: string, n: numb
 /** Validated choices an Opus turn carries; stored with the turn (a prepare replaces the decision's choices, a conversation turn merges into them). */
 export type TurnChoices = { decision: DecisionRow; parsed: ParsedChoices; source: "prepare" | "conversation"; by?: string; stampThen?: string | null };
 
-type NewTurn = { kind: TurnKind; login: string; body: string; block: string; status?: string | null; notes?: string[]; cards?: NewCard[]; choices?: TurnChoices };
+type NewTurn = { serving?: ServingMetadata; kind: TurnKind; login: string; body: string; block: string; status?: string | null; notes?: string[]; cards?: NewCard[]; choices?: TurnChoices };
 
 const nextSeq = (db: DatabaseSync, repo: string, n: number): number =>
   Number((db.prepare("SELECT COALESCE(MAX(seq), 0) + 1 AS s FROM conversation_turns WHERE repo = ? AND number = ?").get(repo, n) as { s: number }).s);
@@ -223,8 +224,8 @@ function inTx<T>(db: DatabaseSync, f: () => T): T {
 }
 
 function insertRow(db: DatabaseSync, repo: string, n: number, t: NewTurn, seq: number | null, status: string | null, deps?: StoreDeps, seenAt?: string | null): number {
-  const id = Number(db.prepare("INSERT INTO conversation_turns (repo, number, kind, login, at, body, block, status, error, notes, seq) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?)")
-    .run(repo, n, t.kind, t.login, nowOf(deps), t.body, t.block, status, t.notes?.length ? JSON.stringify(t.notes) : null, seq).lastInsertRowid);
+  const id = Number(db.prepare("INSERT INTO conversation_turns (repo, number, kind, login, at, body, block, status, error, notes, seq, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?)")
+    .run(repo, n, t.kind, t.login, nowOf(deps), t.body, t.block, status, t.notes?.length ? JSON.stringify(t.notes) : null, seq, serializeServingMetadata(t.serving)).lastInsertRowid);
   // One current set: a new Opus turn replaces the proposals of the earlier ones.
   if (t.kind === "opus") db.prepare("UPDATE conversation_cards SET state = 'replaced' WHERE repo = ? AND number = ? AND state = 'proposed'").run(repo, n);
   // A reply's cards are stamped with what Opus was told when its prompt was built, not with a later refresh.
@@ -233,7 +234,7 @@ function insertRow(db: DatabaseSync, repo: string, n: number, t: NewTurn, seq: n
     db.prepare("INSERT INTO conversation_cards (turn_id, repo, number, kind, params, text, description, seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
       .run(id, repo, n, c.params.kind, JSON.stringify(c.params), c.text, c.description, seen);
   }
-  if (t.choices) storeParsedChoices(db, t.choices.decision, t.choices.parsed, { turnId: id, seen, source: t.choices.source, by: t.choices.by, stampThen: t.choices.stampThen });
+  if (t.choices) storeParsedChoices(db, t.choices.decision, t.choices.parsed, { turnId: id, seen, source: t.choices.source, by: t.choices.by, stampThen: t.choices.stampThen, serving: t.serving });
   return id;
 }
 
@@ -376,11 +377,11 @@ export function setInclude(db: DatabaseSync, repo: string, n: number, source: st
 }
 
 /** Opus's opening turn (a question or proposal from the recommendation). Does nothing when the item already has a conversation. */
-export async function startFromOpus(db: DatabaseSync, repo: string, n: number, opening: string, deps?: StoreDeps): Promise<boolean> {
+export async function startFromOpus(db: DatabaseSync, repo: string, n: number, opening: string, deps?: StoreDeps, serving?: ServingMetadata): Promise<boolean> {
   const text = opening.replace(/\r\n/g, "\n").trim().slice(0, OPENING_MAX);
   if (!text || conversationOf(db, repo, n) || !itemRow(db, repo, n)) return false;
   if (!(await ensureConversation(db, repo, n, "opus", deps))) return false;
-  insertTurn(db, repo, n, { kind: "opus", login: "opus", body: text, block: opusBlock(text, []) }, deps);
+  insertTurn(db, repo, n, { serving, kind: "opus", login: "opus", body: text, block: opusBlock(text, []) }, deps);
   return true;
 }
 
@@ -436,12 +437,12 @@ const claimed = (db: DatabaseSync, repo: string, n: number, claim: string): Turn
  * Stores Opus's reply to the claimed message and marks the message answered, in one transaction. Returns the reply's turn id,
  * or null when the run no longer holds the message (its claim was released and taken by another run).
  */
-export function storeReply(db: DatabaseSync, repo: string, n: number, claim: string, text: string, cards: NewCard[], notes: string[], deps?: StoreDeps, seen?: string | null, choices?: TurnChoices): number | null {
+export function storeReply(db: DatabaseSync, repo: string, n: number, claim: string, text: string, cards: NewCard[], notes: string[], deps?: StoreDeps, seen?: string | null, choices?: TurnChoices, serving?: ServingMetadata): number | null {
   return inTx(db, () => {
     const wait = claimed(db, repo, n, claim);
     if (!wait) return null;
     let id = 0;
-    settleWait(db, repo, n, wait, "answered", null, () => { id = insertRow(db, repo, n, { kind: "opus", login: "opus", body: text, block: opusBlock(text, cards, choices?.parsed), notes, cards, ...(choices && { choices }) }, nextSeq(db, repo, n), null, deps, seen); });
+    settleWait(db, repo, n, wait, "answered", null, () => { id = insertRow(db, repo, n, { serving, kind: "opus", login: "opus", body: text, block: opusBlock(text, cards, choices?.parsed), notes, cards, ...(choices && { choices }) }, nextSeq(db, repo, n), null, deps, seen); });
     return id;
   });
 }

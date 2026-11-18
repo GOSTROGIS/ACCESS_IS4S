@@ -9,6 +9,8 @@ export const MAX_PUSHES_PER_PR = CIFIX_MAX_PUSHES_PER_PR;
 export const MAX_TRIES_PER_PR = CIFIX_MAX_TRIES_PER_PR;
 
 export type CifixCandidate = {
+  /** Exact accepted current patch/resolution receipt; distinct from its input review. */
+  patchServingMetadata?: string | null;
   repo: string; number: number; head: string; verdict: "take" | "take-fix"; reason: string;
   /** This try's number at the head. */
   attempt: number;

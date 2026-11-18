@@ -1,6 +1,7 @@
 // Post-merge review: Opus reads what a pipeline merge landed, with the pipeline's own commits and reviews of the PR, and
 // lists defects and minor findings. One review per merged PR. Reads GitHub (the merged diff); writes only to the local
 // database. Filing the defects is src/postmerge/file.ts.
+import { serializeServingMetadata } from "../agents/provenance.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { queueRoom } from "../agents/call.ts";
 import { pool } from "../classify/run.ts";
@@ -97,7 +98,7 @@ async function prepare(db: DatabaseSync, c: MergedPr, deps: PostmergeDeps): Prom
  * or a defect another item already covers (skipped-duplicate). A review that replaces an earlier one keeps the earlier
  * one's follow-up rows, so the PR's filed follow-ups stay known. A `retry:` error is stored as held at the third try.
  */
-export function saveReview(db: DatabaseSync, c: { repo: string; number: number }, r: { sha: string; runId: string | null; model: string | null; findings: Finding[] | null; error: string | null; at?: string }): void {
+export function saveReview(db: DatabaseSync, c: { repo: string; number: number }, r: { sha: string; runId: string | null; model: string | null; servingMetadata?: string | null; findings: Finding[] | null; error: string | null; at?: string }): void {
   const at = r.at ?? now();
   // A failed second try never replaces a stored review.
   if (r.error && db.prepare("SELECT 1 FROM postmerge_reviews WHERE repo = ? AND number = ? AND error IS NULL").get(c.repo, c.number)) return;
@@ -106,8 +107,8 @@ export function saveReview(db: DatabaseSync, c: { repo: string; number: number }
     tries = ((db.prepare("SELECT tries FROM postmerge_reviews WHERE repo = ? AND number = ?").get(c.repo, c.number) as { tries: number } | undefined)?.tries ?? 0) + 1;
     if (tries >= MAX_RETRIES) error = `held: gave up after ${tries} tries (${error.slice("retry:".length).trim()})`;
   }
-  db.prepare("INSERT OR REPLACE INTO postmerge_reviews (repo, number, merge_sha, at, model, run_id, findings, error, tries) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .run(c.repo, c.number, r.sha, at, r.model, r.runId, r.findings ? JSON.stringify(r.findings) : null, error, tries);
+  db.prepare("INSERT OR REPLACE INTO postmerge_reviews (repo, number, merge_sha, at, model, run_id, findings, error, tries, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+    .run(c.repo, c.number, r.sha, at, r.model, r.runId, r.findings ? JSON.stringify(r.findings) : null, error, tries, r.servingMetadata ?? null);
   const skip = db.prepare("INSERT OR IGNORE INTO postmerge_followups (repo, number, review_at, finding, title, issue_number, url, state, at, duplicate_of) VALUES (?, ?, ?, ?, ?, NULL, NULL, ?, ?, ?)");
   mergeDefect(db, c.repo, c.number, (r.findings ?? []).filter((f) => f.severity === "defect").length);
   (r.findings ?? []).forEach((f, i) => {
@@ -145,7 +146,7 @@ export async function runPostmerge(db: DatabaseSync, params: PostmergeParams, lo
     });
     const got: Finding[] | null = r.ok ? r.value : null;
     if (got) {
-      saveReview(db, c, { sha: input.merge_sha, runId, model: deps.model, findings: got, error: null });
+      saveReview(db, c, { sha: input.merge_sha, runId, model: deps.model, servingMetadata: serializeServingMetadata(r.ok ? r.serving : undefined), findings: got, error: null });
       jobItem(db, repo, c.number, `post-merge review: ${got.length} findings`, log);
       s.reviewed++; s.findings += got.length; s.defects += got.filter((f) => f.severity === "defect").length;
     } else {

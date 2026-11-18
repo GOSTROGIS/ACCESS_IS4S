@@ -1,6 +1,7 @@
 // Decision answers as one core action plus extras: the core list built from the decision and the item, Opus's drafts
 // over it, the composition of a chosen core and ticked extras into one resolution card, and the `decision_choices` store.
 // Only Opus's drafts and pick are stored; the offered cores are computed whenever they are read.
+import { parseServingMetadata, serializeServingMetadata, summarizeStoredServingMetadata, type ServingMetadata } from "../agents/provenance.ts";
 import { randomUUID } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
 import { writeEffect } from "../act/index.ts";
@@ -303,24 +304,26 @@ export function choicesById(db: DatabaseSync, id: string): ChoicesRow | undefine
  * Stores a new full row as the decision's current choices; earlier ones become replaced. An option pick also sets the decision's
  * recommendation (and `recommended_by` when `by` is given), any other pick clears it. Runs in its own transaction unless the caller has one.
  */
-export function writeChoices(db: DatabaseSync, row: Omit<ChoicesRow, "id" | "state" | "createdAt">, o: { by?: string | null; now?: Date } = {}): ChoicesRow {
+export function writeChoices(db: DatabaseSync, row: Omit<ChoicesRow, "id" | "state" | "createdAt">, o: { by?: string | null; now?: Date; serving?: ServingMetadata } = {}): ChoicesRow {
   const id = randomUUID(), at = (o.now ?? new Date()).toISOString();
   const own = !db.isTransaction;
   if (own) db.exec("BEGIN IMMEDIATE");
   try {
     db.prepare("UPDATE main.decision_choices SET state = 'replaced' WHERE decision_id = ? AND state = 'current'").run(row.decisionId);
-    db.prepare(`INSERT INTO main.decision_choices (id, decision_id, repo, number, turn_id, stamp, seen, source, drafts, added, pick, state, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'current', ?)`)
-      .run(id, row.decisionId, row.repo, row.number, row.turnId, row.stamp, seenJson(row.seen), row.source, JSON.stringify(row.drafts), JSON.stringify(row.added), JSON.stringify(row.pick), at);
+    db.prepare(`INSERT INTO main.decision_choices (id, decision_id, repo, number, turn_id, stamp, seen, source, drafts, added, pick, state, created_at, serving_metadata)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'current', ?, ?)`)
+      .run(id, row.decisionId, row.repo, row.number, row.turnId, row.stamp, seenJson(row.seen), row.source, JSON.stringify(row.drafts), JSON.stringify(row.added), JSON.stringify(row.pick), at, serializeServingMetadata(o.serving));
     const opt = row.pick.core ? parseCoreKey(row.pick.core) : null;
     // Backlog is an option of every decision, so a Later pick is the recommendation "backlog".
     const recommended = opt?.type === "option" ? opt.option : opt?.type === "backlog" ? "backlog" : null;
+    const previous = db.prepare("SELECT summary,serving_metadata FROM decisions WHERE id=?").get(row.decisionId) as { summary: string | null; serving_metadata: string | null } | undefined;
+    const decisionServing = serializeServingMetadata(previous?.summary ? summarizeStoredServingMetadata([parseServingMetadata(previous.serving_metadata), o.serving]) : o.serving);
     if (recommended !== null) {
-      db.prepare(`UPDATE main.decisions SET serving_metadata = CASE WHEN serving_metadata IS NULL THEN NULL ELSE '{"schema":0,"provider":"unknown","runs":[],"models":[]}' END, recommended = ?, recommended_reason = ?${o.by !== undefined ? ", recommended_by = ?" : ""} WHERE id = ? AND answer IS NULL`)
-        .run(...[recommended, row.pick.reason, ...(o.by !== undefined ? [o.by] : []), row.decisionId] as (string | null)[]);
+      db.prepare(`UPDATE main.decisions SET serving_metadata = ?, recommended = ?, recommended_reason = ?${o.by !== undefined ? ", recommended_by = ?" : ""} WHERE id = ? AND answer IS NULL`)
+        .run(...[decisionServing, recommended, row.pick.reason, ...(o.by !== undefined ? [o.by] : []), row.decisionId] as (string | null)[]);
     } else {
-      db.prepare(`UPDATE main.decisions SET serving_metadata = CASE WHEN serving_metadata IS NULL THEN NULL ELSE '{"schema":0,"provider":"unknown","runs":[],"models":[]}' END, recommended = NULL, recommended_reason = NULL${o.by !== undefined ? ", recommended_by = ?" : ""} WHERE id = ? AND answer IS NULL`)
-        .run(...[...(o.by !== undefined ? [o.by] : []), row.decisionId] as (string | null)[]);
+      db.prepare(`UPDATE main.decisions SET serving_metadata = ?, recommended = NULL, recommended_reason = NULL${o.by !== undefined ? ", recommended_by = ?" : ""} WHERE id = ? AND answer IS NULL`)
+        .run(...[decisionServing, ...(o.by !== undefined ? [o.by] : []), row.decisionId] as (string | null)[]);
     }
     if (own) db.exec("COMMIT");
   } catch (e) {
@@ -347,7 +350,7 @@ export interface ChoicesUpdate {
 }
 
 /** Writes a new current row: the current one with the update's drops, replaced drafts, added cores and pick. Returns the row and why an added core was left out. */
-export function mergeChoices(db: DatabaseSync, decisionId: string, u: ChoicesUpdate, o: { by?: string | null; now?: Date } = {}): { row: ChoicesRow; notes: string[] } {
+export function mergeChoices(db: DatabaseSync, decisionId: string, u: ChoicesUpdate, o: { by?: string | null; now?: Date; serving?: ServingMetadata } = {}): { row: ChoicesRow; notes: string[] } {
   const cur = currentChoices(db, decisionId);
   const d = db.prepare("SELECT repo, number FROM main.decisions WHERE id = ?").get(decisionId) as { repo: string; number: number } | undefined;
   if (!d) throw new Error(`no decision ${decisionId}`);
@@ -370,6 +373,10 @@ export function mergeChoices(db: DatabaseSync, decisionId: string, u: ChoicesUpd
     }
     drafts[a.key] = { ...(a.draft.params && { params: a.draft.params }), extras: withIds(a.draft.extras) };
   }
-  const row = writeChoices(db, { decisionId, repo: d.repo, number: d.number, turnId: u.turnId, stamp: u.stamp, seen: u.seen, source: "conversation", drafts, added, pick: u.pick }, o);
+  const touched = new Set([...Object.keys(u.cores), ...(u.drop ?? []), ...(u.add ?? []).map(value => value.key)]);
+  const retains = cur && (Object.entries(cur.drafts).some(([key, draft]) => !touched.has(key) && (draft.extras.length > 0 || Object.keys(draft.params ?? {}).length > 0)) || cur.added.some(key => !(u.drop ?? []).includes(key) && !(u.add ?? []).some(value => value.key === key)));
+  const old = retains ? (db.prepare("SELECT serving_metadata FROM decision_choices WHERE id=?").get(cur.id) as { serving_metadata: string | null } | undefined)?.serving_metadata : undefined;
+  const serving = retains ? summarizeStoredServingMetadata([parseServingMetadata(old), o.serving]) : o.serving;
+  const row = writeChoices(db, { decisionId, repo: d.repo, number: d.number, turnId: u.turnId, stamp: u.stamp, seen: u.seen, source: "conversation", drafts, added, pick: u.pick }, { ...o, serving });
   return { row, notes };
 }

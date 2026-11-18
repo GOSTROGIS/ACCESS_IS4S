@@ -74,9 +74,9 @@ export async function answerPending(db: DatabaseSync, p: ConversationParams): Pr
     shown.flush();
     const parsed = r.ok ? r.value : null;
     if (parsed) {
-      if (storeReply(db, repo, n, claim, parsed.text, parsed.cards, parsed.notes, undefined, parts.seen, parsed.choices && parsed.decision ? { decision: parsed.decision, parsed: parsed.choices, source: "conversation", by: model, stampThen } : undefined) !== null) { answered++; jobItem(db, repo, n, "answered a message", p.log); }
+      if (storeReply(db, repo, n, claim, parsed.text, parsed.cards, parsed.notes, undefined, parts.seen, parsed.choices && parsed.decision ? { decision: parsed.decision, parsed: parsed.choices, source: "conversation", by: model, stampThen } : undefined, r.ok ? r.serving : undefined) !== null) { answered++; jobItem(db, repo, n, "answered a message", p.log); }
     } else {
-      failTurn(db, repo, n, claim, "Opus gave no usable reply; send the message again");
+      failTurn(db, repo, n, claim, "The assistant gave no usable reply; send the message again");
       jobItem(db, repo, n, "no usable reply to a message", p.log);
     }
   }), () => queueRoom(db), { first: true });

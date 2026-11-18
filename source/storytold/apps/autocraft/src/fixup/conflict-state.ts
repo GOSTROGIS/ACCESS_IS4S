@@ -13,6 +13,8 @@ export type ConflictState = (typeof CONFLICT_STATES)[number];
 const TRY_STATES: ConflictState[] = ["pushing", "merged", "failed", "refused", "rejected"];
 
 export type ConflictCandidate = {
+  /** Exact accepted current patch/resolution receipt; distinct from its input review. */
+  patchServingMetadata?: string | null;
   repo: string; number: number; head: string; /** The PR's base branch name. */ base: string; title: string;
   /** The final review's reason. */ reason: string; attempt: number; pushable: boolean;
   /** A model resolution stored and linted: the collect step pushes it, or gives it up. */

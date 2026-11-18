@@ -14,3 +14,8 @@ export function servingLabel(serving: ServingMetadata | undefined, legacy: strin
   });
   return labels.some(label => label === null) ? "Model unknown" : `Codex · ${labels.join(" / ")}`;
 }
+
+/** Attempt receipts describe accepted workflow contributors, not sole authorship of the current patch. */
+export function workflowServingLabel(serving: ServingMetadata): string {
+  return `Workflow contributors: ${servingLabel(serving, "Model unknown")}. This receipt does not identify a sole patch author.`;
+}

@@ -21,7 +21,7 @@ import { canAct } from "../../../registry/permissions";
 import { localActions } from "../../decisions/state";
 import { markStarting } from "../starting";
 import { useJump } from "./ItemPage";
-import { servingLabel } from "../../../lib/serving";
+import { servingLabel, workflowServingLabel } from "../../../lib/serving";
 
 const ICON: Record<TimelineEntry["icon"], Icon> = { review: ListChecksIcon, fixup: WrenchIcon, merge: GitMergeIcon, push: UploadSimpleIcon, github: GithubLogoIcon, check: CheckCircleIcon, job: RobotIcon, chat: ChatCircleIcon, person: UserIcon };
 const TRIGGER: Record<string, string> = { "new-head": "new head", discussion: "discussion", operator: "asked by an operator", base: "base branch changed", "model-change": "model change" };
@@ -178,7 +178,7 @@ function Detail({ e, d, review, conv, operator }: { e: TimelineEntry; d: ItemPag
   const viewer = useUser().role === "viewer";
   return (
     <div className="space-y-2 pt-0.5">
-      {review && <ReviewDetail repo={d.repo} r={review} viewer={viewer} />}
+      {e.icon === "fixup" && e.serving && <p className="text-xs text-ink/55">{workflowServingLabel(e.serving)}</p>}{review && <ReviewDetail repo={d.repo} r={review} viewer={viewer} />}
       {e.body && <Folded text={e.body} markdown={e.markdown} />}
       {e.lines.length > 0 && <ul className="space-y-0.5 text-xs leading-5 text-ink/65">{e.lines.map((l, i) => <li key={i} className="break-words">{l}</li>)}</ul>}
       {e.calls.length > 0 && (

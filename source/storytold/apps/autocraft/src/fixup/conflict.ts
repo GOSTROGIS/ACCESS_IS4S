@@ -2,6 +2,7 @@
 // Conflicts go to Sonnet, which returns resolved file contents; our code validates them, Opus checks the result, and the
 // merge commit (head first, base second) is pushed with a lease. Never a rebase or a force-push. Like the rest of
 // Fix-up, no working tree exists: the checkout is untrusted data (see git.ts).
+import { modelText, serializeServingMetadata, summarizeStoredServingMetadata, parseServingMetadata, servingLabel, type ServingMetadata } from "../agents/provenance.ts";
 import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import type { DatabaseSync } from "node:sqlite";
@@ -67,23 +68,24 @@ export type ConflictRun = {
   claim: (c: ConflictCandidate) => Promise<void>;
 };
 
+const patchServing = (c: ConflictCandidate): string | null => c.patchServingMetadata !== undefined ? c.patchServingMetadata : c.lint?.servingMetadata ?? null;
 const refOf = (c: { repo: string; number: number }) => `${c.repo}#${c.number}`;
 const short = (sha: string) => sha.slice(0, 7);
 const oneLine = (s: string) => s.replace(/\s+/g, " ").trim().slice(0, 200);
 
 /** Written before the push, so a crash between the push and its record leaves the merge commit in the push chain. */
 function recordPushing(db: DatabaseSync, at: string, c: ConflictCandidate, files: string[], base: string | null, toHead: string): void {
-  if (c.lint) { db.prepare("UPDATE conflict_merges SET state = 'pushing', to_head = ?, patch = NULL WHERE rowid = ?").run(toHead, c.lint.rowid); return; }
-  db.prepare("INSERT INTO conflict_merges (repo, number, from_head, to_head, base_sha, state, reason, files, attempt, created_at) VALUES (?, ?, ?, ?, ?, 'pushing', NULL, ?, ?, ?)")
-    .run(c.repo, c.number, c.head, toHead, base, JSON.stringify(files), c.attempt, at);
+  if (c.lint) { db.prepare("UPDATE conflict_merges SET state = 'pushing', to_head = ?, patch = NULL, serving_metadata = ? WHERE rowid = ?").run(toHead, patchServing(c), c.lint.rowid); return; }
+  db.prepare("INSERT INTO conflict_merges (repo, number, from_head, to_head, base_sha, state, reason, files, attempt, created_at, serving_metadata) VALUES (?, ?, ?, ?, ?, 'pushing', NULL, ?, ?, ?, ?)")
+    .run(c.repo, c.number, c.head, toHead, base, JSON.stringify(files), c.attempt, at, patchServing(c));
 }
 
 function record(db: DatabaseSync, at: string, c: ConflictCandidate, state: string, reason: string | null, files: string[], base: string | null, toHead: string | null = null): void {
   const open = db.prepare("SELECT rowid AS id FROM conflict_merges WHERE repo = ? AND number = ? AND from_head = ? AND state IN ('pushing', 'linting') ORDER BY rowid DESC").get(c.repo, c.number, c.head) as { id: number } | undefined;
-  if (open) db.prepare("UPDATE conflict_merges SET state = ?, reason = ?, files = ?, to_head = ?, base_sha = ?, patch = NULL WHERE rowid = ?").run(state, reason, JSON.stringify(files), toHead, base, open.id);
+  if (open) db.prepare("UPDATE conflict_merges SET state = ?, reason = ?, files = ?, to_head = ?, base_sha = ?, patch = NULL, serving_metadata = ? WHERE rowid = ?").run(state, reason, JSON.stringify(files), toHead, base, patchServing(c), open.id);
   else {
-    db.prepare("INSERT INTO conflict_merges (repo, number, from_head, to_head, base_sha, state, reason, files, attempt, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-      .run(c.repo, c.number, c.head, toHead, base, state, reason, JSON.stringify(files), c.attempt, at);
+    db.prepare("INSERT INTO conflict_merges (repo, number, from_head, to_head, base_sha, state, reason, files, attempt, created_at, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(c.repo, c.number, c.head, toHead, base, state, reason, JSON.stringify(files), c.attempt, at, patchServing(c));
   }
   db.prepare("INSERT INTO main.stages (repo, number, stage, at, actor, note) VALUES (?, ?, 'take', ?, 'fixup', ?)")
     .run(c.repo, c.number, at, state === "merged" ? `merged ${c.base} at ${short(c.head)}: ${files.length ? files.join(", ") : "no conflicts"}` : state === "asked" ? `asked the contributor to merge ${c.base} at ${short(c.head)}` : `conflict merge ${state} at ${short(c.head)}: ${reason}`);
@@ -314,13 +316,15 @@ export async function mergeConflict(db: DatabaseSync, x: ConflictRun, c: Conflic
       const body = ((db.prepare("SELECT body FROM items WHERE repo = ? AND number = ?").get(x.repo, c.number) as { body: string | null } | undefined)?.body ?? "").slice(0, 4000);
       const repoDir = checkout ? { repo_dir: REPO_PATH } : {};
       const quiet = isQuiet(db, x.repo, c.number);
+      const resolvedServing: (ServingMetadata | undefined)[] = [];
       const resFiles: { path: string; mode: string; content: string }[] = [];
       const keptNow: Kept = {};
       // One resolver call and one check per file, so the size caps apply to a file, not to the whole PR. Every file must pass before anything is pushed.
       for (const t of shown) {
         const f = t.view;
         const ses = again ? sessionAsk(c.lint?.session, f.path, again.findings, new Date(x.at())) : {};
-        const reply = await x.d.resolve(db, [{ ref, title: c.title, body, review_reason: c.reason, base: c.base, ...(quiet ? { quiet } : {}), files: [f], ...(again ? { previous: { patch: again.diff, findings: again.findings } } : {}), ...repoDir }], checkout, ses);
+        const resolutionAnswer = modelText(await x.d.resolve(db, [{ ref, title: c.title, body, review_reason: c.reason, base: c.base, ...(quiet ? { quiet } : {}), files: [f], ...(again ? { previous: { patch: again.diff, findings: again.findings } } : {}), ...repoDir }], checkout, ses));
+        const reply = resolutionAnswer?.text ?? null;
         if (ses.kept) { keptNow[f.path] = ses.kept; x.ledger.hold(ses.kept); }
         if (reply === null) { fail("failed", `the model gave no answer for ${f.path}`); return; }
         const res = parseResolution(reply, f.sections.map((s) => s.id));
@@ -337,17 +341,20 @@ export async function mergeConflict(db: DatabaseSync, x: ConflictRun, c: Conflic
           if (word) { fail("refused", QUIET_PATCH_REFUSAL); return; }
         }
         const text = endNewline(t.content, spliced);
+        resolvedServing.push(resolutionAnswer?.serving);
         resFiles.push({ path: f.path, mode: t.mode, content: t.crlf ? text.replace(/\r?\n/g, "\r\n") : text });
         const sections = checkSections([f], (s) => answerText(res.sections.get(s.id)!));
         if (checkSize(sections) > CHECK_PATCH_CAP) { fail("refused", `the resolved sections of ${f.path} are over the ${CHECK_PATCH_CAP} character limit for the check`); return; }
-        const checkReply = await x.d.check(db, [{ ref, title: c.title, review_reason: c.reason, fixes: [], diff: prDiff.text.slice(0, CHECK_DIFF_CAP), patch: "", conflict: { base: c.base, files: sections }, ...repoDir }], checkout);
+        const checkAnswer = modelText(await x.d.check(db, [{ ref, title: c.title, review_reason: c.reason, fixes: [], diff: prDiff.text.slice(0, CHECK_DIFF_CAP), patch: "", conflict: { base: c.base, files: sections }, ...repoDir }], checkout));
+        const checkReply = checkAnswer?.text ?? null;
         if (checkReply === null) { fail("failed", `the patch check of ${f.path} gave no answer`); return; }
         const verdict = parseCheck(checkReply);
         if (!verdict.ok) { fail("failed", `the patch check of ${f.path} gave no valid answer: ${verdict.error}`); return; }
-        recordCheck(db, { kind: "fixup", repo: x.repo, number: c.number, subject: head, patch: JSON.stringify(sections), round: c.attempt, model: CHECK.models[0]!, check: verdict.check, at: x.at() });
+        recordCheck(db, { kind: "fixup", repo: x.repo, number: c.number, subject: head, patch: JSON.stringify(sections), round: c.attempt, model: CHECK.models[0]!, serving: checkAnswer?.serving, check: verdict.check, at: x.at() });
         audit(db, "fixup", "fixup-check", ref, { run: x.runId, head, verdict: verdict.check.verdict, reasons: verdict.check.reasons, conflict: true, path: f.path });
-        if (verdict.check.verdict === "reject") { fail("rejected", `Opus rejected the resolution of ${f.path}: ${checkLine(verdict.check)}`); return; }
+        if (verdict.check.verdict === "reject") { fail("rejected", `${servingLabel(checkAnswer?.serving, "Opus")} rejected the resolution of ${f.path}: ${checkLine(verdict.check)}`); return; }
       }
+      c = { ...c, patchServingMetadata: serializeServingMetadata(summarizeStoredServingMetadata(resolvedServing)) };
       const scratch = mkdtempSync(join(x.d.root, ".index-"));
       try {
         tree = await git.withFiles(merge.tree, resFiles, join(scratch, "index"));
@@ -363,10 +370,10 @@ export async function mergeConflict(db: DatabaseSync, x: ConflictRun, c: Conflic
       const task = rs.length ? await queueLintFor(db, { step: "conflict", repo: x.repo, number: c.number, head, base: baseSha, patch: await git.diffText(head, tree), files: rs }) : null;
       if (task !== null) {
         const round = c.lint ? c.lint.round + 1 : 1;
-        if (c.lint) db.prepare("UPDATE conflict_merges SET patch = ?, files = ?, lint_task = ?, lint_round = ?, session = ?, serving_metadata = NULL WHERE rowid = ?").run(JSON.stringify(resFiles), JSON.stringify(files), task, round, storeSessions(keptNow, new Date(x.at())), c.lint.rowid);
+        if (c.lint) db.prepare("UPDATE conflict_merges SET patch = ?, files = ?, lint_task = ?, lint_round = ?, session = ?, serving_metadata = ? WHERE rowid = ?").run(JSON.stringify(resFiles), JSON.stringify(files), task, round, storeSessions(keptNow, new Date(x.at())), patchServing(c), c.lint.rowid);
         else {
-          db.prepare("INSERT INTO conflict_merges (repo, number, from_head, to_head, base_sha, state, reason, files, attempt, created_at, patch, lint_task, lint_round, session) VALUES (?, ?, ?, NULL, ?, 'linting', NULL, ?, ?, ?, ?, ?, ?, ?)")
-            .run(x.repo, c.number, c.head, baseSha, JSON.stringify(files), c.attempt, x.at(), JSON.stringify(resFiles), task, round, storeSessions(keptNow, new Date(x.at())));
+          db.prepare("INSERT INTO conflict_merges (repo, number, from_head, to_head, base_sha, state, reason, files, attempt, created_at, patch, lint_task, lint_round, session, serving_metadata) VALUES (?, ?, ?, NULL, ?, 'linting', NULL, ?, ?, ?, ?, ?, ?, ?, ?)")
+            .run(x.repo, c.number, c.head, baseSha, JSON.stringify(files), c.attempt, x.at(), JSON.stringify(resFiles), task, round, storeSessions(keptNow, new Date(x.at())), patchServing(c));
         }
         x.ledger.stored(keptNow);
         x.log(`  ${ref}: resolution stored; lint task ${task} queued (round ${round})`);
@@ -390,7 +397,7 @@ export async function mergeConflict(db: DatabaseSync, x: ConflictRun, c: Conflic
     if (own.ownDiff) db.prepare("UPDATE conflict_merges SET own_diff = ?, own_delta = ? WHERE repo = ? AND number = ? AND to_head = ? AND state = 'merged'").run(own.ownDiff, own.delta, x.repo, c.number, commit);
     x.summary.pushed.push(ref);
     x.log(`  ${ref}: merged ${c.base} into the branch: ${short(commit)} on ${short(head)}${files.length ? `, resolved ${files.join(", ")}` : ""}`);
-    const note = storedNote<Note>(files.length ? { by: "model", kind: "comment", model: CONFLICT.models[0] } : { by: "fixed" }, c.lint && !again ? c.lint.servingMetadata : null);
+    const note = storedNote<Note>(files.length ? { by: "model", kind: "comment", model: CONFLICT.models[0] } : { by: "fixed" }, patchServing(c));
     const prev = await newestConflictNote(x, c, db);
     const cm = prev
       ? await ghEditComment(x.gw, g, x.d.exec, "conflict-comment-edit", { repo: x.repo, number: c.number, commentId: prev.id }, note, conflictCommentText(c.base, prev.count + 1, x.at()), { run: x.runId })
