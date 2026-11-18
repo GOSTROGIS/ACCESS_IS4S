@@ -14,6 +14,7 @@ import { actRoom, needOf, queuedAhead, queuedCards, queuePlace, queueReason, typ
 import { settlesNow } from "../settlers.ts";
 import { actBlockedReason } from "../runner/autopilot.ts";
 import { addLabels, closeItem, commentOn, createIssue, IssueError, assignTo, removeLabel, reopenItem, requestReviewers, transferIssue, type Note, type Writer } from "../github/write.ts";
+import { storedNote } from "../github/note.ts";
 import { exec as defaultExec, type Exec } from "../fixup/git.ts";
 import { runPipelineStep } from "../preapproval/index.ts";
 import type { CardEdit } from "../../web/src/api/types.ts";
@@ -48,8 +49,14 @@ function need(db: DatabaseSync, id: number): CardRow {
   return c;
 }
 
-/** Cards come from the conversation prompt, which always runs on its first listed model. */
-const CARD_NOTE: Note = { by: "operator", model: CLAUDE_PROMPTS["conversation.turn"].models[0] };
+/** A prepared choice and a conversation turn have independent stored authorship. */
+export function cardNote(db: DatabaseSync, c: Pick<CardRow, "turn_id" | "choice_id" | "repo" | "number">): Note {
+  const source = c.choice_id
+    ? db.prepare("SELECT serving_metadata FROM decision_choices WHERE id = ? AND repo = ? AND number = ?").get(c.choice_id, c.repo, c.number)
+    : db.prepare("SELECT serving_metadata FROM conversation_turns WHERE id = ? AND repo = ? AND number = ?").get(c.turn_id, c.repo, c.number);
+  return storedNote({ by: "operator", model: CLAUDE_PROMPTS["conversation.turn"].models[0] },
+    source ? source.serving_metadata : { schema: 0, provider: "unknown", runs: [], models: [] });
+}
 
 const oneLine = (s: string): string => s.replace(/\s+/g, " ").trim().slice(0, 300);
 const ref = (repo: string, n: number) => `${repo}#${n}`;
@@ -199,7 +206,7 @@ type Ctx = {
 async function postComment({ db, c, by, q, w, source }: Ctx, text: string): Promise<Outcome> {
   const g = actGrant(db, c.repo, by);
   const live = await liveOpen(q, c.repo, c.number);
-  const url = await commentOn(w, g, q, "act-comment", { repo: c.repo, number: c.number, id: live.id }, CARD_NOTE, text, source);
+  const url = await commentOn(w, g, q, "act-comment", { repo: c.repo, number: c.number, id: live.id }, cardNote(db, c), text, source);
   return { result: "Comment posted", url: url || null };
 }
 
@@ -224,7 +231,7 @@ async function closeThe({ db, c, by, q, at, w, source }: Ctx, p: { reason: Close
   if (refusal) throw new Error(refusal);
   const live = await liveOpen(q, c.repo, c.number);
   const item = { repo: c.repo, number: c.number, id: live.id };
-  const url = text ? await commentOn(w, g, q, "act-comment", item, CARD_NOTE, text, source) : "";
+  const url = text ? await commentOn(w, g, q, "act-comment", item, cardNote(db, c), text, source) : "";
   await closeItem(w, g, q, { ...item, pr: live.type === "PullRequest" }, { ...source, head: live.head }, p.reason === "completed" ? "COMPLETED" : "NOT_PLANNED");
   const how = live.type === "PullRequest" ? "" : p.reason === "completed" ? " as completed" : " as not planned";
   db.prepare("INSERT INTO main.stages (repo, number, stage, at, actor, note) VALUES (?, ?, 'closed', ?, ?, ?)").run(c.repo, c.number, at, by, `closed${how} from a conversation`);
@@ -248,7 +255,7 @@ async function closeDuplicate({ db, c, by, q, at, w, source }: Ctx, of: number):
   const live = await liveOpen(q, c.repo, c.number);
   const orig = await readLive(q, c.repo, of);
   if (!orig) throw new Error(`GitHub returned no ${ref(c.repo, of)}`);
-  const url = await commentOn(w, g, q, "act-comment", { repo: c.repo, number: c.number, id: live.id }, CARD_NOTE, duplicateComment({ repo: c.repo, original: ref(c.repo, of), closed: orig.state !== "OPEN" }), source);
+  const url = await commentOn(w, g, q, "act-comment", { repo: c.repo, number: c.number, id: live.id }, cardNote(db, c), duplicateComment({ repo: c.repo, original: ref(c.repo, of), closed: orig.state !== "OPEN" }), source);
   // Recorded like Act's close: saved after the comment so the failed close shows what was posted.
   const action = (state: string, reason: string | null) => db.prepare(`INSERT INTO main.actions (decision_id, repo, number, kind, state, comment_url, reason, created_at) VALUES (?, ?, ?, 'comment-close', ?, ?, ?, ?)
     ON CONFLICT (decision_id, repo, number, kind) DO UPDATE SET state = excluded.state, reason = excluded.reason, created_at = excluded.created_at`).run(`conversation-card:${c.id}`, c.repo, c.number, state, url || null, reason, at);
@@ -341,7 +348,7 @@ async function openIssue(ctx: Ctx, st: Extract<Step, { kind: "open_issue" }>): P
   const exec = ctx.execFor(st.repo);
   const g = actGrant(db, st.repo, by);
   try {
-    const made = await createIssue(w, g, exec, { repo: st.repo, target: ref(c.repo, c.number), title: st.title, body: st.body, action: "act-open-issue" }, CARD_NOTE, source);
+    const made = await createIssue(w, g, exec, { repo: st.repo, target: ref(c.repo, c.number), title: st.title, body: st.body, action: "act-open-issue" }, cardNote(db, c), source);
     return { result: `Opened ${ref(st.repo, made.number)}`, url: made.url };
   } catch (e) {
     if (e instanceof IssueError && !e.clear) throw new Error(`${e.message}; the issue may exist in ${st.repo}, check before running again`);

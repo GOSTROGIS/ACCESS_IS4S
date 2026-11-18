@@ -13,7 +13,7 @@ export type PremergeRow = {
   repo: string; number: number; head_oid: string;
   /** When the row was last written (a review or a failed try). */
   at: string;
-  run_id: string | null; model: string | null;
+  run_id: string | null; model: string | null; serving_metadata: string | null;
   /** JSON PremergeFinding[]; null while no try has produced a review. */
   findings: string | null;
   /** What the reviewer searched, as free text. */
@@ -34,6 +34,8 @@ export type PremergeRow = {
 export type PremergeSave = {
   repo: string; number: number; head: string; at: string;
   runId?: string | null; model?: string | null;
+  /** Opaque stored attribution; compatibility copies must preserve future versions. */
+  servingMetadata?: string | null;
   /** A stored review. Without it, `error` records a failed try. */
   findings?: PremergeFinding[];
   searched?: string | null;
@@ -52,14 +54,14 @@ export type PremergeSave = {
 export function savePremerge(db: DatabaseSync, s: PremergeSave): void {
   const args = [s.repo, s.number, s.head, s.at, s.runId ?? null, s.model ?? null] as const;
   if (s.findings) {
-    db.prepare(`INSERT INTO premerge_reviews (repo, number, head_oid, at, run_id, model, findings, searched, conflicts, unsure, claims, base_ref, error, tries) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, 0)
+    db.prepare(`INSERT INTO premerge_reviews (repo, number, head_oid, at, run_id, model, findings, searched, conflicts, unsure, claims, base_ref, serving_metadata, error, tries) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, 0)
       ON CONFLICT (repo, number, head_oid) DO UPDATE SET at = excluded.at, run_id = excluded.run_id, model = excluded.model,
-        findings = excluded.findings, searched = excluded.searched, conflicts = excluded.conflicts, unsure = excluded.unsure, claims = excluded.claims, base_ref = excluded.base_ref, error = NULL`).run(...args, JSON.stringify(s.findings), s.searched ?? null, s.conflicts?.length ? JSON.stringify(s.conflicts) : null, s.unsure ? 1 : 0, s.claims?.length ? JSON.stringify(s.claims) : null, s.baseRef ?? null);
+        findings = excluded.findings, searched = excluded.searched, conflicts = excluded.conflicts, unsure = excluded.unsure, claims = excluded.claims, base_ref = excluded.base_ref, serving_metadata = excluded.serving_metadata, error = NULL`).run(...args, JSON.stringify(s.findings), s.searched ?? null, s.conflicts?.length ? JSON.stringify(s.conflicts) : null, s.unsure ? 1 : 0, s.claims?.length ? JSON.stringify(s.claims) : null, s.baseRef ?? null, s.servingMetadata ?? null);
     return;
   }
-  db.prepare(`INSERT INTO premerge_reviews (repo, number, head_oid, at, run_id, model, error, tries) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  db.prepare(`INSERT INTO premerge_reviews (repo, number, head_oid, at, run_id, model, error, tries, serving_metadata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT (repo, number, head_oid) DO UPDATE SET at = excluded.at, run_id = excluded.run_id, model = excluded.model,
-      error = excluded.error, tries = CASE WHEN ? THEN excluded.tries ELSE tries + 1 END`).run(...args, s.error ?? "failed", s.final ? PREMERGE_MAX_TRIES : 1, s.final ? 1 : 0);
+      error = excluded.error, tries = CASE WHEN ? THEN excluded.tries ELSE tries + 1 END`).run(...args, s.error ?? "failed", s.final ? PREMERGE_MAX_TRIES : 1, s.servingMetadata ?? null, s.final ? 1 : 0);
 }
 
 /** The pre-merge review of a head, when it read the diff against the base branch the head's Opus review read (a row or review that recorded none counts as matching). */

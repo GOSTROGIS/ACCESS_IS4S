@@ -146,7 +146,7 @@ function FindingAutoCraft({ d }: { d: FindingPageData }) {
   const f = d.finding;
   return (
     <div>
-      <div className="px-4 pt-3 text-xs font-semibold text-accent-ink md:px-6"><span className="inline-flex items-center gap-1.5"><RobotIcon /> In AutoCraft</span><span className="num float-right font-normal text-ink/55">{formatCost(d.costUsd)} in all</span></div>
+      <div className="px-4 pt-3 text-xs font-semibold text-accent-ink md:px-6"><span className="inline-flex items-center gap-1.5"><RobotIcon /> In AutoCraft</span><span className="num float-right font-normal text-ink/55">{d.costUsd === null ? "USD unreported" : `${formatCost(d.costUsd)} in all`}</span></div>
       <div className="pt-3"><Question d={d} /></div>
       {d.rounds.length > 0 && (
         <section className={sec}>
@@ -156,7 +156,7 @@ function FindingAutoCraft({ d }: { d: FindingPageData }) {
               <li key={r.round} className="flex items-start gap-2.5 text-sm">
                 <Badge tone={r.outcome === "passed" ? "ok" : "bad"} className="mt-px shrink-0">Round {r.round} {r.outcome}</Badge>
                 <span className="min-w-0 flex-1 text-ink/85">{r.why}<TimeAgo iso={r.at} className="num mt-0.5 block text-xs text-ink/50" /></span>
-                <span className="num shrink-0 text-xs text-ink/50">{formatCost(r.costUsd)}</span>
+                <span className="num shrink-0 text-xs text-ink/50">{r.costUsd === null ? "USD unreported" : formatCost(r.costUsd)}</span>
               </li>
             ))}
           </ol>
@@ -191,7 +191,7 @@ function FindingAutoCraft({ d }: { d: FindingPageData }) {
         </section>
       )}
       <section className="px-4 py-4 md:px-6">
-        <H aside={<span className="num">{formatCost(d.costUsd)}</span>}>History</H>
+        <H aside={<span className="num">{d.costUsd === null ? "USD unreported" : formatCost(d.costUsd)}</span>}>History</H>
         <ol>
           {d.history.map((h) => (
             <li key={h.id} className="flex items-start gap-2.5 border-t border-line py-2 text-sm">

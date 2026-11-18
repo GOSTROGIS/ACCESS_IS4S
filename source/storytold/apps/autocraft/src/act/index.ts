@@ -21,6 +21,7 @@ import { OPERATOR_MODELS } from "../prompts/index.ts";
 import type { DatabaseSync } from "node:sqlite";
 import { audit } from "../dash/audit.ts";
 import { closeItem, commentOn, duplicateClose, type CloseHow, type Note, type Writer } from "../github/write.ts";
+import { storedNote } from "../github/note.ts";
 import { connect } from "../db.ts";
 import { isQuiet } from "../security/quiet.ts";
 import { actionable, ask, factsOf, getDecision, type Actionable, type DecisionRow, type Kind } from "../decisions.ts";
@@ -249,8 +250,8 @@ const factValue = (d: DecisionRow, prefix: string): string | null => {
 
 /** The note for a comment posted on an operator's answer: the model that recommended the action or wrote the decision's text, when one did. */
 export function decisionNote(d: DecisionRow): Note {
-  if (d.asked_by === SECURITY_ASKER) return { by: "operator", model: OPERATOR_MODELS.security };
-  const model = d.recommended_by ?? d.summary_by;
+  const model = d.asked_by === SECURITY_ASKER ? OPERATOR_MODELS.security : d.recommended_by ?? d.summary_by;
+  if (d.serving_metadata != null) return storedNote({ by: "operator", model }, d.serving_metadata);
   return model ? { by: "operator", model } : { by: "fixed-operator" };
 }
 

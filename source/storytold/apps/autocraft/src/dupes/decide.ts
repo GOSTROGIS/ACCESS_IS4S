@@ -5,6 +5,8 @@
 // which the later stages read to hold the items to close. Per-pair decisions from
 // before groups exist stay until answered; an open one of a group is superseded
 // by the group decision.
+import { summarizeStoredServingMetadata, serializeServingMetadata } from "../agents/provenance.ts";
+import { servingLabel } from "../../web/src/lib/serving.ts";
 import { settledBySql } from "../settlers.ts";
 import { jobItem } from "../runner/job-items.ts";
 import type { DatabaseSync } from "node:sqlite";
@@ -122,11 +124,11 @@ function supersede(db: DatabaseSync, p: GroupPlan, id: string, at: string): void
 
 function unchanged(db: DatabaseSync, q: Record<string, unknown>, p: GroupPlan): boolean {
   const id = q.id as string;
-  const cur = db.prepare("SELECT question, context, facts, options, recommended, recommended_reason, summary, summary_by, prepared_at FROM decisions WHERE id = ? AND answer IS NULL").get(id) as Record<string, string | null> | undefined;
+  const cur = db.prepare("SELECT question, context, facts, options, recommended, recommended_reason, summary, summary_by, serving_metadata, prepared_at FROM decisions WHERE id = ? AND answer IS NULL").get(id) as Record<string, string | null> | undefined;
   if (!cur) return false;
   const next = validateAsk(q);
   // A prepared decision keeps the judgement model's summary and pick.
-  const cols = ["question", "context", "facts", "options", ...(cur.prepared_at ? [] : ["recommended", "recommended_reason", "summary", "summary_by"])];
+  const cols = ["question", "context", "facts", "options", ...(cur.prepared_at ? [] : ["recommended", "recommended_reason", "summary", "summary_by", "serving_metadata"])];
   if (cols.some((c) => cur[c] !== next[c])) return false;
   const g = db.prepare("SELECT source, applied_answer FROM dupe_groups WHERE decision_id = ?").get(id) as { source: string; applied_answer: string | null } | undefined;
   if (!g || g.source !== p.source || g.applied_answer !== null) return false;
@@ -162,6 +164,7 @@ function textOf(db: DatabaseSync, p: GroupPlan) {
   const primary = keeps.find((k) => k.number === p.number)!;
   // The model's own summary, whole. A comparison stored without one gives its reason whole; a rule-picked one says so.
   const used = p.sets.filter((s) => s.cmp.source !== "single").map((s) => s.cmp);
+  const serving = summarizeStoredServingMetadata(used.filter(c => c.source === "model").map(c => c.serving_metadata));
   const kept = (c: StoredComparison) => list(keeps.filter((k) => k.kind === c.kind).map((k) => k.number));
   const texts = used.map((c) => c.summary
     || (c.source === "rule" ? `Kept ${kept(c)} by rule: ${(c.reason ?? "").replace(/^kept by rule: /, "")}.` : c.source === "closed" ? `Kept ${kept(c)}: ${c.reason ?? ""}.` : c.reason ?? "")).filter(Boolean);
@@ -180,8 +183,8 @@ function textOf(db: DatabaseSync, p: GroupPlan) {
   const question = `Keep #${primary.number}${keeps.length > 1 ? ` and #${keeps.find((k) => k !== primary)!.number}` : ""} and close ${refList(closes)} as ${keeps.length > 1 ? "their" : "its"} ${closes.length === 1 ? "duplicate" : "duplicates"}?`;
   const context = byRule
     ? `The model comparison gave no valid answer, so the rule picked the item to keep: ${p.reasons.map((r) => r.replace(/^kept by rule: /, "")).join(", ")}.`
-    : `${list(p.group.members)} describe the same bug or request. ${p.model ? `${p.model[0]!.toUpperCase()}${p.model.slice(1)} compared them together` : "They are compared together"}${p.source === "closed" ? "; one is already done, so the open ones duplicate it" : ""}.`;
-  return { facts: facts.slice(0, 5), question, context, summary, by, why, keepLabel: `Keep ${list(keeps.map((k) => k.number))}` };
+    : `${list(p.group.members)} describe the same bug or request. ${serving !== undefined ? `${servingLabel(serving, "Model unknown")} compared them together` : p.model ? `${p.model[0]!.toUpperCase()}${p.model.slice(1)} compared them together` : "They are compared together"}${p.source === "closed" ? "; one is already done, so the open ones duplicate it" : ""}.`;
+  return { servingMetadata: serializeServingMetadata(serving), facts: facts.slice(0, 5), question, context, summary, by, why, keepLabel: `Keep ${list(keeps.map((k) => k.number))}` };
 }
 
 /** Asks (or refreshes) the group decisions of one repo (every repo when omitted). Returns the ids asked or refreshed. Each plan is written in one transaction, so no other process sees its members unheld in between. */
@@ -212,7 +215,7 @@ export function askGroupDecisions(db: DatabaseSync, repo: string | undefined, at
         id, kind: "duplicate", repo: p.repo, number: p.number, question: t.question, context: t.context, facts: t.facts,
         options: [{ ...GROUP_OPTIONS.accept, label: t.keepLabel }, ...alts.map((a) => ({ key: keepKey(a.number), label: `Keep #${a.number} instead`, hint: `Posts the comments shown under it: keeps #${a.number}, closes the others, #${p.number} too.` })), GROUP_OPTIONS.distinct],
         recommended: t.why ? "accept" : null, recommended_reason: t.why,
-        asked_by: ACTOR, asked_at: at, summary: t.summary, summary_by: t.by, summary_at: at,
+        asked_by: ACTOR, asked_at: at, summary: t.summary, summary_by: t.by, summary_at: at, serving_metadata: t.servingMetadata,
       };
       supersede(db, p, id, at);
       // An open decision whose question and member roles are unchanged keeps its asked time and stored texts.

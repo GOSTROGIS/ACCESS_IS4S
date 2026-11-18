@@ -24,7 +24,7 @@ function carriesOf(db: DatabaseSync, f: PrFacts, head: string): FixCandidate[] {
     const suggestion = (db.prepare("SELECT t.text FROM dupe_group_texts t JOIN dupe_groups g ON g.decision_id = t.decision_id AND g.applied_answer = t.option WHERE t.decision_id = ? AND t.number = ? AND t.step = 'suggestion'").get(r.decision_id, f.number) as { text: string } | undefined)?.text ?? null;
     const carry: Carry = { decisionId: r.decision_id, suggestion, sources };
     out.push({ repo: f.repo, number: f.number, head, reason: `Parts of ${sources.map((x) => `#${x.number}`).join(", ")}, closed as duplicates, to carry over.`, fixes: [], attempt: r.attempts + 1,
-      model: (db.prepare("SELECT summary_by FROM decisions WHERE id = ?").get(r.decision_id) as { summary_by: string | null } | undefined)?.summary_by ?? null, carry });
+      model: (db.prepare("SELECT summary_by, serving_metadata FROM decisions WHERE id = ?").get(r.decision_id) as { summary_by: string | null; serving_metadata: string | null } | undefined)?.summary_by ?? null, servingMetadata: (db.prepare("SELECT serving_metadata FROM decisions WHERE id = ?").get(r.decision_id) as { serving_metadata: string | null } | undefined)?.serving_metadata ?? null, carry });
   }
   return out;
 }
@@ -32,7 +32,7 @@ function carriesOf(db: DatabaseSync, f: PrFacts, head: string): FixCandidate[] {
 export function selectFixups(db: DatabaseSync, repo: string, run?: string | null, plans?: PlanSet): FixSelection {
   const opts = { repo, ...(run !== undefined ? { run } : {}), ...(plans ? { plans } : {}) };
   const out: FixSelection = { fix: [], cannotPush: [], ask: [], lint: [], conflictMerge: [], conflictAsk: [] };
-  const review = db.prepare("SELECT fixes, model FROM final_reviews WHERE repo = ? AND number = ? AND head_oid = ? AND verdict = 'take-fix'");
+  const review = db.prepare("SELECT fixes, model, serving_metadata FROM final_reviews WHERE repo = ? AND number = ? AND head_oid = ? AND verdict = 'take-fix'");
   const text = db.prepare("SELECT title FROM items WHERE repo = ? AND number = ?");
   for (const { facts: f, action } of planned(db, "conflict", opts)) {
     const c: ConflictCandidate = {
@@ -59,18 +59,18 @@ export function selectFixups(db: DatabaseSync, repo: string, run?: string | null
       if (!f.pushable || !f.repoFacts.pushApproved) continue;
       const row = premergeAt(db, repo, f.number, head);
       const defects = findingsOf(row).filter((x) => x.severity === "defect");
-      fix.push({ repo, number: f.number, head, reason: "pre-merge review", fixes: parseFixes(JSON.stringify(defects.map((x) => x.fix))), attempt: 1, model: row?.model ?? null, source: "premerge" });
+      fix.push({ repo, number: f.number, head, reason: "pre-merge review", fixes: parseFixes(JSON.stringify(defects.map((x) => x.fix))), attempt: 1, model: row?.model ?? null, servingMetadata: row?.serving_metadata ?? null, source: "premerge" });
     } else {
-      const r = review.get(repo, f.number, head) as { fixes: string | null; model: string | null } | undefined;
-      const c: FixCandidate = { repo, number: f.number, head, reason: f.review!.reason, fixes: parseFixes(r?.fixes ?? null), attempt: f.fixup!.attempts + 1, model: r?.model ?? null };
+      const r = review.get(repo, f.number, head) as { fixes: string | null; model: string | null; serving_metadata: string | null } | undefined;
+      const c: FixCandidate = { repo, number: f.number, head, reason: f.review!.reason, fixes: parseFixes(r?.fixes ?? null), attempt: f.fixup!.attempts + 1, model: r?.model ?? null, servingMetadata: r?.serving_metadata ?? null };
       if (bucket === "ask") out.ask.push(c);
       else if (bucket === "cannot-push") out.cannotPush.push(c);
       else if (bucket === "fix") fix.push(c);
     }
   }
   // Stored patches (review, pre-merge and carry-over sources) whose lint task ended. Their row is found by source; a carry-over's also by its decision.
-  const row = db.prepare("SELECT rowid AS id, attempt, patch, lint_task, lint_round, lint_state, carry_decision, session, operator_fix, changes FROM fixups WHERE repo = ? AND number = ? AND from_head = ? AND COALESCE(source, 'review') = ? AND state = 'linting' ORDER BY rowid");
-  type LintRow = { id: number; attempt: number; patch: string | null; lint_task: number | null; lint_round: number | null; lint_state: string | null; carry_decision: string | null; session: string | null; operator_fix: number | null; changes: string | null };
+  const row = db.prepare("SELECT rowid AS id, attempt, patch, lint_task, lint_round, lint_state, carry_decision, session, operator_fix, changes, serving_metadata FROM fixups WHERE repo = ? AND number = ? AND from_head = ? AND COALESCE(source, 'review') = ? AND state = 'linting' ORDER BY rowid");
+  type LintRow = { id: number; attempt: number; patch: string | null; lint_task: number | null; lint_round: number | null; lint_state: string | null; carry_decision: string | null; session: string | null; operator_fix: number | null; changes: string | null; serving_metadata: string | null };
   const seenLint = new Set<string>();
   for (const { facts: f, action } of planned(db, "lint", { ...opts, bucket: "fixup" })) {
     const head = action.head!, source = String(action.params?.source ?? "review");
@@ -80,7 +80,7 @@ export function selectFixups(db: DatabaseSync, repo: string, run?: string | null
     seenLint.add(key);
     for (const w of row.all(repo, f.number, head, source) as LintRow[]) {
       if (!w.patch) continue;
-      const lint = { rowid: w.id, round: w.lint_round ?? 1, task: w.lint_task, state: w.lint_state ?? "pending", patch: w.patch, session: w.session, changes: changesOf(w.changes) };
+      const lint = { servingMetadata: w.serving_metadata, rowid: w.id, round: w.lint_round ?? 1, task: w.lint_task, state: w.lint_state ?? "pending", patch: w.patch, session: w.session, changes: changesOf(w.changes) };
       if (source === "carry") {
         const c = carriesOf(db, f, head).find((x) => x.carry!.decisionId === w.carry_decision);
         if (c) out.lint.push({ ...c, attempt: w.attempt, lint });
@@ -90,23 +90,23 @@ export function selectFixups(db: DatabaseSync, repo: string, run?: string | null
       } else if (source === "premerge") {
         const pm = premergeAt(db, repo, f.number, head);
         const defects = findingsOf(pm).filter((x) => x.severity === "defect");
-        out.lint.push({ repo, number: f.number, head, reason: "pre-merge review", fixes: parseFixes(JSON.stringify(defects.map((x) => x.fix))), attempt: w.attempt, model: pm?.model ?? null, source: "premerge", lint });
+        out.lint.push({ repo, number: f.number, head, reason: "pre-merge review", fixes: parseFixes(JSON.stringify(defects.map((x) => x.fix))), attempt: w.attempt, model: pm?.model ?? null, servingMetadata: pm?.serving_metadata ?? null, source: "premerge", lint });
       } else {
-        const r = review.get(repo, f.number, head) as { fixes: string | null; model: string | null } | undefined;
-        if (f.review) out.lint.push({ repo, number: f.number, head, reason: f.review.reason, fixes: parseFixes(r?.fixes ?? null), attempt: w.attempt, model: r?.model ?? null, lint });
+        const r = review.get(repo, f.number, head) as { fixes: string | null; model: string | null; serving_metadata: string | null } | undefined;
+        if (f.review) out.lint.push({ repo, number: f.number, head, reason: f.review.reason, fixes: parseFixes(r?.fixes ?? null), attempt: w.attempt, model: r?.model ?? null, servingMetadata: r?.serving_metadata ?? null, lint });
       }
     }
   }
   // Stored conflict resolutions whose lint task ended: collected by the conflict step.
-  const lintedMerge = db.prepare("SELECT rowid AS id, attempt, patch, lint_task, lint_round, base_sha, files, session FROM conflict_merges WHERE repo = ? AND number = ? AND from_head = ? AND state = 'linting' ORDER BY rowid");
+  const lintedMerge = db.prepare("SELECT rowid AS id, attempt, patch, lint_task, lint_round, base_sha, files, session, serving_metadata FROM conflict_merges WHERE repo = ? AND number = ? AND from_head = ? AND state = 'linting' ORDER BY rowid");
   for (const { facts: f, action } of planned(db, "lint", { ...opts, bucket: "conflict" })) {
     const head = action.head!;
-    for (const w of lintedMerge.all(repo, f.number, head) as { id: number; attempt: number; patch: string | null; lint_task: number | null; lint_round: number | null; base_sha: string | null; files: string | null; session: string | null }[]) {
+    for (const w of lintedMerge.all(repo, f.number, head) as { id: number; attempt: number; patch: string | null; lint_task: number | null; lint_round: number | null; base_sha: string | null; files: string | null; session: string | null; serving_metadata: string | null }[]) {
       if (!w.patch || !w.base_sha) continue;
       out.conflictMerge.unshift({
         repo, number: f.number, head, base: f.conflict!.base, title: ((text.get(repo, f.number) as { title: string | null } | undefined)?.title ?? "").slice(0, 300),
         reason: f.review!.reason, attempt: w.attempt, pushable: f.pushable,
-        lint: { rowid: w.id, round: w.lint_round ?? 1, task: w.lint_task, baseSha: w.base_sha, resolved: w.patch, files: JSON.parse(w.files ?? "[]") as string[], session: w.session },
+        lint: { servingMetadata: w.serving_metadata, rowid: w.id, round: w.lint_round ?? 1, task: w.lint_task, baseSha: w.base_sha, resolved: w.patch, files: JSON.parse(w.files ?? "[]") as string[], session: w.session },
       });
     }
   }

@@ -11,7 +11,7 @@ import { audit } from "../dash/audit.ts";
 import type { By } from "../core/gates.ts";
 import { guard, liveOf } from "../core/guard.ts";
 import { ownLogins } from "../github/identity.ts";
-import type { Note } from "../github/note.ts";
+import { storedNote, type Note } from "../github/note.ts";
 import { ghAskComment, ghComment, ghEditComment, pushBranch, type Writer } from "../github/write.ts";
 import { foldFormat, queueLintFor, readLint } from "../prepush/index.ts";
 import { findingsWord, lintVerdict, testsNoteOf } from "../prepush/tests.ts";
@@ -363,7 +363,7 @@ export async function mergeConflict(db: DatabaseSync, x: ConflictRun, c: Conflic
       const task = rs.length ? await queueLintFor(db, { step: "conflict", repo: x.repo, number: c.number, head, base: baseSha, patch: await git.diffText(head, tree), files: rs }) : null;
       if (task !== null) {
         const round = c.lint ? c.lint.round + 1 : 1;
-        if (c.lint) db.prepare("UPDATE conflict_merges SET patch = ?, files = ?, lint_task = ?, lint_round = ?, session = ? WHERE rowid = ?").run(JSON.stringify(resFiles), JSON.stringify(files), task, round, storeSessions(keptNow, new Date(x.at())), c.lint.rowid);
+        if (c.lint) db.prepare("UPDATE conflict_merges SET patch = ?, files = ?, lint_task = ?, lint_round = ?, session = ?, serving_metadata = NULL WHERE rowid = ?").run(JSON.stringify(resFiles), JSON.stringify(files), task, round, storeSessions(keptNow, new Date(x.at())), c.lint.rowid);
         else {
           db.prepare("INSERT INTO conflict_merges (repo, number, from_head, to_head, base_sha, state, reason, files, attempt, created_at, patch, lint_task, lint_round, session) VALUES (?, ?, ?, NULL, ?, 'linting', NULL, ?, ?, ?, ?, ?, ?, ?)")
             .run(x.repo, c.number, c.head, baseSha, JSON.stringify(files), c.attempt, x.at(), JSON.stringify(resFiles), task, round, storeSessions(keptNow, new Date(x.at())));
@@ -390,7 +390,7 @@ export async function mergeConflict(db: DatabaseSync, x: ConflictRun, c: Conflic
     if (own.ownDiff) db.prepare("UPDATE conflict_merges SET own_diff = ?, own_delta = ? WHERE repo = ? AND number = ? AND to_head = ? AND state = 'merged'").run(own.ownDiff, own.delta, x.repo, c.number, commit);
     x.summary.pushed.push(ref);
     x.log(`  ${ref}: merged ${c.base} into the branch: ${short(commit)} on ${short(head)}${files.length ? `, resolved ${files.join(", ")}` : ""}`);
-    const note: Note = files.length ? { by: "model", kind: "comment", model: CONFLICT.models[0] } : { by: "fixed" };
+    const note = storedNote<Note>(files.length ? { by: "model", kind: "comment", model: CONFLICT.models[0] } : { by: "fixed" }, c.lint && !again ? c.lint.servingMetadata : null);
     const prev = await newestConflictNote(x, c, db);
     const cm = prev
       ? await ghEditComment(x.gw, g, x.d.exec, "conflict-comment-edit", { repo: x.repo, number: c.number, commentId: prev.id }, note, conflictCommentText(c.base, prev.count + 1, x.at()), { run: x.runId })

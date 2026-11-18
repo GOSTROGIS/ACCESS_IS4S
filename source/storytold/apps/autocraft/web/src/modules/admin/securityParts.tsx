@@ -19,15 +19,15 @@ import { Dialog } from "../../ui/molecules/Dialog";
 import { RateBar } from "../../ui/molecules/RateBar";
 import { Segmented } from "../../ui/molecules/Segmented";
 
-const usd = (v: number) => formatCost(v) ?? "$0.00";
+const usd = (v: number | null) => v === null ? "USD unreported" : formatCost(v) ?? "$0.00";
 
 /** The spend-cap form of starting and continuing a scan. */
-function CapDialog({ title, submit, initial, above, open, onClose, send }: { title: string; submit: string; initial: number; above: number; open: boolean; onClose: () => void; send: (cap: number | null) => Promise<unknown> }) {
+function CapDialog({ title, submit, initial, above, open, onClose, send, tokenBudget = false }: { title: string; submit: string; initial: number; above: number | null; open: boolean; onClose: () => void; send: (cap: number | null) => Promise<unknown>; tokenBudget?: boolean }) {
   const write = useWrite();
   const [mode, setMode] = useState<"amount" | "none">("amount");
   const [amount, setAmount] = useState(String(initial));
-  const cap = mode === "none" ? null : Number(amount);
-  const valid = cap === null || (Number.isFinite(cap) && cap > above);
+  const cap = tokenBudget || mode === "none" ? null : Number(amount);
+  const valid = cap === null || (above !== null && Number.isFinite(cap) && cap > above);
   return (
     <Dialog open={open} onClose={onClose} title={title}>
       <form
@@ -37,7 +37,7 @@ function CapDialog({ title, submit, initial, above, open, onClose, send }: { tit
           void write.run("start", () => send(cap)).then((ok) => ok && onClose());
         }}
       >
-        <div className="flex flex-col gap-2">
+        {tokenBudget ? <p className="text-sm text-ink/70">Uses the configured finite token, response and time limits. Codex does not report a dollar price; the explicit bounded token policy must be enabled.</p> : <div className="flex flex-col gap-2">
           <span className="text-sm font-medium" id="cap-label">Spend cap</span>
           <Segmented label="Spend cap" value={mode} onChange={setMode} options={[{ value: "amount", label: "Amount" }, { value: "none", label: "No cap" }]} />
           {mode === "amount" && (
@@ -46,7 +46,7 @@ function CapDialog({ title, submit, initial, above, open, onClose, send }: { tit
               <Input aria-labelledby="cap-label" type="number" inputMode="decimal" step="any" value={amount} onChange={(e) => setAmount(e.target.value)} invalid={!valid} className="w-28" />
             </label>
           )}
-        </div>
+        </div>}
         <ErrorLine error={write.error} />
         <div className="flex justify-end gap-2">
           <Button type="button" onClick={onClose} className="max-md:h-11">Cancel</Button>
@@ -57,16 +57,16 @@ function CapDialog({ title, submit, initial, above, open, onClose, send }: { tit
   );
 }
 
-function StartDialog({ repo, open, onClose }: { repo: string; open: boolean; onClose: () => void }) {
+function StartDialog({ repo, open, onClose, tokenBudget }: { repo: string; open: boolean; onClose: () => void; tokenBudget: boolean }) {
   const api = useApi();
-  return <CapDialog title="Deep scan" submit="Start scan" initial={20} above={0} open={open} onClose={onClose} send={(cap) => api.security.startScan(repo, cap)} />;
+  return <CapDialog title="Deep scan" submit="Start scan" initial={20} above={0} open={open} onClose={onClose} tokenBudget={tokenBudget} send={(cap) => api.security.startScan(repo, cap)} />;
 }
 
 /** Continue a scan that stopped at its cap: prefilled with the estimate of the whole scan, rounded up. */
 function ContinueDialog({ s, open, onClose }: { s: ScanView; open: boolean; onClose: () => void }) {
   const api = useApi();
-  const initial = Math.ceil(Math.max(s.estimateUsd ?? 0, s.costUsd + 1));
-  return <CapDialog title="Continue scan" submit="Continue scan" initial={initial} above={s.costUsd} open={open} onClose={onClose} send={(cap) => api.security.continueScan(s.id, cap)} />;
+  const initial = s.costUsd === null ? 1 : Math.ceil(Math.max(s.estimateUsd ?? s.costUsd, s.costUsd + 1));
+  return <CapDialog title="Continue scan" submit="Continue scan" initial={initial} above={s.costUsd} tokenBudget={s.budgetMode === "tokens"} open={open} onClose={onClose} send={(cap) => api.security.continueScan(s.id, cap)} />;
 }
 
 export function ScanRow({ s, link }: { s: ScanView; link?: boolean }) {
@@ -100,7 +100,7 @@ export function ScanRow({ s, link }: { s: ScanView; link?: boolean }) {
         <span>{usd(s.costUsd)} spent</span>
         {s.findingCount > 0 && <span>{s.findingCount} {s.findingCount === 1 ? "finding" : "findings"}</span>}
         {s.estimateUsd !== null && <span>Estimate {usd(s.estimateUsd)}</span>}
-        <span>{s.capUsd === null ? "No cap" : `Cap ${usd(s.capUsd)}`}</span>
+        <span>{s.budgetMode === "tokens" ? "Bounded tokens" : s.capUsd === null ? "No cap" : `Cap ${usd(s.capUsd)}`}</span>
         <span>
           {s.startedBy} · <TimeAgo iso={s.startedAt} />
         </span>
@@ -155,7 +155,7 @@ export function SecuritySection({ repo }: { repo: string }) {
         </div>
       )}
     >
-      {operator && <StartDialog repo={repo} open={open} onClose={() => setOpen(false)} />}
+      {operator && <StartDialog repo={repo} tokenBudget={data?.budgetMode === "tokens"} open={open} onClose={() => setOpen(false)} />}
       <ErrorLine error={error?.message} className="px-4 py-3" />
       {scan && <ScanRow s={scan} link />}
       {data && data.findings.length > 0 ? (

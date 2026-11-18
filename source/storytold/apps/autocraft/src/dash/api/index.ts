@@ -6,6 +6,7 @@ import { isHiddenRepo, type HiddenRepos } from "../../hidden-sql.ts";
 import { prBuildView } from "../../prbuild/view.ts";
 import { checksOf } from "../../patchcheck/index.ts";
 import { priorityOf } from "../../priority/read.ts";
+import { servingFields } from "./serving.ts";
 import { preapprovalOf } from "../../preapproval/index.ts";
 import type { DatabaseSync, SQLInputValue } from "node:sqlite";
 import type {
@@ -34,6 +35,7 @@ import * as insight from "./insight.ts";
 import * as pipeline from "./pipeline.ts";
 import * as outside from "./outside.ts";
 import { prompts } from "./prompts.ts";
+import { modelProvider, putModelProvider } from "./model-provider.ts";
 import { queue, queueBatches } from "./queue.ts";
 import { next } from "./next.ts";
 import { work } from "./work.ts";
@@ -139,6 +141,9 @@ export async function itemCore(db: DatabaseSync, req: Req): Promise<Item> {
       WHERE json_extract(j.value, '$.repo') = :repo AND json_extract(j.value, '$.number') = :n)) ORDER BY asked_at`).all({ repo, n }) as { id: string }[]).map((r) => r.id);
   // The quiet pull request of a security fix: viewers get none of the model text about it.
   const veil = !canSeeInternals(req) && isQuiet(db, repo, n);
+  const priority = priorityOf(db, repo, n);
+  const postmerge = it.kind === "pr" ? postmergeOf(db, repo, n, canSeeInternals(req)) : null;
+  const patchServing = new Map((db.prepare("SELECT id, serving_metadata FROM patch_checks WHERE repo = ? AND number = ?").all(repo, n) as { id: number; serving_metadata: unknown }[]).map(row => [row.id, row.serving_metadata]));
   const out: Item = {
     repo, number: n, kind: it.kind === "pr" ? "pr" : "issue",
     title: it.title ?? "", body: it.body ?? "", state: itemState(it.state), author: it.author ?? "",
@@ -157,14 +162,15 @@ export async function itemCore(db: DatabaseSync, req: Req): Promise<Item> {
     stages: stages.map((s) => ({ ...s, by: s.by ?? "", note: canSeeInternals(req) ? s.note : null })),
     discord: discord.discordOf(db, repo, n),
     comments: comments.map((x) => ({ ...x, author: x.author ?? "", body: x.body ?? "" })),
-    decisionIds, settled: unflagged(settledOf(db, repo, n), isQuiet(db, repo, n), !veil) as Item["settled"], priority: priorityOf(db, repo, n),
+    decisionIds, settled: unflagged(settledOf(db, repo, n), isQuiet(db, repo, n), !veil) as Item["settled"],
+    priority,
     ...(it.kind === "pr" ? prWork(db, repo, n, canSeeInternals(req)) : { verification: null, fixups: [], prBuild: null }),
     // The reviewer's reasons quote the patch, so viewers get the verdict only.
-    patchChecks: checksOf(db, repo, n).map(({ kind, subject, patchHash, round, verdict, reasons, problems, model, createdAt }) =>
-      ({ kind, subject, patchHash, round, verdict, reasons: canSeeInternals(req) ? reasons : "", problems: canSeeInternals(req) ? problems : [], model, createdAt })),
+    patchChecks: checksOf(db, repo, n).map(({ id, kind, subject, patchHash, round, verdict, reasons, problems, model, createdAt }) =>
+      ({ kind, subject, patchHash, round, verdict, reasons: canSeeInternals(req) ? reasons : "", problems: canSeeInternals(req) ? problems : [], model, createdAt, ...servingFields(patchServing.get(id)) })),
     reviews: it.kind === "pr" ? reviewsOf(db, repo, n, canSeeInternals(req), await hiddenRepos(db, req)) : null,
     premerge: it.kind === "pr" ? premergeOf(db, repo, n) : [],
-    postmerge: it.kind === "pr" ? postmergeOf(db, repo, n, canSeeInternals(req)) : null,
+    postmerge: postmerge && { ...postmerge, ...servingFields((db.prepare("SELECT serving_metadata FROM postmerge_reviews WHERE repo = ? AND number = ? AND merge_sha = ? AND at = ?").get(repo, n, postmerge.mergeSha, postmerge.at) as { serving_metadata: unknown } | undefined)?.serving_metadata) },
     actions: actionsOf(db, repo, n), releases: releasesOf(db, repo, n),
     queue: queueSlots(db, await visibleRepos(db, req)).get(`${repo}#${n}`) ?? null,
     // The operator's instructions are shown to those who see the internals only.
@@ -199,7 +205,8 @@ function ciChecksOf(db: DatabaseSync, repo: string, n: number): Item["ciChecks"]
 /** Pre-merge review rows of the PR, newest first. */
 function premergeOf(db: DatabaseSync, repo: string, n: number): ItemPremerge[] {
   const rows = db.prepare("SELECT * FROM premerge_reviews WHERE repo = ? AND number = ? ORDER BY at DESC, head_oid DESC").all(repo, n) as unknown as PremergeRow[];
-  return rows.map((r) => ({ head: r.head_oid, at: r.at, model: r.model, findings: findingsOf(r), searched: r.searched, error: r.error, tries: r.tries }));
+  return rows.map((r) => ({ head: r.head_oid, at: r.at, model: r.model, findings: findingsOf(r), searched: r.searched, error: r.error, tries: r.tries,
+    ...servingFields((r as PremergeRow & { serving_metadata?: unknown }).serving_metadata) }));
 }
 
 /** The Opus review of the newest reviewed head, which is also the final verdict. */
@@ -241,7 +248,8 @@ function reviewsOf(db: DatabaseSync, repo: string, n: number, internals: boolean
   const head = (db.prepare("SELECT head_oid FROM items WHERE repo = ? AND number = ?").get(repo, n) as { head_oid: string | null } | undefined)?.head_oid ?? null;
   return {
     head: o.head_oid, current: o.head_oid === head, conflicts: conflictsNamed(db, repo, n, o.head_oid, internals, hidden),
-    opus: { verdict: o.verdict, reason: internals ? o.reason : "", fixes: internals ? list(o.fixes) : [], risks: internals ? list(o.risks) : [], at: o.at, sure: o.sure === 1, mode: o.mode, baseHead: o.base_head },
+    opus: { verdict: o.verdict, reason: internals ? o.reason : "", fixes: internals ? list(o.fixes) : [], risks: internals ? list(o.risks) : [], at: o.at, sure: o.sure === 1, mode: o.mode, baseHead: o.base_head,
+      ...servingFields((db.prepare("SELECT serving_metadata FROM opus_reviews WHERE repo = ? AND number = ? AND head_oid = ? AND at = ?").get(repo, n, o.head_oid, o.at) as { serving_metadata: unknown } | undefined)?.serving_metadata) },
     final: { verdict: o.verdict, reason: internals ? o.reason : "", decided: true },
   };
 }
@@ -253,20 +261,20 @@ function prWork(db: DatabaseSync, repo: string, n: number, internals: boolean): 
   const v = latest ? verificationOf(db, repo, n, latest.head_sha) : null;
   const plan = (v?.plan ?? null) as Record<string, unknown> | null;
   const strings = (x: unknown): string[] => (Array.isArray(x) ? x.filter((s): s is string => typeof s === "string") : []);
-  const fixups = (db.prepare("SELECT from_head, to_head, state, reason, files, attempt, created_at FROM fixups WHERE repo = ? AND number = ? ORDER BY created_at, rowid").all(repo, n) as
-    { from_head: string; to_head: string | null; state: string; reason: string | null; files: string | null; attempt: number; created_at: string }[])
+  const fixups = (db.prepare("SELECT from_head, to_head, state, reason, files, attempt, created_at, serving_metadata FROM fixups WHERE repo = ? AND number = ? ORDER BY created_at, rowid").all(repo, n) as
+    { from_head: string; to_head: string | null; state: string; reason: string | null; files: string | null; attempt: number; created_at: string; serving_metadata: unknown }[])
     .map((f): ItemFixup => {
       let files: string[] = [];
       try { files = strings(JSON.parse(f.files ?? "[]")); } catch { /* malformed: none */ }
-      return { fromHead: f.from_head, toHead: f.to_head, state: f.state as ItemFixup["state"], reason: internals ? f.reason : null, files: internals ? files : [], attempt: f.attempt, createdAt: f.created_at };
+      return { fromHead: f.from_head, toHead: f.to_head, state: f.state as ItemFixup["state"], reason: internals ? f.reason : null, files: internals ? files : [], attempt: f.attempt, createdAt: f.created_at, ...servingFields(f.serving_metadata) };
     });
   // CI fix tries are listed with the fix-ups, oldest first.
-  const ciFixes = (db.prepare("SELECT head, to_head, state, reason, files, attempt, created_at FROM ci_fixes WHERE repo = ? AND number = ? ORDER BY created_at, rowid").all(repo, n) as
-    { head: string; to_head: string | null; state: string; reason: string | null; files: string | null; attempt: number; created_at: string }[])
+  const ciFixes = (db.prepare("SELECT head, to_head, state, reason, files, attempt, created_at, serving_metadata FROM ci_fixes WHERE repo = ? AND number = ? ORDER BY created_at, rowid").all(repo, n) as
+    { head: string; to_head: string | null; state: string; reason: string | null; files: string | null; attempt: number; created_at: string; serving_metadata: unknown }[])
     .map((f): ItemFixup => {
       let files: string[] = [];
       try { files = strings(JSON.parse(f.files ?? "[]")); } catch { /* malformed: none */ }
-      return { kind: "ci-fix", fromHead: f.head, toHead: f.to_head, state: f.state as ItemFixup["state"], reason: internals ? f.reason : null, files: internals ? files : [], attempt: f.attempt, createdAt: f.created_at };
+      return { kind: "ci-fix", fromHead: f.head, toHead: f.to_head, state: f.state as ItemFixup["state"], reason: internals ? f.reason : null, files: internals ? files : [], attempt: f.attempt, createdAt: f.created_at, ...servingFields(f.serving_metadata) };
     });
   fixups.push(...ciFixes);
   fixups.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
@@ -274,6 +282,7 @@ function prWork(db: DatabaseSync, repo: string, n: number, internals: boolean): 
     fixups,
     prBuild: prBuildView(db, repo, n, head, internals),
     verification: !v ? null : {
+      ...servingFields((db.prepare("SELECT serving_metadata FROM verifications WHERE repo = ? AND number = ? AND head_sha = ?").get(repo, n, v.headSha) as { serving_metadata: unknown } | undefined)?.serving_metadata),
       headSha: v.headSha, baseSha: v.baseSha, current: v.headSha === head, kind: v.kind as ItemVerification["kind"], reason: internals ? v.reason : "",
       plan: !plan ? null : { crates: plan.crate ? [String(plan.crate)] : strings(plan.crates), tests: strings(plan.tests), testLines: typeof plan.test_lines === "number" ? plan.test_lines : null },
       state: v.state, summary: internals ? v.summary : null, note: internals ? v.note : null, createdAt: v.createdAt, finishedAt: v.finishedAt,
@@ -523,6 +532,8 @@ export function apiRoutes(opts: ApiOptions = {}): Route[] {
     { method: "POST", pattern: "/api/items/:repo/:n/release-outside", operator: true, handler: ok(outside.release) },
     scoped(get("/api/needs/outside/:author", outside.held)),
     get("/api/prompts", prompts),
+    get("/api/model-provider", modelProvider),
+    { method: "PUT", pattern: "/api/model-provider", operator: true, handler: ok(putModelProvider) },
     get("/api/accounts", agents.accounts),
     get("/api/accounts/pause", agents.getPause),
     { method: "PUT", pattern: "/api/accounts/pause", operator: true, handler: ok(agents.putPause) },

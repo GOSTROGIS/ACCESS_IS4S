@@ -43,7 +43,7 @@ export function Composer({ repo, number, operator, commenter, exists, pending, f
     try {
       await api.conversations.say(repo, number, text, ask ? undefined : false);
       setDraft("");
-      if (ask) markStarting(repo, number, "Opus reply");
+      if (ask) markStarting(repo, number, "assistant reply");
     } catch (e) {
       // Nothing was sent: the old choices come back.
       localActions.stopUpdating(item);
@@ -65,8 +65,8 @@ export function Composer({ repo, number, operator, commenter, exists, pending, f
               if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) void send(true);
             }}
             rows={2}
-            placeholder={exists ? "Reply to Opus" : "Ask Opus about this item"}
-            aria-label="Message to Opus"
+            placeholder={exists ? "Reply to the assistant" : "Ask about this item"}
+            aria-label="Message to the assistant"
             className="block min-w-0 flex-1 resize-none rounded border border-line bg-sunken px-2.5 py-2 text-sm outline-none placeholder:text-ink/40 focus:border-accent/60"
           />
           <div className="flex shrink-0 justify-end gap-2 md:flex-col md:gap-1.5">
@@ -74,7 +74,7 @@ export function Composer({ repo, number, operator, commenter, exists, pending, f
               Send
             </Button>
             <Button variant="secondary" className="max-md:h-11" disabled={!draft.trim() || sending} onClick={() => void send(false)}>
-              Post without Opus
+              Post without a reply
             </Button>
           </div>
         </div>

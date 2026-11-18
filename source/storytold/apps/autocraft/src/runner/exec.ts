@@ -17,7 +17,7 @@ function usageOf(db: DatabaseSync, runs: Set<string>, since: string): JobUsage |
   if (!runs.size) return null;
   const marks = [...runs].map(() => "?").join(",");
   const r = db.prepare(`SELECT COUNT(*) AS calls, COALESCE(SUM(input_tokens), 0) AS input, COALESCE(SUM(output_tokens), 0) AS output,
-    SUM(cost_usd) AS cost FROM token_usage WHERE run_id IN (${marks}) AND started_at >= ?`).get(...runs, since) as
+    CASE WHEN COUNT(cost_usd)=COUNT(*) THEN SUM(cost_usd) ELSE NULL END AS cost FROM token_usage WHERE run_id IN (${marks}) AND started_at >= ?`).get(...runs, since) as
     { calls: number; input: number; output: number; cost: number | null };
   return { calls: r.calls, input: r.input, output: r.output, costUsd: r.cost };
 }

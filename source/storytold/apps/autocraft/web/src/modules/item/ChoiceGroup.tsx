@@ -14,6 +14,7 @@ import { markStarting } from "./starting";
 import { localActions, useAnswer, useLocal } from "../decisions/state";
 import { useWorkflow } from "../decisions/Workflow";
 import { COMPOSER_ID } from "./Composer";
+import { servingLabel } from "../../lib/serving";
 
 /** The thread has one place to write to Opus: the composer at the bottom of the page. */
 const focusComposer = () => {
@@ -28,7 +29,7 @@ const inputCls = "block h-8 w-full rounded border border-line bg-sunken px-2.5 t
 const quote = "whitespace-pre-wrap border-l-2 border-line-strong pl-3 leading-5 text-ink/75";
 /** The order the server runs the writes in. */
 const ORDER: Tag[] = ["comment", "label", "unlabel", "assign", "request_review", "open_issue", "push", "merge", "close", "reopen", "move"];
-const opusTag = <span className="shrink-0 text-2xs font-normal text-accent-ink">Opus</span>;
+const modelTag = (choices: DecisionChoices) => <span className="shrink-0 text-2xs font-normal text-accent-ink">{servingLabel(choices.serving, "Opus")}</span>;
 
 /** What an extra edit changes: the user's own text for a comment, title and body for an issue. */
 interface Edit {
@@ -321,7 +322,7 @@ function ChoiceForm({ d, user, choices, onAnswered }: { d: Decision; user: User;
         title={
           <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5">
             <ActionTag tag={x.tag} className="self-start" />
-            {x.on && core.key === choices.pick?.core && opusTag}
+            {x.on && core.key === choices.pick?.core && modelTag(choices)}
             {!(editing && checked && editable) && (
               <span className={cn("min-w-0 basis-full break-words md:basis-0 md:flex-1", x.kind === "comment" && "whitespace-pre-wrap font-normal text-ink/80")}>
                 {x.kind === "open_issue" ? `"${shown}"` : shown}
@@ -389,7 +390,7 @@ function ChoiceForm({ d, user, choices, onAnswered }: { d: Decision; user: User;
               >
                 <span className="flex items-baseline gap-2 text-sm font-medium">
                   <span className="min-w-0 flex-1 break-words">{c.label}</span>
-                  {c.key === choices.pick?.core && opusTag}
+                  {c.key === choices.pick?.core && modelTag(choices)}
                 </span>
                 <CardLines core={c} tags={tags} full={sel} />
               </button>

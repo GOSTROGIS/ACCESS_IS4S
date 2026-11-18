@@ -21,6 +21,7 @@ import { queueSlots } from "../../rank/position.ts";
 import { visibleRepos } from "./visible.ts";
 import { itemReader, statusFor } from "./reader.ts";
 import type { Req } from "../types.ts";
+import { servingFields } from "./serving.ts";
 
 export type ItemPhase = ItemStatus["phase"];
 export type { ItemStatus };
@@ -28,8 +29,9 @@ export type { ItemStatus };
 export type ReviewTrigger = "new-head" | "discussion" | "operator" | "base" | "model-change";
 export type ReviewVerdict = "take" | "take-fix" | "hold" | "close";
 export interface OpusReviewEntry {
+  serving?: import("../../../web/src/api/types.ts").ServingMetadata;
   id: string; head: string; current: boolean; at: string; trigger: ReviewTrigger; why: string; verdict: ReviewVerdict; sure: boolean;
-  summary: string; fixes: string[]; risks: string[]; claims: { path: string; line: number; text: string }[]; blockedBy: ItemRef[]; costUsd: number;
+  summary: string; fixes: string[]; risks: string[]; claims: { path: string; line: number; text: string }[]; blockedBy: ItemRef[]; costUsd: number | null;
 }
 export interface ReviewHistory { latest: OpusReviewEntry | null; earlier: OpusReviewEntry[] }
 export interface GithubEvent {
@@ -49,7 +51,7 @@ export interface ItemPageHeader {
 }
 export interface ItemPageData {
   repo: RepoName; number: number; kind: ItemKind; state: ItemState; title: string; author: string; stamp: string; header: ItemPageHeader;
-  status: ItemStatus; bar: ItemBar; costUsd: number; reviews: ReviewHistory; timeline: TimelineEntry[]; github: GithubSide;
+  status: ItemStatus; bar: ItemBar; costUsd: number | null; reviews: ReviewHistory; timeline: TimelineEntry[]; github: GithubSide;
   /** PRs: our own build of the newest head; null when the pr-builds switch is off or there is none. */
   prBuild: ItemPrBuild | null;
   /** The screenshot run of the PR's latest head, for staff; empty when there is none. */
@@ -133,18 +135,18 @@ function statusOf(c: Ctx, it: Item): ItemStatus {
 // ---- Opus reviews ------------------------------------------------------------------------------------------------------
 
 const VERDICTS = new Set<string>(["take", "take-fix", "hold", "close"]);
-type ReviewRow = { key: string; head_oid: string; at: string; model: string | null; verdict: string | null; sure: number | null; reason: string | null; summary: string | null; risks: string | null; fixes: string | null; claims: string | null; blocked_by: string | null; trigger: string | null };
+type ReviewRow = { key: string; head_oid: string; at: string; model: string | null; verdict: string | null; sure: number | null; reason: string | null; summary: string | null; risks: string | null; fixes: string | null; claims: string | null; blocked_by: string | null; trigger: string | null; serving_metadata: unknown };
 
 function reviewsOf(c: Ctx, headNow: string | null, events: Ev[]): ReviewHistory {
   const { db, repo, n } = c;
-  const rows = q<ReviewRow & { rowid: number }>(db, `SELECT rowid, 'opus:' || rowid AS key, head_oid, at, model, verdict, sure, reason, summary, risks, fixes, claims, blocked_by, trigger
+  const rows = q<ReviewRow & { rowid: number }>(db, `SELECT rowid, 'opus:' || rowid AS key, head_oid, at, model, verdict, sure, reason, summary, risks, fixes, claims, blocked_by, trigger, serving_metadata
     FROM opus_review_history WHERE repo = ? AND number = ? AND verdict IS NOT NULL`, repo, n);
   // Reviews stored before the history table existed.
   const seen = new Set(rows.map((r) => `${r.head_oid}|${r.at}`));
-  for (const r of q<ReviewRow>(db, `SELECT 'opus-latest:' || head_oid AS key, head_oid, at, model, verdict, sure, reason, NULL AS summary, risks, fixes, claims, NULL AS blocked_by, NULL AS trigger
+  for (const r of q<ReviewRow>(db, `SELECT 'opus-latest:' || head_oid AS key, head_oid, at, model, verdict, sure, reason, NULL AS summary, risks, fixes, claims, NULL AS blocked_by, NULL AS trigger, serving_metadata
     FROM opus_reviews WHERE repo = ? AND number = ? AND verdict IS NOT NULL`, repo, n)) if (!seen.has(`${r.head_oid}|${r.at}`)) rows.push({ ...r, rowid: 0 });
   rows.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : b.rowid - a.rowid));
-  const costs = new Map(events.filter((e) => e.kind === "review").map((e) => [e.id, e.costUsd ?? 0]));
+  const costs = new Map(events.filter((e) => e.kind === "review").map((e) => [e.id, e.costUsd ?? null]));
   const staff = c.staff;
   const all = rows.map((r, i): OpusReviewEntry => {
     const older = rows[i + 1];
@@ -158,6 +160,7 @@ function reviewsOf(c: Ctx, headNow: string | null, events: Ev[]): ReviewHistory 
     }).filter((cl) => cl.text);
     return {
       id: r.key, head: short(r.head_oid), current: r.head_oid === headNow, at: r.at, trigger, why: staff ? triggerWhy(r.trigger, !older) ?? (older ? (trigger === "discussion" ? "New discussion since the last review" : "New commits since the last review") : "First review") : "",
+      ...servingFields(r.serving_metadata),
       verdict: (VERDICTS.has(r.verdict ?? "") ? r.verdict : "hold") as ReviewVerdict, sure: r.sure === 1,
       summary: staff ? r.summary || r.reason || "" : "", fixes: staff ? fixes : [], risks: staff ? arr<string>(r.risks) : [], claims: staff ? claims : [],
       // Stored as "repo#n" strings.
@@ -165,7 +168,7 @@ function reviewsOf(c: Ctx, headNow: string | null, events: Ev[]): ReviewHistory 
         const m = typeof b === "string" ? /^([\w.-]+)#(\d+)$/.exec(b) : null;
         return m && !isHiddenRepo(c.hidden, m[1]!) ? [{ repo: m[1]!, number: Number(m[2]) }] : [];
       }),
-      costUsd: costs.get(`review:${r.key}`) ?? 0,
+      costUsd: costs.get(`review:${r.key}`) ?? null,
     };
   });
   return { latest: all[0] ?? null, earlier: all.slice(1) };
@@ -232,7 +235,7 @@ function githubOf(c: Ctx, it: Item, ev: Ev[], url: string, syncedAt: string | nu
 
 // ---- screenshots -----------------------------------------------------------------------------------------------------
 
-type ShotRow = { head_sha: string; state: string; reason: string | null; plan: string | null; head_task_id: number | null; base_task_id: number | null; verdict: string | null; clear: number | null; comparison: string | null; model: string | null; held: number; created_at: string; finished_at: string | null };
+type ShotRow = { head_sha: string; state: string; reason: string | null; plan: string | null; head_task_id: number | null; base_task_id: number | null; verdict: string | null; clear: number | null; comparison: string | null; model: string | null; held: number; created_at: string; finished_at: string | null; serving_metadata: unknown };
 
 /** The latest screenshot run of the PR: one entry for staff, none for anyone else or a veiled PR. Images are served by the task artifact route. */
 function screenshotsOf(c: Ctx, headNow: string | null): ScreenshotRun[] {
@@ -244,6 +247,7 @@ function screenshotsOf(c: Ctx, headNow: string | null): ScreenshotRun[] {
   const shots = [...after].filter((n) => before.has(n)).sort((a, b) => parseInt(a.slice(1), 10) - parseInt(b.slice(1), 10))
     .map((name) => ({ name, before: { taskId: r.base_task_id!, name }, after: { taskId: r.head_task_id!, name } }));
   return [{
+    ...servingFields(r.serving_metadata),
     head: short(r.head_sha), current: r.head_sha === headNow, state: r.state as ScreenshotRun["state"], verdict: r.verdict as ScreenshotRun["verdict"], clear: r.clear === null ? null : r.clear === 1,
     comparison: r.comparison, held: r.held === 1, reason: r.reason, model: r.model, at: r.finished_at ?? r.created_at, shots,
   }];
@@ -258,8 +262,8 @@ export async function itemPage(db: DatabaseSync, req: Req): Promise<ItemPageData
   const it = await itemCore(db, req);
   const ev = gather(c, null);
   const row = db.prepare("SELECT url, head_oid, (SELECT synced_at FROM item_reads r WHERE r.repo = items.repo AND r.number = items.number) AS synced_at FROM items WHERE repo = ? AND number = ?").get(c.repo, c.n) as { url: string | null; head_oid: string | null; synced_at: string | null };
-  const cost = (db.prepare(`SELECT COALESCE(SUM(r.cost_usd), 0) AS cost FROM agent_run_items i JOIN agent_runs r ON r.id = i.run_id WHERE i.repo = ? AND i.number = ?${hiddenSql(c.hidden)}`)
-    .get(c.repo, c.n, ...hiddenArgs(c.hidden)) as { cost: number }).cost;
+  const cost = (db.prepare(`SELECT CASE WHEN COUNT(r.cost_usd)=COUNT(*) THEN COALESCE(SUM(r.cost_usd),0) ELSE NULL END AS cost FROM agent_run_items i JOIN agent_runs r ON r.id = i.run_id WHERE i.repo = ? AND i.number = ?${hiddenSql(c.hidden)}`)
+    .get(c.repo, c.n, ...hiddenArgs(c.hidden)) as { cost: number | null }).cost;
   const status = statusOf(c, it);
   return {
     repo: c.repo, number: c.n, kind: it.kind, state: it.state, title: it.title, author: it.author, stamp,

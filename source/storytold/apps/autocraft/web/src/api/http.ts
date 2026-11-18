@@ -278,6 +278,7 @@ export function createHttpApi(): Api {
       releaseOutsideAuthor: async (author) => void (await post("/api/pipeline/outside/release", { author })),
       setJudgementModel: (model) => put("/api/pipeline/judgement-model", { model }),
     },
+    modelProvider: { get: () => get("/api/model-provider"), set: (policy) => put("/api/model-provider", policy) },
     accounts: {
       list: () => get("/api/accounts"),
       pause: () => get("/api/accounts/pause"),

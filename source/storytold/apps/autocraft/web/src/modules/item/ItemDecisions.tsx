@@ -16,6 +16,7 @@ import { DuplicateGroup, RiskList } from "../decisions/Group";
 import { RecommendationLine } from "../../ui/molecules/RecommendationLine";
 import { ActionTag } from "../../ui/atoms/ActionTag";
 import { cn } from "../../ui/cn";
+import { servingLabel } from "../../lib/serving";
 
 /** Every decision about one item (its own, or a group that lists it), open first. The key is a live topic prefix. */
 export function useItemDecisions(repo: string, number: number) {
@@ -100,7 +101,7 @@ function HoldCard({ d, choices, updating }: { d: Decision; choices?: DecisionCho
       ) : applying ? (
         <p className="mt-2 text-sm text-ink/70">{applying} is applying their answer</p>
       ) : preparing ? (
-        <p className="mt-2 text-sm text-ink/55">{d.preparing ? "Opus is preparing the options" : "Opus is updating the options"}</p>
+        <p className="mt-2 text-sm text-ink/55">{d.preparing ? "The assistant is preparing the options" : "The assistant is updating the options"}</p>
       ) : loading ? null : (
         <>
           <button
@@ -112,7 +113,7 @@ function HoldCard({ d, choices, updating }: { d: Decision; choices?: DecisionCho
           >
             <span className="flex items-baseline gap-2 text-sm font-semibold">
               <span className="min-w-0 flex-1 break-words">{rec?.label ?? (actor ? "Choose an answer" : "No recommendation yet")}</span>
-              {rec && <span className="shrink-0 text-2xs font-normal text-accent-ink">Opus recommends</span>}
+              {rec && <span className="shrink-0 text-2xs font-normal text-accent-ink">{servingLabel(choices ? choices.serving : d.serving, "Opus")} recommends</span>}
               {actor && (openCard ? <CaretDownIcon className="shrink-0 text-ink/45" /> : <CaretRightIcon className="shrink-0 text-ink/45" />)}
             </span>
             {rec?.effect && <span className="mt-0.5 block text-xs leading-5 text-ink/65">{rec.effect}</span>}

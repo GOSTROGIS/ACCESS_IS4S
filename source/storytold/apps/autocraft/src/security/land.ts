@@ -20,6 +20,7 @@ import { scanRow } from "./store.ts";
 import { findingKey, advance, rawFinding, type FindingRow } from "./store.ts";
 import { rememberQuietPr } from "./quiet.ts";
 import { giveaway, landBody, nameGiveaway } from "./rules.ts";
+import { storedNote } from "../github/note.ts";
 import type { ExecResult } from "../fixup/git.ts";
 
 const ACTOR = "security";
@@ -87,7 +88,10 @@ export async function runLand(db: DatabaseSync, repo: string, n: number, by: By,
       const fork = await forkOf(w, g, d.exec, who.login, repo, { finding: key });
       const push = await ghLandPush(w, g, git, { repo, fork, branch: row.fix_branch, sha: row.fix_commit, base: row.fix_commit, key });
       if (push.code !== 0) return back(db, repo, n, `the push failed: ${oneLine(push.stderr)}`, d.log);
-      const pr = await ghLandPr(w, g, d.exec, { repo, key, base, head: `${fork.split("/")[0]}:${row.fix_branch}`, title: row.fix_title, body }, { by: "model", kind: "pull request", model: "opus" });
+      // Discovery and fix authorship are independent; the fix rounds have already been archived or cleared.
+      const attribution = db.prepare("SELECT fix_serving_metadata FROM security_findings WHERE repo = ? AND number = ? AND fix_commit = ?").get(repo, n, row.fix_commit) as { fix_serving_metadata: unknown } | undefined;
+      if (!attribution) throw new Error("the stored fix changed before publication");
+      const pr = await ghLandPr(w, g, d.exec, { repo, key, base, head: `${fork.split("/")[0]}:${row.fix_branch}`, title: row.fix_title, body }, storedNote({ by: "model", kind: "pull request", model: "opus" }, attribution.fix_serving_metadata));
       url = pr.stdout.trim().split("\n").pop() ?? "";
       number = prNumber(url, slugOf(repo));
       if (pr.code !== 0 || number === null) return back(db, repo, n, `the pull request was not opened: ${oneLine(pr.stderr || pr.stdout)}`, d.log);

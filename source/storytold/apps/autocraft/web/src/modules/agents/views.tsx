@@ -45,7 +45,8 @@ function Items({ r, max = 3, expandable }: { r: AgentRun; max?: number; expandab
   );
 }
 
-const who = (r: AgentRun) => (r.provider === "jev" ? "Jev (no account)" : (r.accountLabel ?? "unknown account"));
+const who = (r: AgentRun) => r.provider === "codex" ? `Codex${r.reasoningEffort ? ` · ${r.reasoningEffort}` : ""}` :
+  r.provider === "jev" ? "Jev (no account)" : r.provider === "unknown" ? "Unknown provider" : (r.accountLabel ?? "unknown account");
 
 // ---- running now ---------------------------------------------------------------
 
@@ -150,7 +151,7 @@ function RecentRuns({ selected }: { selected?: number }) {
                   </Link>
                 </td>
                 <td className="px-3 max-md:hidden">{r.model}</td>
-                <td className="whitespace-nowrap px-3 text-ink/70 max-md:hidden">{r.provider === "jev" ? "–" : r.accountLabel}</td>
+                <td className="whitespace-nowrap px-3 text-ink/70 max-md:hidden">{who(r)}</td>
                 <td className="px-3">
                   <Items r={r} max={2} />
                 </td>
@@ -227,6 +228,8 @@ export function RunDetailBody({ id }: { id: number }) {
           {r.inputTokens === null ? "–" : `${num(r.inputTokens)} in`} / {r.outputTokens === null ? "–" : `${num(r.outputTokens)} out`}
           {r.cacheReadTokens !== null && ` · cache ${num(r.cacheReadTokens)} read, ${num(r.cacheWriteTokens ?? 0)} written`}
         </dd>
+        {r.providerUsage && <><dt className="text-ink/55">{r.providerUsage.usageComplete === false ? "Reported usage so far" : "Provider usage"}</dt><dd className="num">{num(r.providerUsage.inputTokens)} total input, including {num(r.providerUsage.cachedInputTokens)} cached; {num(r.providerUsage.outputTokens)} output, including {num(r.providerUsage.reasoningOutputTokens)} reasoning</dd></>}
+        <dt className="text-ink/55">Cost</dt><dd>{r.costUsd === null ? "Unknown" : `$${r.costUsd.toFixed(4)}`}</dd>
         <dt className="text-ink/55">Job</dt>
         <dd>
           {r.jobId === null ? (
@@ -336,7 +339,7 @@ export function FlowRunning({ params }: ViewProps) {
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <Link to={`/agents/${r.id}`} className="code text-sm font-medium hover:underline">{r.step}</Link>
               <Badge tone="accent">{r.model}</Badge>
-              <span className="text-xs text-ink/70">{r.provider === "jev" ? "Jev" : (r.accountLabel ?? "unknown account")}</span>
+              <span className="text-xs text-ink/70">{who(r)}</span>
               <span className="num ml-auto text-xs text-ink/70">{elapsed(r)}</span>
             </div>
             <div className="mt-0.5">

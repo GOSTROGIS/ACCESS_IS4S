@@ -17,8 +17,18 @@ import { blankIfHidden, hiddenRepos, needVisible } from "./visible.ts";
 import { reasonsFor, waitFor, type Reader } from "./reader.ts";
 import { filtered, hiddenTest, isHiddenRepo, type HiddenRepos } from "../../hidden-sql.ts";
 import { ownLogins } from "../../github/identity.ts";
+import { servingFields, servingLabel } from "./serving.ts";
 
 export type Ev = TraceEvent & { detail?: Record<string, unknown> };
+/** Result attribution is distinct from logical step/model keys and never adds private run links. */
+function withServing(event: Ev, raw: unknown): Ev {
+  const fields = servingFields(raw);
+  if (!fields.serving) return event;
+  const label = servingLabel(fields.serving, event.actor.name);
+  return { ...event, ...fields,
+    actor: event.actor.type === "model" ? { ...event.actor, name: label } : event.actor,
+    summary: event.summary.replace(/^Opus review:/, `${label} review:`).replace(/^Conversation opus message/, "Conversation assistant message") };
+}
 /** `staff`: operators and maintainers; `hidden`: repos the viewer may not see, whose runs are left out like getRun does. */
 export type Ctx = { db: DatabaseSync; repo: string; n: number; ref: string; own: Set<string>; box: string; staff: boolean; /** A quiet pull request seen by a viewer: model output stays out of the trace. */ veiled: boolean; operator: boolean; hidden: HiddenRepos };
 type Source = { kinds: TraceKind[]; run: (c: Ctx) => Ev[] };
@@ -169,10 +179,10 @@ export const pushEvent = (p: { id: number; at: string; stage: string; action: st
   id: `push:${p.id}`, kind: "check", at: p.at, head: p.to_oid, actor: step(p.stage),
   summary: `${GITHUB_ACTIONS[p.action] ?? humanize(p.action)} by AutoCraft: required checks ${p.before_res} → ${p.after_res ?? "pending"}${p.outcome ? `, ${p.outcome}` : ""}`, ref: { head: p.to_oid },
 });
-export const patchCheckEvent = (p: { id: number; kind: string; subject: string; round: number; verdict: string; model: string; reasons: string; created_at: string }): Ev => ({
+export const patchCheckEvent = (p: { id: number; kind: string; subject: string; round: number; verdict: string; model: string; reasons: string; created_at: string; serving_metadata?: unknown }): Ev => withServing({
   id: `patchcheck:${p.id}`, kind: "check", at: p.created_at, head: null, actor: model(p.model, "model"), summary: `Patch check (${p.kind}, round ${p.round}): ${p.verdict}`,
   ref: {}, detail: { subject: p.subject, reasons: p.reasons },
-});
+}, p.serving_metadata);
 
 const checks: Source = {
   kinds: ["check"],
@@ -182,57 +192,57 @@ const checks: Source = {
       ...q<Parameters<typeof checkEvent>[0]>("SELECT id, run_id, step, head, command, crate, test_name, task_id, outcome, started_at FROM model_checks WHERE repo = ? AND number = ?").map(checkEvent),
       ...q<Parameters<typeof taskEvent>[0]>("SELECT id, job_id, step, head_sha, state, summary, queued_at FROM build_tasks WHERE repo = ? AND number = ?").map(taskEvent),
       ...q<Parameters<typeof pushEvent>[0]>("SELECT id, at, stage, action, to_oid, before_res, after_res, outcome FROM push_outcomes WHERE repo = ? AND number = ?").map(pushEvent),
-      ...q<Parameters<typeof patchCheckEvent>[0]>("SELECT id, kind, subject, round, verdict, model, reasons, created_at FROM patch_checks WHERE repo = ? AND number = ?").map(patchCheckEvent),
+      ...q<Parameters<typeof patchCheckEvent>[0]>("SELECT id, kind, subject, round, verdict, model, reasons, created_at, serving_metadata FROM patch_checks WHERE repo = ? AND number = ?").map(patchCheckEvent),
     ];
   },
 };
 
-export type OpusRow = { head_oid: string; at: string; model: string | null; mode: string | null; verdict: string | null; sure: number | null; reason: string | null; risks: string | null; fixes: string | null; claims?: string | null };
-export const opusEvent = (r: OpusRow, key: string): Ev => ({
+export type OpusRow = { head_oid: string; at: string; model: string | null; mode: string | null; verdict: string | null; sure: number | null; reason: string | null; risks: string | null; fixes: string | null; claims?: string | null; serving_metadata?: unknown };
+export const opusEvent = (r: OpusRow, key: string): Ev => withServing({
   id: `review:${key}`, kind: "review", at: r.at, head: r.head_oid, actor: model(r.model, "opus"),
   summary: `Opus review: ${r.verdict ?? "no verdict"}${arr(r.fixes).length ? ` with ${plural(arr(r.fixes).length, "fix")}` : ""}${r.sure === 0 ? ", not sure" : ""}`, ref: { reviewId: key, head: r.head_oid },
   detail: { mode: r.mode, verdict: r.verdict, sure: r.sure === 1, reason: r.reason, fixes: arr(r.fixes), risks: arr<string>(r.risks), claims: arr(r.claims ?? null) },
-});
+}, r.serving_metadata);
 
-export const premergeEvent = (r: { head_oid: string; at: string; model: string | null; findings: string | null; error: string | null; searched: string | null }): Ev => {
+export const premergeEvent = (r: { head_oid: string; at: string; model: string | null; findings: string | null; error: string | null; searched: string | null; serving_metadata?: unknown }): Ev => {
   const f = arr(r.findings);
-  return {
+  return withServing({
     id: `review:premerge:${r.head_oid}`, kind: "review", at: r.at, head: r.head_oid, actor: model(r.model, "premerge"),
     summary: r.error ? `Pre-merge review failed: ${clip(r.error, 100)}` : `Pre-merge review: ${count(f)}`,
     ref: { reviewId: `premerge:${r.head_oid}`, head: r.head_oid }, detail: { findings: f, searched: r.searched, error: r.error },
-  };
+  }, r.serving_metadata);
 };
-export const postmergeEvent = (r: { merge_sha: string; at: string; model: string | null; findings: string | null; error: string | null }, staff: boolean): Ev => {
+export const postmergeEvent = (r: { merge_sha: string; at: string; model: string | null; findings: string | null; error: string | null; serving_metadata?: unknown }, staff: boolean): Ev => {
   const f = arr<Record<string, unknown>>(r.findings);
-  return {
+  return withServing({
     id: `review:postmerge:${r.merge_sha}`, kind: "review", at: r.at, head: r.merge_sha, actor: model(r.model, "postmerge"),
     summary: r.error ? `Post-merge review failed: ${clip(r.error, 100)}` : `Post-merge review: ${count(f)}`,
     ref: { reviewId: `postmerge:${r.merge_sha}`, head: r.merge_sha },
     // Which stage missed a finding and why is for staff, as on the item page (postmergeOf).
     detail: { findings: staff ? f : f.map(({ missed_by: _by, missed_why: _why, ...rest }) => rest), error: r.error },
-  };
+  }, r.serving_metadata);
 };
-export const verifyEvent = (v: { head_sha: string; kind: string; state: string; reason: string; summary: string | null; note: string | null; created_at: string; head_task_id: number | null }): Ev => ({
+export const verifyEvent = (v: { head_sha: string; kind: string; state: string; reason: string; summary: string | null; note: string | null; created_at: string; head_task_id: number | null; serving_metadata?: unknown }): Ev => withServing({
   id: `verify:${v.head_sha}`, kind: "review", at: v.created_at, head: v.head_sha, actor: step("verify"), summary: `Verification (${v.kind}): ${v.state}`,
   ref: { head: v.head_sha, ...(v.head_task_id !== null ? { taskId: v.head_task_id } : {}) }, detail: { reason: v.reason, summary: v.summary, note: v.note },
-});
+}, v.serving_metadata);
 
 const reviews: Source = {
   kinds: ["review"],
   run({ db, repo, n, staff }) {
     const out: Ev[] = [];
     const seen = new Set<string>();
-    for (const r of rows<OpusRow & { rowid: number }>(db, "SELECT rowid, head_oid, at, model, mode, verdict, sure, reason, risks, fixes, claims FROM opus_review_history WHERE repo = ? AND number = ?", repo, n)) {
+    for (const r of rows<OpusRow & { rowid: number }>(db, "SELECT rowid, head_oid, at, model, mode, verdict, sure, reason, risks, fixes, claims, serving_metadata FROM opus_review_history WHERE repo = ? AND number = ?", repo, n)) {
       seen.add(`${r.head_oid}|${r.at}`);
       out.push(opusEvent(r, `opus:${r.rowid}`));
     }
     // Reviews stored before the history table existed.
-    for (const r of rows<OpusRow>(db, "SELECT head_oid, at, model, mode, verdict, sure, reason, risks, fixes, claims FROM opus_reviews WHERE repo = ? AND number = ?", repo, n))
+    for (const r of rows<OpusRow>(db, "SELECT head_oid, at, model, mode, verdict, sure, reason, risks, fixes, claims, serving_metadata FROM opus_reviews WHERE repo = ? AND number = ?", repo, n))
       if (!seen.has(`${r.head_oid}|${r.at}`)) out.push(opusEvent(r, `opus-latest:${r.head_oid}`));
-    for (const r of rows<Parameters<typeof premergeEvent>[0]>(db, "SELECT head_oid, at, model, findings, error, searched FROM premerge_reviews WHERE repo = ? AND number = ?", repo, n)) out.push(premergeEvent(r));
-    for (const r of rows<Parameters<typeof postmergeEvent>[0]>(db, "SELECT merge_sha, at, model, findings, error FROM postmerge_reviews WHERE repo = ? AND number = ?", repo, n)) out.push(postmergeEvent(r, staff));
+    for (const r of rows<Parameters<typeof premergeEvent>[0]>(db, "SELECT head_oid, at, model, findings, error, searched, serving_metadata FROM premerge_reviews WHERE repo = ? AND number = ?", repo, n)) out.push(premergeEvent(r));
+    for (const r of rows<Parameters<typeof postmergeEvent>[0]>(db, "SELECT merge_sha, at, model, findings, error, serving_metadata FROM postmerge_reviews WHERE repo = ? AND number = ?", repo, n)) out.push(postmergeEvent(r, staff));
     for (const v of rows<Parameters<typeof verifyEvent>[0]>(db,
-      "SELECT head_sha, kind, state, reason, summary, note, created_at, head_task_id FROM verifications WHERE repo = ? AND number = ?", repo, n)) out.push(verifyEvent(v));
+      "SELECT head_sha, kind, state, reason, summary, note, created_at, head_task_id, serving_metadata FROM verifications WHERE repo = ? AND number = ?", repo, n)) out.push(verifyEvent(v));
     return out;
   },
 };
@@ -249,9 +259,9 @@ function decisionIds({ db, repo, n, hidden }: Ctx): string[] {
   }).sort();
 }
 
-export type DecisionRow = { id: string; kind: string; question: string; asked_at: string; asked_by: string | null; answer: string | null; answered_at: string | null; answered_by: string | null; answer_note?: string | null };
+export type DecisionRow = { id: string; kind: string; question: string; asked_at: string; asked_by: string | null; answer: string | null; answered_at: string | null; answered_by: string | null; answer_note?: string | null; serving_metadata?: unknown };
 export const decisionEvents = (d: DecisionRow): Ev[] => [
-  { id: `decision:${d.id}:asked`, kind: "decision", at: d.asked_at, head: null, actor: step(d.asked_by || "decide"), summary: `Asked: ${clip(d.question, 100)}`, ref: { decisionId: d.id } },
+  withServing({ id: `decision:${d.id}:asked`, kind: "decision", at: d.asked_at, head: null, actor: step(d.asked_by || "decide"), summary: `Asked: ${clip(d.question, 100)}`, ref: { decisionId: d.id } }, d.serving_metadata),
   ...(d.answered_at ? [{ id: `decision:${d.id}:answered`, kind: "decision" as const, at: d.answered_at, head: null,
     ...(d.answer === "withdrawn" ? { actor: step(d.answered_by || "decide"), summary: `Question withdrawn${d.answer_note ? `: ${clip(d.answer_note, 100)}` : ""}` } : { actor: person(d.answered_by), summary: `Answered: ${d.answer ?? ""}` }), ref: { decisionId: d.id } }] : []),
 ];
@@ -264,7 +274,7 @@ const decisions: Source = {
     const { db } = c;
     const out: Ev[] = [];
     for (const id of decisionIds(c)) {
-      const d = db.prepare("SELECT id, kind, question, asked_at, asked_by, answer, answered_at, answered_by, answer_note FROM decisions WHERE id = ?").get(id) as DecisionRow | undefined;
+      const d = db.prepare("SELECT id, kind, question, asked_at, asked_by, answer, answered_at, answered_by, answer_note, serving_metadata FROM decisions WHERE id = ?").get(id) as DecisionRow | undefined;
       if (!d) continue;
       out.push(...decisionEvents(d));
       for (const f of rows<{ id: string; login: string; at: string; len: number }>(db, "SELECT id, login, at, LENGTH(body) AS len FROM decision_comments WHERE decision_id = ?", d.id)) out.push(feedbackEvent(d.id, f));
@@ -273,11 +283,11 @@ const decisions: Source = {
   },
 };
 
-type FixRow = { rowid: number; head: string; to_head: string | null; state: string; reason: string | null; files: string | null; attempt: number; created_at: string; task_id?: number | null; kind?: string };
-export const fixEvent = (f: FixRow, id: string, name: string, label: string): Ev => ({
+type FixRow = { rowid: number; head: string; to_head: string | null; state: string; reason: string | null; files: string | null; attempt: number; created_at: string; task_id?: number | null; kind?: string; serving_metadata?: unknown };
+export const fixEvent = (f: FixRow, id: string, name: string, label: string): Ev => withServing({
   id: `${id}:${f.rowid}`, kind: "step", at: f.created_at, head: f.head, actor: step(name), summary: `${label}, try ${f.attempt}: ${f.state}${f.reason ? `, ${clip(f.reason, 100)}` : ""}`,
   ref: { head: f.head, ...(f.to_head ? { toHead: f.to_head } : {}), ...(f.task_id ? { taskId: f.task_id } : {}) }, detail: { to: f.to_head, reason: f.reason, files: arr<string>(f.files) },
-});
+}, f.serving_metadata);
 export const fixupEvent = (f: FixRow): Ev => fixEvent(f, "fixup", "fixup", "Fix-up");
 export const ciFixEvent = (f: FixRow): Ev => fixEvent(f, "cifix", "cifix", `CI fix (${f.kind})`);
 export const conflictEvent = (f: FixRow): Ev => fixEvent(f, "conflict", "conflict", "Conflict merge");
@@ -292,24 +302,24 @@ const steps: Source = {
   run({ db, repo, n }) {
     const q = <T>(sql: string) => rows<T>(db, sql, repo, n);
     return [
-      ...q<FixRow>("SELECT rowid, from_head AS head, to_head, state, reason, files, attempt, created_at FROM fixups WHERE repo = ? AND number = ?").map(fixupEvent),
-      ...q<FixRow>("SELECT rowid, head, to_head, kind, state, reason, files, attempt, task_id, created_at FROM ci_fixes WHERE repo = ? AND number = ?").map(ciFixEvent),
-      ...q<FixRow>("SELECT rowid, from_head AS head, to_head, state, reason, files, attempt, created_at FROM conflict_merges WHERE repo = ? AND number = ?").map(conflictEvent),
+      ...q<FixRow>("SELECT rowid, from_head AS head, to_head, state, reason, files, attempt, created_at, serving_metadata FROM fixups WHERE repo = ? AND number = ?").map(fixupEvent),
+      ...q<FixRow>("SELECT rowid, head, to_head, kind, state, reason, files, attempt, task_id, created_at, serving_metadata FROM ci_fixes WHERE repo = ? AND number = ?").map(ciFixEvent),
+      ...q<FixRow>("SELECT rowid, from_head AS head, to_head, state, reason, files, attempt, created_at, serving_metadata FROM conflict_merges WHERE repo = ? AND number = ?").map(conflictEvent),
       ...q<Parameters<typeof mergeEvent>[0]>("SELECT rowid, head_oid, at, path, method, outcome, reason FROM merges WHERE repo = ? AND number = ?").map(mergeEvent),
       ...q<Parameters<typeof actionEvent>[0]>("SELECT id, decision_id, kind, state, reason, created_at FROM actions WHERE repo = ? AND number = ?").map(actionEvent),
     ];
   },
 };
 
-export const turnEvent = (t: { id: number; kind: string; login: string; at: string; len: number; status: string | null }): Ev => ({
+export const turnEvent = (t: { id: number; kind: string; login: string; at: string; len: number; status: string | null; serving_metadata?: unknown }): Ev => withServing({
   id: `turn:${t.id}`, kind: "conversation", at: t.at, head: null, actor: t.kind === "opus" ? model("opus", "opus") : t.kind === "system" ? step("system") : person(t.login),
   summary: `Conversation ${t.kind} message, ${t.len} characters${t.status && t.status !== "answered" ? ` (${t.status})` : ""}`, ref: {},
-});
+}, t.serving_metadata);
 
 const conversation: Source = {
   kinds: ["conversation"],
   run: ({ db, repo, n }) => rows<Parameters<typeof turnEvent>[0]>(db,
-    "SELECT id, kind, login, at, LENGTH(body) AS len, status FROM conversation_turns WHERE repo = ? AND number = ?", repo, n).map(turnEvent),
+    "SELECT id, kind, login, at, LENGTH(body) AS len, status, serving_metadata FROM conversation_turns WHERE repo = ? AND number = ?", repo, n).map(turnEvent),
 };
 
 /** The audit actions a viewer may see as writes: everyone the GitHub writes, maintainers the dashboard actions that are not operator-only, operators all (null). */
@@ -384,8 +394,8 @@ export function linkReviewCalls(events: Ev[]): Set<number> {
       if (mine.length === 0) return;
       const ids = mine.map((c) => c.ref.runId!);
       r.ref = { ...r.ref, runId: ids[0], runIds: ids };
-      const costs = mine.map((c) => c.call!.costUsd).filter((v): v is number => v !== null);
-      r.costUsd = costs.length ? costs.reduce((a, b) => a + b, 0) : null;
+      const costs = mine.map((c) => c.call!.costUsd);
+      r.costUsd = costs.length && costs.every((v): v is number => v !== null) ? costs.reduce((a, b) => a + b, 0) : null;
       for (const id of ids) taken.add(id);
     });
   }
@@ -497,9 +507,19 @@ export function fingerprint(c: Ctx, qkey: string): string {
   const { db, repo, n, ref } = c;
   const parts: unknown[] = [qkey, c.staff, c.operator, c.hidden];
   for (const sql of FINGERPRINT) parts.push(Object.values((db.prepare(sql).get(repo, n) ?? {}) as object));
+  // Provenance can be corrected independently of a result's historical time.
+  // Hash the safe parsed representation, not malformed/raw private payloads.
+  for (const table of ["classifications", "opus_review_history", "opus_reviews", "verifications", "screenshot_runs", "item_priority", "patch_checks", "postmerge_reviews", "premerge_reviews", "fixups", "ci_fixes", "conflict_merges", "conversation_turns"]) {
+    parts.push((db.prepare(`SELECT rowid AS result_row, serving_metadata FROM ${table} WHERE repo = ? AND number = ? ORDER BY rowid`).all(repo, n) as { result_row: number; serving_metadata: unknown }[])
+      .map(row => [row.result_row, servingFields(row.serving_metadata)]));
+  }
   parts.push(Object.values(db.prepare("SELECT COUNT(*), MAX(rowid), SUM(LENGTH(COALESCE(details, ''))) FROM audit WHERE target = ?").get(ref) as object));
   for (const id of decisionIds(c))
-    parts.push(Object.values(db.prepare(`SELECT d.id, d.answer, d.answered_at, d.applied_at, d.asked_at, (SELECT COUNT(*) FROM decision_comments x WHERE x.decision_id = d.id) FROM decisions d WHERE d.id = ?`).get(id) as object));
+    {
+      parts.push(Object.values(db.prepare(`SELECT d.id, d.answer, d.answered_at, d.applied_at, d.asked_at, (SELECT COUNT(*) FROM decision_comments x WHERE x.decision_id = d.id) FROM decisions d WHERE d.id = ?`).get(id) as object));
+      parts.push(servingFields((db.prepare("SELECT serving_metadata FROM decisions WHERE id = ?").get(id) as { serving_metadata: unknown } | undefined)?.serving_metadata));
+      parts.push((db.prepare("SELECT serving_metadata FROM decision_choices WHERE decision_id = ? ORDER BY id").all(id) as { serving_metadata: unknown }[]).map(row => servingFields(row.serving_metadata)));
+    }
   return createHash("sha1").update(JSON.stringify(parts)).digest("hex").slice(0, 16);
 }
 

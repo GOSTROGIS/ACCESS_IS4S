@@ -4,6 +4,7 @@ import { rmSync, utimesSync } from "node:fs";
 import type { DatabaseSync } from "node:sqlite";
 import { CHECK_MAX_WALL_MS } from "../core/rules.ts";
 import { CLAUDE_PROMPTS } from "../prompts/index.ts";
+import type { CodexSessionState } from "../agents/codex/client.ts";
 
 /** How long after its last use a kept session is resumed: the prompt cache window. */
 export const RESUME_WINDOW_MS = 60 * 60_000;
@@ -17,7 +18,7 @@ export function touchStore(dir: string): void {
 }
 
 /** What a sandboxed call leaves behind: its session, the account whose config directory holds the login, the session store and the checkout it ran on. */
-export type KeptSession = { id: string; dir: string; account: string; checkout: string };
+export type KeptSession = { id: string; dir: string; account: string; checkout: string; provider?: "codex"; codexState?: CodexSessionState };
 export type StoredSession = KeptSession & { at: string };
 
 /** Passed to a patch call: `resume` continues a kept session with a message; the call reports the session it ends with in `kept`. */

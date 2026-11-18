@@ -16,6 +16,10 @@ const oneLine = (s: string, n: number): string => (s.length > n ? `${s.slice(0, 
 /** Titles and reasons are plain text in the line: markdown characters are replaced so a title cannot format or link. */
 export const plain = (s: string): string => s.replace(/[[\]()<>*_`~|\\#:@]/g, " ").replace(/\s+/g, " ").trim();
 
+/** Keep the manual result usable and explain why priced model assistance stopped. */
+export const budgetReply = (content: string, error?: string): string => error
+  ? `${content.slice(0, 1500)}\n\nModel assistance paused: ${plain(error).slice(0, 300)}` : content;
+
 /** The repo whose new-issue page the button opens: the channel's setting (a thread uses its parent's), else the top result's, else the only public tracked repo. Never a private repo. */
 export function fileRepoUrl(db: DatabaseSync, channelId: string | undefined, matches: Match[]): string | null {
   const set = channelId === undefined ? undefined : (db.prepare(`SELECT COALESCE(c.default_repo, p.default_repo) AS r FROM discord_channels c

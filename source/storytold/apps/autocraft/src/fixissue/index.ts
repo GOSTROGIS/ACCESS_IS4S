@@ -1,3 +1,4 @@
+import { storedNote } from "../github/note.ts";
 // Stage 7, Fix issues: the issue path of the pipeline. For an open bugfix issue with a clear fix, Sonnet triages
 // it, then writes a unified diff (the fix and one regression test) that our code validates. Build tasks in the
 // sandbox must show the test failing on main and everything passing with the fix. A passing fix is committed with
@@ -144,6 +145,7 @@ async function cachedPaths(repo: string, sha: string, fetch: FixIssueDeps["fetch
 // ---- rows ----------------------------------------------------------------------
 
 export type AttemptRow = {
+  serving_metadata?: string | null;
   repo: string; number: number; main_sha: string; text_hash: string; state: string; round: number;
   files: string | null; crate: string | null; crate_dir: string | null; patch: string | null; test_patch: string | null;
   head_task_id: number | null; base_task_id: number | null; retries: number; push_tries: number;
@@ -440,7 +442,7 @@ async function patchRound(x: Ctx, r: AttemptRow): Promise<boolean> {
   try {
     const ids = tasksFor({ repo: r.repo, number: r.number, main_sha: r.main_sha, crate: r.crate!, test: regressionName(r.number) }, v.patch, v.testPatch).map((t) => createTask(db, t));
     queueWarmBuild(db, r.repo, r.main_sha);
-    update(db, d, r, { state: "testing", round, patch: v.patch, test_patch: v.testPatch, head_task_id: ids[0]!, base_task_id: ids[1]!, summary: null });
+    update(db, d, r, { state: "testing", round, patch: v.patch, test_patch: v.testPatch, serving_metadata: null, head_task_id: ids[0]!, base_task_id: ids[1]!, summary: null });
     log(`  ${ref}: round ${round}: ${v.files.join(", ")} (${v.changed} lines); tasks ${ids.join(", ")} queued`);
     return true;
   } catch (e) {
@@ -689,7 +691,7 @@ export async function comment(x: Ctx, g: GuardedItem | GuardedRepo, r: AttemptRo
   if (db.prepare("SELECT 1 FROM audit WHERE action = 'fixissue-comment' AND target = ?").get(ref)) return;
   if (await closedLive(x, r)) { log(`  ${ref}: not commenting, the issue is closed`); return; }
   const text = commentText(url);
-  const cm = await ghComment({ db, login: ACTOR }, g, d.exec, "fixissue-comment", { repo: r.repo, number: r.number, pr: false }, { by: "model", kind: "comment", model: PATCH.models[0] }, text, { run: x.runId });
+  const cm = await ghComment({ db, login: ACTOR }, g, d.exec, "fixissue-comment", { repo: r.repo, number: r.number, pr: false }, storedNote({ by: "model", kind: "comment", model: PATCH.models[0] }, r.serving_metadata), text, { run: x.runId });
   if (cm.code !== 0) log(`  ${ref}: comment failed: ${oneLine(cm.stderr)}`);
 }
 
@@ -780,7 +782,7 @@ export async function openPr(x: Ctx, r: AttemptRow): Promise<boolean> {
     if (await closedLive(x, r)) { fail(db, d, r, "the issue is closed"); return false; }
     const body = prBody(r.number, files, testPath);
     // The audit row is written before the command runs and counts from then on, so the reservation ends there.
-    const pr = await ghOpenPr({ db, login: ACTOR }, g, (...a: Parameters<typeof d.exec>) => { giveBack(); return d.exec(...a); }, "fixissue-pr", { repo: r.repo, target: ref, base: branchOf(db, r.repo), head: `${fork.split("/")[0]}:${branch}`, title: prTitle(title), body }, { by: "model", kind: "pull request", model: PATCH.models[0] }, { run: x.runId, branch });
+    const pr = await ghOpenPr({ db, login: ACTOR }, g, (...a: Parameters<typeof d.exec>) => { giveBack(); return d.exec(...a); }, "fixissue-pr", { repo: r.repo, target: ref, base: branchOf(db, r.repo), head: `${fork.split("/")[0]}:${branch}`, title: prTitle(title), body }, storedNote({ by: "model", kind: "pull request", model: PATCH.models[0] }, r.serving_metadata), { run: x.runId, branch });
     giveBack();
     const url = pr.stdout.trim().split("\n").pop() ?? "";
     if (pr.code !== 0 || !urlOk(url, r.repo)) { log(`  ${ref}: PR not opened: ${oneLine(pr.stderr || pr.stdout)}`); tried(); return false; }

@@ -165,7 +165,7 @@ export function createSecurityMock(me: User, changed: () => void): Pick<Api, "se
         const s = sc.find((x) => x.id === id);
         if (!s) throw new Error("Not found");
         if (s.state !== "capped") throw new Error("only a scan that stopped at its cap can be continued");
-        if (capUsd !== null && capUsd <= s.costUsd) throw new Error("the new cap must be above what the scan has spent");
+        if (capUsd !== null && (s.costUsd === null || capUsd <= s.costUsd)) throw new Error("the new cap must be above the known amount the scan has spent");
         Object.assign(s, { state: "scanning", capUsd, endedAt: null });
         changed();
         return wait(s);

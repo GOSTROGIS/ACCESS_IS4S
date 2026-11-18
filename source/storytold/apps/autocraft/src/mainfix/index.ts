@@ -9,6 +9,7 @@
 //
 //   autocraft main-fix --repo R [--apply]
 //   autocraft main-fix-approval [--repo R]
+import { storedNote } from "../github/note.ts";
 import { leaseItem } from "../runner/leases.ts";
 import { CLI_BY, type By } from "../core/gates.ts";
 import { guardRepo } from "../core/guard.ts";
@@ -60,6 +61,7 @@ export type MainFixDeps = {
 };
 
 export type FixRow = {
+  serving_metadata?: string | null;
   repo: string; head_sha: string; check: string; verdict: MainFixVerdict; state: string; reason: string | null;
   run_id: number | null; run_url: string | null; excerpt: string | null; decision_id: string | null; issue_number: number | null; pr_number: number | null; pr_url: string | null;
   patch: string | null; files: string | null; lint_task: number | null; lint_round: number | null; lint_state: string | null; /** The kept model session that wrote the patch (src/prepush/resume.ts). */ session: string | null;
@@ -113,12 +115,12 @@ const rowsAt = (db: DatabaseSync, repo: string, head: string): FixRow[] =>
 
 function save(db: DatabaseSync, row: Omit<FixRow, "updated_at"> & { updated_at?: string }, at: string): void {
   const { updated_at: _, ...r } = row;
-  db.prepare(`INSERT INTO main_fixes (repo, head_sha, "check", verdict, state, reason, run_id, run_url, excerpt, decision_id, issue_number, pr_number, pr_url, patch, files, lint_task, lint_round, lint_state, session, created_at, updated_at)
-    VALUES (:repo, :head_sha, :check, :verdict, :state, :reason, :run_id, :run_url, :excerpt, :decision_id, :issue_number, :pr_number, :pr_url, :patch, :files, :lint_task, :lint_round, :lint_state, :session, :created_at, :at)
+  db.prepare(`INSERT INTO main_fixes (repo, head_sha, "check", verdict, state, reason, run_id, run_url, excerpt, decision_id, issue_number, pr_number, pr_url, patch, files, lint_task, lint_round, lint_state, session, serving_metadata, created_at, updated_at)
+    VALUES (:repo, :head_sha, :check, :verdict, :state, :reason, :run_id, :run_url, :excerpt, :decision_id, :issue_number, :pr_number, :pr_url, :patch, :files, :lint_task, :lint_round, :lint_state, :session, :serving_metadata, :created_at, :at)
     ON CONFLICT (repo, head_sha, "check") DO UPDATE SET verdict = excluded.verdict, state = excluded.state, reason = excluded.reason, run_id = excluded.run_id,
       run_url = excluded.run_url, excerpt = excluded.excerpt, decision_id = excluded.decision_id, issue_number = excluded.issue_number, pr_number = excluded.pr_number, pr_url = excluded.pr_url,
-      patch = excluded.patch, files = excluded.files, lint_task = excluded.lint_task, lint_round = excluded.lint_round, lint_state = excluded.lint_state, session = excluded.session, updated_at = excluded.updated_at`)
-    .run({ ...r, at });
+      patch = excluded.patch, files = excluded.files, lint_task = excluded.lint_task, lint_round = excluded.lint_round, lint_state = excluded.lint_state, session = excluded.session, serving_metadata = excluded.serving_metadata, updated_at = excluded.updated_at`)
+    .run({ ...r, serving_metadata: r.serving_metadata ?? null, at });
 }
 
 const setState = (db: DatabaseSync, r: FixRow, state: string, reason: string | null, at: string, extra: Partial<FixRow> = {}): FixRow => {
@@ -278,7 +280,7 @@ async function applyAnswers(db: DatabaseSync, repo: string, deps: MainFixDeps, l
     try {
       const g = guardRepo(db, repo, "main-fix", by);
       if ("refused" in g) { log(`  ${repo}: issue for ${row.check} not opened: ${g.refused}`); continue; }
-      const made = await createIssue({ db, login: ACTOR }, g, deps.exec, { repo, target: `${repo}:${row.head_sha.slice(0, 8)}`, title: issueTitle(row.check), body: issueBody(row) }, { by: "operator", model: NOTE_MODEL }, { decision: a.id });
+      const made = await createIssue({ db, login: ACTOR }, g, deps.exec, { repo, target: `${repo}:${row.head_sha.slice(0, 8)}`, title: issueTitle(row.check), body: issueBody(row) }, storedNote({ by: "operator", model: NOTE_MODEL }, row.serving_metadata), { decision: a.id });
       for (const r of rows) setState(db, r, "issue-opened", r.reason, at, { issue_number: made.number });
       done();
       s.issues++;

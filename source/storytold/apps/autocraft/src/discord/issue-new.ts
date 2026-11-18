@@ -8,6 +8,8 @@
 // length-capped and stripped of mentions and foreign links before it is shown.
 import { randomBytes } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
+import { CodexBudgetError, providerBudgetMode } from "../agents/codex/budget.ts";
+import { dailyReportedUsd } from "./budget.ts";
 import { askClaude } from "../classify/run.ts";
 import { publicRepoNames } from "../public/status.ts";
 import { BUTTON_URL_MAX, ISSUE_URL_MAX, cleanDraft, followUp, formDraft, issueUrl, sanitize, seedOf, type PublicRepo } from "./issue-draft.ts";
@@ -15,7 +17,7 @@ import { FOLLOW_UPS, ISSUE_ANSWER_CHARS, ISSUE_BODY_CHARS, ISSUE_FORM_BODY_CHARS
 import type { Call, Interactions } from "./interactions.ts";
 import type { DiscordKeys } from "./keys.ts";
 import { FILING_IN_DISCORD, fileIssue, type FileDeps, type FileRequest, type FileResult, type IssueKind } from "./file-issue.ts";
-import { fileRepoUrl, plain, renderMatches } from "./reply.ts";
+import { budgetReply, fileRepoUrl, plain, renderMatches } from "./reply.ts";
 import { QUESTION_CHARS, type Match, type Search } from "./search.ts";
 import { trackedRepos } from "./store.ts";
 
@@ -44,9 +46,8 @@ export function issueCapUsd(db: DatabaseSync): number {
   return Number.isFinite(v) && v >= 0 ? v : DEFAULT_ISSUE_CAP_USD;
 }
 
-export function issueSpentTodayUsd(db: DatabaseSync, now: number): number {
-  const day = new Date(now).toISOString().slice(0, 10);
-  return Number((db.prepare("SELECT COALESCE(SUM(cost_usd), 0) AS c FROM agent_runs WHERE step = ? AND started_at >= ?").get(ISSUE_STEP, day) as { c: number }).c);
+export function issueSpentTodayUsd(db: DatabaseSync, now: number): number | null {
+  return dailyReportedUsd(db, ISSUE_STEP, now);
 }
 
 /** The prompt and reply of an issue call hold what the person typed: finished calls lose their texts; `all` (at startup) removes every row. */
@@ -69,6 +70,7 @@ type Session = {
   stage: "form" | "matched" | "asking" | "drafted";
   /** Model calls made; at most MAX_CALLS (the questions and one draft). */
   calls: number;
+  budgetError?: string;
 };
 
 export type IssueNewDeps = {
@@ -129,17 +131,29 @@ export class IssueNew {
     return s && s.user === call.userId ? s : null;
   }
 
-  #overCap(): boolean {
-    return issueSpentTodayUsd(this.#d.db, this.#now()) >= issueCapUsd(this.#d.db);
+  #overCap(session?: Session): boolean {
+    try {
+      if (providerBudgetMode(this.#d.db, "Discord issue assistance") === "tokens") return false;
+    } catch (error) {
+      if (!(error instanceof CodexBudgetError)) throw error;
+      if (session) session.budgetError = error.message;
+      this.#d.log(`discord: ${error.message}`);
+      return true;
+    }
+    const spent = issueSpentTodayUsd(this.#d.db, this.#now());
+    if (spent === null && session) session.budgetError = "The USD cost of an earlier call is unreported; the dollar budget cannot be verified.";
+    return spent === null || spent >= issueCapUsd(this.#d.db);
   }
 
-  async #model(id: "discord.issue-questions", input: IssueQuestionsInput): Promise<string | null>;
-  async #model(id: "discord.issue-draft", input: IssueDraftInput): Promise<string | null>;
-  async #model(id: "discord.issue-questions" | "discord.issue-draft", input: IssueQuestionsInput & IssueDraftInput): Promise<string | null> {
+  async #model(id: "discord.issue-questions", input: IssueQuestionsInput, session?: Session): Promise<string | null>;
+  async #model(id: "discord.issue-draft", input: IssueDraftInput, session?: Session): Promise<string | null>;
+  async #model(id: "discord.issue-questions" | "discord.issue-draft", input: IssueQuestionsInput & IssueDraftInput, session?: Session): Promise<string | null> {
     const { db, log } = this.#d;
     try {
+      providerBudgetMode(db, "Discord issue assistance");
       return await (this.#d.ask ?? askIssueModel)(db, id as "discord.issue-draft", input);
     } catch (e) {
+      if (e instanceof CodexBudgetError && session) session.budgetError = e.message;
       log(`discord: issue model call failed: ${(e as Error).message.slice(0, 200)}`);
       return null;
     } finally {
@@ -192,10 +206,11 @@ export class IssueNew {
     s.repo = repo.name; s.repoUrl = `https://github.com/${repo.owner}/${repo.name}`;
     s.description = description; s.title = titleOf(description);
     s.stage = "matched";
-    s.capped = this.#overCap();
+    s.capped = this.#overCap(s);
     if (!s.capped) s.calls++;
-    const asking = s.capped ? Promise.resolve(null) : this.#model("discord.issue-questions", { ref: "discord", repo: s.repo, title: s.title, description: s.description });
+    const asking = s.capped ? Promise.resolve(null) : this.#model("discord.issue-questions", { ref: "discord", repo: s.repo, title: s.title, description: s.description }, s);
     const [found, reply] = await Promise.all([this.#d.search.find(description.slice(0, QUESTION_CHARS), s.repo), asking]);
+    s.budgetError ??= found.budgetError;
     s.matches = found.matches.filter((m) => m.repo === s.repo);
     // A failed or unparseable call asks the first three of the list; a model that finds nothing missing asks none.
     s.questions = s.capped ? [] : ((reply === null ? null : parseQuestions(reply)) ?? FOLLOW_UPS.map((q) => q.id)).slice(0, 3);
@@ -206,10 +221,10 @@ export class IssueNew {
         s.stage = "drafted";
         return void (await this.#finish(call, s, sid));
       }
-      return void (await call.edit({ content: "No existing issue looks like this.", components: [{ type: 1, components: [button("Continue", `inewi:none:${sid}`, 1)] }] }));
+      return void (await call.edit({ content: budgetReply("No existing issue looks like this.", s.budgetError), components: [{ type: 1, components: [button("Continue", `inewi:none:${sid}`, 1)] }] }));
     }
     const r = renderMatches(db, s.matches, description, call.interaction.channel_id, `inewi:none:${sid}`);
-    await call.edit({ content: r.content, components: r.components });
+    await call.edit({ content: budgetReply(r.content, s.budgetError), components: r.components });
   }
 
   /** "None of these" or "Continue": the follow-up questions in a second form, or the draft at once when there are none. */
@@ -243,9 +258,9 @@ export class IssueNew {
   async #finish(call: Call, s: Session, sid: string): Promise<void> {
     const repos = this.#repos();
     let draft: { title: string; body: string } | null = null;
-    if (!s.capped && s.calls < MAX_CALLS && !this.#overCap()) {
+    if (!s.capped && s.calls < MAX_CALLS && !this.#overCap(s)) {
       s.calls++;
-      const text = await this.#model("discord.issue-draft", { ref: "discord", repo: s.repo, title: s.title, description: s.description, answers: s.answers });
+      const text = await this.#model("discord.issue-draft", { ref: "discord", repo: s.repo, title: s.title, description: s.description, answers: s.answers }, s);
       const raw = text === null ? null : parseDraft(text);
       draft = raw ? cleanDraft(raw, repos) : null;
       if (raw && draft) s.kind = raw.kind;
@@ -272,7 +287,7 @@ export class IssueNew {
     const room = MESSAGE_CHARS - head.length - foot.length - 10;
     const preview = room > 80 ? fence(d.body.length > room ? `${d.body.slice(0, room - 1)}…` : d.body) : "";
     return {
-      content: `${head}${preview}${foot}`,
+      content: budgetReply(`${head}${preview}${foot}`, s.budgetError),
       components: [
         { type: 1, components: [{ type: 3, custom_id: `inewi:kind:${sid}`, options: KINDS.map((k) => ({ label: k.label, value: k.value, default: k.value === s.kind })) }] },
         { type: 1, components: [

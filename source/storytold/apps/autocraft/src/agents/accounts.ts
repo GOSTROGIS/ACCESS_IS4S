@@ -4,6 +4,9 @@
 // Only accounts present in the box config (box.ts) are listed. Their config
 // directories stay in this process: nothing here returns one.
 import type { DatabaseSync } from "node:sqlite";
+import { modelPolicy } from "./codex/config.ts";
+import { nativeTransport } from "./codex/transport.ts";
+import { CODEX_EXECUTION_READY, CODEX_UNAVAILABLE } from "./codex/capabilities.ts";
 import type { AccountAuth, AccountInput, ClaudeAccount } from "../../web/src/api/types.ts";
 import { audit } from "../dash/audit.ts";
 import { JEV_PARALLEL_DEFAULT } from "../prompts/index.ts";
@@ -199,7 +202,7 @@ export function accountHasRoom(db: DatabaseSync, accountId: string, nowMs: numbe
 }
 
 /** Calls the enabled accounts with headroom can take right now: the sum of their free slots. */
-export function freeSlots(db: DatabaseSync, nowMs: number = Date.now()): number {
+export function claudeFreeSlots(db: DatabaseSync, nowMs: number = Date.now()): number {
   const box = boxAccounts(db);
   syncAccounts(db, box);
   const counts = runningCounts(db, nowMs), limits = usagePause(db);
@@ -209,6 +212,16 @@ export function freeSlots(db: DatabaseSync, nowMs: number = Date.now()): number 
     free += Math.max(0, r.max_concurrent - (counts.get(r.id) ?? 0));
   }
   return free;
+}
+
+/** Capacity of the selected primary provider; Claude's own allocator remains separate. */
+export function freeSlots(db: DatabaseSync, nowMs: number = Date.now()): number {
+  const policy = modelPolicy(db);
+  if (policy.provider !== "codex") return claudeFreeSlots(db, nowMs);
+  if (!CODEX_EXECUTION_READY) return 0;
+  try { nativeTransport(db); } catch { return 0; }
+  const running = (db.prepare("SELECT COUNT(*) n FROM agent_runs WHERE provider='codex' AND state='running'").get() as { n: number }).n;
+  return Math.max(0, policy.maxConcurrent - running);
 }
 
 export const JEV_PARALLEL_KEY = "jev_parallel";
@@ -234,6 +247,11 @@ export function setJevParallel(db: DatabaseSync, n: unknown, by: string): number
  * enabled account is out of headroom. A busy account is not a pause; calls wait for a slot.
  */
 export function claudePauseReason(db: DatabaseSync, nowMs: number = Date.now()): string | null {
+  if (modelPolicy(db).provider === "codex") {
+    if (!CODEX_EXECUTION_READY) return CODEX_UNAVAILABLE;
+    try { nativeTransport(db); return null; }
+    catch { return "paused: the selected Codex provider requires its protected runtime and current native sign-in"; }
+  }
   const box = boxAccounts(db);
   syncAccounts(db, box);
   const enabled = rows(db, box).filter((r) => r.enabled === 1);

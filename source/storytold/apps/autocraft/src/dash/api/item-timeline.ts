@@ -7,6 +7,7 @@ import type { HistoryCall, TimelineEntry, TimelineTone } from "../../../web/src/
 import type { Preapproval } from "../../../web/src/api/types.ts";
 import { GITHUB_ACTIONS } from "../../github/actions.ts";
 import { arr, clip, stepTitle, type Ctx, type Ev } from "./trace.ts";
+import { servingFields, servingLabel } from "./serving.ts";
 
 const short = (s: string | null | undefined): string => (s ?? "").slice(0, 7);
 const q = <T>(db: DatabaseSync, sql: string, ...args: (string | number)[]): T[] => db.prepare(sql).all(...args) as T[];
@@ -21,15 +22,15 @@ const base = (id: string, at: string, kind: TimelineEntry["kind"], actor: string
 
 /** What a job did, in the page's words; the job's own outcome is internal wording and shows only when it failed. */
 const PLAIN: Record<string, string> = {
-  fixup: "Fix-up started", cifix: "CI fix started", decide: "Opus prepared the question", "merge-ask": "Opus prepared the merge question", "classify-new": "Classified", "classify-all": "Classified", prioritize: "Priority set", rank: "Queue position updated",
+  fixup: "Fix-up started", cifix: "CI fix started", decide: "Prepared the question", "merge-ask": "Prepared the merge question", "classify-new": "Classified", "classify-all": "Classified", prioritize: "Priority set", rank: "Queue position updated",
   embed: "Indexed for similar items", dupes: "Checked for duplicates", "dupes-compare": "Compared duplicates", referee: "Label disagreement settled", "labels-apply": "Labels applied", "review-post": "Review posted",
   "review-carry": "Earlier review carried over", "review-batch": "Review prepared", unassign: "Unassigned", "ci-approve": "CI runs approved", verify: "Verification planned", "verify-collect": "Verification result read", "pr-build": "Pull request build",
-  checks: "CI read", merge: "Merge queue run", conversation: "Opus replied", act: "Action run", postmerge: "Post-merge review", "postmerge-file": "Follow-up issues filed", premerge: "Pre-merge review",
+  checks: "CI read", merge: "Merge queue run", conversation: "Replied", act: "Action run", postmerge: "Post-merge review", "postmerge-file": "Follow-up issues filed", premerge: "Pre-merge review",
 };
 
 const PLAIN_BY_TITLE = new Map(Object.entries(PLAIN).map(([id, text]) => [stepTitle(id), text]));
 
-type Turn = { id: number; kind: string; login: string; at: string; body: string; status: string | null; error: string | null };
+type Turn = { id: number; kind: string; login: string; at: string; body: string; status: string | null; error: string | null; serving_metadata: unknown };
 type DecisionRow = { id: string; question: string; options: string | null; answer: string | null; answer_note: string | null; answered_by: string | null; answered_at: string | null; answered_role: string | null };
 
 /** The page's timeline. `ev` is the item trace; `preapprovals` are the item's rows, oldest first. */
@@ -38,7 +39,7 @@ export function timelineOf(c: Ctx, ev: Ev[], preapprovals: Preapproval[]): Timel
   const out: TimelineEntry[] = [];
   const callsOf = (jobId: unknown): HistoryCall[] =>
     !staff ? [] : ev.filter((x) => x.kind === "model-call" && x.ref.jobId === jobId).map((x) => ({ label: `${x.call?.step ?? x.summary} (${x.call?.model ?? x.actor.name})`, kind: "model" as const, costUsd: x.call?.costUsd ?? null }));
-  const callCost = (calls: HistoryCall[]): number | null => (calls.some((x) => x.costUsd !== null) ? calls.reduce((s, x) => s + (x.costUsd ?? 0), 0) : null);
+  const callCost = (calls: HistoryCall[]): number | null => (calls.length && calls.every((x) => x.costUsd !== null) ? calls.reduce((s, x) => s + x.costUsd!, 0) : null);
   const fixSteps = ev.filter((e) => e.kind === "step" && /^(fixup|cifix|conflict):/.test(e.id));
   const stepOfJob = new Map(q<{ id: number; step: string }>(db, "SELECT id, step FROM jobs WHERE json_extract(params, '$.number') = ?1 AND repo = ?2 UNION SELECT j.id, j.step FROM job_items ji JOIN jobs j ON j.id = ji.job_id WHERE ji.number = ?1 AND ji.repo = ?2", n, repo).map((j) => [j.id, j.step]));
   const jobsWithCalls = new Set(ev.filter((e) => e.kind === "job").map((e) => e.ref.jobId));
@@ -127,6 +128,15 @@ export function timelineOf(c: Ctx, ev: Ev[], preapprovals: Preapproval[]): Timel
     }
   }
 
+  const serving = new Map(ev.filter(event => event.serving).map(event => [event.id, event.serving!]));
+  for (const entry of out) {
+    const metadata = serving.get(entry.id);
+    if (metadata) {
+      entry.serving = metadata;
+      if (entry.kind === "opus") entry.actor = servingLabel(metadata, entry.actor);
+    }
+  }
+
   // Our build failed where upstream CI passed: a note on the item (from pr_builds, not a stage row, so it never becomes the latest stage).
   for (const b of q<{ head_sha: string; summary: string | null; finished_at: string | null }>(db, "SELECT head_sha, summary, finished_at FROM main.pr_builds WHERE repo = ? AND number = ? AND disagree = 1 AND finished_at IS NOT NULL", repo, n)) {
     if (!featureOn(db, "pr-builds", repo)) break;
@@ -136,17 +146,19 @@ export function timelineOf(c: Ctx, ev: Ev[], preapprovals: Preapproval[]): Timel
   }
   // Screenshot runs (staff only, as the images are): planned when the run was queued, then its outcome. From screenshot_runs, not stage rows.
   if (staff && !c.veiled) {
-    type Shot = { head_sha: string; state: string; reason: string | null; verdict: string | null; clear: number | null; comparison: string | null; held: number; has_plan: number; created_at: string; finished_at: string | null };
-    for (const r of q<Shot>(db, "SELECT head_sha, state, reason, verdict, clear, comparison, held, plan IS NOT NULL AS has_plan, created_at, finished_at FROM main.screenshot_runs WHERE repo = ? AND number = ?", repo, n)) {
+    type Shot = { head_sha: string; state: string; reason: string | null; verdict: string | null; clear: number | null; comparison: string | null; held: number; has_plan: number; created_at: string; finished_at: string | null; serving_metadata: unknown };
+    for (const r of q<Shot>(db, "SELECT head_sha, state, reason, verdict, clear, comparison, held, plan IS NOT NULL AS has_plan, created_at, finished_at, serving_metadata FROM main.screenshot_runs WHERE repo = ? AND number = ?", repo, n)) {
       if (r.state === "skipped" || r.state === "stale") continue;
       const id = `screenshots:${r.head_sha}`;
       if (r.has_plan) {
         const planned = base(`${id}:planned`, r.created_at, "harness", "AutoCraft", "check", `Screenshots planned at ${short(r.head_sha)}`);
+        Object.assign(planned, servingFields(r.serving_metadata));
         if (r.reason && r.state !== "error") planned.body = clip(r.reason, 200);
         out.push(planned);
       }
       if (!r.finished_at || r.state === "planned" || r.state === "running") continue;
       const done = base(`${id}:done`, r.finished_at, "harness", "AutoCraft", "check", r.state === "error" ? "Screenshots failed" : r.held === 1 ? "Screenshot regression: held" : "Screenshots compared");
+      Object.assign(done, servingFields(r.serving_metadata));
       done.tone = r.state === "error" ? "warn" : r.held === 1 ? "bad" : "neutral"; done.major = r.held === 1;
       done.body = clip((r.state === "error" ? r.reason : r.comparison) ?? "", 300) || null;
       out.push(done);
@@ -179,15 +191,17 @@ export function timelineOf(c: Ctx, ev: Ev[], preapprovals: Preapproval[]): Timel
       out.push(t);
     }
     // Opus's messages that answer a person are conversation; the others (a refreshed summary of the question) are the harness's work.
-    const turns = q<Turn & { seq: number }>(db, "SELECT id, kind, login, at, body, status, error, seq FROM conversation_turns WHERE repo = ? AND number = ? ORDER BY seq, id", repo, n);
+    const turns = q<Turn & { seq: number }>(db, "SELECT id, kind, login, at, body, status, error, seq, serving_metadata FROM conversation_turns WHERE repo = ? AND number = ? ORDER BY seq, id", repo, n);
     turns.forEach((t, i) => {
       // System lines repeat what the press, pre-approval and fix-up lines say.
       if (t.kind === "system") return;
       const opus = t.kind === "opus";
       const reply = opus && turns[i - 1] !== undefined && !["opus", "system"].includes(turns[i - 1]!.kind);
-      const e = base(`turn:${t.id}`, t.at, opus && reply ? "opus" : opus ? "harness" : "person", opus ? "Opus" : t.login, "chat", opus && !reply ? "Opus refreshed its summary" : clip(t.body, 110));
+      const fields = servingFields(t.serving_metadata);
+      const actor = opus ? servingLabel(fields.serving, "Opus") : t.login;
+      const e = { ...base(`turn:${t.id}`, t.at, opus && reply ? "opus" : opus ? "harness" : "person", actor, "chat", opus && !reply ? `${actor} refreshed its summary` : clip(t.body, 110)), ...fields };
       e.major = !(opus && !reply); e.body = t.body; e.markdown = opus;
-      if (t.status === "failed") { e.tone = "bad"; e.major = true; e.lines = [t.error ?? "Opus gave no usable reply."]; }
+      if (t.status === "failed") { e.tone = "bad"; e.major = true; e.lines = [t.error ?? `${actor} gave no usable reply.`]; }
       out.push(e);
     });
   }

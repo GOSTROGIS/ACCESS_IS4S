@@ -20,7 +20,7 @@ import { askClaude } from "../classify/run.ts";
 import { REPO_PATH } from "../sandbox/command.ts";
 import { checkoutForPr } from "../sandbox/index.ts";
 import { audit } from "../dash/audit.ts";
-import { withNote } from "../github/note.ts";
+import { storedNote, withNote } from "../github/note.ts";
 import { CLI_BY, type By } from "../core/gates.ts";
 import { guard, guardRepo, liveOf } from "../core/guard.ts";
 import { unsentAsk } from "../core/rules.ts";
@@ -196,14 +196,14 @@ class Recorder {
   }
 
   /** The model patch waits for its lint task: a first row, or the same row with the next round's patch and task. */
-  linting(c: FixCandidate, patch: string, files: string[], task: number, lintState: "pending" | "requeued", round: number, session: string | null, changes: string[] = []): void {
+  linting(c: FixCandidate, patch: string, files: string[], task: number, lintState: "pending" | "requeued", round: number, session: string | null, changes: string[] = [], servingMetadata: string | null = null): void {
     const list = changes.length ? JSON.stringify(changes) : null;
     if (c.lint) {
-      this.db.prepare("UPDATE fixups SET patch = ?, files = ?, lint_task = ?, lint_round = ?, lint_state = ?, session = ?, changes = ? WHERE rowid = ?").run(patch, JSON.stringify(files), task, round, lintState, session, list, c.lint.rowid);
+      this.db.prepare("UPDATE fixups SET patch = ?, files = ?, lint_task = ?, lint_round = ?, lint_state = ?, session = ?, changes = ?, serving_metadata = ? WHERE rowid = ?").run(patch, JSON.stringify(files), task, round, lintState, session, list, servingMetadata, c.lint.rowid);
       return;
     }
-    this.db.prepare("INSERT INTO fixups (repo, number, from_head, to_head, state, reason, files, attempt, created_at, source, patch, lint_task, lint_round, lint_state, carry_decision, session, operator_fix, changes) VALUES (?, ?, ?, NULL, 'linting', NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-      .run(c.repo, c.number, c.head, JSON.stringify(files), c.attempt, this.at(), c.carry ? "carry" : c.source ?? null, patch, task, round, lintState, c.carry?.decisionId ?? null, session, c.operator?.id ?? null, list);
+    this.db.prepare("INSERT INTO fixups (repo, number, from_head, to_head, state, reason, files, attempt, created_at, source, patch, lint_task, lint_round, lint_state, carry_decision, session, operator_fix, changes, serving_metadata) VALUES (?, ?, ?, NULL, 'linting', NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(c.repo, c.number, c.head, JSON.stringify(files), c.attempt, this.at(), c.carry ? "carry" : c.source ?? null, patch, task, round, lintState, c.carry?.decisionId ?? null, session, c.operator?.id ?? null, list, servingMetadata);
   }
 
   /** Stored patches whose Plan no longer lists the push (head moved, a Hold or Close answer, approval revoked) are dropped. */
@@ -336,7 +336,7 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
       const body = c.carry ? c.carry.suggestion! : askText(c.fixes);
       const g = await guard(db, { repo, number: c.number }, { kind: "fixup", bucket: "ask", head: c.head, source: sourceOf(c) }, params.by ?? CLI_BY);
       if ("refused" in g) { log(`  ${ref}: not asked: ${g.refused}`); return; }
-      const note: Note = c.carry ? (c.model ? { by: "operator", model: c.model } : { by: "fixed-operator" }) : { by: "model", kind: "comment", model: c.model };
+      const note = storedNote<Note>(c.carry ? (c.model || c.servingMetadata ? { by: "operator", model: c.model } : { by: "fixed-operator" }) : { by: "model", kind: "comment", model: c.model }, c.servingMetadata);
       const earlier = earlierAsk(db, repo, c.number, c.head);
       const cm = earlier
         ? (withNote(note, body) === earlier.text ? { code: 0, stdout: "", stderr: "" } : await ghEditComment(gw, g, d.exec, "fixup-comment-edit", { repo, number: c.number, commentId: earlier.id }, note, body, { run: runId, head: c.head }))
@@ -485,7 +485,7 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
           if (c.lint.state === "requeued") { fail("failed", `lint: ${res.reason}`); return; }
           const again = await queueLintFor(db, { step: "fixup", repo, number: c.number, head, base: pr.baseRefOid ?? null, patch: c.lint.patch });
           if (again === null) { fail("failed", `lint: ${res.reason}`); return; }
-          rec.linting(c, c.lint.patch, files, again, "requeued", c.lint.round, c.lint.session, c.lint.changes);
+          rec.linting(c, c.lint.patch, files, again, "requeued", c.lint.round, c.lint.session, c.lint.changes, c.lint.servingMetadata ?? null);
           log(`  ${ref}: lint task failed (${res.reason}); queued again as task ${again}`);
           return;
         }
@@ -503,6 +503,7 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
       // The model's patch: the stored one when it is clean, else a new answer (with the findings on the earlier patch).
       const ses: SessionAsk = c.lint && findings.length ? sessionAsk(c.lint.session, "", findings, new Date(at())) : {};
       if (folded !== null) dropSessions(c.lint!.session);
+      const patchServingMetadata = folded !== null ? c.lint?.servingMetadata : null;
       const raw = folded !== null ? c.lint!.patch : await d.ask(db, [{ ref, title: oneTitle(db, c), fixes: c.fixes, ...(quiet ? { quiet } : {}), files: shown, diff: diff.text, ...(c.operator ? { operator: c.operator.instructions } : {}), ...(carried ? { carried_from: carried } : {}),
         ...(c.lint && findings.length ? { previous: { patch: c.lint.patch, findings } } : {}), ...repoDir }], checkout,
         new CheckTool({ db, step: "fixup", repo, number: c.number, head, base: pr.baseRefOid ?? null, applies: applyCheck(git, d.root, head, (p) => refusal(c.operator ? validatePatch(splitChanges(p).diff, null, (x) => operatorEditable(x, scripts)) : validatePatch(p, files, (x) => fixupEditable(x, scripts)))) }), ses);
@@ -584,7 +585,7 @@ async function runFixupWith(db: DatabaseSync, params: FixupParams, log: (line: s
       jobItem(db, repo, c.number, `pushed ${short(commit)} on ${short(head)}: ${v.files.join(", ")}`, log);
 
       const body = c.carry ? carryCommentText(c.carry.sources.map((x) => x.number), v.files) : c.operator ? operatorCommentText(v.files, quiet ? [] : await postableChanges(db, repo, `${repo}#${c.number}`, split.changes, c.operator.instructions)) : commentText(v.files, c.attempt);
-      const note: Note = c.carry ? { by: "operator", model: PROMPT.models[0] } : c.operator ? { by: "fixed-operator" } : { by: "model", kind: "comment", model: PROMPT.models[0] };
+      const note = storedNote<Note>(c.carry ? { by: "operator", model: PROMPT.models[0] } : c.operator ? { by: "fixed-operator" } : { by: "model", kind: "comment", model: PROMPT.models[0] }, patchServingMetadata);
       // A plain review-fix push right after our own review-fix comment extends that comment instead of adding a second one.
       const prev = c.carry || c.operator ? null : await newestOwnComment(d.querier, new Set([who.login, ...ownLogins(db, repo)]), repo, c.number);
       const prevLines = prev ? fixupCommentLines(prev.body) : null;
@@ -695,11 +696,11 @@ export async function repostAsk(db: DatabaseSync, repo: string, number: number, 
   const url = ds.find((r) => r.action === "fixup-comment" && r.d.url)?.d.url;
   const id = /#issuecomment-(\d+)$/.exec(url ?? "")?.[1];
   if (!last || !id) throw new Error(`no recorded ask comment for ${repo}#${number}`);
-  const review = db.prepare("SELECT fixes, model FROM final_reviews WHERE repo = ? AND number = ? AND head_oid = ? AND verdict = 'take-fix'").get(repo, number, state.from_head) as { fixes: string | null; model: string | null } | undefined;
+  const review = db.prepare("SELECT fixes, model, serving_metadata FROM final_reviews WHERE repo = ? AND number = ? AND head_oid = ? AND verdict = 'take-fix'").get(repo, number, state.from_head) as { fixes: string | null; model: string | null; serving_metadata: string | null } | undefined;
   const fixes = parseFixes(review?.fixes ?? null);
   if (!fixes.length) throw new Error(`no fix list for ${repo}#${number} at ${state.from_head.slice(0, 7)}`);
   const old = last.d.text ?? "";
-  const note: Note = { by: "model", kind: "comment", model: review?.model };
+  const note = storedNote<Note>({ by: "model", kind: "comment", model: review?.model }, review?.serving_metadata);
   const text = askText(fixes);
   // The recorded text is the text as posted, note line included.
   if (withNote(note, text) === old) return { status: "unchanged", old, text };

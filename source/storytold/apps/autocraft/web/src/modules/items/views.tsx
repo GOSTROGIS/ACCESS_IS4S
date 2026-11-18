@@ -269,9 +269,9 @@ export function SettledBadge({ s, detail }: { s: Settled; detail?: boolean }) {
   const conf = s.confidence !== null ? ` ${s.confidence.toFixed(2)}` : "";
   if (s.status === "settled")
     return (
-      <span className="relative z-10 inline-flex min-w-0 items-center gap-1.5" title={s.source === "jev" ? `Jev is sure (top probability${conf})` : `Jev unsure (${conf.trim()}), Haiku agrees`}>
+      <span className="relative z-10 inline-flex min-w-0 items-center gap-1.5" title={s.source === "jev" ? `Jev is sure (top probability${conf})` : `Jev unsure (${conf.trim()}), model fallback agrees`}>
         <Badge tone="ok">{s.label}</Badge>
-        <span className="num text-2xs text-ink/45">{s.source === "jev" ? `Jev${conf}` : `Jev${conf} + Haiku`}</span>
+        <span className="num text-2xs text-ink/45">{s.source === "jev" ? `Jev${conf}` : `Jev${conf} + model fallback`}</span>
       </span>
     );
   const [text, tone] = STATUS[s.status];
@@ -282,8 +282,8 @@ export function SettledBadge({ s, detail }: { s: Settled; detail?: boolean }) {
         <span className="text-2xs text-ink/50">
           Jev {s.jevLabel}
           {conf}
-          {s.status === "disagree" ? ` · Haiku ${s.haikuLabel}` : ""}
-          {s.referee && s.status === "disagree" ? ` · Sonnet ${s.referee.label}, unsure: ${s.referee.reason}` : ""}
+          {s.status === "disagree" ? ` · Model fallback ${s.haikuLabel}` : ""}
+          {s.referee && s.status === "disagree" ? ` · Referee ${s.referee.label}, unsure: ${s.referee.reason}` : ""}
         </span>
       )}
       {detail && (s.status === "waiting" || s.status === "disagree") && <span className="text-2xs text-ink/50">{text}</span>}

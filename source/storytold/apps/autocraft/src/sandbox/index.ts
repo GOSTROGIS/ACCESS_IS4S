@@ -11,6 +11,8 @@ import { buildCheckout, checkoutRoot, pruneCheckouts } from "./checkout.ts";
 export { REPO_PATH, REPOS_ROOT, AGENTS_PATH, reposPath, sandboxCommand, type SandboxSpec } from "./command.ts";
 import { envVar } from "../env.ts";
 import { ownerOf } from "../owners.ts";
+import { loadConfig } from "../dash/server/config.ts";
+import { loadTransport } from "../agents/codex/transport.ts";
 
 const MAX_AGE_MS = 24 * 3600_000;
 
@@ -29,7 +31,9 @@ export function resolveClaudeBin(): string | null {
 
 /** Whether tool mode can run on this machine: bubblewrap and the claude binary are present. */
 export function sandboxAvailable(): boolean {
-  return envVar("NO_SANDBOX") !== "1" && existsSync("/usr/bin/bwrap") && resolveClaudeBin() !== null;
+  let codex = false;
+  if (process.env.AUTOCRAFT_CODEX_TRANSPORT_FILE) { try { loadTransport(loadConfig()); codex = true; } catch {} }
+  return envVar("NO_SANDBOX") !== "1" && existsSync("/usr/bin/bwrap") && (codex || resolveClaudeBin() !== null);
 }
 
 /** A sandboxed call needs at least this much token lifetime left, because the sandbox never refreshes; the call waits for an account that has it. */

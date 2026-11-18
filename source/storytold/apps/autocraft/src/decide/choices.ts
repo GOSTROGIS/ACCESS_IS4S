@@ -316,10 +316,10 @@ export function writeChoices(db: DatabaseSync, row: Omit<ChoicesRow, "id" | "sta
     // Backlog is an option of every decision, so a Later pick is the recommendation "backlog".
     const recommended = opt?.type === "option" ? opt.option : opt?.type === "backlog" ? "backlog" : null;
     if (recommended !== null) {
-      db.prepare(`UPDATE main.decisions SET recommended = ?, recommended_reason = ?${o.by !== undefined ? ", recommended_by = ?" : ""} WHERE id = ? AND answer IS NULL`)
+      db.prepare(`UPDATE main.decisions SET serving_metadata = CASE WHEN serving_metadata IS NULL THEN NULL ELSE '{"schema":0,"provider":"unknown","runs":[],"models":[]}' END, recommended = ?, recommended_reason = ?${o.by !== undefined ? ", recommended_by = ?" : ""} WHERE id = ? AND answer IS NULL`)
         .run(...[recommended, row.pick.reason, ...(o.by !== undefined ? [o.by] : []), row.decisionId] as (string | null)[]);
     } else {
-      db.prepare(`UPDATE main.decisions SET recommended = NULL, recommended_reason = NULL${o.by !== undefined ? ", recommended_by = ?" : ""} WHERE id = ? AND answer IS NULL`)
+      db.prepare(`UPDATE main.decisions SET serving_metadata = CASE WHEN serving_metadata IS NULL THEN NULL ELSE '{"schema":0,"provider":"unknown","runs":[],"models":[]}' END, recommended = NULL, recommended_reason = NULL${o.by !== undefined ? ", recommended_by = ?" : ""} WHERE id = ? AND answer IS NULL`)
         .run(...[...(o.by !== undefined ? [o.by] : []), row.decisionId] as (string | null)[]);
     }
     if (own) db.exec("COMMIT");

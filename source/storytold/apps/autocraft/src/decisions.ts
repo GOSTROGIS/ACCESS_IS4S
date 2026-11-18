@@ -18,6 +18,7 @@ export type Ref = { repo: string; number: number };
 export type Exception = Ref & { answer: string };
 
 export type DecisionRow = {
+  serving_metadata?: string | null;
   id: string; kind: Kind; repo: string | null; number: number | null; items: string | null;
   question: string; context: string | null; facts: string | null; options: string;
   recommended: string | null; recommended_reason: string | null; recommended_by: string | null; public_text: string | null; asked_at: string; asked_by: string | null;
@@ -82,7 +83,7 @@ export function getDecision(db: DatabaseSync, id: string): DecisionRow | undefin
   return db.prepare("SELECT * FROM decisions WHERE id = ?").get(id) as DecisionRow | undefined;
 }
 
-const ASK_FIELDS = ["kind", "repo", "number", "items", "question", "context", "facts", "options", "recommended", "recommended_reason", "public_text", "asked_at", "asked_by", "docket", "summary", "summary_by", "summary_at"] as const;
+const ASK_FIELDS = ["kind", "repo", "number", "items", "question", "context", "facts", "options", "recommended", "recommended_reason", "public_text", "asked_at", "asked_by", "docket", "summary", "summary_by", "summary_at", "serving_metadata"] as const;
 
 // A re-ask without a summary keeps the one the decision has.
 const SUMMARY_FIELDS: readonly string[] = ["summary", "summary_by", "summary_at"];
@@ -103,6 +104,7 @@ export function validateAsk(q: Record<string, unknown>): Record<string, string |
   if (q.recommended != null && !options.some((o) => o.key === q.recommended)) throw err("recommended must be an option key");
   const facts = (q.facts ?? []) as unknown[];
   if (!Array.isArray(facts) || facts.length > 5 || !facts.every((f) => typeof f === "string")) throw err("facts must be up to five strings");
+  if (q.serving_metadata !== undefined && q.serving_metadata !== null && (typeof q.serving_metadata !== "string" || q.serving_metadata.length > 65536)) throw err("serving metadata must be bounded stored text or null");
   const batch = q.number == null;
   let items: Ref[] | null = null;
   if (batch) {
@@ -125,6 +127,7 @@ export function validateAsk(q: Record<string, unknown>): Record<string, string |
     asked_at: typeof q.asked_at === "string" ? q.asked_at : new Date().toISOString(),
     asked_by: typeof q.asked_by === "string" ? q.asked_by : null, docket: typeof q.docket === "string" ? q.docket : null,
     summary: str(q.summary), summary_by: str(q.summary_by), summary_at: str(q.summary_at),
+    serving_metadata: typeof q.serving_metadata === "string" && q.serving_metadata.length <= 65536 ? q.serving_metadata : null,
   };
 }
 
@@ -135,7 +138,8 @@ export function ask(db: DatabaseSync, questions: Record<string, unknown>[], inTr
   const changed = "(excluded.question IS NOT question OR excluded.options IS NOT options)";
   const keepsPick = "(prepared_at IS NOT NULL AND NOT " + changed + ")";
   const set = (c: string): string =>
-    SUMMARY_FIELDS.includes(c) ? `${c} = COALESCE(excluded.${c}, ${c})`
+    c === "serving_metadata" ? `${c} = CASE WHEN ${keepsPick} THEN ${c} WHEN excluded.summary IS NOT NULL THEN excluded.${c} WHEN ${changed} AND ${c} IS NOT NULL THEN '{"schema":0,"provider":"unknown","runs":[],"models":[]}' ELSE ${c} END`
+    : SUMMARY_FIELDS.includes(c) ? `${c} = COALESCE(excluded.${c}, ${c})`
     : c === "recommended" || c === "recommended_reason" ? `${c} = CASE WHEN ${keepsPick} THEN ${c} ELSE excluded.${c} END`
     : `${c} = excluded.${c}`;
   const stmt = db.prepare(`INSERT INTO main.decisions (${cols.join(",")}) VALUES (${cols.map((c) => `:${c}`).join(",")})

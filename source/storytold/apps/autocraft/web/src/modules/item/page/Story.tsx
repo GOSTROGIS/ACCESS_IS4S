@@ -21,6 +21,7 @@ import { canAct } from "../../../registry/permissions";
 import { localActions } from "../../decisions/state";
 import { markStarting } from "../starting";
 import { useJump } from "./ItemPage";
+import { servingLabel } from "../../../lib/serving";
 
 const ICON: Record<TimelineEntry["icon"], Icon> = { review: ListChecksIcon, fixup: WrenchIcon, merge: GitMergeIcon, push: UploadSimpleIcon, github: GithubLogoIcon, check: CheckCircleIcon, job: RobotIcon, chat: ChatCircleIcon, person: UserIcon };
 const TRIGGER: Record<string, string> = { "new-head": "new head", discussion: "discussion", operator: "asked by an operator", base: "base branch changed", "model-change": "model change" };
@@ -73,7 +74,7 @@ export function Story({ d, flash, conv }: { d: ItemPageData; flash: string | nul
   };
   return (
     <section aria-label="What happened" className="px-4 pb-2 pt-3 md:px-6">
-      {staff && d.costUsd > 0 && <p className="num mb-1 text-right text-xs text-ink/45">{formatCost(d.costUsd)} in all</p>}
+      {staff && (d.costUsd === null || d.costUsd > 0) && <p className="num mb-1 text-right text-xs text-ink/45">{d.costUsd === null ? "Total USD price unknown" : `${formatCost(d.costUsd)} in all`}</p>}
       <ol>
         {rows.map((r) =>
           r.t === "line" ? (
@@ -88,11 +89,12 @@ export function Story({ d, flash, conv }: { d: ItemPageData; flash: string | nul
 }
 
 function Run({ es, d, conv, date, flash }: { es: TimelineEntry[]; d: ItemPageData; conv: Conversation | undefined; date?: string; flash: string | null }) {
-  const cost = es.reduce((s, e) => s + (e.costUsd ?? 0), 0);
+  const unknownPrice = es.some(e => e.calls.some(c => c.kind === "model" && c.costUsd === null));
+  const cost = unknownPrice ? null : es.reduce((s, e) => s + (e.costUsd ?? 0), 0);
   const first = es[0]!, last = es[es.length - 1]!;
   const span = clock(first.at) === clock(last.at) ? clock(first.at) : `${clock(first.at)}–${clock(last.at)}`;
   const hit = flash !== null && es.some((e) => flash === `hist-${e.id}`);
-  const words = [`${es.length} steps`, span, formatCost(cost)].filter(Boolean).join(" · ");
+  const words = [`${es.length} steps`, span, unknownPrice ? "USD price unknown" : formatCost(cost)].filter(Boolean).join(" · ");
   return (
     <StoryLine time={clock(first.at)} date={date} icon={RobotIcon} text={words} open={hit}>
       <ol className="border-l border-line pl-2">
@@ -224,7 +226,7 @@ function FeedbackActions({ e, d, conv, operator }: { e: TimelineEntry; d: ItemPa
           className={cn("inline-flex min-h-8 items-center gap-1.5 rounded border px-2 text-xs font-medium disabled:opacity-60 max-md:min-h-11", include ? "border-accent/50 bg-accent/[0.08] text-accent-ink" : "border-line-strong text-ink/70 hover:bg-ink/[0.05]")}
         >
           {include ? <CheckCircleIcon className="text-[14px]" /> : <PlusCircleIcon className="text-[14px]" />}
-          {include?.sent ? "Sent to Opus" : include ? "Included" : "Include for Opus"}
+          {include?.sent ? "Sent to the assistant" : include ? "Included" : "Include for the assistant"}
         </button>
       )}
       {f.open && f.pick && mine && <button onClick={() => void act(() => api.decisions.retract(f.decisionId))} className={linkCls}>Retract</button>}
@@ -240,6 +242,7 @@ function ReviewDetail({ repo, r, viewer }: { repo: string; r: OpusReviewEntry; v
   return (
     <div className="space-y-2 text-sm">
       <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink/55">
+        {r.serving && <span>{servingLabel(r.serving, "Opus")}</span>}
         <Badge>{VERDICT_LABEL[r.verdict]}</Badge>
         <span>of <span className="code">{r.head}</span> ({r.current ? "current head" : "head has moved"})</span>
         {r.why && <span>· {r.why} ({TRIGGER[r.trigger]})</span>}

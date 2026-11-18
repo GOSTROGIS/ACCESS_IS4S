@@ -12,7 +12,7 @@ export type Fix = { file: string; change: string };
 export type Carry = { decisionId: string; /** The suggestion comment stored with the answer, posted as it is when the branch can't be pushed to. */ suggestion: string | null; sources: { number: number; head: string | null; points: string[] }[] };
 /** `carry` set: the candidate is a carry-over job; its fixes are worked out from the source PRs' diffs when it runs. */
 /** `model` wrote the text the ask comment carries: the Opus review's fix list, or the stored suggestion of a carry-over. */
-export type FixCandidate = { repo: string; number: number; head: string; reason: string; fixes: Fix[]; attempt: number; model: string | null; carry?: Carry;
+export type FixCandidate = { repo: string; number: number; head: string; reason: string; fixes: Fix[]; attempt: number; model: string | null; servingMetadata?: string | null; carry?: Carry;
   /** `premerge`: the fixes are the pre-merge review's defect fixes; the PR's one pre-merge round, apart from the take-fix tries. */
   source?: "premerge" | "operator";
   /** An operator's fix-up (source `operator`): the instructions replace the fix list; the files are the PR's own changed files. */
@@ -20,7 +20,7 @@ export type FixCandidate = { repo: string; number: number; head: string; reason:
   /** A stored model patch whose lint task ended: the collect step pushes it with the format changes folded in, or asks the model again with the findings. */
   lint?: LintWork };
 /** The fixups row of a stored patch: `lint_state` is `pending` (first task) or `requeued` (the lost task was queued once more). */
-export type LintWork = { rowid: number; round: number; task: number | null; state: string; patch: string; /** The kept model session that wrote the patch (src/prepush/resume.ts). */ session: string | null; /** An operator fix-up model's list of what the patch changes. */ changes: string[] };
+export type LintWork = { servingMetadata?: string | null; rowid: number; round: number; task: number | null; state: string; patch: string; /** The kept model session that wrote the patch (src/prepush/resume.ts). */ session: string | null; /** An operator fix-up model's list of what the patch changes. */ changes: string[] };
 export type FixSelection = {
   /** Take-fix PRs we may push to, in a repo with push approval. */
   fix: FixCandidate[];

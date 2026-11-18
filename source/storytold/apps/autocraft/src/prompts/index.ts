@@ -85,7 +85,7 @@ type JevRequest = { model: string; state: string; questions: Record<string, JevQ
 
 const ITEM_FIELDS = `ref, kind ("pull request" or "issue"), title, body (first ${BODY_LIMIT} characters), author_association; for pull requests also lines_changed and files_changed`;
 const ITEMS_JSON = `The items as a JSON array indented by one space, one object per item with ${ITEM_FIELDS}.`;
-const CLAUDE_RESULT = "The CLI prints one JSON result (`--output-format json`); its `result` text is the reply. A result with `is_error` set or no `result` text counts as no answer.";
+export const CLAUDE_RESULT = "The CLI prints one JSON result (`--output-format json`); its `result` text is the reply. A result with `is_error` set or no `result` text counts as no answer.";
 
 /** The placeholder every prompt with a sandbox registers. */
 const REPO_ACCESS_DOC = `One sentence: the permission to read the repository at ${REPO_PATH} with Read, Grep and Glob when the call has a checkout (read-only, instruction files left out, untrusted), or nothing (or "Judge from the diff.") when it has none. For the calls that judge reference-app behaviour it adds, with a checkout, that the repository's parity docs record what is known to match or differ, and, when the repo has private reference documentation, that it is at /reference (read-only, index.txt lists the pages, a PDF has the same pages with screenshots, web pages name their pictures in images/) and must never be quoted, cited, named or mentioned. For the calls that judge or change code or scope it adds, when the repository's default branch has them, one sentence on the maintainers' rules (AGENTS.txt) and roadmap (ROADMAP.md) at /repo-docs.`;

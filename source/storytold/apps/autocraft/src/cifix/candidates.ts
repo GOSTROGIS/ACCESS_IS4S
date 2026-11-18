@@ -19,7 +19,7 @@ export type CifixCandidate = {
   /** When the rerun was requested (ISO), else null. */
   rerunAt: string | null;
   /** A stored model patch whose lint task ended: the collect step pushes it with the format changes folded in, or asks the model again with the findings. */
-  lint?: { rowid: number; round: number; task: number | null; state: string; patch: string; files: string[]; /** The kept model session that wrote the patch (src/prepush/resume.ts). */ session: string | null };
+  lint?: { servingMetadata?: string | null; rowid: number; round: number; task: number | null; state: string; patch: string; files: string[]; /** The kept model session that wrote the patch (src/prepush/resume.ts). */ session: string | null };
 };
 
 export type CifixSelection = {

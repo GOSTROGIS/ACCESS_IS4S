@@ -200,7 +200,7 @@ async function collectOne(db: DatabaseSync, r: Run, deps: Pick<CollectDeps, "scr
   const ref = `${r.repo}#${r.number}`, sha7 = r.head_sha.slice(0, 7);
   const at = (): string => new Date().toISOString();
   const finish = (state: string, f: { reason?: string | null; verdict?: string; clear?: boolean; comparison?: string; model?: string } = {}): boolean =>
-    Number(db.prepare(`UPDATE screenshot_runs SET state = ?, reason = COALESCE(?, reason), verdict = ?, clear = ?, comparison = ?, model = ?, finished_at = ?
+    Number(db.prepare(`UPDATE screenshot_runs SET state = ?, reason = COALESCE(?, reason), verdict = ?, clear = ?, comparison = ?, model = ?, serving_metadata = NULL, finished_at = ?
       WHERE repo = ? AND number = ? AND head_sha = ? AND state IN ('planned', 'running')`)
       .run(state, f.reason ?? null, f.verdict ?? null, f.clear === undefined ? null : f.clear ? 1 : 0, f.comparison ?? null, f.model ?? null, at(), r.repo, r.number, r.head_sha).changes) > 0;
   // The only stage row a screenshot run writes is `hold`; its other outcomes are read from screenshot_runs.

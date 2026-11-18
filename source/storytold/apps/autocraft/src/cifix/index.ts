@@ -1,3 +1,4 @@
+import { storedNote } from "../github/note.ts";
 // CI fix: a PR we want whose gate check failed at its reviewed head gets one of three things, by what the log says:
 //   format  the formatter runs in a build environment (never on this host) and its diff is pushed; no model;
 //   infra   the failed jobs are rerun once per head (the `cifix-rerun` step);
@@ -197,13 +198,13 @@ class Recorder {
   }
 
   /** The model patch waits for its lint task: a first row, or the same row with the next round's patch and task. No task: a patch without a Rust file kept for posting again. */
-  linting(c: CifixCandidate, patch: string, files: string[], task: number | null, lintState: "pending" | "requeued", round: number, session: string | null): void {
+  linting(c: CifixCandidate, patch: string, files: string[], task: number | null, lintState: "pending" | "requeued", round: number, session: string | null, servingMetadata: string | null = null): void {
     if (c.lint) {
-      this.db.prepare("UPDATE ci_fixes SET patch = ?, files = ?, lint_task = ?, lint_round = ?, lint_state = ?, session = ? WHERE rowid = ?").run(patch, JSON.stringify(files), task, round, lintState, session, c.lint.rowid);
+      this.db.prepare("UPDATE ci_fixes SET patch = ?, files = ?, lint_task = ?, lint_round = ?, lint_state = ?, session = ?, serving_metadata = ? WHERE rowid = ?").run(patch, JSON.stringify(files), task, round, lintState, session, servingMetadata, c.lint.rowid);
       return;
     }
-    this.db.prepare("INSERT INTO ci_fixes (repo, number, head, to_head, kind, state, reason, files, attempt, created_at, patch, lint_task, lint_round, lint_state, session) VALUES (?, ?, ?, NULL, 'code', 'linting', NULL, ?, ?, ?, ?, ?, ?, ?, ?)")
-      .run(c.repo, c.number, c.head, JSON.stringify(files), c.attempt, this.at(), patch, task, round, lintState, session);
+    this.db.prepare("INSERT INTO ci_fixes (repo, number, head, to_head, kind, state, reason, files, attempt, created_at, patch, lint_task, lint_round, lint_state, session, serving_metadata) VALUES (?, ?, ?, NULL, 'code', 'linting', NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(c.repo, c.number, c.head, JSON.stringify(files), c.attempt, this.at(), patch, task, round, lintState, session, servingMetadata);
   }
 
   /** Stored patches whose Plan no longer lists the push (head moved, a Hold or Close answer, approval revoked) are dropped. */
@@ -424,6 +425,7 @@ async function runCifixWith(db: DatabaseSync, params: CifixParams, log: (line: s
   /** Applies a validated patch to the PR head: pushed to the branch, or posted as a comment where the branch is closed to us. */
   const deliver = async (c: CifixCandidate, kind: "format" | "code", pr: PrNode, v: Fix, checkName: string, check?: (patch: string) => Promise<string | null>, shown: CifixPr["files"] = [], folded: string | null = null, ses: SessionAsk = {}): Promise<void> => {
     const ref = refOf(c);
+    const deliveredNote = storedNote(codeNote, folded !== null ? c.lint?.servingMetadata : null);
     const fail = (state: "failed" | "refused" | "rejected", raw: string) => {
       const reason = scrubReason(raw, d.root);
       rec.set(c, kind, state, reason, { files: v.files });
@@ -503,7 +505,7 @@ async function runCifixWith(db: DatabaseSync, params: CifixParams, log: (line: s
     }
     if (!canPush) {
       const shownPatch = folded ?? v.patch;
-      const cm = await ghAskComment(gw, d.exec, "cifix-comment", g, codeNote, askText(checkName, shownPatch), { run: runId, head: c.head });
+      const cm = await ghAskComment(gw, d.exec, "cifix-comment", g, deliveredNote, askText(checkName, shownPatch), { run: runId, head: c.head });
       if (cm.code !== 0) {
         // Not sent: nothing reached GitHub, so the step tries again after a backoff. Otherwise GitHub may have posted it.
         const reason = `the comment ${cm.sent === false ? "was not sent" : "failed"}: ${scrubReason(oneLine(cm.stderr), d.root)}`;
@@ -545,7 +547,7 @@ async function runCifixWith(db: DatabaseSync, params: CifixParams, log: (line: s
     rec.set(c, kind, "pushed", null, { files: v.files, toHead: commit });
     summary.pushed.push(ref);
     log(`  ${ref}: pushed ${short(commit)} on ${short(head)}: ${v.files.join(", ")}`);
-    const cm = await ghComment(gw, g, d.exec, "cifix-comment", { repo, number: c.number, pr: true }, kind === "format" ? { by: "fixed" } : codeNote, commentText(v.files), { run: runId });
+    const cm = await ghComment(gw, g, d.exec, "cifix-comment", { repo, number: c.number, pr: true }, kind === "format" ? { by: "fixed" } : deliveredNote, commentText(v.files), { run: runId });
     if (cm.code !== 0) log(`  ${ref}: comment failed: ${oneLine(cm.stderr)}`);
   };
 
@@ -634,7 +636,7 @@ async function runCifixWith(db: DatabaseSync, params: CifixParams, log: (line: s
     if (res.kind === "infra-failed") {
       const again = w.state === "requeued" ? null : await queueLintFor(db, { step: "cifix", repo, number: c.number, head: c.head, base: pr.baseRefOid ?? null, patch: w.patch });
       if (again === null) { fail("failed", `lint: ${res.reason}`); return; }
-      rec.linting(c, w.patch, w.files, again, "requeued", w.round, w.session);
+      rec.linting(c, w.patch, w.files, again, "requeued", w.round, w.session, w.servingMetadata ?? null);
       log(`  ${ref}: lint task failed (${res.reason}); queued again as task ${again}`);
       return;
     }

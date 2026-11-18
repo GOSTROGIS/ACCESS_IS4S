@@ -17,6 +17,7 @@ import { canSeeInternals } from "./staff.ts";
 import { needVisible } from "./visible.ts";
 import { slugOf } from "../../owners.ts";
 import { canSettle, canSettleCached } from "../../settlers.ts";
+import { servingFields } from "./serving.ts";
 
 const isOperator = (req: Req): boolean => req.user.role === "operator";
 
@@ -107,6 +108,7 @@ export function choicesView(db: DatabaseSync, repo: string, n: number): Decision
   const pick = row.pick.core && cores.some((c) => c.key === row.pick.core) ? { core: row.pick.core, reason: row.pick.reason ?? "" } : null;
   return {
     id: row.id, decisionId: d.id, pick, cores: cores.map(strip),
+    ...servingFields((db.prepare("SELECT serving_metadata FROM decision_choices WHERE id = ?").get(row.id) as { serving_metadata: unknown } | undefined)?.serving_metadata),
     ...(run && { run: { cardId: run.id, state: run.state as NonNullable<DecisionChoices["run"]>["state"], ...(run.error && { error: run.error }) } }),
     source: row.source, at: row.createdAt,
   };
@@ -123,8 +125,10 @@ export function conversationView(db: DatabaseSync, repo: string, n: number, who?
   const choices = choicesView(db, repo, n);
   if (!c) return { repo, number: n, exists: false, pending: false, startedBy: null, turns: [], includes, choices };
   const cards = db.prepare("SELECT * FROM conversation_cards WHERE repo = ? AND number = ? ORDER BY id").all(repo, n) as unknown as CardRow[];
+  const serving = new Map((db.prepare("SELECT id, serving_metadata FROM conversation_turns WHERE repo = ? AND number = ?").all(repo, n) as { id: number; serving_metadata: unknown }[]).map(row => [row.id, row.serving_metadata]));
   const turns: ConversationTurn[] = turnsOf(db, repo, n).map((t) => ({
     id: t.id, kind: t.kind, login: t.login, at: t.at, body: t.body,
+    ...servingFields(serving.get(t.id)),
     actions: cards.filter((x) => x.turn_id === t.id).map((x) => cardView(db, x, who)),
     notes: t.notes ? (JSON.parse(t.notes) as string[]) : [],
     ...(t.status && { status: t.status as ConversationTurn["status"] }),
@@ -184,7 +188,7 @@ export async function getConversation(db: DatabaseSync, req: Req): Promise<Conve
 /** A viewer's copy of a quiet pull request's conversation: who spoke and when stays; the text, cards, choices and their reasons go. */
 function veilConversation(v: ConversationView): ConversationView {
   const { progress: _p, ...rest } = v;
-  return { ...rest, turns: v.turns.map((t) => ({ id: t.id, kind: t.kind, login: t.login, at: t.at, body: "", actions: [], notes: [], ...(t.status && { status: t.status }) })), includes: [], choices: null };
+  return { ...rest, turns: v.turns.map((t) => ({ id: t.id, kind: t.kind, login: t.login, at: t.at, body: "", actions: [], notes: [], ...(t.serving && { serving: t.serving }), ...(t.status && { status: t.status }) })), includes: [], choices: null };
 }
 
 export async function postMessage(db: DatabaseSync, req: Req, deps?: StoreDeps): Promise<ConversationView> {

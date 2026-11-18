@@ -1,5 +1,6 @@
 // Rows of the security deep scan and their views for the API (web/src/api/types.ts).
 import type { DatabaseSync } from "node:sqlite";
+import { modelPolicy } from "../agents/codex/config.ts";
 import { dropSessions } from "../prepush/resume.ts";
 import { slugOf } from "../owners.ts";
 import { securityRepo } from "./rules.ts";
@@ -12,7 +13,7 @@ const HIDDEN = INTERNAL_FINDING_STATES.map((s) => `'${s}'`).join(", ");
 const now = (): string => new Date().toISOString();
 
 type ScanRow = {
-  id: number; repo: string; commit_sha: string | null; state: ScanState; cap_usd: number | null; cost_usd: number; estimate_usd: number | null;
+  id: number; repo: string; commit_sha: string | null; state: ScanState; cap_usd: number | null; cost_usd: number; estimate_usd: number | null; budget_mode: "usd" | "tokens";
   areas_total: number; areas_done: number; started_by: string; started_at: string; ended_at: string | null; error: string | null; job_id: number | null; threat_model: string | null;
 };
 
@@ -21,7 +22,8 @@ export const scanRow = (db: DatabaseSync, id: number): ScanRow | undefined => db
 export function toScan(db: DatabaseSync, r: ScanRow): ScanView {
   const n = (db.prepare(`SELECT COUNT(*) AS n FROM security_findings WHERE scan_id = ? AND state NOT IN (${HIDDEN})`).get(r.id) as { n: number }).n;
   return {
-    id: r.id, repo: r.repo, commit: r.commit_sha, state: r.state, capUsd: r.cap_usd, costUsd: r.cost_usd, estimateUsd: r.estimate_usd,
+    id: r.id, repo: r.repo, commit: r.commit_sha, state: r.state, capUsd: r.cap_usd, budgetMode: r.budget_mode ?? "usd",
+    costUsd: r.budget_mode === "tokens" ? null : r.cost_usd, estimateUsd: r.budget_mode === "tokens" ? null : r.estimate_usd,
     areasTotal: r.areas_total, areasDone: r.areas_done, findingCount: n, startedBy: r.started_by, startedAt: r.started_at, endedAt: r.ended_at, error: r.error,
   };
 }
@@ -129,7 +131,7 @@ export function overview(db: DatabaseSync, repo: string): SecurityOverview {
   reconcileFindings(db, repo);
   const scans = (db.prepare("SELECT * FROM security_scans WHERE repo = ? ORDER BY id DESC LIMIT 20").all(repo) as ScanRow[]).map((r) => toScan(db, r));
   const findings = (db.prepare(`SELECT * FROM security_findings WHERE repo = ? AND state NOT IN (${HIDDEN}) ORDER BY ${SEVERITY_ORDER}, number LIMIT 500`).all(repo) as FindingRow[]).map(summary);
-  return { scans, findings: withScanTests(db, findings) };
+  return { scans, findings: withScanTests(db, findings), budgetMode: modelPolicy(db).provider === "codex" ? "tokens" : "usd" };
 }
 
 export const findingRow = (db: DatabaseSync, repo: string, n: number): FindingRow | undefined =>
@@ -228,7 +230,7 @@ export function scanDetail(db: DatabaseSync, r: ScanRow): ScanDetail {
   const runningAreas = new Set(callRows.filter((c) => c.kind === "area" && c.ended_at === null && live).map((c) => c.area_idx));
   const areas = (db.prepare("SELECT idx, name, paths, risk, why, state, cost_usd FROM security_areas WHERE scan_id = ? ORDER BY idx").all(r.id) as
     { idx: number; name: string; paths: string; risk: number; why: string | null; state: string; cost_usd: number }[])
-    .map((a): ScanArea => ({ idx: a.idx, name: a.name, risk: a.risk, why: a.why, paths: parse<string[]>(a.paths, []), state: a.state === "done" || a.state === "failed" ? a.state : runningAreas.has(a.idx) ? "running" : "pending", costUsd: a.cost_usd }));
+    .map((a): ScanArea => ({ idx: a.idx, name: a.name, risk: a.risk, why: a.why, paths: parse<string[]>(a.paths, []), state: a.state === "done" || a.state === "failed" ? a.state : runningAreas.has(a.idx) ? "running" : "pending", costUsd: r.budget_mode === "tokens" ? null : a.cost_usd }));
   const findings = withScanTests(db, (db.prepare(`SELECT * FROM security_findings WHERE scan_id = ? AND state NOT IN (${HIDDEN}) ORDER BY ${SEVERITY_ORDER}, number`).all(r.id) as FindingRow[]).map(summary));
   return { scan: toScan(db, r), summary: model.summary ?? null, entryPoints: model.entryPoints ?? [], areas, calls, findings };
 }

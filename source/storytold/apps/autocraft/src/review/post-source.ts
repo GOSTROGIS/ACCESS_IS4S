@@ -4,8 +4,8 @@ import type { DatabaseSync } from "node:sqlite";
 import { CARRIED } from "./carry.ts";
 import { parsePublic, storedClaims, type PublicReview } from "./opus-parse.ts";
 
-type Row = { head_oid: string; at: string; model: string | null; mode: string | null; base_head: string | null; verdict: string; sure: number | null; public_review: string | null; claims: string | null };
-const COLS = "head_oid, at, model, mode, base_head, verdict, sure, public_review, claims";
+type Row = { head_oid: string; at: string; model: string | null; mode: string | null; base_head: string | null; verdict: string; sure: number | null; public_review: string | null; claims: string | null; serving_metadata: string | null };
+const COLS = "head_oid, at, model, mode, base_head, verdict, sure, public_review, claims, serving_metadata";
 const MAX_STEPS = 20;
 
 export type PostSource = {
@@ -18,6 +18,8 @@ export type PostSource = {
   hasPublic: boolean;
   claims: ReturnType<typeof storedClaims>;
   model: string | null;
+  /** Attribution of the exact source review, including when its text is carried. */
+  serving_metadata?: string;
   /** The head the text was written at. */
   reviewedAt: string;
   /** The head a carried review sits at (the fix-up's head); null when the review is not carried. */
@@ -51,5 +53,6 @@ export function postSource(db: DatabaseSync, repo: string, number: number, head:
     public: hasPublic ? parsePublic(safeJson(src.public_review!)) : { summary: "", points: [] },
     hasPublic, claims: storedClaims(safeJson(src.claims ?? "[]")),
     model: isCarried(src) ? null : src.model, reviewedAt: carried ? src.head_oid : o.head_oid, fixedIn: carried ? o.head_oid : null, at: o.at,
+    ...(src.serving_metadata !== null && { serving_metadata: src.serving_metadata }),
   };
 }

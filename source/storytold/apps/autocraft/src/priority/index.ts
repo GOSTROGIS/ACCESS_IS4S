@@ -33,7 +33,7 @@ function save(db: DatabaseSync, item: Due, v: Verdict): boolean {
   db.prepare(`INSERT INTO item_priority (repo, number, text_hash, impact, jev_impact, jev_p, haiku_impact, score, model, reason, at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT (repo, number) DO UPDATE SET text_hash = excluded.text_hash, impact = excluded.impact, jev_impact = excluded.jev_impact, jev_p = excluded.jev_p,
-      haiku_impact = excluded.haiku_impact, model = excluded.model, reason = excluded.reason, at = excluded.at`).run(item.repo, item.number, item.hash, s.impact, v.jev?.impact ?? null, v.jev?.p ?? null,
+      haiku_impact = excluded.haiku_impact, serving_metadata = NULL, model = excluded.model, reason = excluded.reason, at = excluded.at`).run(item.repo, item.number, item.hash, s.impact, v.jev?.impact ?? null, v.jev?.p ?? null,
     v.haiku?.impact ?? null, 0, s.model, reason, now());
   return true;
 }

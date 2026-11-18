@@ -79,7 +79,7 @@ async function scan(args: string[]): Promise<void> {
   const db = open();
   const login = requireSessionOperator(db, repo, opt.get("as"));
   const s = await run(() => startScanAs(db, repo, login, cap, FROM_SESSION));
-  console.log(`scan ${s.id} started on ${repo} (${s.state}, cap ${money(s.capUsd)})`);
+  console.log(`scan ${s.id} started on ${repo} (${s.state}, ${s.budgetMode === "tokens" ? "bounded tokens; USD unreported" : `cap ${money(s.capUsd)}`})`);
 }
 
 async function proceed(args: string[]): Promise<void> {
@@ -93,7 +93,7 @@ async function proceed(args: string[]): Promise<void> {
   const login = requireSessionOperator(db, repo, opt.get("as"));
   if (scanRow(db, id)?.repo !== repo) fail(`no scan ${id} in ${repo}`);
   const s = await run(() => continueScanAs(db, id, login, cap, FROM_SESSION));
-  console.log(`scan ${s.id} continues on ${repo} (${s.state}, cap ${money(s.capUsd)}, spent ${money(s.costUsd)})`);
+  console.log(`scan ${s.id} continues on ${repo} (${s.state}, ${s.budgetMode === "tokens" ? "bounded tokens; USD unreported" : `cap ${money(s.capUsd)}, spent ${money(s.costUsd)}`})`);
 }
 
 async function stop(args: string[]): Promise<void> {

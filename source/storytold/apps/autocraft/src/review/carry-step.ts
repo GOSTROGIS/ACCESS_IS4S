@@ -14,7 +14,7 @@ export function runCarry(db: DatabaseSync, repo: string, log: (line: string) => 
     const c = { repo, number: f.number, head_oid: action.head! };
     const k = carriedReview(db, c, stale);
     if (!k) continue;
-    saveOpus(db, runId, c, { mode: CARRIED, base: k.from, baseRef: k.baseRef, model: CARRIED, review: k.review, snap: { seen: k.seen, hash: k.hash } });
+    saveOpus(db, runId, c, { mode: CARRIED, base: k.from, baseRef: k.baseRef, model: CARRIED, review: k.review, servingMetadata: k.servingMetadata, snap: { seen: k.seen, hash: k.hash } });
     jobItem(db, repo, f.number, `carried review: ${k.review.reason}`, log);
     n++;
   }

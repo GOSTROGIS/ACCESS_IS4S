@@ -10,6 +10,10 @@ import { queueRound, readRound, requeueRound, type RoundRead } from "../build/ro
 import { CONFIDENTIAL_WAIT, confidentialReadyAt } from "../build/tasks.ts";
 import { CheckTool, applyCheck, refusal } from "../checktool/index.ts";
 import { runModelStep } from "../agents/step.ts";
+import { CodexBudgetError, providerBudgetMode } from "../agents/codex/budget.ts";
+import { retainedCodexSession } from "../agents/codex/session.ts";
+import { modelPolicy } from "../agents/codex/config.ts";
+import { reportedRunCost, SECURITY_BUDGET_PAUSE } from "./costs.ts";
 import { textStep } from "../agents/steps.ts";
 import { Git, exec as realExec, fixupDir, type Exec } from "../fixup/git.ts";
 import { whoAmI } from "../fixup/index.ts";
@@ -66,10 +70,18 @@ export function defaultFixDeps(db: DatabaseSync, scanId: number, io: { cancelled
     checkout: (repo, branch, sha) => checkoutForCommit(repo, branch, sha, io.log),
     who: (repo) => commitIdentity(db, repo, () => whoAmI(realExec)),
     ask: async (id, input, o) => {
+      let session = o.session;
+      if (modelPolicy(db).provider === "codex" && !session?.resume) {
+        const retained = retainedCodexSession(db, { repo: input.repo, number: input.number, promptId: id });
+        if (retained) {
+          session ??= {};
+          session.resume = { session: retained.session, message: "Continue the retained partial work under the new bounded budget. " + JSON.stringify(input) };
+        }
+      }
+      const resumed = session?.resume !== undefined;
       const before = (db.prepare("SELECT COALESCE(MAX(id), 0) AS n FROM agent_runs").get() as { n: number }).n;
-      const r = await runModelStep(db, textStep<typeof input>(id), input, { checkout: o.checkout, check: o.tool, ...(o.session && { session: o.session }), cancelled: io.cancelled, usage: { run: o.run, agent: o.agent, stage: "security", items: (ok) => (ok ? 1 : 0) } });
-      const spent = (db.prepare(`SELECT SUM(r.cost_usd) AS c FROM agent_runs r JOIN agent_run_items i ON i.run_id = r.id WHERE i.repo = ? AND i.number = ? AND r.id > ?`).get(input.repo, input.number, before) as { c: number | null }).c;
-      return { text: r.ok ? r.value : null, cost: spent ?? r.usage.cost, resumed: o.session?.resume !== undefined, ...(o.session?.kept && { kept: o.session.kept }) };
+      const r = await runModelStep(db, textStep<typeof input>(id), input, { checkout: o.checkout, check: o.tool, ...(session && { session }), cancelled: io.cancelled, usage: { run: o.run, agent: o.agent, stage: "security", items: (ok) => (ok ? 1 : 0) } });
+      return { text: r.ok ? r.value : null, cost: reportedRunCost(db, input.repo, input.number, before, r.usage.cost), resumed, ...(session?.kept && { kept: session.kept }) };
     },
   };
 }
@@ -112,6 +124,14 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
   const row = rawFinding(db, repo, n);
   if (!row || row.state !== "fixing") return `finding ${n}: not fixing`;
   const { log } = d;
+  const pause = (error: CodexBudgetError): string => {
+    const note = SECURITY_BUDGET_PAUSE + error.message;
+    advance(db, repo, n, ["fixing"], "new", { note: oneLine(note, 400), last_failure: oneLine(note, 400) });
+    log(`${repo} finding ${n}: ${note}`);
+    return `${repo} finding ${n}: ${note}`;
+  };
+  try { providerBudgetMode(db, "Security fix"); }
+  catch (error) { if (error instanceof CodexBudgetError) return pause(error); throw error; }
   // The model's checks and the round's builds run only in a confidential build environment: without one ready, the fix
   // waits before any model call, and advanceSecurityFixes queues the next job once one is.
   if (!roundRows(db, repo, n).some((r) => r.state === "building")) {
@@ -124,6 +144,8 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
   }
   // The model session of the last fix call, continued by the next round while the prompt cache is warm; its store is deleted when the job ends.
   const ledger = new SessionLedger();
+  let budgetPaused = false;
+  let inFlightSession: SessionAsk | undefined;
   try {
     const scan = scanRow(db, row.scan_id);
     const sha = scan?.commit_sha ?? "";
@@ -258,6 +280,7 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
       const started = new Date().toISOString();
       // A later round continues the earlier session within the window; `input` (with `previous`) is the new call it falls back to.
       const ses: SessionAsk = kept && previous && Date.now() - kept.at <= RESUME_WINDOW_MS ? { resume: { session: kept.session, message: resumeFixMessage(previous.failure) } } : {};
+      inFlightSession = ses;
       const tried = ses.resume !== undefined;
       let reply: Awaited<ReturnType<FixDeps["ask"]>>;
       try { reply = await d.ask(ASK_STEPS.fix, input, { checkout, tool, agent: `security-fix-${n}`, run, session: ses }); } finally { tool.close(); }
@@ -294,10 +317,21 @@ export async function runFix(db: DatabaseSync, repo: string, n: number, d: FixDe
     }
     return giveUp(db, repo, n, lastWhy, log);
   } catch (e) {
+    if (e instanceof CodexBudgetError) {
+      budgetPaused = true;
+      const retained = inFlightSession?.kept ?? inFlightSession?.resume?.session;
+      if (retained) {
+        const last = roundRows(db, repo, n).at(-1);
+        if (last) db.prepare("UPDATE security_fix_rounds SET session = ? WHERE repo = ? AND number = ? AND round = ?")
+          .run(storeSessions({ "": retained }, new Date()), repo, n, last.round);
+        ledger.stored({ "": retained });
+      }
+      return pause(e);
+    }
     giveUp(db, repo, n, `the fix failed: ${(e as Error).message}`, log);
     throw e;
   } finally {
-    ledger.release();
+    if (!budgetPaused) ledger.release();
   }
 }
 

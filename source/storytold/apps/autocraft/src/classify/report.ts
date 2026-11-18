@@ -3,9 +3,12 @@ import { readFileSync } from "node:fs";
 import type { DatabaseSync } from "node:sqlite";
 import { LABELS } from "./rules.ts";
 import { slugOf } from "../owners.ts";
+import { parseServingMetadata, mergeServingMetadata } from "../agents/provenance.ts";
+import { servingLabel } from "../../web/src/lib/serving.ts";
 
 export type Row = {
   repo: string; number: number; kind: "pr" | "issue"; title: string;
+  serving_metadata?: string | null;
   classifier: string; type_label: string; flags: string[]; reason: string; top: number | null;
 };
 
@@ -14,7 +17,7 @@ export const itemUrl = (r: { repo: string; number: number; kind: string }) =>
   `https://github.com/${slugOf(r.repo)}/${r.kind === "pr" ? "pull" : "issues"}/${r.number}`;
 
 export function loadRows(db: DatabaseSync, runId: string): Row[] {
-  const rows = db.prepare(`SELECT c.repo, c.number, i.kind, i.title, c.classifier, c.type_label, c.flags, c.reason, c.probs
+  const rows = db.prepare(`SELECT c.repo, c.number, i.kind, i.title, c.classifier, c.type_label, c.flags, c.reason, c.probs, c.serving_metadata
     FROM classifications c JOIN items i ON i.repo = c.repo AND i.number = c.number WHERE c.run_id = ?`).all(runId) as
     (Omit<Row, "flags" | "top"> & { flags: string | null; probs: string | null })[];
   return rows.map(({ flags, probs, ...r }) => ({
@@ -70,6 +73,14 @@ export const bandIndex = (p: number): number => BANDS.findIndex((b) => p >= b.lo
 
 export const band = (p: number | null) => (p === null ? "<0.7" : p >= 0.9 ? "≥0.9" : p >= 0.7 ? "0.7–0.9" : "<0.7");
 
+/** Aggregate only durable contributors; a mixed historical/reported group has no single known serving label. */
+export function classifierLabel(rows: Pick<Row, "serving_metadata">[], legacy: string): string {
+  const values = rows.map(row => parseServingMetadata(row.serving_metadata));
+  if (values.every(value => value === undefined)) return legacy;
+  if (values.some(value => value === undefined)) return "Model unknown";
+  return servingLabel(values.reduce((a, b) => mergeServingMetadata(a, b), undefined), legacy);
+}
+
 export function compareReport(pairs: Pair[]): string {
   const agree = (ps: Pair[]) => ps.filter((p) => p.jev.type_label === p.haiku.type_label).length;
   const out: string[] = [];
@@ -110,5 +121,6 @@ export function compareReport(pairs: Pair[]): string {
     const j = (p: Pair) => p.jev.flags.includes(f), h = (p: Pair) => p.haiku.flags.includes(f);
     return [f, frac(pairs.filter((p) => j(p) === h(p)).length, pairs.length), pairs.filter((p) => j(p) && h(p)).length, pairs.filter((p) => j(p) && !h(p)).length, pairs.filter((p) => !j(p) && h(p)).length];
   })));
-  return out.join("\n");
+  const labels = { Jev: classifierLabel(pairs.map(p => p.jev), "Jev"), Haiku: classifierLabel(pairs.map(p => p.haiku), "Haiku") };
+  return out.join("\n").replace(/\b(Jev|Haiku)\b/g, key => labels[key as keyof typeof labels]);
 }

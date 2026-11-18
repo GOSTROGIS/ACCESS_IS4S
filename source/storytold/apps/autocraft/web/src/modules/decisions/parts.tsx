@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { servingLabel } from "../../lib/serving";
 import { ItemRef } from "../../ui/molecules/ItemRef";
 import {
   CaretRightIcon,
@@ -129,7 +130,7 @@ export function ClassifierLines({ d }: { d: Decision }) {
       <tbody>
         {d.classifications.map((c) => (
           <tr key={c.classifier} className="border-b border-line last:border-0">
-            <td className="w-16 py-1.5 align-top font-medium">{c.classifier}</td>
+            <td className="w-16 py-1.5 align-top font-medium">{servingLabel(c.serving, c.classifier)}</td>
             <td className="w-32 py-1.5 align-top text-ink/80">{c.typeLabel}</td>
             <td className={cn("w-20 py-1.5 align-top", WANT_TONE[c.want])}>want {c.want}</td>
             <td className="py-1.5 align-top text-ink/60">{c.reason}</td>

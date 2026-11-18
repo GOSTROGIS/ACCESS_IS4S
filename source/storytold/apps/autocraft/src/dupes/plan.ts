@@ -86,6 +86,7 @@ export function kindSetsOf(db: DatabaseSync, g: Group): KindSet[] {
 }
 
 export type StoredComparison = {
+  serving_metadata?: string | null;
   repo: string; key: string; kind: Kind; members: number[]; hash: string; kept: number; source: "model" | "closed" | "rule" | "single";
   model: string | null; reason: string | null; result: ComparisonResult | null; error: string | null; attempts: number; at: string;
   /** What the model wrote for the decision: 2 or 3 sentences, and one sentence of reason. Absent or null on rows stored earlier. */
@@ -122,8 +123,8 @@ export function saveComparison(db: DatabaseSync, c: StoredComparison, set?: Kind
       const z = sizeOf(m); if (z !== null) sizes[n] = z; if (m.head_oid) heads[n] = m.head_oid;
     }
   }
-  db.prepare(`INSERT OR REPLACE INTO dupe_comparisons (repo, key, kind, members, hash, kept, source, model, reason, result, error, attempts, at, summary, why, sizes, heads)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(c.repo, c.key, c.kind, JSON.stringify(c.members), c.hash, c.kept, c.source, c.model, c.reason, c.result ? JSON.stringify(c.result) : null, c.error, c.attempts, c.at, c.summary ?? null, c.why ?? null, c.kind === "pr" ? JSON.stringify(sizes) : null, c.kind === "pr" ? JSON.stringify(heads) : null);
+  db.prepare(`INSERT OR REPLACE INTO dupe_comparisons (repo, key, kind, members, hash, kept, source, model, reason, result, error, attempts, at, summary, why, sizes, heads, serving_metadata)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(c.repo, c.key, c.kind, JSON.stringify(c.members), c.hash, c.kept, c.source, c.model, c.reason, c.result ? JSON.stringify(c.result) : null, c.error, c.attempts, c.at, c.summary ?? null, c.why ?? null, c.kind === "pr" ? JSON.stringify(sizes) : null, c.kind === "pr" ? JSON.stringify(heads) : null, c.serving_metadata ?? null);
 }
 
 /** True when a PR member's diff size differs by more than 20% from the size stored at compare time. */

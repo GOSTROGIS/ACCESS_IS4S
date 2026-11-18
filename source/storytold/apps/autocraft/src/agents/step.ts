@@ -11,6 +11,8 @@ import { CLAUDE_PROMPTS, JEV_PROMPTS, JEV_USD_PER_INPUT_TOKEN, renderJev, type C
 import type { DupePair } from "../dupes/pair.ts";
 import type { Item } from "../classify/parse.ts";
 import type { Lint, LintProblem } from "../replylint.ts";
+import { CodexBudgetError, CodexUsageError } from "./codex/budget.ts";
+import { modelPolicy } from "./codex/config.ts";
 
 /** What a parser knows about the reply it reads. */
 export type ParseCtx = {
@@ -111,16 +113,44 @@ export async function runModelStep<I, V, C = void>(db: DatabaseSync, step: Claud
   const reg = step.provider === "jev" ? JEV_PROMPTS[step.id] : CLAUDE_PROMPTS[step.id];
   const attempts = step.attempts ?? reg.limits.attempts;
   const start = new Date().toISOString();
+  const providerAtStart = step.provider === "claude" ? modelPolicy(db).provider : null;
   const values: V[] = [];
   let usage = zero();
   let todo: I | undefined = input, rest: I | undefined = input;
   let fallback: V | null = null, error = "no answer", sawUsage = false;
+  let reportedFailure = false;
+  const save = (ok: boolean, partial = false): void => {
+    if (!opts.usage || (!partial && (opts.usage.skipWhen?.({ ok }) ?? false)) || (!sawUsage && !opts.usage.withoutUsage)) return;
+    const u = opts.usage;
+    const total = sizeOf(step, input);
+    const items = u.items ? u.items(ok, total, rest === undefined ? 0 : sizeOf(step, rest)) : total - (rest === undefined ? 0 : sizeOf(step, rest));
+    const model = u.model ?? reg.models[0]!;
+    const saved = step.provider === "jev" ? { ...usage, cost: usage.input * JEV_USD_PER_INPUT_TOKEN } : usage;
+    if (u.keepEarlier) db.prepare("UPDATE main.token_usage SET agent = agent || '@' || COALESCE(started_at, '') || ':' || rowid WHERE run_id = ? AND (agent = ? OR (substr(agent,1,length(?)+1)=?||'+' AND instr(agent,'@')=0))").run(u.run, u.agent, u.agent, u.agent);
+    saveUsage(db, u.run, u.agent, u.stage, model, items, saved, start, new Date().toISOString());
+  };
   for (let attempt = 0; attempt < attempts && todo !== undefined; attempt++) {
     if (opts.cancelled?.()) break;
     if (step.provider === "jev" && !jevAvailable(db)) { error = "jev unavailable"; break; }
     if (attempt > 0 && step.backoffMs) await sleep(step.backoffMs);
     opts.onAttempt?.(todo, attempt);
-    const r = await call(db, step, todo, opts);
+    let r: Reply | null;
+    try {
+      if (providerAtStart !== null && modelPolicy(db).provider !== providerAtStart) throw new CodexBudgetError("The model provider changed during this step; earlier usage and partial work were retained.");
+      r = await call(db, step, todo, opts);
+    }
+    catch (error) {
+      if (error instanceof CodexUsageError) {
+        if (error.usage) { usage = add(usage, error.usage); sawUsage = true; }
+        if (error instanceof CodexBudgetError) {
+          if (sawUsage) save(false, true);
+          // Report the whole step's observed spend while preserving its failure.
+          throw new CodexBudgetError(error.message, sawUsage ? usage : undefined);
+        }
+        reportedFailure ||= error.usage !== undefined;
+        r = null; // The registered retry policy remains in force for call failures.
+      } else throw error;
+    }
     if (!r) { error = "no answer"; continue; }
     usage = add(usage, r.usage);
     if ("text" in r) opts.onReply?.(r as LintedReply);
@@ -140,15 +170,7 @@ export async function runModelStep<I, V, C = void>(db: DatabaseSync, step: Claud
   }
   if (!values.length && fallback !== null) { values.push(fallback); rest = undefined; }
   const ok = values.length > 0;
-  if (opts.usage && !(opts.usage.skipWhen?.({ ok }) ?? false) && (sawUsage || opts.usage.withoutUsage)) {
-    const u = opts.usage;
-    const total = sizeOf(step, input);
-    const items = u.items ? u.items(ok, total, rest === undefined ? 0 : sizeOf(step, rest)) : total - (rest === undefined ? 0 : sizeOf(step, rest));
-    const model = u.model ?? reg.models[0]!;
-    const saved = step.provider === "jev" ? { ...usage, cost: usage.input * JEV_USD_PER_INPUT_TOKEN } : usage;
-    if (u.keepEarlier) db.prepare("UPDATE main.token_usage SET agent = agent || '@' || COALESCE(started_at, '') WHERE run_id = ? AND agent = ?").run(u.run, u.agent);
-    saveUsage(db, u.run, u.agent, u.stage, model, items, saved, start, new Date().toISOString());
-  }
+  save(ok, reportedFailure);
   const runId = opts.usage?.run;
   if (!ok) return { ok: false, error, usage, runId };
   return { ok: true, value: values[values.length - 1]!, values, ...(rest !== undefined && { rest }), usage, runId };

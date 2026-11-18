@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { connect } from "../db.ts";
-import { band, compareReport, itemUrl, loadReference, loadRows, pairUp, ref, type Pair } from "./report.ts";
+import { classifierLabel, band, compareReport, itemUrl, loadReference, loadRows, pairUp, ref, type Pair } from "./report.ts";
 import { markSpotCheck, pickDisagreements, runReferee } from "./referee.ts";
 import { latestRun, runExists, setCurrentRun } from "./settled.ts";
 import { loadItems, loadRefs, runHaiku, runJev } from "./run.ts";
@@ -109,7 +109,7 @@ type Usage = { model: string; agents: number; items: number; input: number; outp
 
 function costSection(db: DatabaseSync, runId: string, pairs: Pair[]): string {
   const rows = db.prepare(`SELECT model, count(*) AS agents, sum(items) AS items, sum(input_tokens) AS input, sum(output_tokens) AS output,
-    sum(cache_read_tokens) AS cache_read, sum(cache_write_tokens) AS cache_write, sum(cost_usd) AS cost, min(started_at) AS first, max(ended_at) AS last,
+    sum(cache_read_tokens) AS cache_read, sum(cache_write_tokens) AS cache_write, CASE WHEN COUNT(cost_usd) < COUNT(*) THEN NULL ELSE SUM(cost_usd) END AS cost, min(started_at) AS first, max(ended_at) AS last,
     sum((julianday(ended_at) - julianday(started_at)) * 86400) AS busy FROM token_usage WHERE run_id = ? GROUP BY model`).all(runId) as Usage[];
   const n = pairs.length;
   const head = ["Model", "Calls", "Items", "Input", "Output", "Cache read", "Cache write", "USD", "Wall time", "Summed call time", "Per 100 items (in / out / USD)"];
@@ -119,25 +119,26 @@ function costSection(db: DatabaseSync, runId: string, pairs: Pair[]): string {
     return [r.model, r.agents, r.items, r.input, r.output, r.cache_read, r.cache_write, r.cost === null ? "-" : r.cost.toFixed(2),
       `${wall.toFixed(0)} s`, `${r.busy.toFixed(0)} s`, `${(r.input * per).toFixed(0)} / ${(r.output * per).toFixed(0)} / ${r.cost === null ? "-" : (r.cost * per).toFixed(2)}`];
   });
-  return `Items in the comparison: ${n}. Jev usage is the \`usage\` object it returns (input_tokens, output_tokens); its cost is the input tokens at TypeSafe's published price (output tokens are free). Wall time is first start to last end of that model's calls (calls run in parallel: Jev 8, Haiku 4, Sonnet 3).\n\n` +
+  return `Items in the comparison: ${n}. Jev usage is the \`usage\` object it returns (input_tokens, output_tokens); its cost is the input tokens at TypeSafe's published price (output tokens are free). Wall time is first start to last end of that model's calls (calls run at the configured provider capacity).\n\n` +
     `| ${head.join(" | ")} |\n|${head.map(() => "---").join("|")}|\n${body.map((r) => `| ${r.join(" | ")} |`).join("\n")}`;
 }
 
 function refereeSection(db: DatabaseSync, runId: string, pairs: Pair[]): { text: string; spot: string; stats: { n: number; jev: number; haiku: number; neither: number } } {
-  const sonnet = new Map((db.prepare(`SELECT repo, number, type_label, flags, reason FROM classifications WHERE classifier = 'sonnet' AND run_id = ?`).all(runId) as
-    { repo: string; number: number; type_label: string; flags: string; reason: string }[]).map((r) => [ref(r), r]));
+  const sonnet = new Map((db.prepare(`SELECT repo, number, type_label, flags, reason, serving_metadata FROM classifications WHERE classifier = 'sonnet' AND run_id = ?`).all(runId) as
+    { repo: string; number: number; type_label: string; flags: string; reason: string; serving_metadata: string | null }[]).map((r) => [ref(r), r]));
   const ps = pairs.filter((p) => sonnet.has(ref(p.r)));
   const side = (p: Pair) => { const v = sonnet.get(ref(p.r))!.type_label; return v === p.jev.type_label ? "jev" : v === p.haiku.type_label ? "haiku" : "neither"; };
   const stats = { n: ps.length, jev: ps.filter((p) => side(p) === "jev").length, haiku: ps.filter((p) => side(p) === "haiku").length, neither: ps.filter((p) => side(p) === "neither").length };
   const by = (k: string) => ps.filter((p) => p.r.kind === k);
+  const labels = { Sonnet: classifierLabel([...sonnet.values()], "Sonnet"), Jev: classifierLabel(pairs.map(p => p.jev), "Jev"), Haiku: classifierLabel(pairs.map(p => p.haiku), "Haiku") };
   const text = ps.length === 0 ? "No refereed items." : `Sonnet judged ${stats.n} disagreements, without seeing either answer.\n\n| Group | Items | Sonnet sides with Jev | with Haiku | with neither |\n|---|---|---|---|---|\n` +
     [["all", ps], ["PRs", by("pr")], ["issues", by("issue")]].map(([name, g]) => { const x = g as Pair[]; return `| ${name} | ${x.length} | ${x.filter((p) => side(p) === "jev").length} | ${x.filter((p) => side(p) === "haiku").length} | ${x.filter((p) => side(p) === "neither").length} |`; }).join("\n");
   const spot = ps.filter((p) => sonnet.get(ref(p.r))!.flags.includes("spot-check")).map((p, i) => {
     const s = sonnet.get(ref(p.r))!;
     const pj = p.jev.top === null ? "" : ` (${p.jev.top.toFixed(2)})`;
-    return `${i + 1}. [${ref(p.r)}](${itemUrl(p.r)}) ${p.r.title}\n   - Jev: ${p.jev.type_label}${pj}; Haiku: ${p.haiku.type_label}; reference: ${p.ref ?? "none"}\n   - Referee: ${s.type_label} (sides with ${side(p)}): ${s.reason}`;
+    return `${i + 1}. [${ref(p.r)}](${itemUrl(p.r)}) ${p.r.title}\n   - ${classifierLabel([p.jev], "Jev")}: ${p.jev.type_label}${pj}; ${classifierLabel([p.haiku], "Haiku")}: ${p.haiku.type_label}; reference: ${p.ref ?? "none"}\n   - ${classifierLabel([s], "Sonnet")} referee: ${s.type_label} (sides with ${side(p)}): ${s.reason}`;
   }).join("\n");
-  return { text, spot, stats };
+  return { text: text.replace(/\b(Sonnet|Jev|Haiku)\b/g, key => labels[key as keyof typeof labels]), spot, stats };
 }
 
 function compare(args: string[]): void {
@@ -149,7 +150,7 @@ function compare(args: string[]): void {
   const conf = pairs.filter((p) => p.ref && band(p.jev.top) === "≥0.9");
   const confOk = conf.filter((p) => p.jev.type_label === p.ref).length;
   const rule = `Rule inputs: Jev on confident items (top probability ≥0.9) with a reference: ${confOk}/${conf.length} = ${conf.length ? ((100 * confOk) / conf.length).toFixed(1) : "-"}% (needs ≥90%). ` +
-    `In ${r.stats.n} refereed disagreements Jev was wrong ${r.stats.n - r.stats.jev} times and Haiku ${r.stats.n - r.stats.haiku} times.`;
+    `In ${r.stats.n} refereed disagreements Jev was wrong ${r.stats.n - r.stats.jev} times and ${classifierLabel(pairs.map(p => p.haiku), "Haiku")} ${r.stats.n - r.stats.haiku} times.`;
   const report = [`# Classification pilot ${runId}`, "", compareReport(pairs), "", "## Referee", "", r.text, "", "## Spot-check items", "", r.spot, "", "## Cost", "", costSection(db, runId, pairs), "", "## Rule", "", rule, ""].join("\n");
   if (f.out) writeFileSync(f.out, report);
   else console.log(report);

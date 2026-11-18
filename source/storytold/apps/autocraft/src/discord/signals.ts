@@ -4,6 +4,8 @@
 // recorded prompt and reply are deleted when the call ends, and an edit asks again. A deleted message takes its row, and
 // so its flag, with it (store.ts). Display only: nothing in the pipeline reads the flag.
 import type { DatabaseSync } from "node:sqlite";
+import { providerBudgetMode } from "../agents/codex/budget.ts";
+import { dailyReportedUsd } from "./budget.ts";
 import { jevAvailable } from "../agents/jev.ts";
 import { runModelStep, type ClaudeStep, type JevStep } from "../agents/step.ts";
 import { JEV_PROMPTS } from "../prompts/index.ts";
@@ -61,9 +63,8 @@ export function signalCapUsd(db: DatabaseSync): number {
 }
 
 /** What today's (UTC) signal calls cost, from the agent runs. */
-export function signalSpentUsd(db: DatabaseSync, now: number): number {
-  const day = new Date(now).toISOString().slice(0, 10);
-  return Number((db.prepare("SELECT COALESCE(SUM(cost_usd), 0) AS c FROM agent_runs WHERE step = 'discord-signal' AND started_at >= ?").get(day) as { c: number }).c);
+export function signalSpentUsd(db: DatabaseSync, now: number): number | null {
+  return dailyReportedUsd(db, "discord-signal", now);
 }
 
 /** The prompt and reply of a signal call hold the message. Rows of finished calls are removed; `all` (at startup, when no call can be running) removes every row. */
@@ -156,14 +157,18 @@ export class Signals {
     const { db, log } = this.#d;
     const judge = this.#d.judge ?? modelJudge;
     try {
-      // The daily cap comes first: a spent cap (or a cap of 0) makes no Jev or model call.
-      if (signalSpentUsd(db, (this.#d.now ?? Date.now)()) >= signalCapUsd(db)) return null;
-      if (jevAvailable(db)) {
+      const now = (this.#d.now ?? Date.now)(), cap = signalCapUsd(db);
+      // Jev remains dollar-priced even when the Claude fallback is replaced by Codex.
+      const priced = dailyReportedUsd(db, "discord-signal", now, true);
+      if (jevAvailable(db) && priced !== null && priced < cap) {
         const p = await judge.jev(db, a);
         const band = p === null ? "unsure" : signalBand(p);
         if (band === "yes") return true;
         if (band === "no") return false;
       }
+      const mode = providerBudgetMode(db, "Discord signals");
+      const spent = signalSpentUsd(db, now);
+      if (mode === "usd" && (spent === null || spent >= cap)) return null;
       return await judge.haiku(db, a);
     } catch (e) {
       log(`discord: signal model call failed: ${(e as Error).message.slice(0, 200)}`);

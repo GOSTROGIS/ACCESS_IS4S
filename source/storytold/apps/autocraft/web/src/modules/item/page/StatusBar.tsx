@@ -43,7 +43,7 @@ function Headline({ d }: { d: ItemPageData }) {
   const starting = useStarting(d.repo, d.number);
   const { data: conv } = useQuery(`conversation:${d.repo}#${d.number}`, (a) => a.conversations.get(d.repo, d.number), { pollMs: (x) => (x?.pending ? 4000 : false) });
   const replying = !!conv?.pending && d.bar.headline.tone !== "running";
-  const h = replying ? { ...d.bar.headline, tone: "running" as const, text: "Opus is replying", model: "opus", startedAt: null, jobId: null, next: null } : d.bar.headline;
+  const h = replying ? { ...d.bar.headline, tone: "running" as const, text: "The assistant is replying", model: null, startedAt: null, jobId: null, next: null } : d.bar.headline;
   const real = h.tone === "running" || h.tone === "queued";
   // The optimistic line gives way once the server shows the work.
   useEffect(() => {

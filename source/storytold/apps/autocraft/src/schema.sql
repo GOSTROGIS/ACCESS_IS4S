@@ -58,6 +58,7 @@ CREATE INDEX IF NOT EXISTS comments_created ON comments(created_at);
 
 -- One row per classifier verdict; several classifiers may judge the same item.
 CREATE TABLE IF NOT EXISTS classifications (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   classifier TEXT NOT NULL,           -- 'haiku' | 'jev' | 'sonnet' | 'owner'
   run_id TEXT NOT NULL,
@@ -139,6 +140,7 @@ INSERT OR IGNORE INTO settings VALUES ('whitelist_min_merge_rate', '0.6');
 -- Decisions for people. The pipeline asks; only a signed-in operator answers, on the dashboard or through
 -- their own agent with an answering token (src/dash/mcp/) (spec: docs/dashboard-spec.md).
 CREATE TABLE IF NOT EXISTS decisions (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   id TEXT PRIMARY KEY,
   kind TEXT NOT NULL,                 -- scope | duplicate | close | merge | split | other
   repo TEXT,                          -- null only for a batch spanning repos
@@ -509,6 +511,7 @@ CREATE TABLE IF NOT EXISTS pr_checks (
 
 -- The code review: one Opus pass per PR head commit.
 CREATE TABLE IF NOT EXISTS opus_reviews (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   head_oid TEXT NOT NULL,
   run_id TEXT,
@@ -529,6 +532,7 @@ CREATE TABLE IF NOT EXISTS opus_reviews (
 -- Every Opus review ever stored, appended with each write of opus_reviews (which keeps only the latest per head).
 -- A take or take-fix with sure = 0 here keeps its head needing a person's Merge? answer even after a later review of the same head is sure.
 CREATE TABLE IF NOT EXISTS opus_review_history (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   head_oid TEXT NOT NULL,
   at TEXT NOT NULL,
@@ -540,6 +544,7 @@ CREATE INDEX IF NOT EXISTS opus_review_history_head ON opus_review_history(repo,
 -- What a review did with the fixes of an earlier take-fix that were never applied (a new head came first): kept in
 -- its fix list, explained in its reason, or unaddressed. One row per fix, replaced with the review of the head.
 CREATE TABLE IF NOT EXISTS opus_carried_fixes (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   head_oid TEXT NOT NULL,             -- the head the review was made at
   from_head TEXT NOT NULL,            -- the head of the take-fix that asked for the change
@@ -554,7 +559,7 @@ CREATE INDEX IF NOT EXISTS opus_carried_fixes_head ON opus_carried_fixes(repo, n
 -- the merge queue asks a person before merging it.
 DROP VIEW IF EXISTS final_reviews;
 CREATE VIEW final_reviews AS
-SELECT repo, number, head_oid, run_id, at, model, verdict, reason, fixes, risks, sure, mode, base_head, seen_at, disc_hash
+SELECT repo, number, head_oid, run_id, at, model, verdict, reason, fixes, risks, sure, mode, base_head, seen_at, disc_hash, serving_metadata
 FROM opus_reviews WHERE verdict IS NOT NULL;
 
 -- Merge attempts by the Integrate stage, one row per try at a PR head.
@@ -663,8 +668,13 @@ CREATE TABLE IF NOT EXISTS agent_runs (
   stage INTEGER NOT NULL,
   prompt_id TEXT NOT NULL,
   prompt_version TEXT NOT NULL,
-  provider TEXT NOT NULL,             -- claude | jev
+  provider TEXT NOT NULL,             -- claude | jev | codex
   model TEXT NOT NULL,
+  reasoning_effort TEXT,
+  provider_usage TEXT,                -- exact provider-reported token breakdown, without credentials or transcripts
+  token_budget INTEGER,
+  budget_scope TEXT,
+  session_state TEXT,                 -- private internal thread/store reference; excluded from the JSON API
   account_id TEXT,                    -- null for Jev
   items TEXT NOT NULL DEFAULT '[]',   -- JSON [{repo, number}], at most 50
   item_count INTEGER NOT NULL DEFAULT 0,
@@ -842,6 +852,7 @@ CREATE INDEX IF NOT EXISTS actions_item ON actions(repo, number);
 -- three count against the two tries per PR. superseded: a row whose reason no longer applies (kept for the record, ignored).
 -- source: NULL = the review's fix list, 'premerge' = the pre-merge review's fix list (one round per PR).
 CREATE TABLE IF NOT EXISTS fixups (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   from_head TEXT NOT NULL,            -- the reviewed head commit the fix was made on
   to_head TEXT,                       -- the pushed commit; NULL unless pushed
@@ -857,6 +868,7 @@ CREATE INDEX IF NOT EXISTS fixups_item ON fixups(repo, number, created_at);
 -- linting (a model patch is stored, patch/lint_task/lint_round/lint_state, and waits for its lint task) | failed | refused | rejected | cannot-push | push-denied | pushing (written before the push, to_head is the commit about to be pushed) |
 -- skipped (final: nothing to fix here, not a try) | capped (final: the PR's limit of 2 pushed fixes or 4 tries is used; not a try) | rerunning (rerun requested, written before the gh calls) | comment-failed (final: the patch comment failed) | comment-unsent (the comment never reached GitHub, not a try: the stored patch or formatter result is posted again after a backoff, src/core/rules.ts unsentAsk; a patch without a lint task is kept as a linting row with no lint_task) | superseded (a row whose reason no longer applies; ignored). Tries are the rows in formatting, pushing, pushed, failed, refused and rejected.
 CREATE TABLE IF NOT EXISTS ci_fixes (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   head TEXT NOT NULL,                 -- the head commit whose check failed
   to_head TEXT,                       -- the pushed commit; NULL unless pushed
@@ -873,6 +885,7 @@ CREATE INDEX IF NOT EXISTS ci_fixes_item ON ci_fixes(repo, number, head);
 -- One verification per PR head commit (Verify stage). kind: ci-enough | tests | regression.
 -- state: planned (tasks queued) | running | passed | failed | error (the plan was invalid, no task) | ci-enough | stale (the PR moved on) | unavailable (private or non-Rust repo: nothing to build, the Merge? decision says so).
 CREATE TABLE IF NOT EXISTS verifications (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   head_sha TEXT NOT NULL,
   base_sha TEXT,
@@ -901,6 +914,7 @@ CREATE TABLE IF NOT EXISTS screenshot_config (
 -- One screenshot run per PR head. state: planned | running | rendered | compared | error | stale | skipped.
 -- verdict: unchanged | as-claimed | unrelated | unclear | regression. reason: the planner's 25-word reason; plan: the validated script JSON.
 CREATE TABLE IF NOT EXISTS screenshot_runs (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL, head_sha TEXT NOT NULL, base_sha TEXT,
   state TEXT NOT NULL,
   reason TEXT, plan TEXT,
@@ -931,6 +945,7 @@ CREATE INDEX IF NOT EXISTS pr_builds_state ON pr_builds(state);
 -- the models run again only when it changes, while score is recomputed from the mirror on each pass.
 -- impact: the priority level, P0 (critical) to P4 (backlog). score: reach 0-99, the tie-breaker inside a level. model: jev (sure) | haiku | jev-unsure (no Haiku answer).
 CREATE TABLE IF NOT EXISTS item_priority (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   text_hash TEXT NOT NULL,
   impact TEXT NOT NULL,
@@ -976,6 +991,7 @@ CREATE TABLE IF NOT EXISTS duplicate_scans (
 -- one tried) | testing (head and base tasks queued) | passed (pushed and opened by the next collect) |
 -- pr-opened | skipped (triage: not a clear fix; retried only when the issue text changes) | failed.
 CREATE TABLE IF NOT EXISTS fix_attempts (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   main_sha TEXT NOT NULL,             -- default branch head the patch is made and tested on
   text_hash TEXT NOT NULL,            -- of the issue title and body when triaged
@@ -1012,6 +1028,7 @@ CREATE INDEX IF NOT EXISTS item_rank_score ON item_rank(score);
 -- Opus checks of the patches we write (src/patchcheck): one row per check, before a fix-up is pushed or a fix PR is opened.
 -- subject: the commit the patch applies to (the PR head for kind fixup, the default branch head for kind fixissue).
 CREATE TABLE IF NOT EXISTS patch_checks (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   kind TEXT NOT NULL,                 -- fixup | fixissue
   repo TEXT NOT NULL, number INTEGER NOT NULL,
@@ -1097,6 +1114,7 @@ INSERT OR IGNORE INTO stage_limits (step, per_day) VALUES ('review-post', 40);
 -- source: model | closed (a closed or merged member wins without a call) | rule (the
 -- model failed; canonical.ts decided) | single. result is the model's JSON per other member.
 CREATE TABLE IF NOT EXISTS dupe_comparisons (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL,
   key TEXT NOT NULL,                  -- kind:n1,n2,...
   kind TEXT NOT NULL,                 -- pr | issue
@@ -1211,6 +1229,7 @@ CREATE TABLE IF NOT EXISTS conversations (
 -- per conversation, and it has no seq until it is answered or failed. A system turn that arrives while a run answers is 'held'
 -- (no seq) and takes the next seq after the reply, so the prompt the run sent stays a prefix of the next one.
 CREATE TABLE IF NOT EXISTS conversation_turns (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   repo TEXT NOT NULL,
   number INTEGER NOT NULL,
@@ -1266,6 +1285,7 @@ CREATE TABLE IF NOT EXISTS conversation_includes (
 );
 -- Opus's drafts and pick for a decision's answer choices (core action plus extras). Only model output is stored; the core list is computed when read.
 CREATE TABLE IF NOT EXISTS decision_choices (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   id TEXT PRIMARY KEY,
   decision_id TEXT NOT NULL,
   repo TEXT NOT NULL,
@@ -1345,6 +1365,7 @@ CREATE TABLE IF NOT EXISTS ci_run_approvals (
 -- (a comment asked the contributor to merge or rebase), comment-failed (final: that comment failed after its request went out), comment-unsent (that comment never
 -- reached GitHub: asked again after a backoff, src/core/rules.ts unsentAsk), superseded (a skip or refusal under limits since replaced; neither held nor a try), pushing (written before the push, to_head is the merge commit about to be pushed). merged, pushing, failed, refused and rejected are tries; two per head.
 CREATE TABLE IF NOT EXISTS conflict_merges (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   from_head TEXT NOT NULL,            -- the PR head the base was merged into
   to_head TEXT,                       -- the pushed merge commit; NULL unless merged
@@ -1362,6 +1383,7 @@ CREATE INDEX IF NOT EXISTS conflict_merges_item ON conflict_merges(repo, number,
 -- findings: JSON array of the validated findings; error: why no review was stored (retry: ... is tried again after an hour).
 -- merge_sha: the commit the review read (the merge commit, else the PR's last head).
 CREATE TABLE IF NOT EXISTS postmerge_reviews (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   merge_sha TEXT NOT NULL,
   at TEXT NOT NULL,
@@ -1421,6 +1443,7 @@ CREATE INDEX IF NOT EXISTS main_ci_repo_time ON main_ci(repo, committed_at);
 --   green again, or an open PR already covers the failure: `#N` in the reason) | pr-opened (our fix PR: pr_number, pr_url) |
 --   fix-failed (no fix PR could be made: reason; a person takes over). One attempt per row.
 CREATE TABLE IF NOT EXISTS main_fixes (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL,
   head_sha TEXT NOT NULL,
   "check" TEXT NOT NULL,
@@ -1444,6 +1467,7 @@ CREATE TABLE IF NOT EXISTS main_fixes (
 -- findings: JSON PremergeFinding[] once a review is stored (NULL until then); error: why the last try stored none
 -- (retried after 1 h, the third failed try makes the head failed); searched: what the reviewer looked at.
 CREATE TABLE IF NOT EXISTS premerge_reviews (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   head_oid TEXT NOT NULL,
   at TEXT NOT NULL,
@@ -1693,6 +1717,7 @@ CREATE INDEX IF NOT EXISTS decision_comments_at ON decision_comments(at);
 -- source 'operator' in its fixups rows. state: queued | ended (a try was made, or it was cancelled). preapproval_id is set when the
 -- fix-up is the first part of a pre-approved merge.
 CREATE TABLE IF NOT EXISTS operator_fixups (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   repo TEXT NOT NULL, number INTEGER NOT NULL,
   from_head TEXT NOT NULL,
@@ -1725,6 +1750,7 @@ CREATE INDEX IF NOT EXISTS preapprovals_item ON preapprovals(repo, number, id);
 -- security_scans.state: modeling | scanning | verifying | done | stopped | capped | failed (modeling includes waiting in the job queue).
 CREATE TABLE IF NOT EXISTS security_scans (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  budget_mode TEXT NOT NULL DEFAULT 'usd',
   repo TEXT NOT NULL,
   commit_sha TEXT,
   state TEXT NOT NULL,
@@ -1758,6 +1784,8 @@ CREATE TABLE IF NOT EXISTS security_areas (
 -- state: new | dismissed | backlog | fixing | ready | landing | landed | advisory | awaiting-admin | published, and two internal
 -- states the API never lists: unverified (found, not yet checked), disproved (kept so a later scan does not raise it again) and duplicate (a repeat of the finding in duplicate_of).
 CREATE TABLE IF NOT EXISTS security_findings (
+  fix_serving_metadata TEXT,        -- accepted patch attribution, separate from discovery
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL,
   number INTEGER NOT NULL,            -- per-repo sequence; item key <repo>:finding:<n>
   scan_id INTEGER NOT NULL,
@@ -1821,6 +1849,7 @@ CREATE INDEX IF NOT EXISTS security_calls_scan ON security_calls(scan_id, id);
 -- The build rounds of a finding's private fix. A job queues a round's build tasks and ends; the job that follows reads the
 -- result. state: building | failed | passed. session: the kept model session (JSON), while the round is building.
 CREATE TABLE IF NOT EXISTS security_fix_rounds (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL, round INTEGER NOT NULL,
   patch TEXT NOT NULL,                -- the validated patch
   test_patch TEXT NOT NULL,
@@ -1857,6 +1886,7 @@ CREATE TABLE IF NOT EXISTS security_scan_tests (
 -- The history of those rounds, kept when a fix ends (ready or given up), without the patches. attempt is the finding's
 -- fix_attempts at that time, so one finding's rounds group by attempt.
 CREATE TABLE IF NOT EXISTS security_fix_log (
+  serving_metadata TEXT,            -- versioned actual serving calls; NULL retains legacy workflow labels
   repo TEXT NOT NULL, number INTEGER NOT NULL, attempt INTEGER NOT NULL, round INTEGER NOT NULL,
   state TEXT NOT NULL,                -- failed | passed | building (a round cut short)
   failure TEXT,

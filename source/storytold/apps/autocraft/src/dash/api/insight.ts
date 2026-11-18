@@ -9,6 +9,7 @@ import { HttpError } from "../server/util.ts";
 import type { Req } from "../types.ts";
 import { itemState } from "./shown.ts";
 import { excludeHidden, hiddenRepos } from "./visible.ts";
+import { servingFields, servingSummary } from "./serving.ts";
 
 const FLAGS = ["security", "needs decision"];
 
@@ -40,7 +41,7 @@ function runs(db: DatabaseSync, hidden: string[]): ClassifierRun[] {
 const agr = (): Agreement => ({ n: 0, agree: 0 });
 const tally = (g: Agreement, same: boolean) => { g.n++; if (same) g.agree++; };
 
-type PairRow = { repo: string; kind: string | null; ta: string; tb: string; pa: number | null; fa: string | null; fb: string | null };
+type PairRow = { repo: string; kind: string | null; ta: string; tb: string; pa: number | null; fa: string | null; fb: string | null; ma: unknown; mb: unknown };
 
 function flagsOf(s: string | null): string[] {
   try {
@@ -57,7 +58,7 @@ export async function classifiersReport(db: DatabaseSync, req: Req): Promise<Cla
   if (!run) return { runs: [], run: "", a: "", b: "", labels: [...LABELS], items: 0, overall: agr(), byKind: { pr: agr(), issue: agr() }, byLabel: [], byRepo: [], confusion: [], bands: [], flags: [] };
   const qa = req.query.get("a"), qb = req.query.get("b");
   const pair = run.pairs.find((p) => p.a === qa && p.b === qb) ?? run.pairs.find((p) => p.a === qb && p.b === qa) ?? run.pairs[0]!;
-  const rows = db.prepare(`SELECT x.repo, i.kind, x.type_label AS ta, y.type_label AS tb, json_extract(x.probs, '$.top') AS pa, x.flags AS fa, y.flags AS fb
+  const rows = db.prepare(`SELECT x.repo, i.kind, x.type_label AS ta, y.type_label AS tb, json_extract(x.probs, '$.top') AS pa, x.flags AS fa, y.flags AS fb, x.serving_metadata AS ma, y.serving_metadata AS mb
     FROM classifications x JOIN classifications y ON y.run_id = x.run_id AND y.repo = x.repo AND y.number = x.number AND y.classifier = :b
     LEFT JOIN items i ON i.repo = x.repo AND i.number = x.number
     WHERE x.run_id = :run AND x.classifier = :a${hide ? ` AND ${hide}` : ""}`).all({ run: run.id, a: pair.a, b: pair.b, ...hp }) as PairRow[];
@@ -96,8 +97,11 @@ export async function classifiersReport(db: DatabaseSync, req: Req): Promise<Cla
     return { band: BANDS[i]!.band, ...b, cumN, cumAgree };
   });
   const known = bandN.some((b) => b.n > 0);
+  const aServing = servingSummary(rows.map(row => row.ma)).serving;
+  const bServing = servingSummary(rows.map(row => row.mb)).serving;
   return {
     runs: all, run: run.id, a: pair.a, b: pair.b, labels: [...LABELS], items: rows.length, overall, byKind: kind,
+    ...(aServing && { aServing }), ...(bServing && { bServing }),
     byLabel: LABELS.map((label) => ({ label, ...(byLabel.get(label) ?? agr()) })),
     byRepo: [...byRepo].map(([repo, v]) => ({ repo, ...v })).sort((u, v) => v.n - u.n),
     confusion, bands: known ? bands : [], flags,
@@ -126,13 +130,13 @@ export async function disagreements(db: DatabaseSync, req: Req): Promise<Disagre
     LEFT JOIN items i ON i.repo = x.repo AND i.number = x.number WHERE ${where.join(" AND ")}`;
   const total = (db.prepare(`SELECT COUNT(*) AS n ${from}`).get(p) as { n: number }).n;
   const rows = db.prepare(`SELECT x.repo, x.number, i.kind, i.state, i.title, x.type_label AS la, y.type_label AS lb,
-      json_extract(x.probs, '$.top') AS pa, json_extract(y.probs, '$.top') AS pb ${from} ORDER BY x.repo, x.number LIMIT :lim OFFSET :off`).all({ ...p, lim, off }) as
-    { repo: string; number: number; kind: string | null; state: string | null; title: string | null; la: string; lb: string; pa: number | null; pb: number | null }[];
+      json_extract(x.probs, '$.top') AS pa, json_extract(y.probs, '$.top') AS pb, x.serving_metadata AS ma, y.serving_metadata AS mb ${from} ORDER BY x.repo, x.number LIMIT :lim OFFSET :off`).all({ ...p, lim, off }) as
+    { repo: string; number: number; kind: string | null; state: string | null; title: string | null; la: string; lb: string; pa: number | null; pb: number | null; ma: unknown; mb: unknown }[];
   return {
     total,
     rows: rows.map((r): Disagreement => ({
       repo: r.repo, number: r.number, kind: r.kind === "pr" ? "pr" : "issue", state: r.state ? itemState(r.state) : null, title: r.title ?? "",
-      a: { label: r.la, prob: r.pa }, b: { label: r.lb, prob: r.pb },
+      a: { label: r.la, prob: r.pa, ...servingFields(r.ma) }, b: { label: r.lb, prob: r.pb, ...servingFields(r.mb) },
     })),
   };
 }
@@ -140,7 +144,8 @@ export async function disagreements(db: DatabaseSync, req: Req): Promise<Disagre
 // ---- run and cost ------------------------------------------------------------
 
 const TOTALS = `COUNT(*) AS calls, COALESCE(SUM(items), 0) AS items, COALESCE(SUM(input_tokens), 0) AS input, COALESCE(SUM(output_tokens), 0) AS output,
-  COALESCE(SUM(cache_read_tokens), 0) AS cacheRead, COALESCE(SUM(cache_write_tokens), 0) AS cacheWrite, SUM(cost_usd) AS usd,
+  COALESCE(SUM(cache_read_tokens), 0) AS cacheRead, COALESCE(SUM(cache_write_tokens), 0) AS cacheWrite,
+  CASE WHEN COUNT(cost_usd)=COUNT(*) THEN SUM(cost_usd) ELSE NULL END AS usd,
   COALESCE(ROUND((julianday(MAX(ended_at)) - julianday(MIN(started_at))) * 86400), 0) AS wallSeconds`;
 
 export async function cost(db: DatabaseSync, req: Req): Promise<CostReport> {
@@ -163,7 +168,8 @@ export async function cost(db: DatabaseSync, req: Req): Promise<CostReport> {
     stages: q<CostReport["stages"][number]>(`SELECT COALESCE(stage, '') AS stage, COALESCE(model, '') AS model, ${TOTALS} FROM token_usage WHERE ${flt} GROUP BY stage, model ORDER BY stage, model`),
     repos: q<CostReport["repos"][number]>(`SELECT repo, ${TOTALS} FROM token_usage WHERE ${flt} AND repo IS NOT NULL GROUP BY repo ORDER BY COALESCE(SUM(COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0) + COALESCE(cache_read_tokens, 0) + COALESCE(cache_write_tokens, 0)), 0) DESC`),
     series: q<CostReport["series"][number]>(`SELECT substr(COALESCE(ended_at, started_at), 1, ${len}) AS bucket,
-        COALESCE(SUM(COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0) + COALESCE(cache_read_tokens, 0) + COALESCE(cache_write_tokens, 0)), 0) AS tokens, SUM(cost_usd) AS usd
+        COALESCE(SUM(COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0) + COALESCE(cache_read_tokens, 0) + COALESCE(cache_write_tokens, 0)), 0) AS tokens,
+        CASE WHEN COUNT(cost_usd)=COUNT(*) THEN SUM(cost_usd) ELSE NULL END AS usd
       FROM token_usage WHERE ${flt} AND COALESCE(ended_at, started_at) IS NOT NULL GROUP BY bucket ORDER BY bucket`),
     bucketSize,
   };

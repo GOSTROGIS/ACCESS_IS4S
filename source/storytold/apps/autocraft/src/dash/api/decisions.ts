@@ -4,6 +4,7 @@
 // it in a conversation (`<included>` blocks, src/conversations/store.ts).
 import { preparedEarlier, preparing, prepareStates, type PrepareState } from "../../decide/prepared.ts";
 import { prep } from "../../sql-cache.ts";
+import { servingFields } from "./serving.ts";
 import { priorityOf } from "../../priority/read.ts";
 import type { DatabaseSync } from "node:sqlite";
 import type {
@@ -114,17 +115,18 @@ const toOpinion = (o: OpinionRow): Opinion => ({
 
 type ClassRow = {
   classifier: string; at: string; type_label: string | null; want: string | null; reference: string | null;
-  reason: string | null; dup_of: number | null;
+  reason: string | null; dup_of: number | null; serving_metadata: unknown;
 };
 
 export function classificationsOf(db: DatabaseSync, repo: string, n: number): Classification[] {
   // Latest verdict per classifier, picked here: a correlated MAX(at) subquery makes SQLite walk the (classifier, at) index.
-  const all = prep(db, `SELECT classifier, at, type_label, want, reference, reason, dup_of FROM classifications
+  const all = prep(db, `SELECT classifier, at, type_label, want, reference, reason, dup_of, serving_metadata FROM classifications
     WHERE repo = ? AND number = ? ORDER BY classifier`).all(repo, n) as ClassRow[];
   const latest = new Map<string, string>();
   for (const r of all) if (!latest.has(r.classifier) || r.at > latest.get(r.classifier)!) latest.set(r.classifier, r.at);
   const rows = all.filter((r) => r.at === latest.get(r.classifier));
   return rows.map((r) => ({
+    ...servingFields(r.serving_metadata),
     classifier: r.classifier as Classification["classifier"], at: r.at,
     typeLabel: r.type_label as Classification["typeLabel"], want: (r.want ?? "unclear") as Classification["want"],
     reference: r.reference, reason: r.reason ?? "", dupOf: r.dup_of,
@@ -299,6 +301,7 @@ export function toDecision(db: DatabaseSync, d: DecisionRow, viewer: Viewer): De
   // Viewers get none of the model text of a decision about a quiet pull request.
   const veil = !viewer.staff && touchesQuiet(db, d);
   const out: Decision = {
+    ...servingFields((prep(db, "SELECT serving_metadata FROM decisions WHERE id = ?").get(d.id) as { serving_metadata: unknown } | undefined)?.serving_metadata),
     id: d.id, kind: d.kind as DecisionKind,
     repo: d.repo ?? refs[0]?.repo ?? "",
     number: d.number,

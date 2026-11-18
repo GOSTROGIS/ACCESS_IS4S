@@ -56,10 +56,10 @@ function UsageTable({ rows, name, subName }: { rows: Row[]; name: string; subNam
   );
 }
 
-/** Spend per hour or day as bars; USD when any run reported it, tokens otherwise. */
+/** USD bars require complete prices; token bars preserve unknown-price calls. */
 function SpendChart({ r }: { r: CostReport }) {
-  const useUsd = r.series.some((s) => s.usd !== null);
-  const vals = r.series.map((s) => (useUsd ? (s.usd ?? 0) : s.tokens));
+  const useUsd = r.series.every((s) => s.usd !== null);
+  const vals = r.series.map((s) => (useUsd ? s.usd! : s.tokens));
   const max = Math.max(...vals, Number.MIN_VALUE);
   const fmt = (v: number) => (useUsd ? usd(v) : `${num(v)} tokens`);
   const label = (b: string) => (r.bucketSize === "hour" ? `${b.slice(5, 10)} ${b.slice(11)}:00` : b);
@@ -79,7 +79,7 @@ function SpendChart({ r }: { r: CostReport }) {
       <div className="num mt-1 flex justify-between text-xs text-ink/50">
         <span>{label(r.series[0]!.bucket)}</span>
         <span>
-          {useUsd ? "USD" : "Tokens"} per {r.bucketSize}, peak {fmt(max)}
+          {useUsd ? "USD" : "Tokens (USD prices incomplete)"} per {r.bucketSize}, peak {fmt(max)}
         </span>
         <span>{label(r.series[r.series.length - 1]!.bucket)}</span>
       </div>
@@ -89,13 +89,13 @@ function SpendChart({ r }: { r: CostReport }) {
 
 type ModelTotals = { model: string; items: number; usd: number | null };
 
-// Totals per model across stages. USD stays null for a model that never reported a price.
+// A missing price in any stage makes that model's complete USD total unknown.
 function byModel(r: CostReport): ModelTotals[] {
   const m = new Map<string, ModelTotals>();
   for (const s of r.stages) {
-    const cur = m.get(s.model) ?? { model: s.model || "unknown model", items: 0, usd: null };
+    const cur = m.get(s.model) ?? { model: s.model || "unknown model", items: 0, usd: 0 };
     cur.items += s.items;
-    if (s.usd !== null) cur.usd = (cur.usd ?? 0) + s.usd;
+    cur.usd = s.usd === null || cur.usd === null ? null : cur.usd + s.usd;
     m.set(s.model, cur);
   }
   return [...m.values()].sort((a, b) => b.items - a.items);

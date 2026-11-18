@@ -26,7 +26,7 @@ const Page = ({ title, sub, children }: { title: string; sub?: string; children:
 );
 import { RunDetailBody } from "../agents/views";
 
-const usd = (v: number | null) => formatCost(v) ?? "–";
+const usd = (v: number | null) => v === null ? "USD unreported" : formatCost(v) ?? "$0.00";
 
 // ---- list ----------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ function ScanListRow({ s }: { s: ScanView }) {
         </span>
         <span className="num mt-1.5 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-ink/60">
           <span>{s.areasTotal ? `${s.areasDone} of ${s.areasTotal} areas` : "No areas yet"}</span>
-          <span>{usd(s.costUsd)} of {s.capUsd === null ? "no cap" : usd(s.capUsd)}</span>
+          <span>{s.budgetMode === "tokens" ? "Bounded tokens; USD unreported" : `${usd(s.costUsd)} of ${s.capUsd === null ? "no cap" : usd(s.capUsd)}`}</span>
           <span>{s.findingCount} {s.findingCount === 1 ? "finding" : "findings"}</span>
           <span>{s.startedBy} · <TimeAgo iso={s.startedAt} /></span>
         </span>
@@ -125,7 +125,7 @@ function ThreatModel({ d }: { d: ScanDetail }) {
               </span>
               <span className="flex flex-col items-end gap-1">
                 <Badge tone={st.tone}>{st.label}</Badge>
-                <span className="num text-xs text-ink/55">{usd(a.costUsd || null)}</span>
+                <span className="num text-xs text-ink/55">{usd(a.costUsd)}</span>
               </span>
             </li>
           );

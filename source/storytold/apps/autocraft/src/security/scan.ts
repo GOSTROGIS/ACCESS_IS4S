@@ -4,6 +4,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import type { DatabaseSync } from "node:sqlite";
+import { CodexBudgetError, providerBudgetMode } from "../agents/codex/budget.ts";
 import type { FindingVerification } from "../../web/src/api/types.ts";
 import { featureOn } from "../build/features.ts";
 import { audit } from "../dash/audit.ts";
@@ -157,6 +158,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
   if (!scan) throw new Error(`no scan ${scanId}`);
   if (!ACTIVE_STATES.includes(scan.state)) return `scan ${scanId} already ${scan.state}`;
   const { repo, cap_usd: cap } = scan;
+  const tokenBudget = scan.budget_mode === "tokens";
   const stopped = (): boolean => deps.cancelled() || scanRow(db, scanId)?.state === "stopped";
   const setState = (state: "modeling" | "scanning" | "verifying"): void => void db.prepare(`UPDATE security_scans SET state = ? WHERE id = ? AND state IN (${ACTIVE_STATES.map((s) => `'${s}'`).join(", ")})`).run(state, scanId);
   const progress = (line: string): void => { deps.progress?.(line); deps.log(line); };
@@ -167,21 +169,30 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
   let areaGuess = areaGuessUsd(0);
 
   /** One call with the cap and stop checks before it; the call's cost goes to the scan and, for area work, to the area. */
-  async function call<T>(kind: "model" | "area" | "verify" | "test", expected: number, meta: { area?: number; finding?: number; bill?: number }, run: () => Promise<Reply | null>, readReply: (text: string) => T | null): Promise<{ value: T; cost: number } | null> {
-    let spent = 0;
+  async function call<T>(kind: "model" | "area" | "verify" | "test", expected: number, meta: { area?: number; finding?: number; bill?: number }, run: () => Promise<Reply | null>, readReply: (text: string) => T | null): Promise<{ value: T; cost: number | null } | null> {
+    let spent: number | null = 0;
     for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
       if (stopped()) throw new Stopped();
-      if (cap !== null && cost() + expected > cap) throw new Capped();
+      if (providerBudgetMode(db, "Security scan") !== (tokenBudget ? "tokens" : "usd")) throw new CodexBudgetError("The configured provider's budget mode changed; restore this scan's original mode before continuing.");
+      if (!tokenBudget && cap !== null && cost() + expected > cap) throw new Capped();
       const id = Number(db.prepare("INSERT INTO security_calls (scan_id, kind, area_idx, finding_number, started_at) VALUES (?, ?, ?, ?, ?)").run(scanId, kind, meta.area ?? null, meta.finding ?? null, now()).lastInsertRowid);
       let reply: Reply | null = null;
-      try { reply = await run(); } catch (e) { deps.log(`${kind} call failed: ${(e as Error).message}`.slice(0, 300)); }
-      // A call that answered without a reported cost counts as the expected cost; one that failed counts what it reported.
-      const c = reply ? reply.cost ?? (reply.text !== null ? expected : 0) : 0;
+      try { reply = await run(); } catch (e) {
+        if (e instanceof CodexBudgetError) {
+          db.prepare("UPDATE security_calls SET ended_at = ?, ok = 0, cost_usd = NULL WHERE id = ?").run(now(), id);
+          throw e;
+        }
+        deps.log(`${kind} call failed: ${(e as Error).message}`.slice(0, 300));
+      }
+      // Legacy USD scans retain their expected-cost fallback. Token scans never impute a dollar price.
+      const c = tokenBudget ? null : reply ? reply.cost ?? (reply.text !== null ? expected : 0) : 0;
       const value = reply?.text != null ? readReply(reply.text) : null;
       db.prepare("UPDATE security_calls SET ended_at = ?, ok = ?, cost_usd = ?, agent_run_id = ? WHERE id = ?").run(now(), value === null ? 0 : 1, reply ? c : null, reply?.runId ?? null, id);
-      db.prepare("UPDATE security_scans SET cost_usd = cost_usd + ? WHERE id = ?").run(c, scanId);
-      if (meta.bill !== undefined) db.prepare("UPDATE security_areas SET cost_usd = cost_usd + ? WHERE scan_id = ? AND idx = ?").run(c, scanId, meta.bill);
-      spent += c;
+      if (c !== null) {
+        db.prepare("UPDATE security_scans SET cost_usd = cost_usd + ? WHERE id = ?").run(c, scanId);
+        if (meta.bill !== undefined) db.prepare("UPDATE security_areas SET cost_usd = cost_usd + ? WHERE scan_id = ? AND idx = ?").run(c, scanId, meta.bill);
+      }
+      spent = spent === null || c === null ? null : spent + c;
       if (value !== null) return { value, cost: spent };
     }
     return null;
@@ -194,6 +205,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
   };
 
   try {
+    if (providerBudgetMode(db, "Security scan") !== (tokenBudget ? "tokens" : "usd")) throw new CodexBudgetError("The configured provider's budget mode changed; restore this scan's original mode before continuing.");
     const co = await deps.checkout(repo, scan.commit_sha ?? undefined);
     if (!co) return fail("The repository could not be checked out for a read-only scan.");
     if (scan.commit_sha && co.sha !== scan.commit_sha) return fail(`The checkout is at ${co.sha.slice(0, 7)}, not the scan's pinned commit ${scan.commit_sha.slice(0, 7)}.`);
@@ -236,7 +248,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
       areas.forEach((a, i) => insArea.run(scanId, i, a.name, JSON.stringify(a.paths), JSON.stringify(a.entryPoints), a.risk, a.why));
       const total = sizes.map(areaGuessUsd).reduce((x, y) => x + y, 0);
       db.prepare("UPDATE security_scans SET areas_total = ?, estimate_usd = ?, threat_model = ? WHERE id = ?")
-        .run(areas.length, cost() + total, JSON.stringify({ summary: summaryText, entryPoints }), scanId);
+        .run(areas.length, tokenBudget ? null : cost() + total, JSON.stringify({ summary: summaryText, entryPoints }), scanId);
     }
     const guesses = sizes.map(areaGuessUsd);
 
@@ -266,7 +278,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
         db.prepare("UPDATE security_areas SET state = 'failed' WHERE scan_id = ? AND idx = ?").run(scanId, idx);
         deps.log(`area ${area.name}: no readable answer`);
       } else {
-        if (!hasFindings) areaCalls.push(found.cost);
+        if (!hasFindings && found.cost !== null) areaCalls.push(found.cost);
         const fresh: { number: number; c: Candidate }[] = [...leftover];
         for (const c of found.value) {
           const refs = realRefs(co.dir, c.refs);
@@ -291,7 +303,7 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
             db.prepare("UPDATE security_findings SET state = 'new', verification = ?, updated_at = ? WHERE repo = ? AND number = ?").run(JSON.stringify(v), now(), repo, f.number);
             continue;
           }
-          verifyCalls.push(checked.cost);
+          if (checked.cost !== null) verifyCalls.push(checked.cost);
           const verdict = checked.value;
           const v: FindingVerification = { kind: "reasoning", result: verdict.result, notes: verdict.notes, score: verdict.score, proposedTest: verdict.proposedTest };
           db.prepare("UPDATE security_findings SET state = ?, verification = ?, updated_at = ? WHERE repo = ? AND number = ?").run(survives(verdict) ? "new" : "disproved", JSON.stringify(v), now(), repo, f.number);
@@ -312,11 +324,15 @@ export async function runScan(db: DatabaseSync, scanId: number, deps: ScanDeps):
       db.prepare("UPDATE security_areas SET state = CASE state WHEN 'failed' THEN 'failed' ELSE 'done' END WHERE scan_id = ? AND idx = ?").run(scanId, idx);
       const left = guesses.slice(idx + 1);
       const avg = (db.prepare("SELECT AVG(cost_usd) AS a FROM security_areas WHERE scan_id = ? AND state != 'pending'").get(scanId) as { a: number }).a;
-      db.prepare("UPDATE security_scans SET areas_done = ?, estimate_usd = ? WHERE id = ?").run(idx + 1, cost() + left.length * avg, scanId);
+      db.prepare("UPDATE security_scans SET areas_done = ?, estimate_usd = ? WHERE id = ?").run(idx + 1, tokenBudget ? null : cost() + left.length * avg, scanId);
     }
     finishScan(db, scanId, "done");
-    return `${repo}: scan ${scanId} done: ${areas.length} areas, ${(db.prepare("SELECT COUNT(*) AS n FROM security_findings WHERE scan_id = ? AND state = 'new'").get(scanId) as { n: number }).n} findings, $${cost().toFixed(2)}`;
+    return `${repo}: scan ${scanId} done: ${areas.length} areas, ${(db.prepare("SELECT COUNT(*) AS n FROM security_findings WHERE scan_id = ? AND state = 'new'").get(scanId) as { n: number }).n} findings, ${tokenBudget ? "bounded tokens; USD unreported" : `$${cost().toFixed(2)}`}`;
   } catch (e) {
+    if (e instanceof CodexBudgetError) {
+      finishScan(db, scanId, "capped", e.message.slice(0, 500));
+      return `${repo}: scan ${scanId} paused at its token or pricing-policy budget: ${e.message}`;
+    }
     if (e instanceof Capped) {
       finishScan(db, scanId, "capped");
       return `${repo}: scan ${scanId} stopped at the spend cap ($${cost().toFixed(2)} of $${cap})`;

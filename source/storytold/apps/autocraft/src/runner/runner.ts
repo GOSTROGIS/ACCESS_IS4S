@@ -29,6 +29,8 @@ import { jobBlock } from "./concurrency.ts";
 import { queueRoom } from "../agents/call.ts";
 import { stepDeadlineMin, stepNoProgressMin } from "./deadlines.ts";
 import { envVar } from "../env.ts";
+import { CODEX_EXECUTION_READY, CODEX_UNAVAILABLE, codexExecutionUnavailable } from "../agents/codex/capabilities.ts";
+import { modelPolicy } from "../agents/codex/config.ts";
 
 export const logsDir = (): string => envVar("RUNNER_LOGS") ?? join(homedir(), ".cache/autocraft-logs/jobs");
 
@@ -362,9 +364,12 @@ export class Runner {
       if (this.running.size >= this.o.maxJobs) return;
       const step = steps.get(q.step);
       if (!step) {
+        if (!CODEX_EXECUTION_READY && modelPolicy(this.db).provider === "codex") continue;
         this.db.prepare("UPDATE jobs SET state = 'failed', ended_at = ?, error = ? WHERE id = ? AND state = 'queued'").run(now(), "This step does not exist in this build.", q.id);
         continue;
       }
+      try { if (codexExecutionUnavailable(this.db, modelsOf(step, JSON.parse(q.params) as Params))) continue; }
+      catch { if (!CODEX_EXECUTION_READY && modelPolicy(this.db).provider === "codex") continue; }
       if (this.blocked(steps, q.id)) continue;
       let claude = false;
       try { claude = usesClaude(modelsOf(step, JSON.parse(q.params) as Params)); } catch { /* params are checked when the job runs */ }
@@ -381,7 +386,12 @@ export class Runner {
 
   /** Why the queued job cannot start: a running job (of this runner or a command-line run) of the same step and repo, a full step, or a held mutex. */
   private blocked(steps: Awaited<ReturnType<typeof loadSteps>>, id: number): string | null {
-    const r = this.db.prepare("SELECT step, repo, json_extract(params, '$.number') AS number FROM jobs WHERE id = ?").get(id) as { step: string; repo: string | null; number: number | null } | undefined;
+    const r = this.db.prepare("SELECT step, repo, params, json_extract(params, '$.number') AS number FROM jobs WHERE id = ?").get(id) as { step: string; repo: string | null; number: number | null; params: string } | undefined;
+    if (r) {
+      if (!steps.has(r.step) && !CODEX_EXECUTION_READY && modelPolicy(this.db).provider === "codex") return CODEX_UNAVAILABLE;
+      try { const blocked = codexExecutionUnavailable(this.db, modelsOf(steps.get(r.step), JSON.parse(r.params) as Params)); if (blocked) return blocked; }
+      catch { if (!CODEX_EXECUTION_READY && modelPolicy(this.db).provider === "codex") return CODEX_UNAVAILABLE; }
+    }
     return r ? jobBlock(this.db, steps, r, { states: ["running"], mutex: true }) : "gone";
   }
 

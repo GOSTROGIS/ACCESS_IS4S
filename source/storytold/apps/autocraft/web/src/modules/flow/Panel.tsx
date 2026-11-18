@@ -30,9 +30,10 @@ function Section({ title, aside, children }: { title: string; aside?: ReactNode;
 }
 
 const spend = (jobs: Job[]): string | null => {
-  const usd = jobs.reduce((a, j) => a + (j.usage?.costUsd ?? 0), 0);
+  const hasUnknownPrice = jobs.some(j => j.usage && j.usage.costUsd === null);
+  const usd = hasUnknownPrice ? null : jobs.reduce((a, j) => a + (j.usage?.costUsd ?? 0), 0);
   const tokens = jobs.reduce((a, j) => a + (j.usage ? j.usage.input + j.usage.output : 0), 0);
-  return usd ? `$${usd.toFixed(2)}` : tokens ? `${num(tokens)} tokens` : null;
+  return usd ? `$${usd.toFixed(2)}` : tokens ? `${num(tokens)} tokens${hasUnknownPrice ? "; USD price unknown" : ""}` : hasUnknownPrice ? "USD price unknown" : null;
 };
 
 function StepBlock({ name, title }: { name: string; title: string }) {

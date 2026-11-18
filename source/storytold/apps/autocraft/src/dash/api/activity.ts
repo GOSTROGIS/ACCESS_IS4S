@@ -70,7 +70,7 @@ const decisionVisible = (c: Ctx, id: string): boolean => {
   const d = getDecision(c.db, id);
   return !d || !reposOf(d).some((r) => isHiddenRepo(c.hidden, r));
 };
-const DECISION_COLS = "d.id, d.repo, d.number, d.kind, d.question, d.asked_at, d.asked_by, d.answer, d.answered_at, d.answered_by, d.answer_note";
+const DECISION_COLS = "d.id, d.repo, d.number, d.kind, d.question, d.asked_at, d.asked_by, d.answer, d.answered_at, d.answered_by, d.answer_note, d.serving_metadata";
 type Dec = DecisionRow & At;
 
 export const SOURCES: Source[] = [
@@ -95,11 +95,11 @@ export const SOURCES: Source[] = [
   plain<Parameters<typeof checkEvent>[0] & At>("check", "model_checks", "started_at", "repo, number, id, run_id, step, head, command, crate, test_name, task_id, outcome, started_at", checkEvent),
   plain<Parameters<typeof taskEvent>[0] & At>("check", "build_tasks", "queued_at", "repo, number, id, job_id, step, head_sha, state, summary, queued_at", taskEvent, { where: `step NOT IN (${PRIVATE_STEPS_SQL})` }),
   plain<Parameters<typeof pushEvent>[0] & At>("check", "push_outcomes", "at", "repo, number, id, at, stage, action, to_oid, before_res, after_res, outcome", pushEvent),
-  plain<Parameters<typeof patchCheckEvent>[0] & At>("check", "patch_checks", "created_at", "repo, number, id, kind, subject, round, verdict, model, reasons, created_at", patchCheckEvent),
-  plain<OpusRow & At & { rowid: number }>("review", "opus_review_history", "at", "repo, number, rowid, head_oid, at, model, mode, verdict, sure, reason, risks, fixes, claims", (r) => opusEvent(r, `opus:${r.rowid}`)),
-  plain<Parameters<typeof premergeEvent>[0] & At>("review", "premerge_reviews", "at", "repo, number, head_oid, at, model, findings, error, searched", premergeEvent),
-  plain<Parameters<typeof postmergeEvent>[0] & At>("review", "postmerge_reviews", "at", "repo, number, merge_sha, at, model, findings, error", (r, c) => postmergeEvent(r, c.staff)),
-  plain<Parameters<typeof verifyEvent>[0] & At>("review", "verifications", "created_at", "repo, number, head_sha, kind, state, reason, summary, note, created_at, head_task_id", verifyEvent),
+  plain<Parameters<typeof patchCheckEvent>[0] & At>("check", "patch_checks", "created_at", "repo, number, id, kind, subject, round, verdict, model, reasons, created_at, serving_metadata", patchCheckEvent),
+  plain<OpusRow & At & { rowid: number }>("review", "opus_review_history", "at", "repo, number, rowid, head_oid, at, model, mode, verdict, sure, reason, risks, fixes, claims, serving_metadata", (r) => opusEvent(r, `opus:${r.rowid}`)),
+  plain<Parameters<typeof premergeEvent>[0] & At>("review", "premerge_reviews", "at", "repo, number, head_oid, at, model, findings, error, searched, serving_metadata", premergeEvent),
+  plain<Parameters<typeof postmergeEvent>[0] & At>("review", "postmerge_reviews", "at", "repo, number, merge_sha, at, model, findings, error, serving_metadata", (r, c) => postmergeEvent(r, c.staff)),
+  plain<Parameters<typeof verifyEvent>[0] & At>("review", "verifications", "created_at", "repo, number, head_sha, kind, state, reason, summary, note, created_at, head_task_id, serving_metadata", verifyEvent),
   {
     kinds: ["decision"], table: "decisions", time: "asked_at",
     pull: (c) => newest<Dec>(c, { cols: `${DECISION_COLS}, d.asked_at AS ${T}`, from: "decisions d", time: "d.asked_at", repoCol: "d.repo", where: "d.number IS NOT NULL", keep: (r) => decisionVisible(c, r.id), map: (r) => [decisionEvents(r)[0]!] }),
@@ -115,12 +115,12 @@ export const SOURCES: Source[] = [
       only: () => null, keep: (r) => decisionVisible(c, r.decision_id), map: (r) => [feedbackEvent(r.decision_id, { id: r.cid, login: r.login, at: r.at, len: r.len })],
     }),
   },
-  plain<Parameters<typeof fixupEvent>[0] & At>("step", "fixups", "created_at", "repo, number, rowid, from_head AS head, to_head, state, reason, files, attempt, created_at", fixupEvent),
-  plain<Parameters<typeof ciFixEvent>[0] & At>("step", "ci_fixes", "created_at", "repo, number, rowid, head, to_head, kind, state, reason, files, attempt, task_id, created_at", ciFixEvent),
-  plain<Parameters<typeof conflictEvent>[0] & At>("step", "conflict_merges", "created_at", "repo, number, rowid, from_head AS head, to_head, state, reason, files, attempt, created_at", conflictEvent),
+  plain<Parameters<typeof fixupEvent>[0] & At>("step", "fixups", "created_at", "repo, number, rowid, from_head AS head, to_head, state, reason, files, attempt, created_at, serving_metadata", fixupEvent),
+  plain<Parameters<typeof ciFixEvent>[0] & At>("step", "ci_fixes", "created_at", "repo, number, rowid, head, to_head, kind, state, reason, files, attempt, task_id, created_at, serving_metadata", ciFixEvent),
+  plain<Parameters<typeof conflictEvent>[0] & At>("step", "conflict_merges", "created_at", "repo, number, rowid, from_head AS head, to_head, state, reason, files, attempt, created_at, serving_metadata", conflictEvent),
   plain<Parameters<typeof mergeEvent>[0] & At>("step", "merges", "at", "repo, number, rowid, head_oid, at, path, method, outcome, reason", mergeEvent),
   plain<Parameters<typeof actionEvent>[0] & At>("step", "actions", "created_at", "repo, number, id, decision_id, kind, state, reason, created_at", actionEvent),
-  plain<Parameters<typeof turnEvent>[0] & At>("conversation", "conversation_turns", "at", "repo, number, id, kind, login, at, LENGTH(body) AS len, status", turnEvent, { only: () => ({ where: "kind IN ('opus', 'system')", args: [] }) }),
+  plain<Parameters<typeof turnEvent>[0] & At>("conversation", "conversation_turns", "at", "repo, number, id, kind, login, at, LENGTH(body) AS len, status, serving_metadata", turnEvent, { only: () => ({ where: "kind IN ('opus', 'system')", args: [] }) }),
   // Audit rows name their item in `target` (`repo#number`); other targets are not items.
   {
     kinds: ["write"], table: "audit", time: "at",

@@ -37,6 +37,9 @@ import type { DupePair } from "../dupes/pair.ts";
 import { flagsOf, jevVerdict, parseHaikuReply, parseRef, refOf, type Item, type JevAnswers, type Verdict } from "./parse.ts";
 import { envVar } from "../env.ts";
 import { wholeReplyJson } from "../core/reply-json.ts";
+import { modelPolicy } from "../agents/codex/config.ts";
+import { CodexBudgetError } from "../agents/codex/budget.ts";
+import { CODEX_EXECUTION_READY, CODEX_UNAVAILABLE } from "../agents/codex/capabilities.ts";
 
 export function loadRefs(file: string): { repo: string; number: number }[] {
   const out: { repo: string; number: number }[] = [];
@@ -157,6 +160,8 @@ const now = () => new Date().toISOString();
 
 export type Usage = {
   input: number; output: number; cacheRead: number; cacheWrite: number; cost: number | null;
+  /** Actual provider provenance, supplied by providers whose configured model differs from the logical prompt id. */
+  provider?: "codex"; model?: string; reasoningEffort?: string;
   /** Subagent use on other models (the explorer), one entry per model; the fields above count the called model only. */
   extra?: { model: string; usage: Usage }[];
 };
@@ -197,7 +202,7 @@ export function saveVerdict(db: DatabaseSync, classifier: string, runId: string,
 export function saveUsage(db: DatabaseSync, runId: string, agent: string, stage: string, model: string, items: number, u: Usage, start: string, end: string): void {
   db.prepare(`INSERT OR REPLACE INTO main.token_usage (run_id, agent, stage, model, items, input_tokens, output_tokens,
     cache_read_tokens, cache_write_tokens, started_at, ended_at, cost_usd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .run(runId, agent, stage, model, items, u.input, u.output, u.cacheRead, u.cacheWrite, start, end, u.cost);
+    .run(runId, agent, stage, u.model ?? model, items, u.input, u.output, u.cacheRead, u.cacheWrite, start, end, u.cost);
   // Subagent models get their own rows (same run and stage), so the Cost page splits by model and its totals stay whole.
   for (const e of u.extra ?? []) {
     db.prepare(`INSERT OR REPLACE INTO main.token_usage (run_id, agent, stage, model, items, input_tokens, output_tokens,
@@ -216,7 +221,7 @@ export function setRunner(r: Runner): () => void {
 
 const versions = new Map<string, string>();
 /** A short hash of the registered prompt text, so runs show which wording they used. */
-function promptVersion(id: ClaudePromptId | JevPromptId): string {
+export function promptVersion(id: ClaudePromptId | JevPromptId): string {
   let v = versions.get(id);
   if (!v) {
     const p = id in CLAUDE_PROMPTS ? claudePromptOf(id as ClaudePromptId).template : JSON.stringify(jevPromptOf(id as JevPromptId).request);
@@ -227,7 +232,7 @@ function promptVersion(id: ClaudePromptId | JevPromptId): string {
 }
 
 /** Item refs of a prompt's input: items carry repo and number, review PRs a `repo#number` ref. A run without refs is shown to operators only. */
-function refsOf(input: readonly unknown[]): ItemRef[] {
+export function refsOf(input: readonly unknown[]): ItemRef[] {
   const out: ItemRef[] = [];
   for (const x of input as { repo?: string; number?: number; ref?: string; a?: { number: number }; b?: { number: number }; items?: unknown[] }[]) {
     if (typeof x.repo === "string" && typeof x.number === "number") out.push({ repo: x.repo, number: x.number });
@@ -316,7 +321,7 @@ export function claudeCwd(): string {
 export type AskOptions = { check?: CheckTool; lint?: Lint; onProgress?: (line: string) => void; checkout?: string; reference?: string; maxWaitMs?: number; shared?: { name: string; dir: string }[]; session?: SessionAsk; itemTools?: { mounts: { host: string; path: string }[]; mcpServers: Record<string, unknown> } | null };
 
 /** The repo-docs directory for the item's repository, or undefined (no docs, or a checkout that is not one of ours). */
-async function docsOf(db: DatabaseSync, checkout: string): Promise<string | undefined> {
+export async function docsOf(db: DatabaseSync, checkout: string): Promise<string | undefined> {
   const repo = repoOfCheckout(checkout);
   if (!repo) return undefined;
   const branch = (db.prepare("SELECT default_branch FROM main.repos WHERE name = ?").get(repo) as { default_branch: string | null } | undefined)?.default_branch ?? "main";
@@ -325,6 +330,7 @@ async function docsOf(db: DatabaseSync, checkout: string): Promise<string | unde
 
 type WorkspaceFn = (db: DatabaseSync) => Promise<{ name: string; dir: string }[]>;
 let workspaceOf: WorkspaceFn = defaultWorkspace;
+export const providerWorkspace = (db: DatabaseSync): ReturnType<WorkspaceFn> => workspaceOf(db);
 /** Tests swap the workspace lookup; returns a function that restores the real one. */
 export function setWorkspace(f: WorkspaceFn): () => void {
   workspaceOf = f;
@@ -364,6 +370,12 @@ export function needsClippy(tool: Pick<CheckTool, "ran">, reply: string): boolea
 }
 
 export async function askClaude<K extends ClaudePromptId>(id: K, model: string, input: ClaudeInput[K], db: DatabaseSync, opts: AskOptions = {}): Promise<LintedReply | null> {
+  if (modelPolicy(db).provider === "codex") {
+    if (!CODEX_EXECUTION_READY) throw new CodexBudgetError(CODEX_UNAVAILABLE);
+    const { askCodex } = await import("../agents/codex/run.ts");
+    return askCodex(id, input, db, opts);
+  }
+  if (opts.session?.resume?.session.provider === "codex") throw new CodexBudgetError("The retained session uses Codex. Select Codex to resume its work; the original session was preserved.");
   const ses = opts.session;
   if (ses?.resume) {
     const r = await askOnce(id, model, input, db, opts);
@@ -626,6 +638,17 @@ export async function askJev(id: JevPromptId, item: Item | DupePair | { ref: str
 export const add = (a: Usage, b: Usage): Usage => {
   const extra = new Map<string, Usage>();
   for (const e of [...(a.extra ?? []), ...(b.extra ?? [])]) extra.set(e.model, add(extra.get(e.model) ?? { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null }, e.usage));
+  if (a.provider === "codex" || b.provider === "codex") {
+    const model = a.model ?? b.model;
+    if (a.model && b.model && a.model !== b.model) {
+      const { extra: _x, ...other } = b;
+      extra.set(b.model, add(extra.get(b.model) ?? { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null }, other));
+      return { ...a, cost: null, extra: [...extra].map(([model, usage]) => ({ model, usage })) };
+    }
+    return { input: a.input + b.input, output: a.output + b.output, cacheRead: a.cacheRead + b.cacheRead, cacheWrite: a.cacheWrite + b.cacheWrite,
+      cost: null, provider: "codex", model, reasoningEffort: a.reasoningEffort ?? b.reasoningEffort,
+      ...(extra.size > 0 && { extra: [...extra].map(([model, usage]) => ({ model, usage })) }) };
+  }
   return { input: a.input + b.input, output: a.output + b.output, cacheRead: a.cacheRead + b.cacheRead, cacheWrite: a.cacheWrite + b.cacheWrite, cost: a.cost === null && b.cost === null ? null : (a.cost ?? 0) + (b.cost ?? 0), ...(extra.size > 0 && { extra: [...extra].map(([model, usage]) => ({ model, usage })) }) };
 };
 

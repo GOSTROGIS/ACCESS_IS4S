@@ -1,6 +1,8 @@
 // The security deep scan's operator actions, shared by the dashboard API and the CLI. Callers check who may act; these
 // functions check the state of the scan or finding and throw a SecurityError that carries an HTTP-style status.
 import type { DatabaseSync } from "node:sqlite";
+import { CodexBudgetError, providerBudgetMode } from "../agents/codex/budget.ts";
+import { SECURITY_BUDGET_PAUSE } from "./costs.ts";
 import type { FindingAction, FindingState, FindingView, ScanView } from "../../web/src/api/types.ts";
 import { featureOn } from "../build/features.ts";
 import { audit } from "../dash/audit.ts";
@@ -31,12 +33,16 @@ const STEPS: Partial<Record<FindingAction, { from: FindingState[]; to: FindingSt
 };
 
 export async function startScanAs(db: DatabaseSync, repo: string, login: string, capUsd: unknown, extra: AuditExtra = {}): Promise<ScanView> {
+  let budgetMode: "usd" | "tokens";
+  try { budgetMode = providerBudgetMode(db, "Security scan"); }
+  catch (error) { if (error instanceof CodexBudgetError) throw new SecurityError(400, error.message); throw error; }
   const cap = capUsd === undefined || capUsd === null ? null : capUsd;
   if (cap !== null && (typeof cap !== "number" || !Number.isFinite(cap) || cap <= 0 || cap > CAP_MAX)) throw new SecurityError(400, `capUsd must be a dollar amount above 0 and up to ${CAP_MAX}, or null for no cap`);
+  if (budgetMode === "tokens" && cap !== null) throw new SecurityError(400, "Codex does not report dollar prices. Start with no dollar cap under its explicit bounded token policy.");
   reconcileScans(db, repo);
   if (activeScan(db, repo)) throw new SecurityError(409, `${repo} already has a scan running`);
   const at = new Date().toISOString();
-  const id = Number(db.prepare("INSERT INTO security_scans (repo, state, cap_usd, started_by, started_at) VALUES (?, 'modeling', ?, ?, ?)").run(repo, cap, login, at).lastInsertRowid);
+  const id = Number(db.prepare("INSERT INTO security_scans (repo, state, cap_usd, started_by, started_at, budget_mode) VALUES (?, 'modeling', ?, ?, ?, ?)").run(repo, cap, login, at, budgetMode).lastInsertRowid);
   try {
     const job = await enqueue(db, SECURITY_STEP, { repo, scan: id }, login);
     // The job is recorded under the scan's pseudo repo, so every job listing that leaves out hidden repos leaves it out for viewers.
@@ -60,8 +66,13 @@ export async function continueScanAs(db: DatabaseSync, id: number, login: string
   const scan = scanRow(db, id);
   if (!scan) throw new SecurityError(404, NOT_FOUND);
   if (scan.state !== "capped") throw new SecurityError(409, `only a scan that stopped at its cap can be continued (this one is ${scan.state})`);
+  let budgetMode: "usd" | "tokens";
+  try { budgetMode = providerBudgetMode(db, "Security scan"); }
+  catch (error) { if (error instanceof CodexBudgetError) throw new SecurityError(400, error.message); throw error; }
+  if (budgetMode !== (scan.budget_mode ?? "usd")) throw new SecurityError(400, "Continue this scan with its original budget mode, or start a new scan.");
   const cap = capUsd === undefined || capUsd === null ? null : capUsd;
   if (cap !== null && (typeof cap !== "number" || !Number.isFinite(cap) || cap <= 0 || cap > CAP_MAX)) throw new SecurityError(400, `capUsd must be a dollar amount above 0 and up to ${CAP_MAX}, or null for no cap`);
+  if (budgetMode === "tokens" && cap !== null) throw new SecurityError(400, "Codex does not report dollar prices. Continue with no dollar cap under its explicit bounded token policy.");
   if (cap !== null && cap <= scan.cost_usd) throw new SecurityError(400, `the new cap must be above the $${scan.cost_usd.toFixed(2)} the scan has spent`);
   reconcileScans(db, scan.repo);
   if (activeScan(db, scan.repo)) throw new SecurityError(409, `${scan.repo} already has a scan running`);
@@ -79,7 +90,7 @@ export async function continueScanAs(db: DatabaseSync, id: number, login: string
     if (e instanceof JobError) throw new SecurityError(e.status, e.message);
     throw e;
   }
-  audit(db, login, "security-scan-continue", `${scan.repo}:scan:${id}`, { repo: scan.repo, capUsd: cap, spentUsd: scan.cost_usd, ...extra });
+  audit(db, login, "security-scan-continue", `${scan.repo}:scan:${id}`, { repo: scan.repo, capUsd: cap, spentUsd: budgetMode === "tokens" ? null : scan.cost_usd, budgetMode, ...extra });
   return toScan(db, scanRow(db, id)!);
 }
 
@@ -190,11 +201,16 @@ async function startStep(db: DatabaseSync, repo: string, n: number, login: strin
     throw new SecurityError(409, "this finding is already being published");
   }
   if (action === "fix" && !row.verification) throw new SecurityError(409, "the finding has not been verified");
+  if (action === "fix") {
+    try { providerBudgetMode(db, "Security fix"); }
+    catch (error) { if (error instanceof CodexBudgetError) throw new SecurityError(400, error.message); throw error; }
+  }
   // Land after the advisory route starts over on the public fork: the advisory's private fork and its pull request are forgotten (ghsa_id stays).
   const reset: Record<string, null> = action === "land" && row.state === "awaiting-admin" ? { fork: null, fix_pr: null } : {};
-  if (action === "fix") clearRounds(db, repo, n);
+  const budgetResume = action === "fix" && row.last_failure?.startsWith(SECURITY_BUDGET_PAUSE);
+  if (action === "fix" && !budgetResume) clearRounds(db, repo, n);
   if (s.to && !advance(db, repo, n, s.from, s.to, { note: null, ...reset }, login)) throw new SecurityError(409, "the finding changed; reload and try again");
-  if (action === "fix") db.prepare("UPDATE security_findings SET fix_attempts = fix_attempts + 1, last_failure = NULL WHERE repo = ? AND number = ?").run(repo, n);
+  if (action === "fix") db.prepare("UPDATE security_findings SET fix_attempts = fix_attempts + ?, last_failure = NULL WHERE repo = ? AND number = ?").run(budgetResume ? 0 : 1, repo, n);
   try {
     const params: Record<string, string | number> = { repo, number: n, ...(action === "publish" && { cve: b.cve === true ? 1 : 0 }) };
     const job = await enqueue(db, s.step, params, login);

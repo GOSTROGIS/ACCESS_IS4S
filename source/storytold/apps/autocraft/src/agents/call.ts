@@ -2,7 +2,8 @@
 // in one transaction so two job processes cannot both take the last slot.
 import type { DatabaseSync } from "node:sqlite";
 import { boxAccounts } from "./box.ts";
-import { accountHasRoom, chooseAccount, freeSlots, RUN_SLOT_MS, type Choice } from "./accounts.ts";
+import { accountHasRoom, chooseAccount, claudeFreeSlots, freeSlots, RUN_SLOT_MS, type Choice } from "./accounts.ts";
+import { modelPolicy } from "./codex/config.ts";
 import { insertRun, onRunEnd, type RunStart } from "./runs.ts";
 import { scrubError } from "./text.ts";
 import { levelBand } from "../rank/level.ts";
@@ -13,6 +14,11 @@ let context: CallContext | null = null;
 export const setCallContext = (c: CallContext | null): void => void (context = c);
 /** The job this process runs, or null outside a job. */
 export const currentJobId = (): number | null => context?.jobId ?? null;
+/** The configured provider must honor the same job cancellation and pipeline stop as Claude. */
+export const checkCallActive = (): void => {
+  if (context?.cancelled()) throw new CancelledError("The model call was cancelled.");
+  if (context?.stopping?.()) throw new StoppedError("The pipeline was switched off.");
+};
 /** The job and step this process runs, or null outside a job. */
 export const currentJob = (): { id: number; step: string } | null => (context ? { id: context.jobId, step: context.step } : null);
 
@@ -85,7 +91,8 @@ function waiterOrder(db: DatabaseSync, nowMs: number): Waiter[] {
 
 /** How many more Claude calls a caller may start now: free slots, minus the fresh eligible waiters that rank ahead of a new waiter of the current call's class. */
 export function queueRoom(db: DatabaseSync, cls: 0 | 1 | 2 = currentClass()): number {
-  const ahead = (db.prepare("SELECT COUNT(*) AS n FROM model_waits WHERE provider = 'claude' AND eligible = 1 AND seen_at >= ? AND class >= ?").get(Date.now() - allocation.staleMs, cls) as { n: number }).n;
+  const provider = modelPolicy(db).provider;
+  const ahead = (db.prepare("SELECT COUNT(*) AS n FROM model_waits WHERE provider = ? AND eligible = 1 AND seen_at >= ? AND class >= ?").get(provider, Date.now() - allocation.staleMs, cls) as { n: number }).n;
   return Math.max(0, freeSlots(db) - Number(ahead));
 }
 
@@ -136,7 +143,7 @@ function pollClaude(db: DatabaseSync, w: Waiter, s: RunInput, minTokenMs?: numbe
       return { wait: c };
     }
     const rank = waiterOrder(db, nowMs).findIndex((x) => x.id === w.id);
-    if (rank < 0 || rank >= freeSlots(db, nowMs)) {
+    if (rank < 0 || rank >= claudeFreeSlots(db, nowMs)) {
       db.exec("COMMIT");
       return { wait: { wait: "other calls are ahead in the queue" } };
     }

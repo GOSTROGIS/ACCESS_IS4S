@@ -12,6 +12,7 @@ import { commentApprovalOf } from "../act/approval.ts";
 import { audit } from "../dash/audit.ts";
 import { exec, type Exec } from "../fixup/git.ts";
 import { createIssue, IssueError, type Writer } from "../github/write.ts";
+import { storedNote } from "../github/note.ts";
 import { pipelineLogin } from "../review/discussion.ts";
 import { ghFileExists, type FileChecker } from "../review/diff.ts";
 import { issueBody, issueTitle, refusal } from "./template.ts";
@@ -89,7 +90,7 @@ async function fileDefect(db: DatabaseSync, deps: FileDeps, w: Writer, g: Guarde
   onAttempt();
   let made: { number: number; url: string };
   try {
-    made = await createIssue(w, g, deps.exec, { repo, target: ref, title, body }, { by: "model", kind: "issue", model: d.model }, { finding: d.finding, severity: d.f.severity });
+    made = await createIssue(w, g, deps.exec, { repo, target: ref, title, body }, storedNote({ by: "model", kind: "issue", model: d.model }, d.serving_metadata), { finding: d.finding, severity: d.f.severity });
   } catch (e) {
     const reason = oneLine(e);
     if (!(e instanceof IssueError) || !e.clear) return { kind: "unknown", reason };
@@ -175,7 +176,8 @@ export async function fileFinding(db: DatabaseSync, ref: string, index: number, 
   const have = followupsOf(db, repo, number).find((x) => x.review_at === r.at && x.finding === index);
   if (have?.state === "filed" || have?.state === "filing") throw new Error(`finding ${index} of ${ref} is already ${have.state === "filed" ? `filed as issue ${have.issue_number}` : "being filed with an unknown outcome; check GitHub"}`);
   audit(db, OPERATOR, "postmerge-file-one", ref, { finding: index });
-  const d: PendingDefect = { repo, number, review_at: r.at, finding: index, f, model: r.model, attempts: have?.attempts ?? 0 };
+  const d: PendingDefect = { repo, number, review_at: r.at, finding: index, f, model: r.model, attempts: have?.attempts ?? 0,
+    ...(r.serving_metadata !== undefined && { serving_metadata: r.serving_metadata }) };
   const g = guardRepo(db, repo, "comment", CLI_BY);
   if ("refused" in g) throw new Error(g.refused);
   const o = await fileDefect(db, deps, { db, login: ACTOR }, g, d, log, () => {});

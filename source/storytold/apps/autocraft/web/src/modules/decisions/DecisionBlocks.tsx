@@ -9,6 +9,7 @@ import { FastToggle, HoldToggle } from "../queue/fastTrack";
 import { ClassifierLines, ClaimPill, Disclosure, Facts, RelatedList } from "./parts";
 import { Refs } from "./Refs";
 import { localActions, useLocal } from "./state";
+import { servingLabel } from "../../lib/serving";
 
 /** The chips under a decision's kind: priority, who claimed it, and the fast-track and hold toggles of its item. */
 export function DecisionChips({ d }: { d: Decision }) {
@@ -35,7 +36,7 @@ export function DecisionSummary({ d }: { d: Decision }) {
         <SparkleIcon className="text-[12px] text-accent-ink" />
         <span className="font-semibold text-ink/75">AI summary</span>
         <span>
-          · {d.summaryBy} · <TimeAgo iso={d.summaryAt} />
+          · {servingLabel(d.serving, d.summaryBy)} · <TimeAgo iso={d.summaryAt} />
         </span>
       </div>
       <p className="text-sm leading-[21px] text-ink/90">

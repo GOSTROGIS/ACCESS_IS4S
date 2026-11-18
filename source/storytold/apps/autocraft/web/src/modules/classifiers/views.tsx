@@ -7,9 +7,11 @@ import type { ViewProps } from "../../registry/types";
 import { cn } from "../../ui/cn";
 import { ItemRef } from "../../ui/molecules/ItemRef";
 import { day, num } from "../../lib/format";
+import { servingLabel } from "../../lib/serving";
 import { Block, RateBar, Select, Stat, Th, rate } from "../insight/parts";
 
 const PAGE = 50;
+const roleName = (key: string) => key === "haiku" ? "Model fallback" : key === "sonnet" ? "Referee" : key;
 const prob = (p: number | null) => (p === null ? "" : p.toFixed(2));
 
 function AgreementRows({ rows, name, onPick, picked }: { rows: ({ key: string } & Agreement)[]; name: string; onPick?: (k: string) => void; picked?: string }) {
@@ -44,7 +46,7 @@ function Confusion({ r }: { r: ClassifierReport }) {
       <thead>
         <tr>
           <Th>
-            {r.a} ↓ / {r.b} →
+            {servingLabel(r.aServing, r.a)} ↓ / {servingLabel(r.bServing, r.b)} →
           </Th>
           {r.labels.map((l) => (
             <Th key={l} right>
@@ -86,14 +88,14 @@ function Disagreements({ r, label, band, setFilter }: { r: ClassifierReport; lab
     >
       <div className="flex flex-wrap gap-x-4 gap-y-2 border-b border-line px-4 py-2">
         <Select label="Label" value={label} onChange={(v) => { setOffset(0); setFilter("label", v); }} options={[{ value: "", label: "any" }, ...r.labels.map((l) => ({ value: l, label: l }))]} />
-        <Select label={`${r.a} confidence`} value={band} onChange={(v) => { setOffset(0); setFilter("band", v); }} options={[{ value: "", label: "any" }, ...r.bands.map((b) => ({ value: b.band, label: b.band }))]} />
+        <Select label={`${servingLabel(r.aServing, r.a)} confidence`} value={band} onChange={(v) => { setOffset(0); setFilter("band", v); }} options={[{ value: "", label: "any" }, ...r.bands.map((b) => ({ value: b.band, label: b.band }))]} />
       </div>
       <table className="w-full text-sm">
         <thead>
           <tr>
             <Th>Item</Th>
-            <Th className="hidden sm:table-cell">{r.a}</Th>
-            <Th className="hidden sm:table-cell">{r.b}</Th>
+            <Th className="hidden sm:table-cell">{servingLabel(r.aServing, r.a)}</Th>
+            <Th className="hidden sm:table-cell">{servingLabel(r.bServing, r.b)}</Th>
           </tr>
         </thead>
         <tbody>
@@ -103,11 +105,11 @@ function Disagreements({ r, label, band, setFilter }: { r: ClassifierReport; lab
                 <ItemRef repo={d.repo} number={d.number} kind={d.kind} state={d.state} title={d.title} stretch />
                 {/* Phones: the two answers under the title instead of in their own columns. */}
                 <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-2 pl-6 text-xs sm:hidden">
-                  <dt className="text-ink/50">{r.a}</dt>
+                  <dt className="text-ink/50">{servingLabel(d.a.serving, r.a)}</dt>
                   <dd>
                     {d.a.label} <span className="num text-ink/50">{prob(d.a.prob)}</span>
                   </dd>
-                  <dt className="text-ink/50">{r.b}</dt>
+                  <dt className="text-ink/50">{servingLabel(d.b.serving, r.b)}</dt>
                   <dd>
                     {d.b.label} <span className="num text-ink/50">{prob(d.b.prob)}</span>
                   </dd>
@@ -115,9 +117,11 @@ function Disagreements({ r, label, band, setFilter }: { r: ClassifierReport; lab
               </td>
               <td className="hidden whitespace-nowrap px-3 py-1.5 sm:table-cell">
                 {d.a.label} <span className="num text-xs text-ink/50">{prob(d.a.prob)}</span>
+                {d.a.serving && <div className="text-xs text-ink/50">{servingLabel(d.a.serving, r.a)}</div>}
               </td>
               <td className="hidden whitespace-nowrap px-3 py-1.5 sm:table-cell">
                 {d.b.label} <span className="num text-xs text-ink/50">{prob(d.b.prob)}</span>
+                {d.b.serving && <div className="text-xs text-ink/50">{servingLabel(d.b.serving, r.b)}</div>}
               </td>
             </tr>
           ))}
@@ -171,10 +175,10 @@ export function Classifiers(_: ViewProps) {
           <h1 className="text-xl font-semibold">Classifiers</h1>
           <Select label="Run" value={r.run} onChange={(v) => set({ run: v, a: "", b: "", label: "", band: "" })} options={r.runs.map((x) => ({ value: x.id, label: `${x.id} · ${day(x.at)}` }))} />
           <Select
-            label="Pair"
+            label="Stages"
             value={`${r.a}|${r.b}`}
             onChange={(v) => { const [x, y] = v.split("|"); set({ run: r.run, a: x!, b: y!, label: "", band: "" }); }}
-            options={cur.pairs.map((p) => ({ value: `${p.a}|${p.b}`, label: `${p.a} vs ${p.b} (${num(p.items)})` }))}
+            options={cur.pairs.map((p) => ({ value: `${p.a}|${p.b}`, label: `${roleName(p.a)} vs ${roleName(p.b)} (${num(p.items)})` }))}
           />
         </div>
         {run && run !== r.run && (
@@ -182,7 +186,7 @@ export function Classifiers(_: ViewProps) {
             There is no run <span className="code">{run}</span>. Showing the latest run, <span className="code">{r.run}</span>.
           </p>
         )}
-        <p className="mt-1 text-sm text-ink/55">Agreement on the type label, per run. Rows are grouped by {r.a}&apos;s answer.</p>
+        <p className="mt-1 text-sm text-ink/55">Agreement on the type label, per run. Rows are grouped by {servingLabel(r.aServing, r.a)}&apos;s answer.</p>
 
         <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Stat label="Items judged by both" value={num(r.items)} />
@@ -192,7 +196,7 @@ export function Classifiers(_: ViewProps) {
         </div>
 
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          <Block title={`By ${r.a}'s label`} aside="Click to filter disagreements" flush>
+          <Block title={`By ${servingLabel(r.aServing, r.a)}'s label`} aside="Click to filter disagreements" flush>
             <AgreementRows name="Label" rows={r.byLabel.map((x) => ({ key: x.label, n: x.n, agree: x.agree }))} picked={label} onPick={(k) => set({ label: label === k ? "" : k })} />
           </Block>
           <Block title="By repo" aside={`${num(r.byRepo.length)} repos with items judged by both`} flush>
@@ -203,7 +207,7 @@ export function Classifiers(_: ViewProps) {
         </div>
 
         {hasBands && (
-          <Block title={`${r.a}'s confidence`} aside="Probability of its top label" className="mt-4" flush>
+          <Block title={`${servingLabel(r.aServing, r.a)}'s confidence`} aside="Probability of its top label" className="mt-4" flush>
             <table className="w-full text-sm">
               <thead>
                 <tr>

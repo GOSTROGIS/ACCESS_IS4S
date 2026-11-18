@@ -116,10 +116,10 @@ function running(db: DatabaseSync, hidden: string[]): string {
   return parts.length ? parts.join(", ") : "Nothing running";
 }
 
-function spendToday(db: DatabaseSync, hidden: string[]): number {
+function spendToday(db: DatabaseSync, hidden: string[]): number | null {
   const p: Record<string, string> = { day: new Date().toISOString().slice(0, 10) };
   const hide = excludeHidden("repo", hidden, p);
-  return (db.prepare(`SELECT COALESCE(SUM(cost_usd), 0) AS s FROM token_usage WHERE substr(COALESCE(ended_at, started_at), 1, 10) = :day${hide ? ` AND (repo IS NULL OR ${hide})` : ""}`).get(p) as { s: number }).s;
+  return (db.prepare(`SELECT CASE WHEN COUNT(cost_usd)=COUNT(*) THEN COALESCE(SUM(cost_usd),0) ELSE NULL END AS s FROM token_usage WHERE substr(COALESCE(ended_at, started_at), 1, 10) = :day${hide ? ` AND (repo IS NULL OR ${hide})` : ""}`).get(p) as { s: number | null }).s;
 }
 
 /** Share of the PRs merged since `since` that AutoCraft merged itself or carried in a merged batch. */

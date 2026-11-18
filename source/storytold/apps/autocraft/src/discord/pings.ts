@@ -5,7 +5,7 @@
 import type { DatabaseSync } from "node:sqlite";
 import type { DiscordKeys } from "./keys.ts";
 import { deleteRepliesOf } from "./replies.ts";
-import { renderMatches } from "./reply.ts";
+import { budgetReply, renderMatches } from "./reply.ts";
 import type { DiscordRest } from "./rest.ts";
 import { QUESTION_CHARS, type Search } from "./search.ts";
 import { isWatched } from "./store.ts";
@@ -104,7 +104,7 @@ export class Pings {
       // Deleted while the search ran: nothing to reply to.
       if (this.#deletedMeanwhile.has(pingHash) || (quoted && this.#deletedMeanwhile.has(quoted))) return;
       const sent = await rest.createMessage(m.channel_id, {
-        content: r.content, allowed_mentions: { parse: [] }, message_reference: { message_id: m.id, fail_if_not_exists: false },
+        content: budgetReply(r.content, found.budgetError), allowed_mentions: { parse: [] }, message_reference: { message_id: m.id, fail_if_not_exists: false },
         ...(r.components.length && { components: r.components }),
       });
       const sealed = keys.seal({ guildId: m.guild_id ?? "", channelId: m.channel_id, messageId: sent.id, at: new Date().toISOString() }, pingHash);

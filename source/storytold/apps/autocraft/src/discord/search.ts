@@ -4,6 +4,8 @@
 // kept only for the length of the call: it is not stored, logged or sent anywhere but that one model call, and the
 // prompt and reply texts the call records are deleted when it ends.
 import type { DatabaseSync } from "node:sqlite";
+import { CodexBudgetError, providerBudgetMode } from "../agents/codex/budget.ts";
+import { dailyReportedUsd } from "./budget.ts";
 import { askClaude } from "../classify/run.ts";
 import type { Embedder } from "../embed/model.ts";
 import type { VectorIndex } from "../embed/vectors.ts";
@@ -25,7 +27,7 @@ const CHANNEL_LIMIT = { n: 20, ms: 60_000 };
 const MODEL_WAIT_MS = 20_000;
 
 export type Match = { repo: string; number: number; title: string; url: string; closed: boolean; reason?: string };
-export type Found = { matches: Match[]; /** Whether a model chose and explained them. */ judged: boolean };
+export type Found = { matches: Match[]; /** Whether a model chose and explained them. */ judged: boolean; budgetError?: string };
 
 type Candidate = Match & { body: string; score: number; activity: number; updatedAt: string };
 
@@ -55,9 +57,8 @@ export function dailyCapUsd(db: DatabaseSync): number {
 }
 
 /** What today's (UTC) search calls cost, from the agent runs. */
-export function spentTodayUsd(db: DatabaseSync, now: number): number {
-  const day = new Date(now).toISOString().slice(0, 10);
-  return Number((db.prepare("SELECT COALESCE(SUM(cost_usd), 0) AS c FROM agent_runs WHERE step = 'discord-search' AND started_at >= ?").get(day) as { c: number }).c);
+export function spentTodayUsd(db: DatabaseSync, now: number): number | null {
+  return dailyReportedUsd(db, "discord-search", now);
 }
 
 /** The prompt and reply of a search call hold the question. After a call, the rows of finished calls are removed; `all` (at startup, when no call can be running) removes every row. */
@@ -142,7 +143,15 @@ export class Search {
     const strip = ({ body: _b, score: _s, activity: _a, updatedAt: _u, ...m }: Candidate): Match => m;
     const fallback = (): Found => ({ matches: cands.filter((c) => c.score >= FALLBACK_MIN_SCORE).slice(0, PICK_MAX).sort(byActivity).map(strip), judged: false });
     if (!cands.length) return { matches: [], judged: true };
-    if (spentTodayUsd(db, (this.#d.now ?? Date.now)()) >= dailyCapUsd(db)) return fallback();
+    let mode: "usd" | "tokens";
+    try { mode = providerBudgetMode(db, "Discord search"); }
+    catch (error) {
+      if (!(error instanceof CodexBudgetError)) throw error;
+      log(`discord: ${error.message}`);
+      return { ...fallback(), budgetError: error.message };
+    }
+    const spent = spentTodayUsd(db, (this.#d.now ?? Date.now)());
+    if (mode === "usd" && (spent === null || spent >= dailyCapUsd(db))) return fallback();
     const input: PickInput = { ref: "discord", question: q, candidates: cands.map((c) => ({ ref: `${c.repo}#${c.number}`, title: c.title, body: c.body, closed: c.closed })) };
     try {
       const text = await (this.#d.ask ?? askHaiku)(db, input);
@@ -153,7 +162,7 @@ export class Search {
         .map(({ c, reason }) => ({ ...strip(c), ...(reason && { reason }) })), judged: true };
     } catch (e) {
       log(`discord: search model call failed: ${oneLine((e as Error).message, 200)}`);
-      return fallback();
+      return e instanceof CodexBudgetError ? { ...fallback(), budgetError: e.message } : fallback();
     } finally {
       try { dropTexts(db); } catch (e) { log(`discord: removing search texts failed: ${(e as Error).message}`); }
     }

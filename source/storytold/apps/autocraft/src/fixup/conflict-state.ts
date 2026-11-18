@@ -16,7 +16,7 @@ export type ConflictCandidate = {
   repo: string; number: number; head: string; /** The PR's base branch name. */ base: string; title: string;
   /** The final review's reason. */ reason: string; attempt: number; pushable: boolean;
   /** A model resolution stored and linted: the collect step pushes it, or gives it up. */
-  lint?: { rowid: number; round: number; task: number | null; baseSha: string; resolved: string; files: string[]; /** The kept resolver sessions by file (src/prepush/resume.ts). */ session: string | null };
+  lint?: { servingMetadata?: string | null; rowid: number; round: number; task: number | null; baseSha: string; resolved: string; files: string[]; /** The kept resolver sessions by file (src/prepush/resume.ts). */ session: string | null };
 };
 /** capped: the PR already had its merges of the base branch for the UTC day. merge: we will merge the base in; ask: comment once asking the contributor; ask-retry: that comment never reached GitHub and is due again at conflictAskRetryAt; asked: that comment is posted; held: nothing to do without a person and no comment approval to ask (two tries used, a deterministic skip recorded at this head, or a branch we can't push to); unapproved: pushable but the repo has no push approval; done: merged at this head already. */
 export type ConflictBucket = "merge" | "ask" | "ask-retry" | "asked" | "held" | "unapproved" | "linting" | "capped" | "done";

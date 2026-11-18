@@ -49,6 +49,7 @@ export type TypeLabel = "bugfix" | "performance" | "missing feature" | "small ex
 export type Want = "yes" | "no" | "unclear";
 
 export interface Classification {
+  serving?: ServingMetadata;
   classifier: Classifier;
   at: string;
   typeLabel: TypeLabel;
@@ -97,6 +98,7 @@ export interface DuplicateMember {
 export type ExecState = "pending" | "waiting-token" | "waiting-permission" | "done" | "failed";
 
 export interface Decision {
+  serving?: ServingMetadata;
   id: string;
   kind: DecisionKind;
   repo: RepoName;
@@ -232,6 +234,7 @@ export type PriorityLevel = "P0" | "P1" | "P2" | "P3" | "P4";
 
 /** Priority level of an item (src/priority). `model`: jev, haiku or jev-unsure. */
 export interface PriorityInfo {
+  serving?: ServingMetadata;
   level: PriorityLevel;
   model: string;
   reason: string | null;
@@ -325,6 +328,7 @@ export interface Preapproval {
 export type VerificationKind = "ci-enough" | "tests" | "regression" | "error" | "unavailable";
 export type VerificationState = "planned" | "running" | "passed" | "failed" | "error" | "ci-enough" | "stale" | "unavailable";
 export interface ItemVerification {
+  serving?: ServingMetadata;
   headSha: string;
   baseSha: string | null;
   /** False when the PR has a newer head than the one verified. */
@@ -360,6 +364,7 @@ export type ReviewVerdictName = "take" | "take-fix" | "hold" | "close";
 
 /** One reviewer's verdict on a head commit. */
 export interface ReviewSide {
+  serving?: ServingMetadata;
   verdict: ReviewVerdictName;
   reason: string;
   fixes: { file: string; change: string }[];
@@ -427,6 +432,7 @@ export interface PostmergeFinding {
 
 /** The post-merge review of a PR the pipeline merged. */
 export interface ItemPostmerge {
+  serving?: ServingMetadata;
   at: string;
   model: string | null;
   /** The commit the review read. */
@@ -451,6 +457,7 @@ export interface PremergeFinding {
 
 /** The pre-merge review of one PR head. */
 export interface ItemPremerge {
+  serving?: ServingMetadata;
   head: string;
   at: string;
   model: string | null;
@@ -478,6 +485,7 @@ export interface ItemReleases {
 }
 
 export interface ItemPatchCheck {
+  serving?: ServingMetadata;
   kind: "fixup" | "fixissue";
   /** The commit the patch applies to. */
   subject: string;
@@ -491,6 +499,7 @@ export interface ItemPatchCheck {
 }
 
 export interface ItemFixup {
+  serving?: ServingMetadata;
   /** ci-fix: a try of the CI fix kind (the head is the one whose check failed); absent for a review fix-up. */
   kind?: "ci-fix";
   fromHead: string;
@@ -1057,6 +1066,8 @@ export interface FlagAgreement {
 }
 
 export interface ClassifierReport {
+  aServing?: ServingMetadata;
+  bServing?: ServingMetadata;
   runs: ClassifierRun[];
   run: string;
   a: string;
@@ -1081,8 +1092,8 @@ export interface Disagreement {
   kind: ItemKind;
   state: ItemState | null;
   title: string;
-  a: { label: string | null; prob: number | null };
-  b: { label: string | null; prob: number | null };
+  a: { label: string | null; prob: number | null; serving?: ServingMetadata };
+  b: { label: string | null; prob: number | null; serving?: ServingMetadata };
 }
 
 export interface DisagreementList {
@@ -1253,6 +1264,14 @@ export interface PipelineOverview {
 
 // ---- prompts ----------------------------------------------------------------
 
+export type ModelProviderPolicy = { provider: "claude" | "codex"; model: string; reasoningEffort: "low" | "medium" | "high" | "xhigh" | "max" | "ultra";
+  maxTokens: number; maxTurns: number; maxConcurrent: number; maxWallMs: number; maxJobTokens: number; unknownCostPolicy: "require-priced" | "bounded-tokens" };
+/** Reported serving calls are separate from stable workflow/model keys. */
+export type ReportedServingMetadata = { schema: 1; provider: "codex"; runs: number[];
+  models: { model: string; reasoningEfforts: (string | null)[] }[] };
+export type ServingMetadata = ReportedServingMetadata | { schema: 0; provider: "unknown"; runs: []; models: [] };
+export type ModelProviderReport = { policy: ModelProviderPolicy; configured: boolean; nativeSession: boolean; executionReady: boolean; unavailableReason: string | null };
+
 /** One registered model prompt (src/prompts), as the Prompts page shows it. */
 export interface PromptInfo {
   id: string;
@@ -1260,7 +1279,7 @@ export interface PromptInfo {
   purpose: string;
   /** The first is the default. */
   models: string[];
-  runner: "claude" | "jev";
+  runner: "claude" | "jev" | "codex";
   /** The command line, as a shell would show it; the prompt or request goes on stdin. */
   command: string;
   settings: { label: string; value: string }[];
@@ -1681,8 +1700,10 @@ export type AgentRun = {
   stage: number;             // stage number from docs/pipeline.md
   promptId: string;          // prompt registry id
   promptVersion: string;     // registry version or content hash
-  provider: "claude" | "jev";
+  provider: "claude" | "jev" | "codex" | "unknown";
   model: string;             // e.g. "sonnet", "haiku", "jev"
+  reasoningEffort?: string;
+  providerUsage?: { inputTokens: number; cachedInputTokens: number; cacheWriteInputTokens: number; outputTokens: number; reasoningOutputTokens: number; totalTokens: number; modelProvider: string; usageComplete?: boolean };
   accountId: string | null;  // null for Jev
   accountLabel: string | null;
   items: (ItemRef & ItemShown)[];   // at most 50
@@ -2038,6 +2059,7 @@ export interface ChoiceCore {
 }
 
 export interface DecisionChoices {
+  serving?: ServingMetadata;
   id: string;
   decisionId: string;
   pick: { core: CoreKey; reason: string } | null;
@@ -2058,6 +2080,7 @@ export interface DoChoiceBody {
 }
 
 export interface ConversationTurn {
+  serving?: ServingMetadata;
   id: number;
   kind: "operator" | "opus" | "system";
   /** The operator's login, "opus" or "system". */
@@ -2142,6 +2165,7 @@ export type TraceRef = {
   batchId?: number;
 };
 export type TraceEvent = {
+  serving?: ServingMetadata;
   /** Stable across fetches, for example "run:123". */
   id: string;
   kind: TraceKind;
@@ -2333,7 +2357,8 @@ export interface ScanView {
   state: ScanState;
   /** The spend cap in dollars; null means none. */
   capUsd: number | null;
-  costUsd: number;
+  costUsd: number | null;
+  budgetMode?: "usd" | "tokens";
   /** Estimated total cost, recorded after the threat model; null before. */
   estimateUsd: number | null;
   areasTotal: number;
@@ -2397,10 +2422,10 @@ export interface FindingView extends FindingSummary {
   timeline: FindingCall[];
 }
 
-export interface SecurityOverview { scans: ScanView[]; findings: FindingSummary[] }
+export interface SecurityOverview { scans: ScanView[]; findings: FindingSummary[]; budgetMode?: "usd" | "tokens" }
 
 export type ScanAreaState = "pending" | "running" | "done" | "failed";
-export interface ScanArea { idx: number; name: string; risk: number; why: string | null; paths: string[]; state: ScanAreaState; costUsd: number }
+export interface ScanArea { idx: number; name: string; risk: number; why: string | null; paths: string[]; state: ScanAreaState; costUsd: number | null }
 export interface ScanEntryPoint { name: string; kind: string; where: string }
 export type ScanCallState = "running" | "done" | "failed";
 /** One model call of a scan, in order. `runId` links the agent run holding its prompt and output (null for a call that made none). */
@@ -2469,7 +2494,7 @@ export interface Home {
   /** Counts per phase; each opens Items filtered to that phase. */
   phases: Record<ItemPhase, number>;
   running: string;
-  progress: { openNow: number; openAtStart: number; done24h: number; byAutoCraftPct: number; perHour: number[]; spendTodayUsd: number };
+  progress: { openNow: number; openAtStart: number; done24h: number; byAutoCraftPct: number; perHour: number[]; spendTodayUsd: number | null };
   done: HomeDone[];
 }
 
@@ -2478,6 +2503,7 @@ export type ReviewVerdict = "take" | "take-fix" | "hold" | "close";
 export interface ReviewClaim { path: string; line: number; text: string }
 /** One Opus review of a head. On GitHub the reviews are one comment, edited in place. */
 export interface OpusReviewEntry {
+  serving?: ServingMetadata;
   id: string;
   head: string;
   /** The PR's head is still this commit. */
@@ -2494,7 +2520,7 @@ export interface OpusReviewEntry {
   claims: ReviewClaim[];
   /** Items this review says must land first; empty when none. */
   blockedBy: ItemRef[];
-  costUsd: number;
+  costUsd: number | null;
 }
 export interface ReviewHistory { latest: OpusReviewEntry | null; earlier: OpusReviewEntry[] }
 
@@ -2502,6 +2528,7 @@ export interface ReviewHistory { latest: OpusReviewEntry | null; earlier: OpusRe
 export type HistoryKind = "model" | "write" | "decision" | "event";
 export interface HistoryCall { label: string; kind: "model" | "tool"; costUsd: number | null }
 export interface HistoryEntry {
+  serving?: ServingMetadata;
   id: string;
   at: string;
   step: string;
@@ -2587,6 +2614,7 @@ export type TimelineTone = "ok" | "warn" | "bad" | "neutral";
 export type TimelineIcon = "review" | "fixup" | "merge" | "push" | "github" | "check" | "job" | "chat" | "person";
 /** One line of the item's story: a turn of a person or Opus, or a line of the harness's work (`kind: "harness"`; the page folds runs of the minor ones). */
 export interface TimelineEntry {
+  serving?: ServingMetadata;
   /** Stable across fetches. */
   id: string;
   at: string;
@@ -2619,6 +2647,7 @@ export interface TimelineEntry {
 }
 /** The screenshot run of a pull request's latest head: images at the base ("before") and at the head ("after"), served by the task artifact route. */
 export interface ScreenshotRun {
+  serving?: ServingMetadata;
   head: string;
   /** Whether `head` is still the PR's head. */
   current: boolean;
@@ -2647,7 +2676,7 @@ export interface ItemPageData {
   status: ItemStatus;
   /** The live status bar: what is happening to the item now and its path through the pipeline. */
   bar: ItemBar;
-  costUsd: number;
+  costUsd: number | null;
   /** Opus's reviews, newest first: the detail of the review lines of the timeline. */
   reviews: ReviewHistory;
   /** The item's story, oldest first (last 200 lines). */
@@ -2679,8 +2708,8 @@ export interface ItemStatusList { rows: ItemStatusRow[]; byPhase: Record<ItemPha
 export interface FindingRow { repo: RepoName; number: number; title: string; severity: FindingSeverity; state: FindingState; urgent: boolean; area: string; status: ItemStatus; attempts: number; updatedAt: string }
 export type SecurityGroup = "Needs a person" | "Fixing" | "Ready to land" | "Landing" | "Landed or published" | "Dismissed or backlog";
 export interface SecurityList { groups: { group: SecurityGroup; rows: FindingRow[] }[] }
-export interface FixRound { round: number; outcome: "passed" | "failed"; why: string; at: string; costUsd: number }
-export interface FindingPageData { finding: FindingView; /** The finding's open question and its choices, in the shape decisions use; null when nothing is open. */ decision: Decision | null; choices: DecisionChoices | null; status: ItemStatus; attempts: number; rounds: FixRound[]; history: HistoryEntry[]; costUsd: number }
+export interface FixRound { round: number; outcome: "passed" | "failed"; why: string; at: string; costUsd: number | null }
+export interface FindingPageData { finding: FindingView; /** The finding's open question and its choices, in the shape decisions use; null when nothing is open. */ decision: Decision | null; choices: DecisionChoices | null; status: ItemStatus; attempts: number; rounds: FixRound[]; history: HistoryEntry[]; costUsd: number | null }
 
 export type DownloadsRange = "all" | "today" | "yesterday" | "7d" | "30d" | "90d" | "12m" | "1h" | "3h" | "6h" | "12h";
 

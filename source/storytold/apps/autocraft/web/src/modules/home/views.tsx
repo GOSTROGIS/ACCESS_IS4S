@@ -128,7 +128,7 @@ export function HomeView(_: ViewProps) {
             <dl className="grid grid-cols-3 gap-3 border-t border-line pt-3">
               <Stat label="Open now" value={num(progress.openNow)} sub={`${num(progress.openAtStart)} at start`} />
               <Stat label="Done in 24 h" value={num(progress.done24h)} sub={`${progress.byAutoCraftPct}% by AutoCraft`} />
-              <Stat label="Spend today" value={`$${progress.spendTodayUsd.toFixed(2)}`} />
+              <Stat label="Spend today" value={progress.spendTodayUsd === null ? "Unknown" : `$${progress.spendTodayUsd.toFixed(2)}`} sub={progress.spendTodayUsd === null ? "Some calls did not report a USD price" : undefined} />
             </dl>
             <div className="mt-4 flex h-12 items-end gap-[3px]" role="img" aria-label="Items done per hour, last 24 hours">
               {progress.perHour.map((v, i) => (

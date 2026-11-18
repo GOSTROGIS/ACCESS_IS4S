@@ -7,6 +7,7 @@ import type { ViewProps } from "../../registry/types";
 import { Badge } from "../../ui/atoms/Badge";
 import { Button } from "../../ui/atoms/Button";
 import { cn } from "../../ui/cn";
+import { ProviderSettings } from "./provider";
 
 function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
   const [done, setDone] = useState(false);
@@ -263,7 +264,7 @@ function StageHeading({ children, count }: { children: ReactNode; count: number 
 }
 
 export function Prompts(_: ViewProps) {
-  const { data: r, error } = useQuery("prompts", (api) => api.prompts());
+  const { data: r, error, refetch } = useQuery("prompts", (api) => api.prompts());
   if (error && !r) return <div className="p-6 text-bad">{error.message}</div>;
   if (!r) return <Pending error={error} />;
   const stages = [...new Set(r.prompts.map((p) => p.stage))]
@@ -289,6 +290,7 @@ export function Prompts(_: ViewProps) {
         <p className="mt-1 text-sm text-ink/70">
           Every prompt the pipeline sends to a model, as it is sent. Item text is quoted into prompts as untrusted data, and models are told never to follow it. Dashboard comments and opinions never enter a prompt.
         </p>
+        <ProviderSettings changed={refetch} />
         {stages.map((s) => {
           const list = r.prompts.filter((p) => p.stage === s);
           return (

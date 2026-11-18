@@ -70,6 +70,7 @@ import type {
   StuckItems,
   Progress,
   PromptsReport,
+  ModelProviderReport, ModelProviderPolicy,
   BatchFilter,
   BatchDetail,
   BatchList,
@@ -124,6 +125,7 @@ import type {
 
 /** The dashboard API as the frontend sees it. The mock and the HTTP client both implement it. */
 export interface Api {
+  modelProvider?: { get(): Promise<ModelProviderReport>; set(policy: ModelProviderPolicy): Promise<ModelProviderReport> };
   me(): Promise<User>;
   repos(): Promise<RepoName[]>;
   /** Owners of the visible repos that are not storytold's, by repo name. */

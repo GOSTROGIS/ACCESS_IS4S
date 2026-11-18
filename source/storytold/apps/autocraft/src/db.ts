@@ -23,7 +23,16 @@ export function dbPath(): string {
 
 // Columns added to existing tables after their first release. CREATE TABLE IF
 // NOT EXISTS leaves an older table as it was, so these are added here.
+export const SERVING_METADATA_TABLES = ["classifications", "opus_reviews", "opus_review_history", "verifications", "screenshot_runs", "item_priority", "patch_checks", "dupe_comparisons", "postmerge_reviews", "premerge_reviews", "decisions", "conversation_turns", "decision_choices", "fixups", "ci_fixes", "conflict_merges", "main_fixes", "fix_attempts", "security_findings", "security_fix_rounds", "security_fix_log", "operator_fixups", "opus_carried_fixes"] as const;
 const ADDED_COLUMNS: [table: string, column: string, type: string][] = [
+  ["security_findings", "fix_serving_metadata", "TEXT"],
+  ...SERVING_METADATA_TABLES.map(table => [table, "serving_metadata", "TEXT"] as [string, string, string]),
+  ["agent_runs", "reasoning_effort", "TEXT"],
+  ["agent_runs", "provider_usage", "TEXT"],
+  ["agent_runs", "token_budget", "INTEGER"],
+  ["agent_runs", "budget_scope", "TEXT"],
+  ["agent_runs", "session_state", "TEXT"],
+  ["security_scans", "budget_mode", "TEXT NOT NULL DEFAULT 'usd'"],
   ["opus_reviews", "base_ref", "TEXT"],
   ["fast_track", "weight", "INTEGER NOT NULL DEFAULT 5"],
   ["items", "reactions_count", "INTEGER"],
@@ -249,8 +258,8 @@ const ADDED_INDEXES = [
 const DROPPED_COLUMNS: [table: string, column: string][] = [["classifications", "topics"], ["classifications", "area"]];
 
 /** Appends the stored review rows that the history does not hold yet. */
-export const HISTORY_COPY_SQL = `INSERT INTO main.opus_review_history (repo, number, head_oid, at, model, mode, verdict, sure, reason, risks, fixes, summary, why, public_review, claims, blocked_by, trigger, job_id)
-  SELECT repo, number, head_oid, at, model, mode, verdict, sure, reason, risks, fixes, summary, why, public_review, claims, blocked_by, NULL, NULL FROM main.opus_reviews o
+export const HISTORY_COPY_SQL = `INSERT INTO main.opus_review_history (repo, number, head_oid, at, model, mode, verdict, sure, reason, risks, fixes, summary, why, public_review, claims, blocked_by, trigger, job_id, serving_metadata)
+  SELECT repo, number, head_oid, at, model, mode, verdict, sure, reason, risks, fixes, summary, why, public_review, claims, blocked_by, NULL, NULL, serving_metadata FROM main.opus_reviews o
   WHERE NOT EXISTS (SELECT 1 FROM main.opus_review_history h WHERE h.repo = o.repo AND h.number = o.number AND h.head_oid = o.head_oid AND h.at = o.at)`;
 
 // Bump when migrateValues() or backfill() change what they do.

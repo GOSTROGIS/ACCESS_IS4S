@@ -4,6 +4,7 @@
 import type { DatabaseSync } from "node:sqlite";
 import type { ChoiceCore, Decision, DecisionChoices, FindingAction, FindingSeverity, FindingState, FindingView } from "../../../web/src/api/types.ts";
 import { FIX_ROUNDS } from "../../security/rules.ts";
+import { sumReportedCosts } from "../../security/costs.ts";
 import { findingRow, INTERNAL_FINDING_STATES, reconcileFindings, toFinding, type FindingRow as StoredFinding } from "../../security/store.ts";
 import { HttpError } from "../server/util.ts";
 import type { Req } from "../types.ts";
@@ -16,8 +17,8 @@ export interface FindingRow { repo: string; number: number; title: string; sever
 export type SecurityGroup = "Needs a person" | "Fixing" | "Ready to land" | "Landing" | "Landed or published" | "Dismissed or backlog";
 export interface SecurityList { groups: { group: SecurityGroup; rows: FindingRow[] }[] }
 export interface HistoryEntry { id: string; at: string; step: string; outcome: string; model: string | null; costUsd: number | null; kind: "model" | "write" | "decision" | "event"; calls: { label: string; kind: "model" | "tool"; costUsd: number | null }[]; writeId: string | null }
-export interface FixRound { round: number; outcome: "passed" | "failed"; why: string; at: string; costUsd: number }
-export interface FindingPageData { finding: FindingView; decision: Decision | null; choices: DecisionChoices | null; status: ItemStatus; attempts: number; rounds: FixRound[]; history: HistoryEntry[]; costUsd: number }
+export interface FixRound { round: number; outcome: "passed" | "failed"; why: string; at: string; costUsd: number | null }
+export interface FindingPageData { finding: FindingView; decision: Decision | null; choices: DecisionChoices | null; status: ItemStatus; attempts: number; rounds: FixRound[]; history: HistoryEntry[]; costUsd: number | null }
 
 const GROUPS: SecurityGroup[] = ["Needs a person", "Fixing", "Ready to land", "Landing", "Landed or published", "Dismissed or backlog"];
 const GROUP: Record<FindingState, SecurityGroup> = {
@@ -125,7 +126,7 @@ function history(f: FindingView): HistoryEntry[] {
 /** Rounds of every fix attempt, oldest first. A round's cost is that of the fix and review calls made while it ran. */
 function rounds(f: FindingView, log: LogRound[], live: LiveRound[]): FixRound[] {
   const calls = f.timeline.filter((c) => c.kind === "fix" || c.kind === "review");
-  const cost = (from: string, to: string | null) => calls.filter((c) => c.at >= from && (to === null || c.at <= to)).reduce((s, c) => s + (c.costUsd ?? 0), 0);
+  const cost = (from: string, to: string | null) => sumReportedCosts(calls.filter((c) => c.at >= from && (to === null || c.at <= to)).map((c) => c.costUsd));
   const out: FixRound[] = log.map((r) => ({
     round: r.round, outcome: r.state === "passed" ? "passed" : "failed", why: r.failure ?? (r.state === "building" ? "cut short" : ""), at: r.ended_at, costUsd: cost(r.created_at, r.ended_at),
   }));
@@ -168,6 +169,6 @@ export async function findingPage(db: DatabaseSync, req: Req): Promise<FindingPa
   const { decision, choices } = synthesize(finding, stored, row.status, lastAttemptRounds(log.filter((l) => l.attempt === stored.fix_attempts)), req.user.role === "operator");
   return {
     finding, decision, choices, status: row.status, attempts: stored.fix_attempts, rounds: rounds(finding, log, live), history: history(finding),
-    costUsd: finding.timeline.reduce((s, c) => s + (c.costUsd ?? 0), 0),
+    costUsd: sumReportedCosts(finding.timeline.filter((c) => c.kind !== "duplicate").map((c) => c.costUsd)),
   };
 }

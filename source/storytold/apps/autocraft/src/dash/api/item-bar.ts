@@ -44,7 +44,7 @@ export interface Evidence { stage: StageId; state: "done" | "failed"; at: string
 
 /** Steps of the stepper, in pipeline order. Pure: the rows are read by `evidenceOf`. */
 export function deriveSteps(i: {
-  kind: ItemKind; state: ItemState; current: StageId | null; running: boolean; evidence: Evidence[]; costs: Map<StageId, number>;
+  kind: ItemKind; state: ItemState; current: StageId | null; running: boolean; evidence: Evidence[]; costs: Map<StageId, number | null>;
   /** Stages ahead show: the repo's pipeline is on and the phase is active. */
   ahead: boolean; /** The post-merge review is still to come: AutoCraft merged it a short while ago in a repo with the pipeline on. */ postmergeNext: boolean;
 }): ItemBarStep[] {
@@ -142,10 +142,10 @@ export function barOf(c: Ctx, it: { kind: ItemKind; state: ItemState; mergedAt: 
 
   const mergedByUs = it.state === "merged" && db.prepare("SELECT 1 FROM merges WHERE repo = ? AND number = ? AND outcome = 'merged'").get(repo, n) !== undefined;
   const evidence = evidenceOf(c, q, it.mergedAt, mergedByUs);
-  const costs = new Map<StageId, number>();
-  for (const r of q<{ step: string; cost: number | null }>(`SELECT r.step, r.cost_usd AS cost FROM agent_run_items i JOIN agent_runs r ON r.id = i.run_id WHERE i.repo = ? AND i.number = ? AND r.cost_usd IS NOT NULL${hiddenSql(c.hidden)}`, repo, n, ...hiddenArgs(c.hidden))) {
+  const costs = new Map<StageId, number | null>();
+  for (const r of q<{ step: string; cost: number | null }>(`SELECT r.step, r.cost_usd AS cost FROM agent_run_items i JOIN agent_runs r ON r.id = i.run_id WHERE i.repo = ? AND i.number = ?${hiddenSql(c.hidden)}`, repo, n, ...hiddenArgs(c.hidden))) {
     const id = stageOfStep(r.step)?.id;
-    if (id) costs.set(id, (costs.get(id) ?? 0) + r.cost!);
+    if (id) costs.set(id, r.cost === null || costs.has(id) && costs.get(id) === null ? null : (costs.get(id) ?? 0) + r.cost);
   }
 
   const runningStep = job?.step ?? run?.step ?? null;

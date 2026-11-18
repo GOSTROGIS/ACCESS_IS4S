@@ -15,7 +15,7 @@ export interface Home {
   problems: HomeProblem[];
   phases: Record<ItemPhase, number>;
   running: string;
-  progress: { openNow: number; openAtStart: number; done24h: number; byAutoCraftPct: number; perHour: number[]; spendTodayUsd: number };
+  progress: { openNow: number; openAtStart: number; done24h: number; byAutoCraftPct: number; perHour: number[]; spendTodayUsd: number | null };
   done: HomeDone[];
 }
 

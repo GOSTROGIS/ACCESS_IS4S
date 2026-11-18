@@ -35,7 +35,7 @@ export function mergedPr(db: DatabaseSync, repo: string, number: number): Merged
     FROM merges m WHERE m.repo = ? AND m.number = ? AND m.outcome = 'merged' GROUP BY m.repo, m.number`).get(repo, number) as MergedPr | undefined) ?? null;
 }
 
-export type StoredReview = { repo: string; number: number; merge_sha: string; at: string; model: string | null; error: string | null; findings: Finding[] };
+export type StoredReview = { repo: string; number: number; merge_sha: string; at: string; model: string | null; error: string | null; findings: Finding[]; serving_metadata?: string };
 
 export function parseStored(json: string | null): Finding[] {
   try {
@@ -45,9 +45,11 @@ export function parseStored(json: string | null): Finding[] {
 }
 
 export function reviewOf(db: DatabaseSync, repo: string, number: number): StoredReview | null {
-  const r = db.prepare("SELECT repo, number, merge_sha, at, model, error, findings FROM postmerge_reviews WHERE repo = ? AND number = ?").get(repo, number) as
-    { repo: string; number: number; merge_sha: string; at: string; model: string | null; error: string | null; findings: string | null } | undefined;
-  return r ? { ...r, findings: parseStored(r.findings) } : null;
+  const r = db.prepare("SELECT repo, number, merge_sha, at, model, error, findings, serving_metadata FROM postmerge_reviews WHERE repo = ? AND number = ?").get(repo, number) as
+    { repo: string; number: number; merge_sha: string; at: string; model: string | null; error: string | null; findings: string | null; serving_metadata: string | null } | undefined;
+  if (!r) return null;
+  const { serving_metadata, ...legacy } = r;
+  return { ...legacy, findings: parseStored(r.findings), ...(serving_metadata !== null && { serving_metadata }) };
 }
 
 export type FollowupState = "filing" | "filed" | "failed" | "skipped-duplicate" | "skipped-limit" | "skipped-minor" | "skipped-stale" | "skipped-text";
@@ -83,15 +85,15 @@ export function heldReason(db: DatabaseSync, repo: string, number: number, revie
   return fixesFollowup(db, repo, number) ? "fix" : null;
 }
 
-export type PendingDefect = { repo: string; number: number; review_at: string; finding: number; f: Finding; model: string | null; attempts: number };
+export type PendingDefect = { repo: string; number: number; review_at: string; finding: number; f: Finding; model: string | null; attempts: number; serving_metadata?: string };
 
 /**
  * Defects of the latest review of each PR that the filing step may still try, oldest review first: no row yet, a
  * skipped-limit row, or a failed row whose backoff has passed. A review held by `heldReason`, and the review of a quiet pull request, has none.
  */
 export function pendingDefects(db: DatabaseSync, repo: string, now = Date.now()): PendingDefect[] {
-  const rows = db.prepare(`SELECT r.repo, r.number, r.at, r.model, r.findings FROM postmerge_reviews r
-    WHERE r.repo = ? AND r.error IS NULL AND ${pilotSqlFor("r.repo", "r.number")} ORDER BY r.at, r.number`).all(repo) as { repo: string; number: number; at: string; model: string | null; findings: string | null }[];
+  const rows = db.prepare(`SELECT r.repo, r.number, r.at, r.model, r.findings, r.serving_metadata FROM postmerge_reviews r
+    WHERE r.repo = ? AND r.error IS NULL AND ${pilotSqlFor("r.repo", "r.number")} ORDER BY r.at, r.number`).all(repo) as { repo: string; number: number; at: string; model: string | null; findings: string | null; serving_metadata: string | null }[];
   const out: PendingDefect[] = [];
   const quiet = quietFixPrs(db, repo);
   for (const r of rows) {
@@ -104,6 +106,7 @@ export function pendingDefects(db: DatabaseSync, repo: string, now = Date.now())
       const row = have.find((x) => x.finding === i);
       if (row && row.state !== "skipped-limit" && !retryDue(row, now)) return;
       out.push({ repo: r.repo, number: r.number, review_at: r.at, finding: i, f, model: r.model, attempts: row?.attempts ?? 0 });
+      if (r.serving_metadata !== null) out.at(-1)!.serving_metadata = r.serving_metadata;
     });
   }
   return out;

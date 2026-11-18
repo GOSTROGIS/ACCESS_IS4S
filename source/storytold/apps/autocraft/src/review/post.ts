@@ -19,14 +19,16 @@ import { prInfo } from "../merge/index.ts";
 import { postSource } from "./post-source.ts";
 import { reviewBody, recommendation } from "./post-template.ts";
 import { jobItem } from "../runner/job-items.ts";
+import { storedNote } from "../github/note.ts";
 
 const ACTOR = "review-post";
-const REVIEW_NOTE = (c: { model: string | null }): Note => ({ by: "model", kind: "review", model: c.model });
+const REVIEW_NOTE = (c: { model: string | null; serving_metadata?: string }): Note => storedNote({ by: "model", kind: "review", model: c.model }, c.serving_metadata);
 
 export type PostCandidate = {
   repo: string; number: number; head_oid: string; body: string;
   /** The model of the Opus review the body describes (named in the note line). */
   model: string | null;
+  serving_metadata?: string;
   /** The id of our earlier review of this PR (at another head), to edit; null for a first post. */
   editId: string | null;
   /** The `at` of the Opus review the body describes. */
@@ -60,6 +62,7 @@ export function postCandidates(db: DatabaseSync, repo: string): PostCandidate[] 
     const editId = prev && lane(prev.posted_as) === nowLane ? prev.review_id ?? null : null;
     out.push({
       repo, number: f.number, head_oid: head, editId, opusAt: o.at, model: o.model,
+      ...(o.serving_metadata !== undefined && { serving_metadata: o.serving_metadata }),
       body: reviewBody({
         verdict: o.sourceVerdict, sure: o.sure, summary: pub.summary, points: pub.points, claims: o.claims, head: o.reviewedAt, owner: ownerOf(repo), fixedIn: o.fixedIn,
         recommendation: recommendation({ verdict: o.verdict, queue: o.verdict === "take" && isQueueState(plan.state) ? { path: plan.path, state: plan.state } : null, mergeApproved: f.repoFacts.mergeApproved, canPush: f.repoFacts.pushApproved && f.pushable }),
