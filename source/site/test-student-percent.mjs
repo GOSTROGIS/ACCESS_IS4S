@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { fractionAnswer } from '../../assistant/public/percent.mjs';
+import { fractionAnswer, percentageHelp } from '../../assistant/public/percent.mjs';
 
 test('answers the question first, with the learner’s own quantities', () => {
   for (const [question, first] of [
@@ -47,4 +47,18 @@ test('leaves unrelated or ambiguous problems to the model', () => {
     'What percentage of 1/5 is 1/10?', 'what about 3/4?', 'The shift starts on 1/5.']) {
     assert.equal(fractionAnswer(question), null, question);
   }
+});
+
+test('separates multiple conversions, an explicitly requested sum, and a relative percentage', () => {
+  const both = percentageHelp('What are 1/5 and 1/3 as percentages?');
+  assert.match(both, /^1\/5 is 20%\.\n1\/3 is approximately 33\.3333%\./);
+  assert.doesNotMatch(both, /total|sum|50%|53\./i);
+  assert.match(percentageHelp('Add 1/5 and 1/3 as a percentage'), /approximately 53\.3333%/);
+  assert.match(percentageHelp('What percentage of 1/5 is 1/10?'), /1\/10 is 50% of 1\/5/);
+  assert.match(percentageHelp('1/3 as a percent rounded to one decimal place'), /33\.3%/);
+  const report = percentageHelp('1/5 as a percentage: 1/5 * 100% = 50%\n1/3 as a percentage: 1/3 * 100% = 33.33%');
+  assert.match(report, /^1\/5 is 20%/);
+  assert.match(report, /1\/3 is approximately 33\.3333%/);
+  assert.doesNotMatch(report, /50%/);
+  assert.match(percentageHelp('What is 1/5 × 17 minus 6 as a percentage?'), /^Which calculation/);
 });

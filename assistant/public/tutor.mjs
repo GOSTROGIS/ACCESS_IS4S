@@ -1,4 +1,4 @@
-import { fractionAnswer } from './percent.mjs';
+import { percentageHelp } from './percent.mjs';
 import { definedTerms, findPassages } from './retrieve.mjs';
 
 const byId = id => document.getElementById(id);
@@ -105,8 +105,8 @@ form.addEventListener('submit', async event => {
   const id = ++nextId;
   active = {id, question, body, sources: []};
   input.value = '';
-  const answer = fractionAnswer(question, lastConversion);
-  lastConversion = answer;
+  const answer = percentageHelp(question, lastConversion);
+  lastConversion = answer?.match(/^-?\d+\/-?\d+ is /) ? answer : false;
   if (answer) {
     body.textContent = answer;
     remember(question, answer);

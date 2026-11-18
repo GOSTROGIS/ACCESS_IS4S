@@ -43,6 +43,7 @@ async function run() {
     assert.match(await submit('it said 1/5 as a percentage is 1/5\\*100% = 100%'), /^1\/5 is 20%\./);
     assert.match(await submit('The tutor said 100%. Is that right?'), /^1\/5 is 20%\./);
     assert.match(await submit('What about 3/8?'), /^3\/8 is 37\.5%\./);
+    assert.match(await submit('What are 1/5 and 1/3 as percentages?'), /^1\/5 is 20%\.\n1\/3 is approximately 33\.3333%\./);
     assert.equal(requests.some(path => path.endsWith('.gguf')), false);
     console.log('PASS exact learner question and follow-up, before downloading a language model');
 
