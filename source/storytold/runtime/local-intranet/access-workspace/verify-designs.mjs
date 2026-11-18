@@ -14,6 +14,11 @@ page.on('console', message => { if (message.type() === 'error') errors.push(mess
 const evidence = process.env.ACCESS_EVIDENCE_DIR || 'work/access-parent-evidence';
 await mkdir(evidence, { recursive: true });
 const proof = [];
+const workspace = process.env.ACCESS_WORKSPACE_URL || 'http://127.0.0.1:4180/workspace/';
+async function activeEditor() {
+  const host = await (await page.locator('#editor').elementHandle()).contentFrame();
+  return host.childFrames()[0];
+}
 const target = process.env.APP || 'deckcraft';
 async function until(frame, predicate) {
  const deadline = Date.now() + 30_000;
@@ -23,16 +28,16 @@ async function until(frame, predicate) {
  }
  throw Error('The actual engine did not reach the expected document state.');
 }
-async function start(id, port) {
-  await page.goto(`http://127.0.0.1:4180/workspace/?app=${id}`);
+async function start(id) {
+  await page.goto(new URL(`?app=${id}`, workspace).href);
   await page.waitForFunction(() => !document.getElementById('new').disabled, null, { timeout: 90_000 });
-  return page.frames().find(frame => frame.url().includes(`:${port}/`) && (!frame.url().includes('/slipcurve-workspace/') || frame.url().includes('pdfcraft.html')));
+  return activeEditor();
 }
 async function saveDownload(name) {
   await page.locator('#save').click();
   await page.waitForFunction(() => document.getElementById('status').textContent.startsWith('Saved '), null, { timeout: 45_000 });
   const saved = await page.evaluate(async () => {
-    const store = await (await import('/workspace/store.mjs')).openProjects();
+    const store = await (await import(new URL('store.mjs', location.href).href)).openProjects();
     try { const record = await store.load(document.getElementById('documents').value); return { id: record.id, sha256: record.sha256, size: record.size, name: record.name }; } finally { store.close(); }
   });
   const downloading = page.waitForEvent('download');
@@ -45,7 +50,7 @@ async function saveDownload(name) {
 }
 try {
  if (target === 'deckcraft') {
- const deck = await start('deckcraft', 4200);
+ const deck = await start('deckcraft');
  await deck.evaluate(() => window.deckcraft.execute('insert.textBox', { rect: [100, 150, 600, 100], text: 'Discard seed' }));
  await page.locator('#new').click();
  await until(deck, async () => (await window.deckcraft.docInspect()).slides[0].shapes === 2);
@@ -68,7 +73,7 @@ try {
  proof.push({ application: 'ACCESS Presentations', ...saved, independentPptxXML: true, reopened: true });
  }
  if (target === 'figcraft') {
-  const fig = await start('figcraft', 4202);
+  const fig = await start('figcraft');
   await fig.waitForFunction(() => Boolean(window.figcraft?.execute));
   await page.locator('#new').click();
   await until(fig, async () => { try { return Boolean(await window.figcraft.docInspect()); } catch { return false; } });
@@ -93,7 +98,7 @@ try {
   proof.push({ application: 'ACCESS Interface Design', ...saved, independentZipJson: true, reopened: true });
  }
  if (target === 'cadcraft') {
-  const cad = await start('cadcraft', 4195);
+  const cad = await start('cadcraft');
   await page.locator('#new').click();
   await until(cad, async () => { try { return Boolean(await window.cadcraft.docInspect()); } catch { return false; } });
   await cad.evaluate(async () => {
@@ -118,7 +123,7 @@ try {
   proof.push({ application: 'ACCESS Technical Drawing', ...saved, independentDxf: true, reopened: true });
  }
  if (target === 'pdfcraft') {
-  const pdf = await start('pdfcraft', 4198);
+  const pdf = await start('pdfcraft');
   await pdf.waitForFunction(() => Boolean(window.pdfcraft?.execute));
   await page.locator('#new').click();
   await until(pdf, async () => Boolean((await window.pdfcraft.docInspect()).active));

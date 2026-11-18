@@ -8,8 +8,15 @@
     guide.src = new URL('student-guide.js', document.currentScript.src).href;
     document.head.append(guide);
   }
-  if (!navigation || navigation.classList.contains('hub-tools') ||
-      location.origin !== 'http://127.0.0.1:4180') return;
+  if (!navigation) return;
+  const link = navigation.querySelector('[data-tools-link]');
+  if (!link) return;
+  if (location.protocol === 'file:') {
+    const publicTools = new URL('https://gostrogis.github.io/ACCESS_IS4S/processing-tools/');
+    publicTools.search = new URL(link.href).search;
+    link.href = publicTools.href;
+  }
+  if (location.origin !== 'http://127.0.0.1:4180') return;
 
   async function connectTools() {
     const response = await fetch('/health.json', {
@@ -24,7 +31,7 @@
     const destination = new URL('/workspace/', location.origin);
     destination.searchParams.set('skill', navigation.dataset.skill || 'digital');
     destination.searchParams.set('app', navigation.dataset.application || 'wordcraft');
-    navigation.querySelector('[data-tools-link]').href = destination.href;
+    link.href = destination.href;
     navigation.hidden = false;
     document.body.classList.add('access-tools-active');
   }

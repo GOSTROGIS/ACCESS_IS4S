@@ -1,0 +1,34 @@
+name: Publish ACCESS IS4S
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: access-public-pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Assemble the public site and check its size
+        run: |
+          mkdir "$RUNNER_TEMP/public-site"
+          git archive HEAD -- index.html 404.html .nojekyll brand assistant/public downloads processing-tools programs skills textbook tools source ':!source/storytold/apps' | tar -x -C "$RUNNER_TEMP/public-site"
+          test "$(du -sb "$RUNNER_TEMP/public-site" | cut -f1)" -le 1000000000
+          python3 source/site/build_processing_workspace.py
+          git diff --exit-code -- processing-tools
+          node --test source/site/test-student-*.mjs
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/public-site
+      - id: deploy
+        uses: actions/deploy-pages@v4

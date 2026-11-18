@@ -1,5 +1,8 @@
 # Retain the application sources' original bytes across platforms.
 source/storytold/apps/** -text
+# These are verified release bytes, including upstream notices and compiled JS.
+/processing-tools/apps/** -text -whitespace
+/processing-tools/apps/*/host/** text eol=lf whitespace=trailing-space,space-before-tab
 assistant/public/lessons.json text eol=lf
 assistant/public/vendor/*.wasm binary
 assistant/public/vendor/*.gguf binary

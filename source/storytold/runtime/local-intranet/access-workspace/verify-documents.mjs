@@ -16,6 +16,11 @@ page.on('dialog', dialog => dialog.accept());
 const evidence = process.env.ACCESS_EVIDENCE_DIR || 'work/access-parent-evidence';
 await mkdir(evidence, { recursive: true });
 const proof = [];
+const workspace = process.env.ACCESS_WORKSPACE_URL || 'http://127.0.0.1:4180/workspace/';
+async function activeEditor() {
+  const host = await (await page.locator('#editor').elementHandle()).contentFrame();
+  return host.childFrames()[0];
+}
 async function until(frame, predicate) {
  const deadline = Date.now() + 30_000;
  while (Date.now() < deadline) {
@@ -25,10 +30,10 @@ async function until(frame, predicate) {
  throw Error('The actual engine did not reach the expected document state.');
 }
 try {
-  await page.goto('http://127.0.0.1:4180/workspace/?skill=numeracy&app=gridcraft');
-  await page.waitForFunction(() => !document.getElementById('new').disabled, { timeout: 120_000 });
+  await page.goto(new URL('?skill=numeracy&app=gridcraft', workspace).href);
+  await page.waitForFunction(() => !document.getElementById('new').disabled, null, { timeout: 120_000 });
   console.log(JSON.stringify({ stage: 'ready', title: await page.title(), status: await page.locator('#status').innerText(), frames: page.frames().map(frame => frame.url()) }));
-  const editor = page.frames().find(frame => frame.url().includes(':4196/') && !frame.url().includes('/slipcurve-workspace/'));
+  const editor = await activeEditor();
   await editor.evaluate(() => window.gridcraft.execute('cell.set', { cell: 'A1', input: 'Discard this seed' }));
   await page.locator('#new').click();
   await until(editor, async () => (await window.gridcraft.docInspect()).sheets[0].cells === 0);
@@ -40,7 +45,7 @@ try {
   await page.locator('#save').click();
   await page.waitForFunction(() => document.getElementById('status').textContent.startsWith('Saved '));
   const savedGrid = await page.evaluate(async () => {
-    const store = await (await import('/workspace/store.mjs')).openProjects();
+    const store = await (await import(new URL('store.mjs', location.href).href)).openProjects();
     try { const record = await store.load(document.getElementById('documents').value); return { id: record.id, sha256: record.sha256, size: record.size, name: record.name }; } finally { store.close(); }
   });
   const downloadEvent = page.waitForEvent('download');
@@ -65,7 +70,7 @@ try {
   proof.push({ application: 'ACCESS Spreadsheets', ...savedGrid, values, reopenedGrid, independentXlsxXML: true });
   await page.locator('#application').selectOption('wordcraft');
   await page.waitForFunction(() => !document.getElementById('new').disabled);
-  const word = page.frames().find(frame => frame.url().includes(':4197/') && !frame.url().includes('/slipcurve-workspace/'));
+  const word = await activeEditor();
   await page.locator('#new').click();
   await until(word, async () => { try { await window.wordcraft.docInspect(); return true; } catch { return false; } });
   await word.evaluate(() => window.wordcraft.execute('text.insert', { text: 'Discard this seed' }));
@@ -76,7 +81,7 @@ try {
   await page.locator('#save').click();
   await page.waitForFunction(() => document.getElementById('status').textContent.startsWith('Saved '));
   const savedWord = await page.evaluate(async () => {
-    const store = await (await import('/workspace/store.mjs')).openProjects();
+    const store = await (await import(new URL('store.mjs', location.href).href)).openProjects();
     try { const record = await store.load(document.getElementById('documents').value); return { id: record.id, sha256: record.sha256, size: record.size, name: record.name }; } finally { store.close(); }
   });
   const wordDownload = page.waitForEvent('download');

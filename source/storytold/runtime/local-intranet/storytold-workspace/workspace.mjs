@@ -1,7 +1,9 @@
 const frame = document.getElementById('editor');
 const status = document.getElementById('status');
-const access = new URLSearchParams(location.search).get('parent') === 'access';
-const parentOrigin = access ? 'http://127.0.0.1:4180' : 'http://127.0.0.1:4184';
+const parentProduct = new URLSearchParams(location.search).get('parent');
+const publicHost = parentProduct === 'access-public' && document.documentElement.dataset.distribution === 'pages';
+const access = parentProduct === 'access' || publicHost;
+const parentOrigin = publicHost ? location.origin : access ? 'http://127.0.0.1:4180' : 'http://127.0.0.1:4184';
 const maximumBytes = 512 * 1024 * 1024;
 const hosted = new Set(['cadcraft', 'deckcraft', 'figcraft', 'gridcraft', 'wordcraft', 'pdfcraft']);
 const formats = { cadcraft: 'dxf', deckcraft: 'pptx', figcraft: 'figcraft', gridcraft: 'xlsx', wordcraft: 'docx', pdfcraft: 'pdf' };

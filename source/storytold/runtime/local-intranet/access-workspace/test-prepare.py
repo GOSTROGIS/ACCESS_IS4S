@@ -69,12 +69,12 @@ class ContextLinks(unittest.TestCase):
             self.assertTrue(hub.visible)
             self.assertEqual(hub.links, {
                 'index.html': 'Skills',
-                'http://127.0.0.1:4180/workspace/?skill=digital&app=wordcraft': 'Storytold apps',
+                'processing-tools/?skill=digital&app=wordcraft': 'Processing Tools',
                 'assistant/public/': 'AI assistant',
             })
             self.assertIn('data-skill="writing" data-application="wordcraft"', writing)
             self.assertIn('>Learn</a>', writing)
-            self.assertIn('>Tools</a>', writing)
+            self.assertIn('>Processing Tools</a>', writing)
             self.assertNotIn('<iframe', writing)
             digital = first['skills/digital/index.html']
             self.assertIn('data-skill="digital"', digital)

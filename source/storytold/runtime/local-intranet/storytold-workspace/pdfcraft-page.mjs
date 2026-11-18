@@ -29,5 +29,5 @@ const worker = document.createElement('meta');
 worker.name = 'pdfcraft-ocr-worker';
 worker.content = config.worker;
 document.head.append(worker);
-const { default: init } = await import(config.loader);
+const { default: init } = await import(runtime.href);
 await init({ module_or_path: config.wasm });

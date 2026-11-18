@@ -1,0 +1,107 @@
+{
+  "apps": [
+    {
+      "id": "vectorcraft",
+      "port": 4190,
+      "version": "v0.24.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "filmcraft",
+      "port": 4191,
+      "version": "v0.20.1-is4s",
+      "distribution": "pages"
+    },
+    {
+      "id": "effectcraft",
+      "port": 4192,
+      "version": "v0.24.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "photocraft",
+      "port": 4193,
+      "version": "v0.23.1-hosting-fix",
+      "distribution": "pages"
+    },
+    {
+      "id": "lightcraft",
+      "port": 4194,
+      "version": "v0.21.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "cadcraft",
+      "port": 4195,
+      "version": "v0.20.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "gridcraft",
+      "port": 4196,
+      "version": "v0.19.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "wordcraft",
+      "port": 4197,
+      "version": "v0.18.1-access-870d2004",
+      "distribution": "pages"
+    },
+    {
+      "id": "pdfcraft",
+      "port": 4198,
+      "version": "v0.21.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "designcraft",
+      "port": 4199,
+      "version": "v0.20.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "deckcraft",
+      "port": 4200,
+      "version": "v0.18.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "soundcraft",
+      "port": 4201,
+      "version": "v0.20.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "figcraft",
+      "port": 4202,
+      "version": "v0.18.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "texturecraft",
+      "port": 4203,
+      "version": "v0.6.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "materialcraft",
+      "port": 4204,
+      "version": "v0.4.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "craft-anything",
+      "port": 4205,
+      "version": "v0.6.1",
+      "distribution": "pages"
+    },
+    {
+      "id": "craft-launcher",
+      "port": 4206,
+      "version": "v0.19.2",
+      "distribution": "pages"
+    }
+  ],
+  "native": []
+}

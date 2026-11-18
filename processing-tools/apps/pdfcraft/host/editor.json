@@ -1,0 +1,8 @@
+{
+  "id": "pdfcraft",
+  "label": "ACCESS PDF Editor",
+  "entry": "../index.html",
+  "loader": "../pdfcraft-web-dbf16682ba914f2f.js",
+  "wasm": "../pdfcraft-web-dbf16682ba914f2f_bg.wasm",
+  "worker": "../pdfcraft-ocr-worker-b363fe94bbdd0923_loader.js"
+}

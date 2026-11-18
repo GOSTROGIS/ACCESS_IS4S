@@ -52,8 +52,13 @@ export function title(value, fallback = 'My project') {
   return value.replace(/[\u0000-\u001f\u007f]/gu, '').trim().slice(0, 120) || fallback;
 }
 
-export function editorUrl(app, installed) {
+export function editorUrl(app, installed, publicBase) {
   if (!app || !app.port || installed?.port !== app.port) throw Error('The installed browser editor does not match its approved route.');
+  if (publicBase) {
+    if (installed.distribution !== 'pages' || installed.id !== app.id || byId.get(app.id)?.port !== app.port)
+      throw Error('The public editor does not match its published route.');
+    return new URL(`apps/${app.id}/host/?parent=access-public`, publicBase).href;
+  }
   if (installed?.product === 'access') {
     if (installed.kind !== 'web' || installed.id !== `access-${app.id}` || installed.sourceApplication !== app.id || app.port !== ownedWebPort(app.id)) throw Error('The owned browser editor does not match its approved route.');
   } else if (installed?.id !== app.id || byId.get(app.id)?.port !== app.port) throw Error('The installed browser editor does not match its approved route.');
@@ -66,9 +71,9 @@ export function ownedWebPort(id) {
   return 4300 + index;
 }
 
-export function browserApplication(app, installed) {
+export function browserApplication(app, installed, publicBase) {
   const resolved = installed?.product === 'access' ? { ...app, port: ownedWebPort(app.id) } : app;
-  editorUrl(resolved, installed);
+  editorUrl(resolved, installed, publicBase);
   return resolved;
 }
 
@@ -106,8 +111,8 @@ export async function verifyDocument(record) {
   return record;
 }
 
-export function acceptedMessage(event, frameWindow, app) {
-  return Boolean(app?.port && event.source === frameWindow && event.origin === `http://127.0.0.1:${app.port}` &&
+export function acceptedMessage(event, frameWindow, app, publicBase) {
+  return Boolean(app?.port && event.source === frameWindow && event.origin === (publicBase?.origin || `http://127.0.0.1:${app.port}`) &&
     event.data && typeof event.data === 'object' && event.data.application === app.id &&
     ['ready', 'dirty', 'save', 'error'].some(type => event.data.type === `slipcurve-editor:${type}`));
 }

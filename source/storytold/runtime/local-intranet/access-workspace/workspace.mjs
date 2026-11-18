@@ -4,6 +4,7 @@ import { openProjects } from './store.mjs';
 const $ = id => document.getElementById(id);
 const frame = $('editor');
 const query = new URLSearchParams(location.search);
+const publicBase = document.documentElement.dataset.distribution === 'pages' ? new URL('./', location.href) : null;
 const skill = Object.hasOwn(SKILLS, query.get('skill')) ? query.get('skill') : 'digital';
 const context = SKILLS[skill];
 let store, project, application, installed, currentDocument, pendingDocument;
@@ -37,7 +38,7 @@ function mayReplace() {
 }
 function send(type, extra = {}, transfer = []) {
   if (!ready || !application?.port) throw Error('The browser editor is not ready.');
-  frame.contentWindow.postMessage({ type: `slipcurve-editor:${type}`, application: application.id, ...extra }, new URL(editorUrl(application, installed)).origin, transfer);
+  frame.contentWindow.postMessage({ type: `slipcurve-editor:${type}`, application: application.id, ...extra }, new URL(editorUrl(application, installed, publicBase)).origin, transfer);
 }
 function download(record) {
   const url = URL.createObjectURL(new Blob([checkBytes(record.bytes)], { type: 'application/octet-stream' }));
@@ -79,7 +80,7 @@ function describe(record) {
 }
 function showEditor(id, opening) {
   const base = byId.get(id);
-  const next = browserApps.has(id) ? browserApplication(base, browserApps.get(id)) : base;
+  const next = browserApps.has(id) ? browserApplication(base, browserApps.get(id), publicBase) : base;
   if (!next) throw Error('Choose an available application.');
   application = next;
   installed = browserApps.get(id);
@@ -100,7 +101,7 @@ function showEditor(id, opening) {
   $('empty').hidden = Boolean(installed);
   if (installed) {
     frame.title = next.label;
-    frame.src = editorUrl(next, installed);
+    frame.src = editorUrl(next, installed, publicBase);
     status(`Starting ${next.label}…`);
   } else {
     frame.removeAttribute('src');
@@ -108,7 +109,8 @@ function showEditor(id, opening) {
     const heading = document.createElement('h3');
     heading.textContent = next.label;
     const text = document.createElement('p');
-    text.textContent = 'Use the installed desktop application for this tool. Its native editing controls and services run outside the browser. Import saved project files here to keep them with your learning project.';
+    text.textContent = publicBase ? 'This application requires the installed desktop runtime or an authenticated application server.' :
+      'Use the installed desktop application for this tool. Its native editing controls and services run outside the browser. Import saved project files here to keep them with your learning project.';
     $('empty').append(heading, text);
     status(nativeApps.has(id) ? 'This application uses the installed desktop runtime.' : 'No runtime is listed for this application.');
     if (opening) {
@@ -138,7 +140,7 @@ async function openRecord(record) {
 }
 
 window.addEventListener('message', event => {
-  if (!acceptedMessage(event, frame.contentWindow, application)) return;
+  if (!acceptedMessage(event, frame.contentWindow, application, publicBase)) return;
   const message = event.data;
   if (message.type === 'slipcurve-editor:ready') {
     ready = true;
@@ -240,14 +242,18 @@ async function start() {
   $('lesson').href = `/ACCESS_IS4S/skills/${skill}/`;
   $('lesson').textContent = `${context.label} lessons`;
   $('tools-tab').href = location.pathname + location.search;
-  const response = await fetch('/applications.json', { cache: 'no-store' });
-  if (!response.ok) throw Error('The installed application inventory is unavailable. Start the folder intranet.');
+  if (publicBase) {
+    const {enableRuntimes} = await import(new URL('enable-runtimes.mjs', publicBase).href);
+    await enableRuntimes();
+  }
+  const response = await fetch(publicBase ? new URL('applications.json', publicBase) : '/applications.json', { cache: 'no-store' });
+  if (!response.ok) throw Error('The application list could not be loaded.');
   const manifest = await response.json();
   if (!Array.isArray(manifest.apps) || !Array.isArray(manifest.native)) throw Error('The installed application inventory is invalid.');
   for (const row of manifest.apps) {
     const app = byId.get(row.id);
     if (!app || browserApps.has(row.id)) throw Error('Unexpected browser application in the installed inventory.');
-    editorUrl(app, row);
+    editorUrl(app, row, publicBase);
     browserApps.set(row.id, row);
   }
   for (const row of manifest.native) { if (byId.has(row.id)) nativeApps.set(row.id, row); }
