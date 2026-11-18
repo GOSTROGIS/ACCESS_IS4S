@@ -156,12 +156,15 @@ async function slipcurveRuntime(root, mode, report) {
       args.push('--source-cache', cache);
     }
   }
-  await projectRuntime('SLIPCURVE', mode, join(app, 'runtime', 'python.exe'), args, report);
+  await projectRuntime(root, 'SLIPCURVE', mode, join(app, 'runtime', 'python.exe'), args, report);
 }
 
-async function projectRuntime(name, mode, executable, args, report) {
+async function projectRuntime(root, name, mode, executable, args, report) {
   try {
-    const result = await run(executable, args, { windowsHide: true, timeout: 3_300_000 });
+    const helper = join(source, 'project-command.py');
+    if (!(await lstat(helper)).isFile() || relative(helper, await realpath(helper)) !== '') throw Error('The owned project command launcher may not be redirected');
+    const python = join(root, 'SLIPCURVE', 'runtime', 'python.exe');
+    const result = await run(python, ['-I', '-B', helper, '--timeout', '3300', '--', executable, ...args], { windowsHide: true, timeout: 3_300_000 });
     const outcome = result.stdout.trim().split(/\r?\n/).at(-1) || `${name} ${mode} passed`;
     console.log(outcome);
     await updateLog(report, outcome);
@@ -176,7 +179,7 @@ async function projectRuntime(name, mode, executable, args, report) {
 async function consultingRuntime(root, mode, report) {
   const script = join(source, 'consulting-release.mjs');
   if (relative(script, await realpath(script)) !== '') throw Error('CONSULTING updater may not be redirected');
-  await projectRuntime('CONSULTING', mode, process.execPath, [script, mode, '--root', root], report);
+  await projectRuntime(root, 'CONSULTING', mode, process.execPath, [script, mode, '--root', root], report);
 }
 
 async function automationRuntime(root, mode, report, only) {

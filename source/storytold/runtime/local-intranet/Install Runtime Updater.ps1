@@ -4,6 +4,7 @@ param(
     [Parameter(Mandatory)][string]$PythonDependencies,
     [Parameter(Mandatory)][string]$Chrome,
     [string]$SlipcurveChrome,
+    [string]$SlipcurveSourceCache,
     [string]$Git = (Get-Command git.exe -ErrorAction SilentlyContinue).Source
 )
 
@@ -49,7 +50,7 @@ foreach ($name in $updaterFiles) {
 }
 $localFiles = @(
     'intranet.mjs', 'runtime-state.mjs', 'product-runtimes.mjs', 'native-profile.mjs', 'consulting-edition.mjs', 'consulting-release.mjs',
-    'consulting-serve.mjs', 'consulting-mcp.mjs', 'prepare.py', 'stage-runtime.py', 'update-runtimes.mjs'
+    'consulting-serve.mjs', 'consulting-mcp.mjs', 'prepare.py', 'stage-runtime.py', 'update-runtimes.mjs', 'project-command.py'
 )
 foreach ($name in $localFiles) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $local
@@ -67,7 +68,14 @@ $previous = if (Test-Path -LiteralPath $settingsFile) {
     Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json
 }
 $slipcurveBrowser = if ($SlipcurveChrome) { (Get-Item -LiteralPath $SlipcurveChrome).FullName } else { $previous.slipcurveChrome }
-[IO.File]::WriteAllText($settingsFile, (@{ chrome = $chromePath; slipcurveChrome = $slipcurveBrowser; git = $gitPath } | ConvertTo-Json))
+$sourceCache = if ($SlipcurveSourceCache) { $SlipcurveSourceCache } else { $previous.slipcurveSourceCache }
+$settings = @{ chrome = $chromePath; slipcurveChrome = $slipcurveBrowser; git = $gitPath }
+if ($sourceCache) {
+    $cacheItem = Get-Item -LiteralPath $sourceCache
+    if (!$cacheItem.PSIsContainer -or ($cacheItem.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'The source cache must be a direct repository directory.' }
+    $settings.slipcurveSourceCache = $cacheItem.FullName
+}
+[IO.File]::WriteAllText($settingsFile, ($settings | ConvertTo-Json))
 & $node (Join-Path $local 'update-runtimes.mjs') verify --root $installationPath
 if ($LASTEXITCODE -ne 0) { throw 'An installed application failed its updater regression. The launchers were not switched.' }
 
