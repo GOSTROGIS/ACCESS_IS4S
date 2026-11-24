@@ -10608,7 +10608,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
     { id: 'od', name: 'OD for every fit-up' },
     { id: 'id', name: 'ID for every fit-up' }
   ]
-  var SHAPES = { pipe: 1, cylinder: 1, 'angle-iron': 1, 'right-triangle': 1 }
+  var SHAPES = { pipe: 1, cylinder: 1, 'angle-iron': 1, 'right-triangle': 1, 'mitred-cylinder': 1 }
   function fitOf(id) { return FITS.filter(function (f) { return f.id === id })[0] || FITS[0] }
   function capOf(id) { return CAPS.filter(function (c) { return c.id === id })[0] || CAPS[0] }
   function pos(v) { return typeof v === 'number' && isFinite(v) && v > 0 }
@@ -10703,6 +10703,20 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
     out.push(row('D', 'Dg', 'Diagonal of the flat plate (√(h² + B²))', Dg, L3('Dg', '√(h² + B²)', '√(' + n6(h) + '² + ' + n6(B) + '²)', lenT(Dg))))
     return out
   }
+  /* ---------- mitred cylinder: parallel line development in 12 spaces ---------- */
+  function pldRows(o, p, f) {
+    var r = +p.r, L = +p.L, th = +p.t, out = []
+    if (!f.pld || !(r > 0 && L > 0 && th > 0 && th < 90)) return out
+    var D = 2 * r, SO = PI * D, S = SO / 12, kk = r * Math.tan(th * PI / 180)
+    out.push(row('SO', 'SO', 'Stretch-out of the pattern (π × D)', SO, L3('SO', 'π × D', 'π × ' + n6(D), lenT(SO))))
+    out.push(row('S', 'S', 'One of the 12 equal spaces (SO ÷ 12)', S, L3('S', 'SO ÷ 12', n6(SO) + ' ÷ 12', lenT(S))))
+    out.push(row('K', 'k', 'Rise of the cut each side of the centre line (r × tan θ)', kk, L3('k', 'r × tan θ', n6(r) + ' × tan ' + n6(th) + '°', lenT(kk))))
+    ;[1, 2, 3, 4, 5, 6, 7].forEach(function (i) {
+      var a = 30 * (i - 1), e = L - kk * Math.cos(a * PI / 180)
+      out.push(row('e' + i, 'e' + i, 'Element line ' + i + ', ' + a + '° around from the short side (L − k × cos ' + a + '°)', e, L3('e' + i, 'L − k × cos ' + a + '°', n6(L) + ' − ' + n6(kk) + ' × cos ' + a + '°', lenT(e))))
+    })
+    return out
+  }
   /* ---------- angle iron: formed plate ---------- */
   function ruleOf(T) {
     var thin = imp() ? inch(T) <= 0.375 + 1e-9 : mm(T) <= 10 + 1e-9, thick = imp() ? inch(T) > 0.4375 + 1e-9 : mm(T) > 11 + 1e-9
@@ -10757,6 +10771,7 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       if (o.shape === 'pipe') return f.roll || f.tank ? pipeRows(o, p, f) : []
       if (o.shape === 'cylinder') return cylRows(o, p, f)
       if (o.shape === 'angle-iron') return formRows(o, p, f)
+      if (o.shape === 'mitred-cylinder') return pldRows(o, p, f)
       return trussRows(o, p, f)
     } catch (e) { return [] }
   }
@@ -10797,6 +10812,9 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       var rl = f.roll
       h += chk('croll', !!rl, 'Rolled from plate: stretch-out on the mean diameter')
       if (rl) h += '<div class="form-grid">' + box('f-t', 'Plate thickness T', 't', rl.t, 'type it, for example 1/4 in') + '</div><p class="muted">D is the outside diameter. The net is drawn on D. The plate is cut to the stretch-out on the mean diameter.</p>'
+    } else if (o.shape === 'mitred-cylinder') {
+      h += chk('pld', !!f.pld, 'Parallel line development: 12 spaces and the element lines')
+      if (f.pld) h += '<p class="muted">D is the outside diameter, so SO = π × D. Point 1 is the shortest line and point 7 the longest. Lines 8 to 12 repeat lines 6 to 2.</p>'
     } else if (o.shape === 'angle-iron') {
       var fm = f.form
       h += chk('form', !!fm, 'Formed with an inside radius (Radiused Sections)')
@@ -10863,6 +10881,8 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
         return } }
       else if (x === 'rule') { if (el.checked) f.rule = true
         else delete f.rule }
+      else if (x === 'pld') { if (el.checked) f.pld = true
+        else delete f.pld }
       else if (x === 'truss') { if (el.checked) f.truss = {}
         else delete f.truss }
       else if (x === 'e') { if (!setLen(o, f.truss, 'e', v, err)) { el.setAttribute('aria-invalid', 'true')
@@ -10928,6 +10948,8 @@ window.SC_BRAND = {"name": "ACCESS Indigenous Skills4Success"}
       if (x.form && typeof x.form === 'object') { out.form = {}
         len(x.form, 'ir', out.form) }
       if (x.rule) out.rule = true
+    } else if (id === 'mitred-cylinder') {
+      if (x.pld) out.pld = true
     } else if (x.truss && typeof x.truss === 'object') { out.truss = {}
       len(x.truss, 'e', out.truss) }
     return Object.keys(out).length ? out : null

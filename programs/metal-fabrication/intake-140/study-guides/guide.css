@@ -1,0 +1,51 @@
+/* Study guides: big type, one idea per line, high contrast, no justified text. */
+body.guide{font-size:20px;line-height:1.7}
+.guide main{max-width:46rem}
+.guide h1{font-size:2rem}
+.guide h2{font-size:1.4rem;margin:1.6em 0 .5em}
+.goal{font-size:1.25rem;font-weight:600;border-left:6px solid var(--gold);padding:.4em .8em;background:var(--gold-tint)}
+.hint{color:var(--muted)}
+.listen audio{width:100%;max-width:32rem;min-height:48px}
+.pic{margin:1.2em 0;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.gv{width:100%;height:auto;display:block;font-family:var(--font-body)}
+.gv .go{fill:var(--gold-tint);stroke:var(--ink);stroke-width:2}
+.gv .gside{fill:var(--gold);opacity:.55}
+.gv .gbg{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.gv .gl{stroke:var(--ink);stroke-width:2}
+.gv .gd{stroke:var(--slate);stroke-width:2}
+.gv .gm{fill:var(--slate)}
+.gv .gk-line{stroke:var(--red-text);stroke-width:3}
+.gv .gk-fill{fill:var(--red-text)}
+.gv .gt{fill:var(--ink);font-size:19px}
+.gv .gsm{font-size:16px}
+.gv .gbig{font-size:24px;font-weight:700}
+.gv .gk{fill:var(--red-text);font-weight:700}
+.steps-big{list-style:none;counter-reset:s;padding:0;margin:0}
+.steps-big>li{counter-increment:s;position:relative;padding:14px 16px 14px 64px;margin:0 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.steps-big>li::before{content:counter(s);position:absolute;left:14px;top:14px;width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.say{margin:0 0 .3em;font-weight:600}
+.math{margin:0;font-size:1.2rem;font-family:"IBM Plex Mono",Consolas,monospace;overflow-wrap:anywhere}
+.keys{margin-top:.7em;padding:10px 12px;border-left:5px solid #247853;background:var(--bg);border-radius:4px}
+.keys-h{margin:0 0 .3em;font-size:.9rem;font-weight:700;color:var(--muted)}
+.keys-seq{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.tk{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 10px;border-radius:8px;font:700 1rem/1 "IBM Plex Mono",Consolas,monospace;border:2px solid var(--ink)}
+.tk-num{background:#1A1512;color:#fff}
+.tk-op{background:#4A4E54;color:#fff}
+.tk-fn,.tk-2nd{background:var(--surface);color:var(--ink)}
+.keys-scr{margin:.5em 0 0}
+.keys-scr span{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.keys-scr output{display:inline-block;padding:4px 10px;background:#DDE8D5;color:#1A1512;font:700 1.15rem "IBM Plex Mono",Consolas,monospace;border-radius:4px}
+.try{padding:14px 16px;border:2px dashed var(--line-strong);border-radius:var(--radius)}
+.try summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;color:var(--red-text)}
+.big-links{list-style:none;padding:0}
+.big-links li{margin:0 0 10px}
+.big-links a,.pn a,.lesson-list a{display:flex;align-items:center;min-height:48px;padding:10px 14px;border:2px solid var(--line-strong);border-radius:var(--radius);background:var(--surface);text-decoration:none;font-weight:600}
+.big-links a:hover,.pn a:hover,.lesson-list a:hover{background:var(--gold-tint)}
+.pn{display:flex;justify-content:space-between;gap:12px;margin:2em 0}
+.lesson-list{list-style:none;padding:0}
+.lesson-list li{margin:0 0 12px}
+.lesson-list a{display:grid;grid-template-columns:48px 1fr;column-gap:12px}
+.lesson-list .n{grid-row:span 2;width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.lesson-list .t{font-size:1.15rem}
+.lesson-list .g{font-weight:400;color:var(--muted)}
+@media (max-width:640px){body.guide{font-size:18px}.steps-big>li{padding-left:56px}}
