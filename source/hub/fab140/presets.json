@@ -1,20 +1,20 @@
 {
   "about": "Shared data for Modules 11 to 16 (build-sections.cjs) and the Intake 140 study guides (build_guides.py). presets: Shape Canvas shapes opened by #sc= links. modules: per hub module, the preset, its link label, the shop note and the study guide page.",
   "presets": {
-    "dfoot": { "n": "Bar 6'-4 7/8\"", "u": "in", "s": [{ "i": "rectangle", "p": { "l": 76.875, "w": 2 } }], "t": ["A bar 6'-4 7/8\" long = 76 7/8\" = 6.40625'."] },
-    "circles-mm": { "n": "Ring, D = 265 mm", "u": "mm", "s": [{ "i": "circle", "p": { "r": 132.5 } }], "t": ["D = 265 mm, so r = 132.5 mm.", "C = π × D = π × 265 = 833 mm."] },
-    "circles-in": { "n": "Circle, D = 33\"", "u": "in", "s": [{ "i": "circle", "p": { "r": 16.5 } }], "t": ["r = 16 1/2\", so D = 33\".", "C = π × 33 = 103 11/16\"."] },
-    "rolled": { "n": "Rolled ring, ID 245, PL 10", "u": "mm", "s": [{ "i": "cylinder", "p": { "r": 132.5, "h": 300 }, "x": { "fab": { "roll": { "t": 10 } } } }], "t": ["ID 245 mm + 2 × 10 mm plate = OD 265 mm, so r = 132.5 mm.", "MD = 255 mm. SO = π × 255 = 801 mm."] },
-    "mass": { "n": "Plate 2440 × 1220 × 10", "u": "mm", "s": [{ "i": "rectangular-prism", "p": { "l": 2440, "w": 1220, "h": 10 } }], "t": ["2.44 × 1.22 × 10 × 7.85 = 233.68 kg."] },
-    "capacity": { "n": "Box tank 8' × 4' × 3'-6\"", "u": "in", "s": [{ "i": "rectangular-prism", "p": { "l": 96, "w": 48, "h": 42 } }], "t": ["8' × 4' × 3.5' = 112 cu ft. 112 × 6.25 = 700 gallons."] },
-    "pld": { "n": "Pipe cut 22.5°, D 168", "u": "mm", "s": [{ "i": "mitred-cylinder", "p": { "r": 84, "L": 200, "t": 22.5 }, "x": { "fab": { "pld": true } } }], "t": ["D = 168 mm, L = 200 mm on the centre line, cut 22.5° off square.", "Shortest line a = 165 mm. Longest line b = 235 mm."] }
+    "dfoot": {"n": "Bar 6'-4 7/8\"", "u": "in", "s": [{"i": "rectangle", "p": {"l": 76.875, "w": 2}}], "t": ["A bar 6'-4 7/8\" long = 76 7/8\" = 6.40625'."]},
+    "circles-mm": {"n": "Ring, D = 265 mm", "u": "mm", "s": [{"i": "circle", "p": {"r": 132.5}}], "t": ["D = 265 mm, so r = 132.5 mm.", "C = π × D = π × 265 = 833 mm."]},
+    "circles-in": {"n": "Circle, D = 33\"", "u": "in", "s": [{"i": "circle", "p": {"r": 16.5}}], "t": ["r = 16 1/2\", so D = 33\".", "C = π × 33 = 103 11/16\"."]},
+    "rolled": {"n": "Rolled ring, ID 245, PL 10", "u": "mm", "s": [{"i": "cylinder", "p": {"r": 132.5, "h": 300}, "x": {"fab": {"roll": {"t": 10}}}}], "t": ["ID 245 mm + 2 × 10 mm plate = OD 265 mm, so r = 132.5 mm.", "MD = 255 mm. SO = π × 255 = 801 mm."]},
+    "mass": {"n": "Plate 2440 × 1220 × 10", "u": "mm", "s": [{"i": "rectangular-prism", "p": {"l": 2440, "w": 1220, "h": 10}}], "t": ["2.44 × 1.22 × 10 × 7.85 = 233.68 kg."]},
+    "capacity": {"n": "Box tank 8' × 4' × 3'-6\"", "u": "in", "s": [{"i": "rectangular-prism", "p": {"l": 96, "w": 48, "h": 42}}], "t": ["8' × 4' × 3.5' = 112 cu ft. 112 × 6.25 = 700 gallons."]},
+    "pld": {"n": "Pipe cut 22.5°, D 168", "u": "mm", "s": [{"i": "mitred-cylinder", "p": {"r": 84, "L": 200, "t": 22.5}, "x": {"fab": {"pld": true}}}], "t": ["D = 168 mm, L = 200 mm on the centre line, cut 22.5° off square.", "Shortest line a = 165 mm. Longest line b = 235 mm."]}
   },
   "modules": {
-    "dfoot": { "sc": "dfoot", "scLabel": "the bar", "guide": "lesson-02-decimals-of-a-foot", "note": "Decimal feet = feet + inches ÷ 12. To go back: decimal part × 12 = inches, decimal part of the inches × 16 = sixteenths." },
-    "circles": { "sc": "circles-mm", "scLabel": "the ring", "guide": "lesson-03-circles", "note": "C = π × D. Use the π key, not 3.14, unless the sheet says so. Keep every digit until the last step." },
-    "rolled": { "sc": "rolled", "scLabel": "the rolled ring with its stretch-out", "guide": "lesson-04-mean-diameter-and-stretch-out", "note": "MD = ID + T, or MD = OD − T. SO = π × MD." },
-    "mass": { "sc": "mass", "scLabel": "the plate", "guide": "lesson-06-plate-mass", "note": "Shop rule: 40.8 lb per square foot for each inch of thickness, or 7.85 kg per square metre for each millimetre." },
-    "capacity": { "sc": "capacity", "scLabel": "the box tank", "guide": "lesson-09-tanks", "note": "Course factor: 1 cubic foot holds 6.25 gallons. 1 cubic foot = 1,728 cubic inches. 1 cubic metre holds 1,000 litres." },
-    "pld": { "sc": "pld", "scLabel": "the cut pipe with its 12-space pattern", "guide": "lesson-10-parallel-line-development", "note": "Stretch-out = π × D, divided into 12 equal spaces. Each element line = L − r × tan θ × cos(angle around the pipe)." }
+    "dfoot": {"sc": "dfoot", "scLabel": "the bar", "guide": "lesson-02-decimals-of-a-foot", "note": "Decimal feet = feet + inches ÷ 12. To go back: decimal part × 12 = inches, decimal part of the inches × 16 = sixteenths.", "watch": "12 inches in a foot, not 10. 6'-4 7/8\" is 6.40625', not 6.4875'."},
+    "circles": {"sc": "circles-mm", "scLabel": "the ring", "guide": "lesson-03-circles", "note": "C = π × D. Use the π key, not 3.14, unless the sheet says so. Keep every digit until the last step.", "watch": "Double the radius first. π × r gives only half the circumference."},
+    "rolled": {"sc": "rolled", "scLabel": "the rolled ring with its stretch-out", "guide": "lesson-04-mean-diameter-and-stretch-out", "note": "MD = ID + T, or MD = OD − T. SO = π × MD.", "watch": "Do not cut to π × OD. It is too long by about π × T."},
+    "mass": {"sc": "mass", "scLabel": "the plate", "guide": "lesson-06-plate-mass", "note": "Shop rule: 40.8 lb per square foot for each inch of thickness, or 7.85 kg per square metre for each millimetre.", "watch": "Metric rule: length and width in metres, thickness in millimetres. Imperial in inches: divide by 144."},
+    "capacity": {"sc": "capacity", "scLabel": "the box tank", "guide": "lesson-09-tanks", "note": "Course factor: 1 cubic foot holds 6.25 gallons. 1 cubic foot = 1,728 cubic inches. 1 cubic metre holds 1,000 litres.", "watch": "Use the inside sizes. Outside sizes count the plate."},
+    "pld": {"sc": "pld", "scLabel": "the cut pipe with its 12-space pattern", "guide": "lesson-10-parallel-line-development", "note": "Stretch-out = π × D, divided into 12 equal spaces. Each element line = L − r × tan θ × cos(angle around the pipe).", "watch": "Check the calculator shows DEG before you press tan, sin or cos."}
   }
 }

@@ -13,26 +13,21 @@ Run from the repo root:
 import argparse
 import base64
 import html
-import importlib.util
 import json
 import pathlib
 import shutil
 import subprocess
 import sys
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 
 HERE = pathlib.Path(__file__).resolve().parent
 SOURCE = HERE.parent.parent
 
 
-def _load(name):
-    spec = importlib.util.spec_from_file_location(name, HERE / (name + '.py'))
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
-
-
-guides = _load('guides')
+sys.path.insert(0, str(HERE))
+import examples
+import guides
 PRESETS = json.loads((HERE / 'presets.json').read_text(encoding='utf-8'))['presets']
 OUT = pathlib.Path('programs/metal-fabrication/intake-140/study-guides')
 HUB = '../../../../skills/numeracy/hub/'
@@ -80,7 +75,7 @@ def page(title, crumb_href, crumb, body):
             ) % (esc(title), UP, UP, UP, UP, crumb_href, esc(crumb), esc(title), body)
 
 
-def lesson_page(les, shots, prev_next):
+def lesson_page(les, ex, shots, prev_next):
     b = '<p class="goal">%s</p>\n' % esc(les['goal'])
     b += ('<section class="listen" aria-labelledby="listen-h"><h2 id="listen-h">Listen</h2>'
           '<audio controls preload="none" src="audio/%s.mp3"></audio>'
@@ -90,9 +85,25 @@ def lesson_page(les, shots, prev_next):
     for say, math_, seq in les['steps']:
         b += '<li><p class="say">%s</p><p class="math">%s</p>%s</li>\n' % (esc(say), esc(math_), keys_html(shots[seq]) if seq else '')
     b += '</ol>\n'
+    b += ('<section class="listen" aria-labelledby="listen2-h"><h2 id="listen2-h">Listen: worked examples</h2>'
+          '<audio controls preload="none" src="audio/%s-examples.mp3"></audio>'
+          '<p class="hint">Two more examples, a mistake to watch for, and practice questions, read aloud.</p></section>\n' % les['slug'])
+    for i, e in enumerate(ex['examples'], 1):
+        b += '<section class="worked" aria-labelledby="ex%d-h"><h2 id="ex%d-h">Worked example %d. %s</h2>' % (i, i, i, esc(e['title']))
+        b += '<figure class="pic">%s</figure><ol class="steps-big">' % e['visual']
+        for say, math_, k in e['steps']:
+            b += '<li><p class="say">%s</p><p class="math">%s</p>%s</li>' % (esc(say), esc(math_), keys_html(shots[k[0]]) if k else '')
+        b += '</ol><p class="answer">Answer: <strong>%s</strong></p></section>\n' % esc(e['answer'])
+    mk = ex['mistake']
+    b += ('<section class="mistake" aria-labelledby="watch-h"><h2 id="watch-h">Watch out: %s</h2><figure class="pic">%s</figure>'
+          '<p class="say">%s</p></section>\n') % (esc(mk['head']), mk['pic'], esc(mk['fix']))
     q, ans, seq, _ = les['tryit']
     b += ('<section class="try" aria-labelledby="try-h"><h2 id="try-h">Try it</h2><p class="say">%s</p>'
-          '<details><summary>Show the answer</summary><p class="math">%s</p>%s</details></section>\n') % (esc(q), esc(ans), keys_html(shots[seq]))
+          '<details><summary>Show the answer</summary><p class="math">%s</p>%s</details>') % (esc(q), esc(ans), keys_html(shots[seq]))
+    for pq, pa, pk in ex['practice']:
+        b += ('<p class="say q2">%s</p><details><summary>Show the answer</summary><p class="math">%s</p>%s</details>'
+              % (esc(pq), esc(pa), keys_html(shots[pk[0]])))
+    b += '</section>\n'
     b += '<section class="more" aria-labelledby="more-h"><h2 id="more-h">Practise more</h2><ul class="big-links">'
     b += '<li><a href="%s#fab">Numeracy Hub, Fabrication tab: %s</a></li>' % (HUB, esc(les['hub']))
     if les['sc']:
@@ -106,7 +117,7 @@ def lesson_page(les, shots, prev_next):
 
 
 def index_page(ls):
-    b = ('<p class="goal">Ten short lessons. Each one has a voice to listen to, one picture, a few big steps and the calculator keys.</p>\n'
+    b = ('<p class="goal">Ten lessons. Each one has two recordings to listen to, pictures, three worked examples, a mistake to watch for and practice, all with the calculator keys.</p>\n'
          '<ol class="lesson-list">')
     for les in ls:
         b += ('<li><a href="%s.html"><span class="n">%d</span><span class="t">%s</span><span class="g">%s</span></a></li>'
@@ -115,13 +126,13 @@ def index_page(ls):
     return page('Study guides', '../index.html', 'Intake 140', b)
 
 
-def audio(les, voice):
-    mp3 = OUT / 'audio' / (les['slug'] + '.mp3')
+def audio(slug, text, voice):
+    mp3 = OUT / 'audio' / (slug + '.mp3')
     mp3.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as d:
         wav = pathlib.Path(d) / 'a.wav'
         subprocess.run([sys.executable, '-m', 'piper', '-m', voice, '--length-scale', '1.15', '--sentence-silence', '0.6', '-f', str(wav)],
-                       input=les['say'], text=True, check=True, capture_output=True)
+                       input=text, text=True, check=True, capture_output=True)
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', str(wav), '-ac', '1', '-codec:a', 'libmp3lame', '-q:a', '6', str(mp3)], check=True)
 
 
@@ -131,7 +142,19 @@ def main():
     ap.add_argument('--no-audio', action='store_true')
     a = ap.parse_args()
     ls = guides.lessons()
-    shots = play(sorted({s[2] for les in ls for s in les['steps'] if s[2]} | {les['tryit'][2] for les in ls}))
+    extra = examples.extras()
+    checks = {}
+    if set(extra) != {les['n'] for les in ls}:
+        sys.exit('examples.py and guides.py list different lessons')
+    for les in ls:
+        ex = extra[les['n']]
+        checks.update({k[0]: k[1] for e in ex['examples'] for _, _, k in e['steps'] if k})
+        checks.update({k[0]: k[1] for _, _, k in ex['practice']})
+    shots = play(sorted({s[2] for les in ls for s in les['steps'] if s[2]} | {les['tryit'][2] for les in ls} | set(checks)))
+    for seq, want in checks.items():
+        got = shots[seq]['value']
+        if abs(got - want) > 1e-6 * max(1, abs(want)):
+            sys.exit('keys disagree: %s shows %s, expected %s' % (seq, got, want))
     bad = [s for s, r in shots.items() if r['error']]
     if bad:
         sys.exit('calculator error on: ' + ', '.join(bad))
@@ -143,9 +166,11 @@ def main():
     shutil.copyfile(HERE / 'guide.css', OUT / 'guide.css')
     for i, les in enumerate(ls):
         nav = (ls[i - 1] if i else None, ls[i + 1] if i + 1 < len(ls) else None)
-        (OUT / (les['slug'] + '.html')).write_text(lesson_page(les, shots, nav), encoding='utf-8')
-        if not a.no_audio:
-            audio(les, a.voice)
+        (OUT / (les['slug'] + '.html')).write_text(lesson_page(les, extra[les['n']], shots, nav), encoding='utf-8')
+    if not a.no_audio:
+        jobs = [(les['slug'], les['say']) for les in ls] + [(les['slug'] + '-examples', examples.narration(les['n'], extra[les['n']])) for les in ls]
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            list(pool.map(lambda j: audio(j[0], j[1], a.voice), jobs))
     (OUT / 'index.html').write_text(index_page(ls), encoding='utf-8')
     print('study guides: %d lessons, %d key sequences checked' % (len(ls), len(shots)))
 

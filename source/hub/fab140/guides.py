@@ -49,28 +49,6 @@ def tape_svg():
     return svg(560, 170, 'One inch of tape, 16 marks. 14 marks shaded: 7/8 of an inch.', b)
 
 
-def bar_svg(top, bottom):
-    b = DEFS + '<rect class="go" x="40" y="60" width="480" height="40" rx="4"/>'
-    b += arrow_h(40, 520, 40) + t(280, 30, top) + t(280, 140, bottom, 'gt gk gbig')
-    return svg(560, 160, 'A bar %s long. In decimal feet: %s' % (top, bottom), b)
-
-
-def circle_svg(d, c):
-    b = DEFS + '<circle class="go" cx="160" cy="110" r="90"/>' + arrow_h(70, 250, 110) + t(160, 100, d)
-    b += '<path class="gk-line" d="M160,14 A96,96 0 1,1 64,110" fill="none" marker-end="url(#a)"/>'
-    b += t(400, 100, 'Around the outside:', 'gt', 'middle') + t(400, 135, c, 'gt gk gbig')
-    return svg(560, 220, 'A circle. Diameter %s across. Circumference %s around.' % (d, c), b)
-
-
-def ring_svg():
-    b = DEFS + '<circle class="go" cx="130" cy="115" r="95"/><circle class="gbg" cx="130" cy="115" r="75"/>'
-    b += '<circle class="gk-line" cx="130" cy="115" r="85" fill="none" stroke-dasharray="6 5"/>'
-    b += t(130, 112, 'ID 245') + t(130, 136, 'PL 10', 'gt gsm') + t(130, 14, 'MD 255 (dashes)', 'gt gk gsm')
-    b += '<rect class="go" x="290" y="95" width="250" height="34"/>' + arrow_h(290, 540, 160) + t(415, 190, 'SO = π × 255 = 801 mm', 'gt gk')
-    b += t(415, 80, 'Rolled flat', 'gt gsm')
-    return svg(560, 210, 'A rolled ring, inside diameter 245, plate 10. The mean diameter 255 is the dashed circle. Flat, it is 801 mm long.', b)
-
-
 def area_svg():
     b = DEFS + '<rect class="go" x="30" y="40" width="240" height="150"/>' + t(150, 30, '48"') + t(285, 120, '30"', 'gt', 'start')
     b += t(150, 122, '48 × 30 = 1,440 sq in', 'gt gsm')
@@ -79,25 +57,62 @@ def area_svg():
     return svg(560, 235, 'A rectangle 48 by 30 inches and a circle with radius 10 inches.', b)
 
 
-def plate_svg(l, w, th, rule, mass):
+# ---------- pictures ----------
+
+def bar(label, top, parts=None, bottom=None):
+    b = DEFS + '<rect class="go" x="40" y="60" width="480" height="40" rx="4"/>' + arrow_h(40, 520, 40) + t(280, 30, top)
+    if bottom:
+        b += t(280, 140, bottom, 'gt gk gbig')
+    if parts:
+        x = 40
+        for w, lab in parts:
+            b += arrow_h(x, x + w, 125) + t(x + w / 2, 150, lab, 'gt gsm')
+            x += w
+    return svg(560, 165, label, b)
+
+
+def circle(label, d, c, show_r=None):
+    b = DEFS + '<circle class="go" cx="160" cy="110" r="90"/>'
+    if show_r:
+        b += '<line class="gd" x1="160" y1="110" x2="250" y2="110"/>' + t(205, 100, show_r, 'gt gsm')
+    else:
+        b += arrow_h(70, 250, 110) + t(160, 100, d)
+    b += '<path class="gk-line" d="M160,14 A96,96 0 1,1 64,110" fill="none" marker-end="url(#a)"/>'
+    b += t(400, 100, 'Around the outside:') + t(400, 135, c, 'gt gk gbig')
+    return svg(560, 220, label, b)
+
+
+def ring(label, inner, plate, md, so):
+    b = DEFS + '<circle class="go" cx="130" cy="115" r="95"/><circle class="gbg" cx="130" cy="115" r="75"/>'
+    b += '<circle class="gk-line" cx="130" cy="115" r="85" fill="none" stroke-dasharray="6 5"/>'
+    b += t(130, 112, inner) + t(130, 136, plate, 'gt gsm') + t(130, 14, md, 'gt gk gsm')
+    b += '<rect class="go" x="290" y="95" width="250" height="34"/>' + arrow_h(290, 540, 160) + t(415, 190, so, 'gt gk')
+    b += t(415, 80, 'Rolled flat', 'gt gsm')
+    return svg(560, 210, label, b)
+
+
+def plate(label, l, w, th, rule, m):
     b = ('<path class="go" d="M60,140 L360,140 L450,80 L150,80 Z"/><path class="go gside" d="M60,140 L360,140 L360,156 L60,156 Z"/>'
          '<path class="go gside" d="M360,140 L450,80 L450,96 L360,156 Z"/>')
-    b += t(210, 182, l) + t(420, 128, w, 'gt', 'start') + t(52, 154, th, 'gt', 'end') + t(280, 50, rule, 'gt gsm') + t(280, 214, mass, 'gt gk gbig')
-    return svg(560, 230, 'A steel plate %s by %s by %s. %s' % (l, w, th, mass), b)
+    b += t(210, 182, l) + t(420, 128, w, 'gt', 'start') + t(52, 154, th, 'gt', 'end') + t(280, 50, rule, 'gt gsm') + t(280, 214, m, 'gt gk gbig')
+    return svg(560, 230, label, b)
 
 
-def bend_svg():
-    b = DEFS + '<path class="go" d="M60,40 L60,170 Q60,200 90,200 L250,200 L250,184 L90,184 Q76,184 76,170 L76,40 Z"/>'
+def angle(label, a, c, extra):
+    b = '<path class="go" d="M60,40 L60,170 Q60,200 90,200 L250,200 L250,184 L90,184 Q76,184 76,170 L76,40 Z"/>'
     b += '<path class="gk-line" d="M68,170 Q68,192 90,192" fill="none" stroke-width="4"/>'
-    b += t(40, 110, 'A', 'gt gk', 'end') + t(170, 225, 'C', 'gt gk') + t(110, 170, 'B (bend)', 'gt gk gsm', 'start')
-    b += t(330, 70, 'MR = IR + T ÷ 2', 'gt', 'start') + t(330, 105, 'B = π × MR × angle ÷ 180', 'gt', 'start') + t(330, 140, 'A = leg − (IR + T)', 'gt', 'start')
-    return svg(560, 240, 'A plate bent 90 degrees. Leg A, the bend B, leg C.', b)
+    b += t(40, 110, a, 'gt gk', 'end') + t(170, 225, c, 'gt gk') + t(110, 170, 'B', 'gt gk gsm', 'start')
+    y = 60
+    for line in extra:
+        b += t(300, y, line, 'gt', 'start')
+        y += 32
+    return svg(560, 240, label, b)
 
 
-def triangle_svg():
-    b = '<path class="go" d="M60,200 L460,200 L460,40 Z"/><path class="gl" d="M440,200 L440,180 L460,180" fill="none"/>'
-    b += t(260, 228, 'run 64 1/4"') + t(475, 125, 'rise 28 1/4"', 'gt', 'start') + t(230, 105, 'c = ?', 'gt gk gbig')
-    return svg(560, 240, 'A right triangle. Run 64 1/4 inches, rise 28 1/4 inches, the long side c is unknown.', b)
+def rtri(label, run, rise, c):
+    b = '<path class="go" d="M60,200 L460,200 L460,60 Z"/><path class="gl" d="M440,200 L440,180 L460,180" fill="none"/>'
+    b += t(260, 228, run) + t(475, 135, rise, 'gt', 'start') + t(230, 115, c, 'gt gk gbig')
+    return svg(560, 240, label, b)
 
 
 def tank_svg():
@@ -154,7 +169,7 @@ def lessons():
     L.append(dict(
         n=2, slug='lesson-02-decimals-of-a-foot', title='Decimals of a foot',
         goal="Change feet and inches to decimal feet, and back again.",
-        visual=bar_svg("6'-4 7/8\"", "6.40625'"),
+        visual=bar('A bar 6 feet 4 7/8 inches long. In decimal feet: 6.40625.', "6'-4 7/8\"", bottom="6.40625'"),
         steps=[
             ('Start with the fraction. Top ÷ bottom.', '7 ÷ 8 = 0.875', None),
             ('Add the inches.', '0.875 + 4 = 4.875"', None),
@@ -181,7 +196,7 @@ def lessons():
     L.append(dict(
         n=3, slug='lesson-03-circles', title='Circles',
         goal='Find the distance around a circle: the circumference.',
-        visual=circle_svg('D = 33"', '103 11/16"'),
+        visual=circle('A circle. Diameter 33 inches across. Circumference 103 11/16 inches around.', 'D = 33"', '103 11/16"'),
         steps=[
             ('The rule: around = π × across.', 'C = π × D', None),
             ('Radius is half. Diameter is 2 × radius.', 'r = 16 1/2", so D = 33"', None),
@@ -205,7 +220,7 @@ def lessons():
     L.append(dict(
         n=4, slug='lesson-04-mean-diameter-and-stretch-out', title='Mean diameter and stretch-out',
         goal='Cut plate the right length before you roll it.',
-        visual=ring_svg(),
+        visual=ring('A rolled ring, inside diameter 245, plate 10. The mean diameter 255 is the dashed circle. Flat, it is 801 mm long.', 'ID 245', 'PL 10', 'MD 255 (dashes)', 'SO = π × 255 = 801 mm'),
         steps=[
             ('Rolling stretches the outside and squeezes the inside.', 'The middle of the plate keeps its length.', None),
             ('That middle circle is the mean diameter, MD.', 'From the inside: MD = ID + T.  From the outside: MD = OD − T.', None),
@@ -251,7 +266,7 @@ def lessons():
     L.append(dict(
         n=6, slug='lesson-06-plate-mass', title='Plate mass by the shop rule',
         goal='Find how much a steel plate weighs before you lift it.',
-        visual=plate_svg("8'", "4'", '1/2"', '40.8 lb per sq ft per inch thick', '652.8 lb'),
+        visual=plate('A steel plate 8 by 4 feet, 1/2 inch thick. It weighs 652.8 pounds.', "8'", "4'", '1/2"', '40.8 lb per sq ft per inch thick', '652.8 lb'),
         steps=[
             ('Imperial rule: 40.8 lb per square foot, for each inch thick.', 'lb = L\' × W\' × 40.8 × T"', None),
             ('Plate 8\' × 4\' × 1/2".', '8 × 4 × 40.8 × 0.5 = 652.8 lb', '8 × 4 × 40.8 × .5 ='),
@@ -274,7 +289,7 @@ def lessons():
     L.append(dict(
         n=7, slug='lesson-07-formed-plate', title='Formed plate and radiused sections',
         goal='Find the flat length of a plate before it is bent.',
-        visual=bend_svg(),
+        visual=angle('A plate bent 90 degrees. Leg A, the bend B, leg C.', 'A', 'C', ['MR = IR + T ÷ 2', 'B = π × MR × angle ÷ 180', 'A = leg − (IR + T)']),
         steps=[
             ('Bend line: the middle of the plate.', 'MR = IR + T ÷ 2 = 1 + 0.25 = 1.25"', None),
             ('Length of a 90° bend.', 'B = π × 1.25 × 90 ÷ 180 = 1.9635"', 'π × 1.25 × 90 ÷ 180 ='),
@@ -299,7 +314,7 @@ def lessons():
     L.append(dict(
         n=8, slug='lesson-08-pythagoras-and-trusses', title='Pythagoras and trusses',
         goal='Find the long side of a right triangle.',
-        visual=triangle_svg(),
+        visual=rtri('A right triangle. Run 64 1/4 inches, rise 28 1/4 inches, the long side c is unknown.', 'run 64 1/4"', 'rise 28 1/4"', 'c = ?'),
         steps=[
             ('Square both short sides. Add. Take the square root.', 'c = √(a² + b²)', None),
             ('Square the rise and the run.', '28.25² = 798.0625.  64.25² = 4,128.0625', None),

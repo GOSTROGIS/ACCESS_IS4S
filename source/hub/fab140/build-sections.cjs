@@ -20,18 +20,33 @@ function row(href, label, text, help) {
   return '    <p class="sc-row"><a class="sc-link" href="' + href + '" target="_blank" rel="noopener" aria-label="' + esc(label) + ', in a new tab">' + text + '</a><span class="sc-help">' + help + '</span></p>\n';
 }
 
-var sections = '', index = '';
-M.MODULES.forEach(function (m, i) {
-  var n = FIRST + i, d = DATA.modules[m.id], inst = M.BY_ID[m.example.task].gen(M.makeRng(1), m.example.fx);
+function example(ex, j, count) {
+  var inst = M.BY_ID[ex.task].gen(M.makeRng(1), ex.fx);
   /* the worked example's keys must show its answer on the calculator */
   inst.keys.forEach(function (k) {
     var c = new T.Calc();
     c.run(k.seq);
-    if (Math.abs(c.value() - k.expect) > 1e-8 * Math.max(1, Math.abs(k.expect))) throw new Error(m.id + ' example keys ' + k.seq);
+    if (Math.abs(c.value() - k.expect) > 1e-8 * Math.max(1, Math.abs(k.expect))) throw new Error(ex.task + ' example keys ' + k.seq);
   });
   var answers = inst.answers.map(function (a) {
     return '<p class="ex-answer">' + esc(a.label) + ': <strong class="fig">' + esc(a.display) + '</strong>' + (a.unit ? ' ' + esc(a.unit) : '') + '</p>';
   }).join('');
+  return '  <div class="example">\n' +
+    (inst.fig ? '  <figure class="paper">' + M.draw(inst.fig) + '</figure>\n' : '') +
+    '  <div class="example-body">\n' +
+    '    <h3 class="h-example">Worked example' + (count > 1 ? ' ' + j : '') + '</h3>\n' +
+    '    <p class="ex-q">' + esc(inst.q) + '</p>\n' +
+    '    <ol class="steps">' + inst.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>\n' +
+    '    ' + answers + '\n' +
+    '      ' + TK.html(inst.keys) + '\n' +
+    '  </div>\n' +
+    '</div>\n';
+}
+
+var sections = '', index = '';
+M.MODULES.forEach(function (m, i) {
+  var n = FIRST + i, d = DATA.modules[m.id];
+  var worked = m.examples.map(function (ex, j) { return example(ex, j + 1, m.examples.length); }).join('');
   sections += '\n<section class="module" id="m-' + m.id + '" aria-labelledby="m-' + m.id + '-h">\n' +
     '  <header class="module-head">\n' +
     '    <p class="eyebrow">Module ' + n + '</p>\n' +
@@ -40,17 +55,8 @@ M.MODULES.forEach(function (m, i) {
     '    <p class="shop-note">' + esc(d.note) + '</p>\n' +
     row(scHref(d.sc), 'Open ' + d.scLabel + ' in Shape Canvas', 'Open in Shape Canvas', 'Opens the shape at these sizes on a new canvas page.') +
     row(GUIDE_ROOT + d.guide + '.html', 'Open the Intake 140 study guide for this lesson', 'Study guide with audio', 'Metal Fabricator Intake 140, lesson ' + m.lesson + '.') +
-    '  </header>\n' +
-    '  <div class="example">\n' +
-    (inst.fig ? '  <figure class="paper">' + M.draw(inst.fig) + '</figure>\n' : '') +
-    '  <div class="example-body">\n' +
-    '    <h3 class="h-example">Worked example</h3>\n' +
-    '    <p class="ex-q">' + esc(inst.q) + '</p>\n' +
-    '    <ol class="steps">' + inst.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>\n' +
-    '    ' + answers + '\n' +
-    '      ' + TK.html(inst.keys) + '\n' +
-    '  </div>\n' +
-    '</div>\n' +
+    '    <p class="shop-note"><strong>Watch out:</strong> ' + esc(d.watch) + '</p>\n' +
+    '  </header>\n' + worked +
     '  <div class="practice-head"><h3>Practice</h3><p class="practice-count" data-module-count="' + m.id + '">' + m.tasks.length + ' tasks</p></div>\n' +
     '  <div class="task-grid" data-module="' + m.id + '"></div>\n' +
     '</section>\n';

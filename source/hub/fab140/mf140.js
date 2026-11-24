@@ -113,7 +113,7 @@ var MF140 = (function () {
   }
   function ln(x1, y1, x2, y2, c) { return '<line class="' + c + '" x1="' + r1(x1) + '" y1="' + r1(y1) + '" x2="' + r1(x2) + '" y2="' + r1(y2) + '"/>'; }
   function rc(x, y, w, h, c) { return '<rect class="' + c + '" x="' + r1(x) + '" y="' + r1(y) + '" width="' + r1(w) + '" height="' + r1(h) + '"/>'; }
-  function ci(x, y, r, c) { return '<circle class="' + c + '" cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r1(r) + '"/>'; }
+  function ci(x, y, r, c, fill) { return '<circle class="' + c + '" cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r1(r) + '"' + (fill === false ? ' fill="none"' : '') + '/>'; }
   function pa(d, c, fill) { return '<path class="' + c + '" d="' + d + '"' + (fill === false ? ' fill="none"' : '') + '/>'; }
   function dimH(x1, x2, y, lab, below) { return ln(x1, y, x2, y, isQ(lab) ? 'dk' : 'd') + tx((x1 + x2) / 2, below ? y + 19 : y - 8, lab, { a: 'middle' }); }
 
@@ -132,7 +132,7 @@ var MF140 = (function () {
       return svg(224, f.label, h);
     },
     shell: function (f) {
-      var cx = 150, cy = 112, Ro = 82, Ri = 64, h = ci(cx, cy, Ro, 'o') + ci(cx, cy, Ri, 'o side') + ci(cx, cy, (Ro + Ri) / 2, 'fold');
+      var cx = 150, cy = 112, Ro = 82, Ri = 64, h = ci(cx, cy, Ro, 'o') + ci(cx, cy, Ri, 'paper-cut') + ci(cx, cy, (Ro + Ri) / 2, 'fold', false);
       h += tx(cx, cy - Ro - 10, f.od, { a: 'middle', sm: true }) + tx(cx, cy + 5, f.id, { a: 'middle', sm: true });
       h += tx(cx + Ro + 8, cy + 40, f.t, { sm: true });
       h += tx(300, 58, 'Rolled flat:', { sm: true }) + rc(300, 70, 230, 34, 'o') + dimH(300, 530, 128, f.so, true);
@@ -207,7 +207,7 @@ var MF140 = (function () {
       id: 'dfoot', title: 'Decimals of a foot', short: 'Feet and inches to decimal feet and back, nearest 1/16", decimal inches for machines',
       why: 'Calculators and machine screens work in decimals. Drawings and tapes work in feet, inches and sixteenths. You change from one to the other many times a day.',
       lesson: 2,
-      example: { task: 'm111', fx: { ft: 6, inch: 4, k: 14 } },
+      examples: [{ task: 'm111', fx: { ft: 6, inch: 4, k: 14 } }, { task: 'm112', fx: { ft: 8, d4: 3542 } }],
       tasks: [
         { id: 'm111', level: 1, title: 'Feet and inches to decimal feet', gen: function (r, fx) {
           var p = fx || { ft: ri(r, 2, 20), inch: ri(r, 1, 11), k: ri(r, 1, 15) };
@@ -279,7 +279,7 @@ var MF140 = (function () {
       id: 'circles', title: 'Circles: diameter and circumference', short: 'C = π × D in millimetres, metres, inches and feet-inches',
       why: 'Rings, flanges, pipe and tanks are round. The circumference is the length around the outside. It tells you how long a bar or plate must be before it is rolled.',
       lesson: 3,
-      example: { task: 'm121', fx: { d: 265 } },
+      examples: [{ task: 'm121', fx: { d: 265 } }, { task: 'm123', fx: { ft: 4, inch: 6, k: 8 } }],
       tasks: [
         { id: 'm121', level: 1, pi: 'calc', title: 'Circumference in millimetres', gen: function (r, fx) {
           var p = fx || { d: ri(r, 30, 300) * 5 }, c = PI * p.d;
@@ -337,7 +337,7 @@ var MF140 = (function () {
       id: 'rolled', title: 'Mean diameter and stretch-out', short: 'MD = ID + T or OD − T, SO = π × MD, metric and imperial',
       why: 'When plate is rolled, the outside stretches and the inside squeezes. The middle of the plate keeps its length. That middle circle is the mean diameter (MD). Cut the plate to π × MD.',
       lesson: 4,
-      example: { task: 'm133', fx: { ID: 245, PL: 10 } },
+      examples: [{ task: 'm133', fx: { ID: 245, PL: 10 } }, { task: 'm134', fx: { OD16: 960, T16: 8 } }],
       tasks: [
         { id: 'm131', level: 1, title: 'Mean diameter from the inside', gen: function (r, fx) {
           var p = fx || { ID: ri(r, 20, 160) * 5, PL: pick(r, [6, 8, 10, 12, 16, 20, 25]) };
@@ -397,7 +397,7 @@ var MF140 = (function () {
       id: 'mass', title: 'Area and plate mass by the shop rule', short: 'Circle and plate areas, 40.8 lb per sq ft per inch, 7.85 kg per sq m per mm',
       why: 'Mass tells you how to lift a part safely, which sling and crane to use, and what the steel costs. The shop rule makes it quick: mild steel plate 1" thick weighs 40.8 lb per square foot, and plate 1 mm thick weighs 7.85 kg per square metre.',
       lesson: 6,
-      example: { task: 'm143', fx: { L: 2440, Wd: 1220, T: 10 } },
+      examples: [{ task: 'm143', fx: { L: 2440, Wd: 1220, T: 10 } }, { task: 'm145', fx: { D: 600, T: 20 } }],
       tasks: [
         { id: 'm141', level: 1, pi: 'calc', title: 'Circle area in square inches', gen: function (r, fx) {
           var p = fx || { r16: ri(r, 3 * 16, 30 * 16) }, rad = p.r16 / 16, a = PI * rad * rad;
@@ -485,7 +485,7 @@ var MF140 = (function () {
       id: 'capacity', title: 'Tank volume and capacity', short: 'Cubic feet × 6.25 gallons, cubic metres × 1,000 litres, box and round tanks',
       why: 'Volume is the space inside a tank. Capacity is how much liquid fits in that space. Find the inside volume first, then change it to gallons or litres.',
       lesson: 9,
-      example: { task: 'm151', fx: { L: 8, Wd: 4, H: 3.5 } },
+      examples: [{ task: 'm151', fx: { L: 8, Wd: 4, H: 3.5 } }, { task: 'm154', fx: { ID: 36, Li: 72 } }],
       tasks: [
         { id: 'm151', level: 1, title: 'Box tank in feet', gen: function (r, fx) {
           var p = fx || { L: ri(r, 3, 14), Wd: ri(r, 2, 8), H: ri(r, 4, 16) / 2 };
@@ -541,7 +541,7 @@ var MF140 = (function () {
       id: 'pld', title: 'Parallel line development', short: 'Pattern stretch-out in 12 spaces, element lines for a pipe cut at an angle and a tee branch',
       why: 'A pattern is the flat shape you wrap around a pipe and mark. Parallel line development finds it with 12 element lines. The math gives each line its exact length, so you can check a drawn pattern or lay one out with a tape.',
       lesson: 10,
-      example: { task: 'm162', fx: { D: 168, L: 200, t: 22.5 } },
+      examples: [{ task: 'm162', fx: { D: 168, L: 200, t: 22.5 } }, { task: 'm164', fx: { Dm: 219, Db: 114, H: 250, phi: 60 } }],
       tasks: [
         { id: 'm161', level: 1, pi: 'calc', title: 'Pattern length and the 12 spaces', gen: function (r, fx) {
           var p = fx || { D: pick(r, [60, 89, 114, 141, 168, 219, 273, 324, 356, 406]) }, so = PI * p.D, sp = so / 12;
