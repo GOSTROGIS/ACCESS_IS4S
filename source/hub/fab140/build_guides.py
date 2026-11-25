@@ -40,8 +40,13 @@ def esc(s):
 
 
 def sc_href(key):
-    raw = json.dumps(dict(v=1, **PRESETS[key]), ensure_ascii=False, separators=(',', ':')).encode('utf-8')
-    return SC_PAGE + '#sc=' + base64.urlsafe_b64encode(raw).decode('ascii').rstrip('=')
+    return sc_shape_href(PRESETS[key])
+
+
+def sc_shape_href(shape, page=SC_PAGE):
+    """A Shape Canvas link that opens the given shape (a preset-style dict)."""
+    raw = json.dumps(dict(v=1, **shape), ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+    return page + '#sc=' + base64.urlsafe_b64encode(raw).decode('ascii').rstrip('=')
 
 
 def play(seqs):
@@ -126,8 +131,8 @@ def index_page(ls):
     return page('Study guides', '../index.html', 'Intake 140', b)
 
 
-def audio(slug, text, voice):
-    mp3 = OUT / 'audio' / (slug + '.mp3')
+def audio(slug, text, voice, out=OUT):
+    mp3 = out / 'audio' / (slug + '.mp3')
     mp3.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as d:
         wav = pathlib.Path(d) / 'a.wav'

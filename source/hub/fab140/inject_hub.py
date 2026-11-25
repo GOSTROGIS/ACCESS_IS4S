@@ -52,7 +52,7 @@ def engine_js():
 
 
 HOOK = '''<script id="mf140-hook">
-/* Modules 11 to 16 (Metal Fabricator Intake 140) join the Fabrication engine before the page builds its task cards. */
+/* Modules 11 to 17 (Metal Fabricator Intake 140) join the Fabrication engine before the page builds its task cards. */
 (function () {
   'use strict';
   if (!window.FAB || !window.MF140) return;
@@ -105,7 +105,7 @@ def main():
     hub = drop_script(hub, 'mf140-bank')
     hub = insert_after(hub, '<script id="mfa-bank">', '</script>\n', '<script id="mf140-bank">\n' + engine_js() + BANK + '</script>\n')
     HUB.write_text(hub, encoding='utf-8')
-    print('Numeracy Hub: Modules 11 to 16 and the Intake 140 exam bank are current')
+    print('Numeracy Hub: Modules 11 to 17 and the Intake 140 exam bank are current')
 
 
 if __name__ == '__main__':

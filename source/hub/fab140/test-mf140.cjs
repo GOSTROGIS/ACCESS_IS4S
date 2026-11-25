@@ -37,8 +37,26 @@ var IND = {
   m161: function (p) { return [PI * p.D, PI * p.D / 12]; },
   m162: function (p) { var k = p.D / 2 * Math.tan(p.t * D); return [p.L - k, p.L + k]; },
   m163: function (p) { return [p.L - p.D / 2 * Math.tan(p.t * D) * Math.cos((p.n - 1) * 30 * D)]; },
-  m164: function (p) { var y = p.Db / 2 * Math.sin(p.phi * D); return [p.H - Math.sqrt(p.Dm * p.Dm / 4 - y * y)]; }
+  m164: function (p) { var y = p.Db / 2 * Math.sin(p.phi * D); return [p.H - Math.sqrt(p.Dm * p.Dm / 4 - y * y)]; },
+  /* Module 17: the package sheets, worked again from the givens. Lengths in inches come back as [feet, inches] or [inches]. */
+  m171: function (p) {
+    var g = p.g, F = g.B - g.E, G = F * g.A / g.B, C = Math.sqrt(g.A * g.A + g.B * g.B), I = Math.sqrt(F * F + G * G);
+    return ftin({ F: F, D: g.A * 12 / g.B, G: G, C: C, I: I, H: C - I }[p.k]);
+  },
+  m172: function (p) {
+    var g = p.g, A = g.OA - g.IR - g.T, C = g.OC - g.IR - g.T, MR = g.IR + g.T / 2, B = PI * MR / 2;
+    var v = { MR: MR, A: A, B: B, C: C, Total: A + B + C }[p.k];
+    return g.mm ? [v] : ftin(v);
+  },
+  m173: function (p) {
+    var g = p.g, ID = g.OD - 2 * g.T, iif = g.fit === 'IIF', A = iif ? g.L : g.L - 2 * g.EP, inside = iif ? g.L - 2 * g.EP : A;
+    var disc = g.fit === 'IOF' ? g.OD : ID, B = PI * (g.OD - g.T), C = A * B * g.T * 40.8 / 144, E = PI * disc * disc / 576, F = 2 * E * g.EP * 40.8;
+    var K = PI * ID * ID * inside / 6912;
+    var v = { A: A, B: B, C: C, D: Math.sqrt(A * A + B * B), E: E, F: F, I: Math.sqrt(g.G * g.G + g.H * g.H), J: C + F, K: K, L: K * 6.25 }[p.k];
+    return 'ABDI'.indexOf(p.k) >= 0 ? ftin(v) : [v];
+  }
 };
+function ftin(v) { var n = Math.round(v * 16), ft = Math.floor(n / 192); return ft ? [ft, (n - ft * 192) / 16] : [n / 16]; }
 M.MODULES.forEach(function (m) {
   m.tasks.forEach(function (t) {
     if (!IND[t.id]) bad('no independent check for ' + t.id);

@@ -1,4 +1,4 @@
-/* Builds the static parts of Modules 11 to 16 for the Fabrication page: the module sections with their worked
+/* Builds the static parts of Modules 11 to 17 for the Fabrication page: the module sections with their worked
    examples, and the module index cards. Calculator screens are played on the TI-30Xa engine (source/calc2/ti30.js)
    and drawn with the hub's key chips (source/hub/conops/tikeys.js). Per-module links and notes come from presets.json.
    Usage: node build-sections.cjs   (prints JSON: { ids, sections, index }) */
@@ -54,7 +54,7 @@ M.MODULES.forEach(function (m, i) {
     '    <p class="why">' + esc(m.why) + '</p>\n' +
     '    <p class="shop-note">' + esc(d.note) + '</p>\n' +
     row(scHref(d.sc), 'Open ' + d.scLabel + ' in Shape Canvas', 'Open in Shape Canvas', 'Opens the shape at these sizes on a new canvas page.') +
-    row(GUIDE_ROOT + d.guide + '.html', 'Open the Intake 140 study guide for this lesson', 'Study guide with audio', 'Metal Fabricator Intake 140, lesson ' + m.lesson + '.') +
+    row(GUIDE_ROOT + d.guide + '.html', 'Open the Intake 140 study guide for this lesson', d.guideText || 'Study guide with audio', d.guideHelp || 'Metal Fabricator Intake 140, lesson ' + m.lesson + '.') +
     '    <p class="shop-note"><strong>Watch out:</strong> ' + esc(d.watch) + '</p>\n' +
     '  </header>\n' + worked +
     '  <div class="practice-head"><h3>Practice</h3><p class="practice-count" data-module-count="' + m.id + '">' + m.tasks.length + ' tasks</p></div>\n' +
