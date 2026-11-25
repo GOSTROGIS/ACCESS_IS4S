@@ -5,11 +5,11 @@ then "Show me" with the formula, the numbers, the TI-30Xa keys (played on the em
 cwb-bend-test.html: the coupon to scale, the handout numbers worked with keys, and the handout checks.
 Both pages carry games for course.js (quiz, flashcards, put in order, sort it).
 """
-import json
 import random
 
 import build_guides
 import package as P
+import shell
 
 esc = build_guides.esc
 SC = '../../../../skills/numeracy/shape-canvas/'
@@ -35,9 +35,10 @@ def shape_of(p):
 
 
 def unit_of(p, row):
-    if p['kind'] == 'radius' and row['ans'].endswith('mm'):
+    """How a try-it box checks an answer: ftin, mm (whole), mm1 (to 0.1) or num (2 places)."""
+    if row['u'] == 'mm':
         return 'mm1' if row['k'] == 'MR' else 'mm'
-    return 'ftin' if row['ans'].endswith('"') else 'num'
+    return 'ftin' if row['u'] == 'in' else 'num'
 
 
 def tx(x, y, s, cls='', anchor='middle'):
@@ -183,21 +184,6 @@ CWB_TERMS = [('Back-up bar', '50 × 6 × 180 mm (2" × 1/4" × 7").'),
              ('Not on the handout page', 'Root opening for each position, electrode sizes and root face. Ask for them.')]
 
 
-def games(data):
-    g = ''.join('<section class="game" data-game="%s" aria-label="%s"><p>Loading…</p></section>\n' % x for x in
-                [('cards', 'Flashcards'), ('quiz', 'Quiz'), ('order', 'Put in order'), ('sort', 'Sort it')])
-    return g + '<script type="application/json" id="cd">%s</script>\n' % json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
-
-
-def data_for(terms, quiz_items, steps, sorts, src):
-    return {'cards': [], 'terms': [{'t': a, 'd': b, 's': src} for a, b in terms], 'quiz': quiz_items, 'steps': steps,
-            'sorts': [dict(s, items=[list(i) for i in s['items']]) for s in sorts]}
-
-
-def listen(slug, hint):
-    return ('<section class="listen"><audio controls preload="none" src="audio/%s.mp3"></audio><p class="hint">%s</p></section>' % (slug, esc(hint)))
-
-
 PKG_INTRO = ('Every problem in the Metal Fab trades math package is here: the ten half trusses, eight formed plate sections, '
              'the formula sheet examples and twelve tank fit-ups. Try each answer first. Then open Show me for the formula, '
              'the numbers, the calculator keys and the answer. Lengths go to the nearest sixteenth of an inch. '
@@ -208,14 +194,14 @@ CWB_INTRO = ('The CWB all-position bend test coupon is two 10 millimetre plates,
              'Three bend straps, 38 millimetres each, are cut below a 19 millimetre cut-off: root bend, face bend, root bend.')
 
 
-def package_page(ps, res, fres):
+def package_page(ps, res):
     sec = {k: ''.join(card(p, res) for p in ps if p['kind'] == k) for k in KIND}
-    form = ''.join('<tr><td>%s</td><td>%s</td><td>%s</td><td><strong>%s</strong></td></tr>' % (esc(a), esc(b), fres[c]['chips'], esc(e))
+    form = ''.join('<tr><td>%s</td><td>%s</td><td>%s</td><td><strong>%s</strong></td></tr>' % (esc(a), esc(b), res[c]['chips'], esc(e))
                    for a, b, c, v, e in P.FORMULA)
     fit = ''.join('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>' % tuple(esc(x) for x in r) for r in
                   [('Corner to corner (ICC)', 'OAL − 2 × EP', 'ID (OD − 2T)', 'A'), ('Outside flush (IOF)', 'OAL − 2 × EP', 'OD', 'A'),
                    ('Inside flush (IIF)', 'OAL', 'ID (OD − 2T)', 'OAL − 2 × EP')])
-    data = data_for(PKG_TERMS, quiz(ps), PKG_STEPS, PKG_SORTS, SRC)
+    data = shell.game_data([], shell.terms(PKG_TERMS, SRC), quiz(ps), PKG_STEPS, PKG_SORTS)
     body = ('<p class="goal">Work every problem in the trades math package, with calculator keys for each answer.</p>\n'
             '<ul class="mod-nav"><li><a href="#trusses">Trusses</a></li><li><a href="#plate">Formed plate</a></li>'
             '<li><a href="#tanks">Tanks</a></li><li><a href="#sheets">Formula sheets</a></li><li><a href="#play">Games</a></li></ul>\n'
@@ -237,7 +223,8 @@ def package_page(ps, res, fres):
             '<li>Sheet 5 of each tank set (ICC-E, IOF-E, IIF-E) is blank, with no givens to work.</li></ul></section>\n'
             '<section id="play"><h2>Games</h2><p class="hint">Quiz questions use the package answers, which are checked against the instructor keys.</p>\n%s</section>\n'
             '<script src="package.js"></script><script src="course.js"></script>'
-            ) % (listen('package', 'Listen to how this page works.'), esc(PKG_INTRO), sec['truss'], sec['radius'], form, fit, sec['tank'], games(data))
+            ) % (build_guides.listen('audio/package.mp3', 'Listen to how this page works.'), esc(PKG_INTRO), sec['truss'], sec['radius'], form, fit,
+                 sec['tank'], shell.games(data, shell.TEXT_GAMES))
     return body
 
 
@@ -277,7 +264,7 @@ def cwb_page(res):
                        % (esc(x[1]), esc(x[2]), res[x[3]]['chips'], esc(x[5]), esc(x[6]), x[7] or 'na', mark[x[7]]) for x in P.CWB if x[0] == k)
         tabs += ('<h3>%s</h3><table class="pk-tab"><thead><tr><th>Item</th><th>Working</th><th>TI-30Xa keys</th><th>Answer</th>'
                  '<th>Handout</th><th>Check</th></tr></thead><tbody>%s</tbody></table>') % (esc(title), rows)
-    data = data_for(CWB_TERMS, cwb_quiz(), CWB_STEPS, CWB_SORTS, CWB_SRC)
+    data = shell.game_data([], shell.terms(CWB_TERMS, CWB_SRC), cwb_quiz(), CWB_STEPS, CWB_SORTS)
     return ('<p class="goal">Know the CWB all-position bend test coupon: the plates, the stops, the straps and the numbers to check.</p>\n'
             '<ul class="mod-nav"><li><a href="#coupon">The coupon</a></li><li><a href="#numbers">The numbers</a></li>'
             '<li><a href="#checks">Checks</a></li><li><a href="#play">Games</a></li></ul>\n%s\n<p class="hint">%s</p>\n'
@@ -292,11 +279,18 @@ def cwb_page(res):
             '<li><b>Bar and plate length.</b> 180 mm = 7 1/16" and 150 mm = 5 7/8", printed 7" and 6". Nominal sizes. Nothing to change.</li>'
             '<li><b>Not on the handout page.</b> Root opening for each position, electrode diameters and root face. The handout says these are given. Ask for them.</li>'
             '</ul></section>\n<section id="play"><h2>Games</h2>\n%s</section>\n<script src="course.js"></script>'
-            ) % (listen('cwb-bend-test', 'Listen to the coupon facts.'), esc(CWB_INTRO), cwb_svg(), tabs, games(data))
+            ) % (build_guides.listen('audio/cwb-bend-test.mp3', 'Listen to the coupon facts.'), esc(CWB_INTRO), cwb_svg(), tabs,
+                 shell.games(data, shell.TEXT_GAMES))
 
 
-def build(out, page, voice=None):
-    """Writes package.html and cwb-bend-test.html into out. Returns the quiz items for the course modules."""
+def extras():
+    """Quiz, order and sort games each course module adds from these pages, by the name content.py uses."""
+    return {'package': {'bank': quiz(P.problems()), 'steps': PKG_STEPS, 'sorts': PKG_SORTS},
+            'cwb': {'bank': cwb_quiz(), 'steps': CWB_STEPS, 'sorts': CWB_SORTS}}
+
+
+def build(out, voice=None):
+    """Writes package.html and cwb-bend-test.html into out, with their audio when a voice is given."""
     ps = P.problems()
     bad = P.check(ps)
     if bad:
@@ -304,12 +298,10 @@ def build(out, page, voice=None):
     res = build_guides.play([r['seq'] for p in ps for r in p['rows']] + [x[2] for x in P.FORMULA] + [x[3] for x in P.CWB])
     if any(r['error'] for r in res.values()):
         raise SystemExit('calculator error')
-    fres = cres = res
-    (out / 'package.html').write_text(page('Trades math package, worked', '<a href="math.html">← Math course module</a>',
-                                           package_page(ps, res, fres), 'Metal Fab package'), encoding='utf-8')
-    (out / 'cwb-bend-test.html').write_text(page('CWB all-position bend test', '<a href="welding.html">← Welding course module</a>',
-                                                 cwb_page(cres), 'Welding'), encoding='utf-8')
+    (out / 'package.html').write_text(shell.page('Trades math package, worked', 'math.html', 'Math course module',
+                                                 package_page(ps, res), 'Metal Fab package'), encoding='utf-8')
+    (out / 'cwb-bend-test.html').write_text(shell.page('CWB all-position bend test', 'welding.html', 'Welding course module',
+                                                       cwb_page(res), 'Welding'), encoding='utf-8')
     if voice:
         build_guides.audio('package', PKG_INTRO, voice, out)
         build_guides.audio('cwb-bend-test', CWB_INTRO, voice, out)
-    return quiz(ps), cwb_quiz()

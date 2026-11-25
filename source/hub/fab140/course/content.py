@@ -151,7 +151,7 @@ MODULES = [
      ('Leaving the brake press unattended, put the ram', ['At the bottom of the stroke or on blocks', 'At the top', 'Halfway', 'Anywhere'], 0, 'Brake Press Appendix 2 SWP'),
    ]},
 
-  {'id': 'math', 'n': '1205', 'title': 'Trades math', 'icon': '📐',
+  {'id': 'math', 'extras': ['package'], 'n': '1205', 'title': 'Trades math', 'icon': '📐',
    'goal': 'Measure, convert and calculate like a fabricator.',
    'stel': 'C',
    'points': [
@@ -211,7 +211,7 @@ MODULES = [
    ],
    'sorts': [], 'quiz': []},
 
-  {'id': 'welding', 'n': '1235', 'title': 'Arc welding and welding symbols', 'icon': '⚡',
+  {'id': 'welding', 'extras': ['cwb'], 'n': '1235', 'title': 'Arc welding and welding symbols', 'icon': '⚡',
    'goal': 'Understand SMAW, GMAW, electrodes, positions, faults and the bend test.',
    'stel': '',
    'points': [

@@ -88,6 +88,7 @@ TANK_KEY = {
   'IIF-B': ("6'-2 1/2", "7'-9 7/16", 739.81, "9'-11 1/2", 4.71, 240.02, "5'-5 1/2", 979.84, 28.73, 179.55),
   'IIF-C': ("8'-3 9/16", "11'-0 5/16", 1866.61, "13'-9 5/8", 9.45, 578.35, "7'-9 3/8", 2444.95, 77.22, 482.66),
   'IIF-D': ("10'-7 1/4", "24'-9 11/16", 6707.56, "26'-11 3/4", 48.32, 3943.01, "11'-11 7/8", 10650.57, 504.35, 3152.20)}
+TANK_UNIT = {'C': 'lb', 'E': 'sq ft', 'F': 'lb', 'J': 'lb', 'K': 'cu ft', 'L': 'gal'}
 FITUP = {'ICC': 'Corner to corner', 'IOF': 'Outside flush', 'IIF': 'Inside flush'}
 
 
@@ -102,8 +103,9 @@ def q4(x):
     return ('%.4f' % x).rstrip('0').rstrip('.')
 
 
-def rows_of(spec, fmt):
-    return [{'k': k, 'what': w, 'f': f, 'w': nums, 'v': v, 'ans': fmt(k, v), 'seq': seq} for k, w, f, nums, v, seq in spec]
+def rows_of(spec, fmt, unit):
+    """Answer rows. unit(k) names the unit: in, mm, lb, sq ft, cu ft or gal."""
+    return [{'k': k, 'what': w, 'f': f, 'w': nums, 'v': v, 'ans': fmt(k, v), 'u': unit(k), 'seq': seq} for k, w, f, nums, v, seq in spec]
 
 
 def truss(name, a, b, e):
@@ -125,7 +127,7 @@ def truss(name, a, b, e):
             ('H', 'Top chord, web to peak', 'H = C − I', '%s − %s' % (fi(C), fi(I)), H,
              '%s x² + %s x² = √x − ( %s x² + %s x² ) √x =' % (a_, b_, f_, g_))]
     return {'name': name, 'kind': 'truss', 'given': [('A rise', a + '"'), ('B run', b + '"'), ('E web to peak', e + '"')],
-            'rows': rows_of(spec, lambda k, v: fi(v)), 'num': {'A': A, 'B': B, 'E': E}}
+            'rows': rows_of(spec, lambda k, v: fi(v), lambda k: 'in'), 'num': {'A': A, 'B': B, 'E': E}}
 
 
 def radius(name, unit, t, ir, oa, oc):
@@ -146,7 +148,7 @@ def radius(name, unit, t, ir, oa, oc):
              '%s − ( %s + %s ) + ( %s + %s ÷ 2 ) × π × 90 ÷ 180 + %s − ( %s + %s ) =' % (oa_, ir_, t_, ir_, t_, oc_, ir_, t_))]
     fmt = (lambda k, v: '%s mm' % (('%.1f' % v) if k == 'MR' else round(v))) if mm else (lambda k, v: fi(v))
     return {'name': name, 'kind': 'radius', 'given': [('Plate T', t + u), ('Inside radius', ir + u), ('OAL, A leg', oa + u), ('OAL, C leg', oc + u)],
-            'rows': rows_of(spec, fmt), 'num': {'T': Tt, 'IR': IR, 'OA': OA, 'OC': OC, 'mm': mm}}
+            'rows': rows_of(spec, fmt, lambda k: 'mm' if mm else 'in'), 'num': {'T': Tt, 'IR': IR, 'OA': OA, 'OC': OC, 'mm': mm}}
 
 
 def tank(name, fit, od, t, ep, oal, g, h):
@@ -189,7 +191,7 @@ def tank(name, fit, od, t, ep, oal, g, h):
     ft = {'A', 'B', 'D', 'I'}
     return {'name': name, 'kind': 'tank', 'fit': FITUP[fit],
             'given': [('Shell OD', od + '"'), ('Shell T', t + '"'), ('End plate EP', ep + '"'), ('Overall length', oal + '"'), ('G c-c, saddle bolt holes', g + '"'), ('H c-c, saddle bolt holes', h + '"')],
-            'rows': rows_of(spec, lambda k, v: fi(v) if k in ft else '%.2f' % v),
+            'rows': rows_of(spec, lambda k, v: fi(v) if k in ft else '%.2f' % v, lambda k: 'in' if k in ft else TANK_UNIT[k]),
             'num': {'fit': fit, 'OD': OD, 'T': Tt, 'EP': EP, 'L': L, 'G': G, 'H': H}}
 
 
@@ -261,7 +263,7 @@ MARK = ('/* PKG-DATA */', '/* /PKG-DATA */')
 def write_hub(ps):
     """Puts the package problems into mf140.js between the PKG-DATA markers, for Module 17 in the Numeracy Hub."""
     data = [{'n': p['name'], 'kind': p['kind'], 'fit': p.get('fit', ''), 'g': p['num'], 'gt': p['given'],
-             'rows': [{'k': r['k'], 'w': r['what'], 'f': r['f'], 'n': r['w'], 'v': round(r['v'], 10), 'a': r['ans'], 's': r['seq']} for r in p['rows']]}
+             'rows': [{'k': r['k'], 'w': r['what'], 'f': r['f'], 'n': r['w'], 'v': round(r['v'], 10), 'a': r['ans'], 's': r['seq'], 'u': r['u']} for r in p['rows']]}
             for p in ps]
     js = HUB_JS.read_text(encoding='utf-8')
     a, b = js.index(MARK[0]) + len(MARK[0]), js.index(MARK[1])

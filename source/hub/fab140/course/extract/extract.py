@@ -1,7 +1,7 @@
 import os, subprocess, hashlib, json, shutil, zipfile, re
 from concurrent.futures import ThreadPoolExecutor
-ROOT = "/mnt/user-data/uploads/MTLF-GENR-ACC - Metal Fabricator Fnd - ACCESS - 52360 - 11242026 - 1051 AM"
-OUT = "/tmp/mtlf"
+import paths
+ROOT, OUT = paths.SRC, paths.WORK
 def slug(rel):
     s = re.sub(r'[^A-Za-z0-9]+', '-', os.path.splitext(rel)[0]).strip('-').lower()
     return s[:80].strip('-') + '-' + hashlib.md5(rel.encode()).hexdigest()[:5]
@@ -41,4 +41,5 @@ for dp, dn, fn in os.walk(ROOT):
         if not f.lower().endswith(('.html', '.mp4', '.eprt', '.step')): files.append(rel)
 with ThreadPoolExecutor(6) as ex: res = list(ex.map(handle, sorted(files)))
 json.dump(res, open(os.path.join(OUT, 'docs.json'), 'w'), indent=1)
+paths.publish('docs', res)
 print(len(res), 'docs', sum(r['words'] for r in res), 'words')

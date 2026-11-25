@@ -1,5 +1,6 @@
-import pymupdf, glob, re, json
-R = "/mnt/user-data/uploads/MTLF-GENR-ACC - Metal Fabricator Fnd - ACCESS - 52360 - 11242026 - 1051 AM/Student Resources/Welder_Training_Program_C/"
+import pymupdf, glob, re
+import paths
+R = paths.SRC + '/Student Resources/Welder_Training_Program_C/'
 NOISE = re.compile(r'^(Answers|Welder Training Program.*|Module [A-Z0-9-]+.*Competency.*|Module [A-Z0-9]+\s+Answer Key|\d+|Notes|Self-Test \d+|Choose the correct response.*|column\. Cover your answers.*|Cover your answers.*)$')
 def norm(s): return re.sub(r'[^a-z0-9]+', ' ', s.lower()).strip()
 def parse(path):
@@ -65,4 +66,4 @@ for f in sorted(glob.glob(R + '*.pdf')):
     name = f.split('/')[-1]
     res[name] = out
     print(f"{name[:50]:50} tests {nt}/{nk} ok {ok} skipped {bad}")
-json.dump(res, open('selftests.json', 'w'), indent=0)
+paths.publish('selftests', res)

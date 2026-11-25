@@ -311,8 +311,9 @@ def build_hub():
                         ('BCBC Part 9 plates', 'programs/carpentry/bcbc-part-9/index.html'),
                         ('Math deck library', 'programs/carpentry/#decks')])
                 + card('Metal Fabrication', 'programs/metal-fabrication/',
-                       'The metal fabricator trade in BC, and each intake’s math: study guides with audio, Numeracy Hub modules and practice quizzes.',
+                       'The metal fabricator trade in BC, and each intake’s course: study modules with games for every course document, study guides with audio, Numeracy Hub modules and practice quizzes.',
                        [('Trade page', 'programs/metal-fabrication/'), ('Intake 140', 'programs/metal-fabrication/intake-140/'),
+                        ('Course modules', 'programs/metal-fabrication/intake-140/course/index.html'),
                         ('Study guides', 'programs/metal-fabrication/intake-140/study-guides/index.html')])
                 + '</div></section>')
     body = (f'<section><h2>The nine skills</h2><div class="grid">{"".join(cards)}</div></section>'

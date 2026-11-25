@@ -12,7 +12,7 @@ var M = require('./mf140.js');
 var DATA = require('./presets.json');
 
 var FIRST = 11;
-var GUIDE_ROOT = '../../../programs/metal-fabrication/intake-140/study-guides/';
+var INTAKE = '../../../programs/metal-fabrication/intake-140/';
 
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function scHref(key) { return '../shape-canvas/#sc=' + Buffer.from(JSON.stringify(Object.assign({ v: 1 }, DATA.presets[key])), 'utf8').toString('base64url'); }
@@ -54,7 +54,7 @@ M.MODULES.forEach(function (m, i) {
     '    <p class="why">' + esc(m.why) + '</p>\n' +
     '    <p class="shop-note">' + esc(d.note) + '</p>\n' +
     row(scHref(d.sc), 'Open ' + d.scLabel + ' in Shape Canvas', 'Open in Shape Canvas', 'Opens the shape at these sizes on a new canvas page.') +
-    row(GUIDE_ROOT + d.guide + '.html', 'Open the Intake 140 study guide for this lesson', d.guideText || 'Study guide with audio', d.guideHelp || 'Metal Fabricator Intake 140, lesson ' + m.lesson + '.') +
+    row(INTAKE + d.href, 'Open ' + d.linkText + ', in Intake 140', d.linkText, d.linkHelp) +
     '    <p class="shop-note"><strong>Watch out:</strong> ' + esc(d.watch) + '</p>\n' +
     '  </header>\n' + worked +
     '  <div class="practice-head"><h3>Practice</h3><p class="practice-count" data-module-count="' + m.id + '">' + m.tasks.length + ' tasks</p></div>\n' +

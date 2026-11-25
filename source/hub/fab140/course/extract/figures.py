@@ -3,12 +3,14 @@ import os, json, io
 import pymupdf
 from PIL import Image
 from concurrent.futures import ProcessPoolExecutor
-ROOT = "/mnt/user-data/uploads/MTLF-GENR-ACC - Metal Fabricator Fnd - ACCESS - 52360 - 11242026 - 1051 AM"
-OUT = "/tmp/mtlf/fig"; os.makedirs(OUT, exist_ok=True)
-docs = json.load(open('/tmp/mtlf/docs.json'))
+import paths
+ROOT = paths.SRC
+OUT = os.path.join(paths.WORK, 'fig')
+os.makedirs(OUT, exist_ok=True)
+docs = json.load(open(os.path.join(paths.WORK, 'docs.json')))
 def pdf_for(d):
     if d['ext'] == '.pdf': return os.path.join(ROOT, d['rel'])
-    c = f"/tmp/mtlf/conv/{d['slug']}"
+    c = os.path.join(paths.WORK, 'conv', d['slug'])
     if os.path.isdir(c):
         f = [x for x in os.listdir(c) if x.endswith('.pdf')]
         if f: return os.path.join(c, f[0])
@@ -87,5 +89,6 @@ if __name__ == '__main__':
     for r in allr:
         if r['hash'] in seen: os.remove(os.path.join(OUT, r['file'])); continue
         seen[r['hash']] = 1; keep.append(r)
-    json.dump(keep, open('/tmp/mtlf/figures.json', 'w'))
+    json.dump(keep, open(os.path.join(paths.WORK, 'figures.json'), 'w'))
+    paths.publish('figures', [{k: f[k] for k in paths.FIG_FIELDS} for f in keep])
     print(len(allr), 'rendered,', len(keep), 'unique,', round(sum(k['bytes'] for k in keep)/1e6, 1), 'MB')

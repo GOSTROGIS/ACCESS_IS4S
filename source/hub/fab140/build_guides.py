@@ -65,34 +65,46 @@ def keys_html(r):
             '<p class="keys-scr"><span>Screen</span> <output>%s</output></p></div>' % (r['chips'], esc(r['screen'])))
 
 
-def page(title, crumb_href, crumb, body):
+# Lessons whose package sheets are worked on the course package page
+PACKAGE = {7: ('Every formed plate sheet in the package, worked', 'plate'), 8: ('Every half truss in the package, IT1-a to IT1-j, worked', 'trusses'),
+           9: ('Every tank fit-up in the package, worked', 'tanks')}
+GUIDE_FOOT = 'Original study guides for the Intake 140 math lessons. Audio is computer-read.'
+
+
+def page(title, crumb_href, crumb, body, eyebrow='Study guide', css=('guide.css',), body_attr='', foot=GUIDE_FOOT):
+    """The Intake 140 page shell, shared by the study guides and the course pages (course/shell.py)."""
+    links = ''.join('<link rel="stylesheet" href="%s">\n' % c for c in css)
     return ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
             '<title>%s · Metal Fabricator Intake 140 · ACCESS IS4S</title>\n'
             '<link rel="icon" href="%sbrand/is4s-badge.svg" type="image/svg+xml">\n'
-            '<link rel="stylesheet" href="%sbrand/site.css">\n<link rel="stylesheet" href="guide.css">\n</head>\n<body class="guide">\n'
+            '<link rel="stylesheet" href="%sbrand/site.css">\n%s</head>\n<body class="guide"%s>\n'
             '<header class="site-head">\n  <div class="wrap head-inner">\n'
             '    <a href="%sindex.html"><img class="lockup" src="%sbrand/is4s-badge.svg" alt="ACCESS Indigenous Skills4Success" width="92" height="84"></a>\n'
             '    <div class="head-text">\n      <p class="crumb"><a href="%s">← %s</a></p>\n'
-            '      <p class="eyebrow">Metal Fabricator Foundation · Intake 140 · Study guide</p>\n'
+            '      <p class="eyebrow">Metal Fabricator Foundation · Intake 140 · %s</p>\n'
             '      <h1>%s</h1>\n    </div>\n  </div>\n</header>\n<main class="wrap">\n%s\n</main>\n'
-            '<footer class="site-foot">\n  <div class="wrap">\n    <p>ACCESS Indigenous Skills4Success. Original study guides for the Intake 140 math lessons. Audio is computer-read.</p>\n  </div>\n</footer>\n</body>\n</html>\n'
-            ) % (esc(title), UP, UP, UP, UP, crumb_href, esc(crumb), esc(title), body)
+            '<footer class="site-foot">\n  <div class="wrap">\n    <p>ACCESS Indigenous Skills4Success. %s</p>\n  </div>\n</footer>\n</body>\n</html>\n'
+            ) % (esc(title), UP, UP, links, body_attr, UP, UP, crumb_href, esc(crumb), esc(eyebrow), esc(title), body, esc(foot))
+
+
+def listen(src, hint, heading='', hid=''):
+    """An audio player with a hint. With a heading and its id it is a titled section, as on the study guides."""
+    if heading:
+        return ('<section class="listen" aria-labelledby="%s"><h2 id="%s">%s</h2><audio controls preload="none" src="%s"></audio>'
+                '<p class="hint">%s</p></section>\n') % (hid, hid, esc(heading), src, esc(hint))
+    return '<section class="listen"><audio controls preload="none" src="%s"></audio><p class="hint">%s</p></section>' % (src, esc(hint))
 
 
 def lesson_page(les, ex, shots, prev_next):
     b = '<p class="goal">%s</p>\n' % esc(les['goal'])
-    b += ('<section class="listen" aria-labelledby="listen-h"><h2 id="listen-h">Listen</h2>'
-          '<audio controls preload="none" src="audio/%s.mp3"></audio>'
-          '<p class="hint">The voice reads this lesson slowly. Pause any time. Play it again as often as you like.</p></section>\n' % les['slug'])
+    b += listen('audio/%s.mp3' % les['slug'], 'The voice reads this lesson slowly. Pause any time. Play it again as often as you like.', 'Listen', 'listen-h')
     b += '<figure class="pic">%s</figure>\n' % les['visual']
     b += '<ol class="steps-big">\n'
     for say, math_, seq in les['steps']:
         b += '<li><p class="say">%s</p><p class="math">%s</p>%s</li>\n' % (esc(say), esc(math_), keys_html(shots[seq]) if seq else '')
     b += '</ol>\n'
-    b += ('<section class="listen" aria-labelledby="listen2-h"><h2 id="listen2-h">Listen: worked examples</h2>'
-          '<audio controls preload="none" src="audio/%s-examples.mp3"></audio>'
-          '<p class="hint">Two more examples, a mistake to watch for, and practice questions, read aloud.</p></section>\n' % les['slug'])
+    b += listen('audio/%s-examples.mp3' % les['slug'], 'Two more examples, a mistake to watch for, and practice questions, read aloud.', 'Listen: worked examples', 'listen2-h')
     for i, e in enumerate(ex['examples'], 1):
         b += '<section class="worked" aria-labelledby="ex%d-h"><h2 id="ex%d-h">Worked example %d. %s</h2>' % (i, i, i, esc(e['title']))
         b += '<figure class="pic">%s</figure><ol class="steps-big">' % e['visual']
@@ -113,6 +125,8 @@ def lesson_page(les, ex, shots, prev_next):
     b += '<li><a href="%s#fab">Numeracy Hub, Fabrication tab: %s</a></li>' % (HUB, esc(les['hub']))
     if les['sc']:
         b += '<li><a href="%s">See it in Shape Canvas</a></li>' % esc(sc_href(les['sc']))
+    if les['n'] in PACKAGE:
+        b += '<li><a href="../course/package.html#%s">%s</a></li>' % (PACKAGE[les['n']][1], esc(PACKAGE[les['n']][0]))
     b += '<li><a href="%s#exam">Make a practice quiz in the Exam builder</a></li></ul></section>\n' % HUB
     p, n = prev_next
     b += '<nav class="pn" aria-label="Lessons">%s%s</nav>' % (
@@ -128,6 +142,9 @@ def index_page(ls):
         b += ('<li><a href="%s.html"><span class="n">%d</span><span class="t">%s</span><span class="g">%s</span></a></li>'
               % (les['slug'], les['n'], esc(les['title']), esc(les['goal'])))
     b += '</ol>\n<p class="hint">How to use them: listen first. Then read the steps. Then do the Try it with your calculator.</p>'
+    b += ('\n<h2>More for Intake 140</h2><ul class="big-links"><li><a href="../course/package.html">The trades math package, every sheet worked</a></li>'
+          '<li><a href="../course/index.html">Course modules: every course document, with games</a></li>'
+          '<li><a href="../course/cwb-bend-test.html">CWB all-position bend test</a></li></ul>')
     return page('Study guides', '../index.html', 'Intake 140', b)
 
 

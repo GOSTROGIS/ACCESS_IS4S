@@ -1,5 +1,6 @@
-import pymupdf, glob, re, json, collections
-d = pymupdf.open(glob.glob('/mnt/user-data/uploads/MTLF*/Student Resources/Metal Fab Textbooks/STEL*')[0])
+import pymupdf, glob, re, collections
+import paths
+d = pymupdf.open(glob.glob(paths.SRC + '/Student Resources/Metal Fab Textbooks/STEL*')[0])
 pageblock = {}; cur = None; terms = []; inglossary = False; term = None; defn = []
 def flush():
     global term, defn
@@ -28,7 +29,7 @@ for pno, p in enumerate(d):
                 flush(); term = t
             elif term: defn.append(t)
 flush()
-json.dump({'pageblock': pageblock, 'terms': terms}, open('stel.json', 'w'), indent=0)
+paths.publish('stel', {'pageblock': pageblock, 'terms': terms})
 print(collections.Counter(pageblock.values()))
 print(len(terms), collections.Counter(t['block'] for t in terms))
 for t in terms[:6] + terms[200:206]: print(t['block'], t['term'], '::', t['def'][:100])
