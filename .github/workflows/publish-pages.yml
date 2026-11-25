@@ -4,6 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -37,5 +38,16 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ runner.temp }}/public-site
+      # A large upload can take a few seconds to be listed. deploy-pages looks once and fails when it is not there yet.
+      - name: Wait until the uploaded site is listed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 24); do
+            [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages" --jq '.total_count > 0')" = true ] && exit 0
+            [ "$i" -lt 24 ] && sleep 5
+          done
+          echo "the github-pages upload was not listed within 2 minutes" >&2
+          exit 1
       - id: deploy
         uses: actions/deploy-pages@v4
