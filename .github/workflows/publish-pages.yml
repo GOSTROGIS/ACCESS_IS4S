@@ -4,7 +4,6 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  actions: read
   contents: read
   pages: write
   id-token: write
@@ -12,11 +11,8 @@ concurrency:
   group: access-public-pages
   cancel-in-progress: false
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-24.04
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
@@ -38,16 +34,21 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ runner.temp }}/public-site
-      # A large upload can take a few seconds to be listed. deploy-pages looks once and fails when it is not there yet.
-      - name: Wait until the uploaded site is listed
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          for i in $(seq 1 24); do
-            [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages" --jq '.total_count > 0')" = true ] && exit 0
-            [ "$i" -lt 24 ] && sleep 5
-          done
-          echo "the github-pages upload was not listed within 2 minutes" >&2
-          exit 1
+  # Deploying in its own job, as GitHub's Pages starter does: a failed deploy can be re-run alone, without the
+  # build. deploy-pages looks the upload up once, and on large sites the artifact service has not always listed
+  # it yet, so a failed first try waits a minute and tries once more.
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url || steps.retry.outputs.page_url }}
+    steps:
       - id: deploy
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - if: steps.deploy.outcome == 'failure'
+        run: sleep 60
+      - id: retry
+        if: steps.deploy.outcome == 'failure'
         uses: actions/deploy-pages@v4
